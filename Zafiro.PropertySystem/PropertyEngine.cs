@@ -1,9 +1,9 @@
-﻿using System;
-using Glass.PropertySystem.Attached;
-using Glass.PropertySystem.Standard;
-
-namespace Glass.PropertySystem
+﻿namespace Zafiro.PropertySystem
 {
+    using System;
+    using Attached;
+    using Standard;
+
     public class PropertyEngine
     {
         private readonly AttachedPropertyEngine attachedEngine;

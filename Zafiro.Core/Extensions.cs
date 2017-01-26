@@ -1,4 +1,4 @@
-﻿namespace Glass.Core
+﻿namespace Zafiro.Core
 {
     using System;
     using System.Collections;

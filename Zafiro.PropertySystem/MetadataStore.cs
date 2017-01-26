@@ -1,4 +1,4 @@
-namespace Glass.PropertySystem
+namespace Zafiro.PropertySystem
 {
     using System;
     using System.Collections.Generic;

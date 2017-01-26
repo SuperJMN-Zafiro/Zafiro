@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace Glass.Core
+namespace Zafiro.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public static class MethodFinder
     {
         public static MethodInfo GetAddMethod(string name, Type owner, params Type[] parameterTypes)

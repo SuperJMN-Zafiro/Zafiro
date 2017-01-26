@@ -1,4 +1,4 @@
-﻿namespace Glass.PropertySystem.Attached
+﻿namespace Zafiro.PropertySystem.Attached
 {
     public class AttachedPropertyMetadata
     {
