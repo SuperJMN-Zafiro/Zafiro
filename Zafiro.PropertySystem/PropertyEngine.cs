@@ -42,7 +42,7 @@
 
         public ExtendedProperty RegisterProperty(string name, Type owner, Type propertyType, PropertyMetadata metadata)
         {
-            return stdEngine.RegisterProperty(name, propertyType, owner, metadata);
+            return stdEngine.RegisterProperty(name, owner, propertyType, metadata);
         }
     }
 }
