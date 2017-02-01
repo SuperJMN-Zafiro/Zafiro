@@ -1,10 +1,9 @@
-﻿using System;
-using Xunit;
-
-namespace UnitTestProject2
+﻿namespace Zafiro.PropertySystem.Tests
 {
-    using Zafiro.PropertySystem.Standard;
-    using Zafiro.PropertySystem.Tests.Model;
+    using System;
+    using Model;
+    using Standard;
+    using Xunit;
 
     public class StandardEngineTests
     {

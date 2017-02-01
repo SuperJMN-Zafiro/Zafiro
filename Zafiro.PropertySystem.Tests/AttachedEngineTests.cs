@@ -1,9 +1,8 @@
-using Xunit;
-
-namespace UnitTestProject2
+namespace Zafiro.PropertySystem.Tests
 {
-    using Zafiro.PropertySystem.Attached;
-    using Zafiro.PropertySystem.Tests.Model;
+    using Attached;
+    using Model;
+    using Xunit;
 
     public class AttachedEngineTests
     {

@@ -4,7 +4,6 @@
     using Model;
     using PropertySystem;
     using Standard;
-    using UnitTestProject2;
     using Xunit;
 
     public class MetadataStoreTests
@@ -15,7 +14,7 @@
         public void GetSetMetadataRegisteredProperty()
         {
             var sut = CreateSut();
-            var expected = new Metadata();
+            var expected = new PropertyMetadata();
             sut.RegisterMetadata(typeof(Button), property, expected);
             var actual = sut.GetMetadata(typeof(Button), property);
 
@@ -26,7 +25,7 @@
         public void GetSetMetadataUnregisteredProperty()
         {
             var sut = CreateSut();
-            var expected = new Metadata();
+            var expected = new PropertyMetadata();
             sut.RegisterMetadata(typeof(Button), property, expected);
             Assert.Throws<KeyNotFoundException>(() => sut.GetMetadata(typeof(Grid), property));
         }
@@ -35,16 +34,16 @@
         public void GetSetMetadataDerivedClass()
         {
             var sut = CreateSut();
-            var expected = new Metadata();
+            var expected = new PropertyMetadata();
             sut.RegisterMetadata(typeof(Grid), property, expected);
             var actual = sut.GetMetadata(typeof(DerivedGrid), property);
 
             Assert.Equal(expected, actual);
         }
 
-        private static MetadataStore<ExtendedProperty, Metadata> CreateSut()
+        private static MetadataStore<ExtendedProperty, PropertyMetadata> CreateSut()
         {
-            var sut = new MetadataStore<ExtendedProperty, Metadata>();
+            var sut = new MetadataStore<ExtendedProperty, PropertyMetadata>();
             return sut;
         }
     }
