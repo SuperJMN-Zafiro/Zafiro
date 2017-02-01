@@ -1,4 +1,4 @@
-namespace Zafiro.PropertySystem
+namespace Zafiro.PropertySystem.Stores
 {
     using System;
     using System.Collections.Generic;

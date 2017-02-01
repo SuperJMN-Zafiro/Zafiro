@@ -2,8 +2,8 @@
 {
     using System.Collections.Generic;
     using Model;
-    using PropertySystem;
     using Standard;
+    using Stores;
     using Xunit;
 
     public class MetadataStoreTests

@@ -1,14 +1,14 @@
 ﻿namespace Zafiro.PropertySystem.Standard
 {
     using System;
-    using System.Collections.Generic;
+    using Stores;
 
     public class ExtendedPropertyEngine
     {
         private readonly MetadataStore<ExtendedProperty, PropertyMetadata> metadataStore =
             new MetadataStore<ExtendedProperty, PropertyMetadata>();
 
-        private readonly IDictionary<PropertyEntry, object> values = new Dictionary<PropertyEntry, object>();
+        private readonly ValueStore valueStore = new ValueStore();
 
         public ExtendedProperty RegisterProperty(string name, Type ownerType, Type propertyType,
             PropertyMetadata metadata)
@@ -25,13 +25,13 @@
                 throw new InvalidOperationException();
             }
 
-            values.Add(new PropertyEntry(property, instance), value);
+            valueStore.SetValue(property, instance, value);
         }
 
         public object GetValue(ExtendedProperty extendedProperty, object instance)
         {
             object retVal;
-            if (values.TryGetValue(new PropertyEntry(extendedProperty, instance), out retVal))
+            if (valueStore.TryGetValue(extendedProperty, instance, out retVal))
             {
                 return retVal;
             }
