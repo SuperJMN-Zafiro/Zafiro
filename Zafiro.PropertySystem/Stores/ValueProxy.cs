@@ -1,16 +1,17 @@
 namespace Zafiro.PropertySystem.Stores
 {
     using System;
+    using System.Reactive.Linq;
     using System.Reactive.Subjects;
 
     internal class ValueProxy
     {
-        private object value;
-        private readonly Subject<ValueChange> subject = new Subject<ValueChange>();
+        private readonly ISubject<object> values = new Subject<object>();
 
-        public ValueProxy(object @value)
+        public ValueProxy(object value)
         {
             Value = value;
+            values.Subscribe(o => Value = o);
         }
 
         public ValueProxy()
@@ -19,14 +20,15 @@ namespace Zafiro.PropertySystem.Stores
 
         public object Value
         {
-            get { return value; }
+            get { return values.TakeLast(1); }
             set
             {
-                subject.OnNext(new ValueChange(this.value, value));
-                this.value = value;
+                values.OnNext(value);
             }
         }
 
-        public IObservable<ValueChange> Observable => subject;
+        
+        public IObservable<object> Changed => values.Distinct();
+        public IObserver<object> Observer => values;
     }
 }

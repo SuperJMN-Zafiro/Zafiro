@@ -1,6 +1,10 @@
 ﻿namespace Zafiro.PropertySystem.Standard
 {
     using System;
+    using System.Collections.Generic;
+    using System.Reactive.Subjects;
+    using System.Reflection;
+    using Core;
     using Stores;
 
     public class ExtendedPropertyEngine
@@ -9,12 +13,14 @@
             new MetadataStore<ExtendedProperty, PropertyMetadata>();
 
         private readonly ValueStore valueStore = new ValueStore();
+        private readonly IDictionary<Tuple<string, Type>, ExtendedProperty> registeredProperties = new AutoKeyDictionary<Tuple<string, Type>, ExtendedProperty>(tuple => new Tuple<string, Type>(tuple.Item1, tuple.Item2.GetTypeInfo().BaseType), tuple => tuple.Item2 != null);
 
         public ExtendedProperty RegisterProperty(string name, Type ownerType, Type propertyType,
             PropertyMetadata metadata)
         {
             var prop = new ExtendedProperty(propertyType, name);
             metadataStore.RegisterMetadata(ownerType, prop, metadata);
+            registeredProperties.Add(new Tuple<string, Type>(name, ownerType), prop);
             return prop;
         }
 
@@ -43,6 +49,21 @@
             }
 
             throw new InvalidOperationException();
+        }
+
+        public ExtendedProperty GetProperty(string propertyName, Type type)
+        {
+            return registeredProperties[new Tuple<string, Type>(propertyName, type)];
+        }
+
+        public IObservable<object> GetChangedObservable(ExtendedProperty property, object instance)
+        {
+            return valueStore.GetChangedObservable(property, instance);
+        }
+
+        public IObserver<object> GetObserver(ExtendedProperty property, object instance)
+        {
+            return valueStore.GetObserver(property, instance);
         }
     }
 }

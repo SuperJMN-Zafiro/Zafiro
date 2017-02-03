@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reactive.Subjects;
     using Standard;
     using Core;
 
@@ -33,10 +34,16 @@
             return values[new PropertyEntry(property, instance)].Value;
         }
 
-        public IObservable<ValueChange> GetObservable(ExtendedProperty property, object instance)
+        public IObservable<object> GetChangedObservable(ExtendedProperty property, object instance)
         {
             var valueProxy = values.GetCreate(new PropertyEntry(property, instance), () => new ValueProxy());
-            return valueProxy.Observable;
+            return valueProxy.Changed;
+        }
+
+        public IObserver<object> GetObserver(ExtendedProperty property, object instance)
+        {
+            var valueProxy = values.GetCreate(new PropertyEntry(property, instance), () => new ValueProxy());
+            return valueProxy.Observer;
         }
     }   
 }

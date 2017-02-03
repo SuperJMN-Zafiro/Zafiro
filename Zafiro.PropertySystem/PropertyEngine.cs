@@ -1,8 +1,10 @@
 ﻿namespace Zafiro.PropertySystem
 {
     using System;
+    using System.Reactive.Subjects;
     using Attached;
     using Standard;
+    using Stores;
 
     public class PropertyEngine
     {
@@ -43,6 +45,21 @@
         public ExtendedProperty RegisterProperty(string name, Type owner, Type propertyType, PropertyMetadata metadata)
         {
             return stdEngine.RegisterProperty(name, owner, propertyType, metadata);
+        }
+
+        public ExtendedProperty GetProperty(string propertyName, Type type)
+        {
+            return stdEngine.GetProperty(propertyName, type);
+        }
+
+        public IObservable<object> GetChangedObservable(ExtendedProperty property, object instance)
+        {
+            return stdEngine.GetChangedObservable(property, instance);
+        }
+
+        public IObserver<object> GetObserver(ExtendedProperty property, object instance)
+        {
+            return stdEngine.GetObserver(property, instance);
         }
     }
 }
