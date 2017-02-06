@@ -7,6 +7,7 @@ namespace Zafiro.PropertySystem.Stores
     internal class ValueProxy
     {
         private readonly ISubject<object> values = new Subject<object>();
+        private object currentValue;
 
         public ValueProxy(object value)
         {
@@ -20,9 +21,10 @@ namespace Zafiro.PropertySystem.Stores
 
         public object Value
         {
-            get { return values.TakeLast(1); }
+            get { return currentValue; }
             set
             {
+                currentValue = value;
                 values.OnNext(value);
             }
         }
