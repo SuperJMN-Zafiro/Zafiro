@@ -12,11 +12,12 @@ namespace Zafiro.PropertySystem.Stores
         public ValueProxy(object value)
         {
             Value = value;
-            values.Subscribe(o => Value = o);
+            Changed.Subscribe(o => Value = o);
         }
 
         public ValueProxy()
         {
+            Changed.Subscribe(o => Value = o);
         }
 
         public object Value
