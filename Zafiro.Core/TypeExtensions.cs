@@ -32,7 +32,7 @@
                 where attr != null
                 select new { prop, attr };
 
-            var single = attributes.SingleOrDefault();
+            var single = attributes.FirstOrDefault();
 
             return single != null ? selector(single.prop, single.attr) : default(TSelector);
         }

@@ -47,6 +47,29 @@
         }
 
         [Fact]
+        public void PushingTheSameValue_NotificationIsOnlyReceivedOnce()
+        {
+            var count = 0;
+            var instance = new Grid();
+            sut.GetChangedObservable(property, instance).Subscribe(o => count++);
+            sut.SetValue(property, instance, 10);
+            sut.SetValue(property, instance, 10);
+
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void GettingDefaultValue_DoesNotPushAnyChange()
+        {
+            var count = 0;
+            var instance = new Grid();
+            sut.GetChangedObservable(property, instance).Subscribe(o => count++);
+            sut.GetValue(property, instance);
+
+            Assert.Equal(0, count);
+        }
+
+        [Fact]
         public void CannotSetValueOfPropertyOfNotRegisteredClass()
         {
             var instance = new Button();

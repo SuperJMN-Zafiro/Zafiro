@@ -42,7 +42,7 @@
 
             var sut = CreateSut();
             var instance = new Grid();
-            var obs = sut.GetSubject(property, instance);
+            var obs = sut.GetChangedObservable(property, instance);
             obs.Subscribe(_ => notified = true);
 
             sut.SetValue(property, instance, 1234);
