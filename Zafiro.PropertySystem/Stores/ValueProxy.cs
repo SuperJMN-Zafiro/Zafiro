@@ -9,15 +9,10 @@ namespace Zafiro.PropertySystem.Stores
         private readonly ISubject<object> values = new Subject<object>();
         private object currentValue;
 
-        public ValueProxy(object value)
-        {
-            Value = value;
-            Changed.Subscribe(o => Value = o);
-        }
-
         public ValueProxy()
         {
             Changed.Subscribe(o => Value = o);
+            values.Subscribe(o => { });
         }
 
         public object Value
@@ -31,7 +26,7 @@ namespace Zafiro.PropertySystem.Stores
         }
 
         
-        public IObservable<object> Changed => values.Distinct();
+        public IObservable<object> Changed => values.DistinctUntilChanged();
         public IObserver<object> Observer => values;
     }
 }
