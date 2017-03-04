@@ -1,12 +1,10 @@
 ﻿namespace Zafiro.PropertySystem
 {
     using System;
-    using System.Reactive.Subjects;
     using Attached;
     using Standard;
-    using Stores;
 
-    public class PropertyEngine
+    public class PropertyEngine : IPropertyEngine
     {
         private readonly AttachedPropertyEngine attachedEngine;
         private readonly ExtendedPropertyEngine stdEngine;

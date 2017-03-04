@@ -7,7 +7,7 @@
     using Core;
     using Stores;
 
-    public class ExtendedPropertyEngine
+    public class ExtendedPropertyEngine : IExtendedPropertyEngine
     {
         private readonly MetadataStore<ExtendedProperty, PropertyMetadata> metadataStore =
             new MetadataStore<ExtendedProperty, PropertyMetadata>();
