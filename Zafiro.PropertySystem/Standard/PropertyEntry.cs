@@ -1,11 +1,13 @@
 ﻿namespace Zafiro.PropertySystem.Standard
 {
+    using System;
+
     internal class PropertyEntry
     {
         public PropertyEntry(ExtendedProperty property, object instance)
         {
-            Property = property;
-            Instance = instance;
+            Property = property ?? throw new ArgumentNullException(nameof(property));
+            Instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
 
         public object Instance { get; set; }
