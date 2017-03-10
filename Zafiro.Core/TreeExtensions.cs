@@ -6,8 +6,8 @@
 
     public class TreeExtensions
     {
-        private static IObservable<T> ParentAttached<T>(object targetInstance,
-            IObservable<ParentChildRelationship> childAttached) where T : class
+        public static IObservable<T> ParentAttached<T>(object targetInstance,
+            IObservable<Association> childAttached) where T : class
         {
             ISubject<T> subject = new Subject<T>();
             IDisposable subs = null;
