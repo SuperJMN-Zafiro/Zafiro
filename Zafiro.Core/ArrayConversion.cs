@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Zafiro.Core
 {
-    public static class ArrayConversionExtensions
+    public static class ArrayConversion
     {
         public static byte[] ToByteArray(this int[] buffer)
         {
