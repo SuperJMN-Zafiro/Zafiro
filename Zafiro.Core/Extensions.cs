@@ -89,18 +89,22 @@
                 select converter(member, att);
         }
 
-        public static IEnumerable<IEnumerable<T>> Chunkify<T>(this IEnumerable<T> source, int chunkSize)
+        public static IEnumerable<IEnumerable<T>> Chunkify<T>(this IEnumerable<T> source,
+            int chunkSize)
         {
-            var indices =
-                Enumerable.Range(0, source.Count()).Where(i => i % chunkSize == 0);
-
-            var chunks =
-                indices
-                    .Select(i => source.Skip(i).Take(chunkSize))
-                    .Select(chunk => new { Chunk = chunk, Count = chunk.Count() })
-                    .Select(c => c.Count < chunkSize ? c.Chunk.Concat(Enumerable.Repeat(default(T), chunkSize - c.Count)) : c.Chunk);
-
-            return chunks;
+            IEnumerator<T> e = source.GetEnumerator();
+            Func<bool> mover = () => e.MoveNext();
+            int count = 0;
+            while (mover())
+            {
+                List<T> chunk = new List<T>(chunkSize);
+                do
+                {
+                    chunk.Add(e.Current);
+                } while (++count < chunkSize && e.MoveNext());
+                yield return chunk;
+                count = 0;
+            }
         }
     }
 }
