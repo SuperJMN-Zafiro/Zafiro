@@ -8,7 +8,7 @@
     public class StandardEngineTests
     {
         private const int DefaultValue = 1234;
-        private readonly ExtendedPropertyEngine sut;
+        private readonly IExtendedPropertyEngine sut;
         private readonly ExtendedProperty property;
 
         public StandardEngineTests()
@@ -55,18 +55,18 @@
             sut.SetValue(property, instance, 10);
             sut.SetValue(property, instance, 10);
 
-            Assert.Equal(1, count);
+            Assert.Equal(2, count);
         }
 
         [Fact]
-        public void GettingDefaultValue_DoesNotPushAnyChange()
+        public void GettingDefaultValue_PushesDefaultValue()
         {
             var count = 0;
             var instance = new Grid();
             sut.GetChangedObservable(property, instance).Subscribe(o => count++);
             sut.GetValue(property, instance);
 
-            Assert.Equal(0, count);
+            Assert.Equal(1, count);
         }
 
         [Fact]
