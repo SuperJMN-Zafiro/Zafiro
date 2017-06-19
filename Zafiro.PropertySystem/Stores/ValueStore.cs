@@ -1,49 +1,61 @@
-﻿namespace Zafiro.PropertySystem.Stores
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Reactive.Subjects;
-    using Standard;
-    using Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Zafiro.Core;
+using Zafiro.PropertySystem.Standard;
 
-    public class ValueStore
+namespace Zafiro.PropertySystem.Stores
+{
+    internal class ValueStore
     {
-        private readonly IDictionary<PropertyEntry, ValueProxy> values = new Dictionary<PropertyEntry, ValueProxy>();
+        private readonly Func<ExtendedProperty, object, object> getDefaultValue;
+        private readonly IDictionary<PropertyEntry, BehaviorSubject<object>> values = new Dictionary<PropertyEntry, BehaviorSubject<object>>();
+
+        public ValueStore(Func<ExtendedProperty, object, object> getDefaultValue)
+        {
+            this.getDefaultValue = getDefaultValue;
+        }
+    
+        public object GetValue(ExtendedProperty property, object instance)
+        {
+            var propertyEntry = GetEntry(property, instance);
+            var subject = values.GetCreate(propertyEntry, () =>
+            {
+                var defaultValue = getDefaultValue(property, instance);
+                return new BehaviorSubject<object>(defaultValue);
+            });
+            return subject.Value;
+        }
+
+        private static PropertyEntry GetEntry(ExtendedProperty extendedProperty, object instance)
+        {
+            return new PropertyEntry(extendedProperty, instance);
+        }
 
         public void SetValue(ExtendedProperty property, object instance, object value)
         {
-            var proxy = values.GetCreate(new PropertyEntry(property, instance), () => new ValueProxy());
-            proxy.Value = value;
+            var subject = GetSubject(property, instance);
+            subject.OnNext(value);
         }
 
-        public bool TryGetValue(ExtendedProperty key, object instance, out object value)
+        private BehaviorSubject<object> GetSubject(ExtendedProperty property, object instance)
         {
-            var found = values.TryGetValue(new PropertyEntry(key, instance), out var proxy);
-            if (found)
-            {
-                value = proxy.Value;
-                return true;
-            }
-
-            value = null;
-            return false;
+            var propertyEntry = GetEntry(property, instance);
+            var subject = values.GetCreate(propertyEntry,
+                () => new BehaviorSubject<object>(getDefaultValue(property, instance)));
+            return subject;
         }
 
-        public object GetValue(ExtendedProperty property, object instance)
+        public IObservable<object> GetObservable(ExtendedProperty property, object instance)
         {
-            return values[new PropertyEntry(property, instance)].Value;
-        }
-
-        public IObservable<object> GetChangedObservable(ExtendedProperty property, object instance)
-        {
-            var valueProxy = values.GetCreate(new PropertyEntry(property, instance), () => new ValueProxy());
-            return valueProxy.Changed;
+            return GetSubject(property, instance).DistinctUntilChanged().AsObservable();
         }
 
         public IObserver<object> GetObserver(ExtendedProperty property, object instance)
         {
-            var valueProxy = values.GetCreate(new PropertyEntry(property, instance), () => new ValueProxy());
-            return valueProxy.Observer;
+            return GetSubject(property, instance).AsObserver();
         }
-    }   
+    }
 }

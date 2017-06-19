@@ -9,13 +9,13 @@ namespace Zafiro.PropertySystem.Standard
     public class ExtendedPropertyEngine : IExtendedPropertyEngine
     {
         private readonly MetadataStore<ExtendedProperty, PropertyMetadata> metadatas = new MetadataStore<ExtendedProperty, PropertyMetadata>();
-        private readonly ValueStore2 valueStore;
+        private readonly ValueStore valueStore;
         private readonly IDictionary<(string, Type), ExtendedProperty> registeredProperties = new AutoKeyDictionary<(string, Type), ExtendedProperty>(tuple => (tuple.Item1, tuple.Item2.GetTypeInfo().BaseType), tuple => tuple.Item2 != null);
 
 
         public ExtendedPropertyEngine()
         {
-            valueStore = new ValueStore2(TryGetDefaultValue);
+            valueStore = new ValueStore(TryGetDefaultValue);
         }
 
         private object TryGetDefaultValue(ExtendedProperty property, object instance)
