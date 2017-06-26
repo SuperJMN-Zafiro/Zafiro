@@ -47,9 +47,9 @@
             return attributes.Select(arg => selector(arg.prop, arg.attr));
         }
 
-        public static bool IsAssignableFrom(this Type toBeAssigned, params Type[] types)
+        public static bool IsAssignableFrom(this Type targetType, params Type[] sourceTypes)
         {
-            return types.Any(type => type.GetTypeInfo().IsAssignableFrom(toBeAssigned.GetTypeInfo()));
+            return sourceTypes.Any(sourceType => targetType.GetTypeInfo().IsAssignableFrom(sourceType.GetTypeInfo()));
         }
     }
 }
