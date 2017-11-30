@@ -1,0 +1,102 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:xaml="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:objEditor="using:Zafiro.Uwp.Controls.ObjEditor"
+    xmlns:lightweight="using:Zafiro.Uwp.Controls.Lightweight"
+    xmlns:controls="using:Zafiro.Uwp.Controls">
+
+    <Style TargetType="objEditor:ObjectEditor">
+        <Setter Property="Background" Value="#CFCFCF" />
+        <Setter Property="DefaultEditorTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBox Text="{Binding Value, Mode=TwoWay}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="objEditor:ObjectEditor">
+                    <Border VerticalAlignment="Top" Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ItemsControl
+                            ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PropertyItems}">
+                        </ItemsControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="objEditor:PropertyItem">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="objEditor:PropertyItem">
+                    <Border
+                        Margin="0,0,0,1"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding PropName}" VerticalAlignment="Center" />
+                            <ContentControl HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Content="{Binding Editor}" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="lightweight:Ruler">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="lightweight:Ruler">
+                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                        <xaml:CanvasControl x:Name="Canvas"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style TargetType="controls:HeadereContainerControl" >
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{ThemeResource AccentButtonBackground}" />
+        <Setter Property="Background" Value="{ThemeResource AccentButtonBackground}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:HeadereContainerControl">
+                    <Border
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Border Background="{TemplateBinding Background}" Padding="{ThemeResource ButtonBorderThemeThickness}">
+                                <TextBlock Text="{TemplateBinding Header}" TextAlignment="Center" FontWeight="Bold" TextWrapping="Wrap" Foreground="{ThemeResource AppBarBorderThemeBrush}"/>
+                            </Border>
+                            <ContentPresenter Grid.Row="1" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
+
+
+
+
+
+
+

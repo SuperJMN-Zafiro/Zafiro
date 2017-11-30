@@ -1,0 +1,137 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+    xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
+    xmlns:designer="using:Zafiro.Uwp.Designer">
+    
+   <Brush x:Key="DesignerBrush">Transparent</Brush>
+    <Brush x:Key="DesignerBorderBrush">#D100F9FF</Brush>
+    <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+    <Style TargetType="designer:DesignerSurface">
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="designer:DesignerItem">
+                    <Setter Property="designer:SetterValueBindingHelper.PropertyBinding">
+                        <Setter.Value>
+                            <designer:SetterValueBindingHelper>
+                                <designer:SetterValueBindingHelper Type="Canvas" Property="Left" Binding="{Binding RelativeSource={RelativeSource Self}, Path=Left}" />
+                                <designer:SetterValueBindingHelper Type="Canvas" Property="Top" Binding="{Binding RelativeSource={RelativeSource Self}, Path=Top}" />
+                            </designer:SetterValueBindingHelper>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+
+        </Setter>
+
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <designer:ExtensibleCanvas Background="Transparent" />
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+
+    </Style>
+
+    <Style TargetType="designer:DeltaContentControl">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="designer:DeltaContentControl">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid>
+                            <Thumb x:Name="Thumb" Background="Transparent" />
+                            <ContentPresenter IsHitTestVisible="False" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <Style TargetType="designer:DesignerItem">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="designer:DesignerItem">
+                    <Border extensions:VisualEx.CenterPoint="50,50,0">
+
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="Selection">
+                                <VisualState x:Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter Target="Resizer.Visibility" Value="Visible" />
+                                        <Setter Target="Border.Visibility" Value="Visible" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Unselected">
+                                    <VisualState.Setters>
+                                        <Setter Target="Resizer.Visibility" Value="Collapsed" />
+                                        <Setter Target="Border.Visibility" Value="Collapsed" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+
+                            <VisualStateGroup x:Name="Edition">
+                                <VisualState x:Name="Default">
+                                    <VisualState.Setters>
+                                        <Setter Target="ContentPresenter.IsHitTestVisible" Value="False" />
+                                        <Setter Target="Mover.IsHitTestVisible" Value="True" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Editing">
+                                    <VisualState.Setters>
+                                        <Setter Target="ContentPresenter.IsHitTestVisible" Value="True" />
+                                        <Setter Target="Mover.IsHitTestVisible" Value="False" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+
+                        </VisualStateManager.VisualStateGroups>
+
+                        <animations:Implicit.ShowAnimations>
+                            <animations:ScaleAnimation Duration="0:0:1" From="0" To="1"></animations:ScaleAnimation>
+                            <!--<animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>-->
+                            <animations:OpacityAnimation Duration="0:0:1" From="0" To="1.0"></animations:OpacityAnimation>
+                        </animations:Implicit.ShowAnimations>
+
+                        <Grid>
+
+                            <Grid>
+                                <ContentPresenter x:Name="ContentPresenter" IsHitTestVisible="False"  />
+                                <designer:DeltaContentControl x:Name="Mover"
+                                    Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                    Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                                <designer:DeltaContentControl x:Name="Resizer" Width="20" Height="20" HorizontalAlignment="Right"
+                                                           VerticalAlignment="Bottom"
+                                                           Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                           Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                    <SymbolIcon IsHitTestVisible="False" Symbol="FullScreen" />
+                                </designer:DeltaContentControl>
+                            </Grid>
+
+                            <Border x:Name="Border"
+                                BorderBrush="{StaticResource DesignerBorderBrush}" BorderThickness="1"
+                                Background="{StaticResource DesignerBrush}" Width="{TemplateBinding Width}"
+                                Height="{TemplateBinding Height}" IsHitTestVisible="False">
+
+                            </Border>
+                        </Grid>
+
+
+
+                    </Border>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>
