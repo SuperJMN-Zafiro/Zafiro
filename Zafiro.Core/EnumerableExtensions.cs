@@ -2,9 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public static class EnumerableExtensions
     {
+        public static string AsCommaSeparatedList<T>(this IEnumerable<T> enumerable)
+        {
+            return string.Join(",", enumerable.Select(node => node.ToString()));
+        }
+
         public static IEnumerable<T> DropLast<T>(this IEnumerable<T> source, int n)
         {
             if (source == null)

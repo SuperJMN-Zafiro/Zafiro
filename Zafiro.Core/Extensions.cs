@@ -88,5 +88,23 @@
                 where att != null
                 select converter(member, att);
         }
+
+        public static IEnumerable<IEnumerable<T>> Chunkify<T>(this IEnumerable<T> source,
+            int chunkSize)
+        {
+            IEnumerator<T> e = source.GetEnumerator();
+            Func<bool> mover = () => e.MoveNext();
+            int count = 0;
+            while (mover())
+            {
+                List<T> chunk = new List<T>(chunkSize);
+                do
+                {
+                    chunk.Add(e.Current);
+                } while (++count < chunkSize && e.MoveNext());
+                yield return chunk;
+                count = 0;
+            }
+        }
     }
 }

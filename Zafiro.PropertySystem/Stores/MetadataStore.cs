@@ -9,9 +9,9 @@ namespace Zafiro.PropertySystem.Stores
     {
         readonly IDictionary<Tuple<Type, TProperty>, TMetadata> store = new AutoKeyDictionary<Tuple<Type, TProperty>, TMetadata>(t => new Tuple<Type, TProperty>(t.Item1.GetTypeInfo().BaseType, t.Item2), t => t.Item1 != null);
 
-        public void RegisterMetadata(Type type, TProperty property, TMetadata metadata)
+        public void RegisterMetadata(Type ownerType, TProperty property, TMetadata metadata)
         {
-            var tuple = new Tuple<Type, TProperty>(type, property);
+            var tuple = new Tuple<Type, TProperty>(ownerType, property);
             store.Add(tuple, metadata);
         }
 
@@ -21,9 +21,9 @@ namespace Zafiro.PropertySystem.Stores
             return store[tuple];
         }
 
-        public bool TryGetMetadata(Type type, TProperty property, out TMetadata metadata)
+        public bool TryGetMetadata(Type ownerType, TProperty property, out TMetadata metadata)
         {
-            var tuple = new Tuple<Type, TProperty>(type, property);
+            var tuple = new Tuple<Type, TProperty>(ownerType, property);
             if (store.TryGetValue(tuple, out metadata))
             {
                 return true;
