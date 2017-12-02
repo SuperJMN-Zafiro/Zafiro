@@ -5,8 +5,8 @@
     xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     xmlns:designer="using:Zafiro.Uwp.Designer">
-    
-   <Brush x:Key="DesignerBrush">Transparent</Brush>
+
+    <Brush x:Key="DesignerBrush">Transparent</Brush>
     <Brush x:Key="DesignerBorderBrush">#D100F9FF</Brush>
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
@@ -66,13 +66,13 @@
                             <VisualStateGroup x:Name="Selection">
                                 <VisualState x:Name="Selected">
                                     <VisualState.Setters>
-                                        <Setter Target="Resizer.Visibility" Value="Visible" />
+                                        <Setter Target="Resizers.Visibility" Value="Visible" />
                                         <Setter Target="Border.Visibility" Value="Visible" />
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="Unselected">
                                     <VisualState.Setters>
-                                        <Setter Target="Resizer.Visibility" Value="Collapsed" />
+                                        <Setter Target="Resizers.Visibility" Value="Collapsed" />
                                         <Setter Target="Border.Visibility" Value="Collapsed" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -108,12 +108,7 @@
                                 <designer:DeltaContentControl x:Name="Mover"
                                     Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                     Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
-                                <designer:DeltaContentControl x:Name="Resizer" Width="20" Height="20" HorizontalAlignment="Right"
-                                                           VerticalAlignment="Bottom"
-                                                           Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                           Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
-                                    <SymbolIcon IsHitTestVisible="False" Symbol="FullScreen" />
-                                </designer:DeltaContentControl>
+
                             </Grid>
 
                             <Border x:Name="Border"
@@ -122,6 +117,95 @@
                                 Height="{TemplateBinding Height}" IsHitTestVisible="False">
 
                             </Border>
+
+                            <Grid x:Name="Resizers">
+
+                                <Grid.Resources>
+                                    <Style x:Key="DeltaContentControlStyle"
+                                               TargetType="designer:DeltaContentControl">
+                                        <Setter Property="Width" Value="8" />
+                                        <Setter Property="Height" Value="8" />
+                                        <Setter Property="ContentTemplate">
+                                            <Setter.Value>
+                                                <DataTemplate>
+                                                    <Grid Background="White" BorderBrush="Black" BorderThickness="1" />
+                                                </DataTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Grid.Resources>
+
+                                <Grid Margin="-4,-4,-4,0" x:Name="Top">
+                                  
+                                    <designer:DeltaContentControl Style="{StaticResource DeltaContentControlStyle}"
+                                                                  HorizontalAlignment="Left"
+                                                                  VerticalAlignment="Top"
+                                                                  Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  SharedHorizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  SharedVertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">                                        
+                                    </designer:DeltaContentControl>
+                                    
+                                    <designer:DeltaContentControl
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        AllowHorizontal="False"
+                                        
+                                        Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                        SharedVertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+
+                                        Style="{StaticResource DeltaContentControlStyle}">
+                                    </designer:DeltaContentControl>
+
+                                    <designer:DeltaContentControl Style="{StaticResource DeltaContentControlStyle}"
+                                                                  HorizontalAlignment="Right"
+                                                                  VerticalAlignment="Top"
+                                                                  Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                    </designer:DeltaContentControl>
+                                </Grid>
+
+
+                                <Grid x:Name="Center" Margin="-4,0,-4,0">
+                                    <designer:DeltaContentControl Style="{StaticResource DeltaContentControlStyle}"
+                                                                  HorizontalAlignment="Left"
+                                                                  VerticalAlignment="Center"
+                                                                  AllowVertical="False"
+                                                                  Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  SharedHorizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                    </designer:DeltaContentControl>
+                                    <designer:DeltaContentControl Style="{StaticResource DeltaContentControlStyle}"
+                                                                  HorizontalAlignment="Right"
+                                                                  VerticalAlignment="Center"
+                                                                  Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  AllowVertical="False">
+                                    </designer:DeltaContentControl></Grid>
+
+
+                                <Grid x:Name="Bottom" Margin="-4,0,-4,-4">
+                                    
+                                    <designer:DeltaContentControl Style="{StaticResource DeltaContentControlStyle}"
+                                                                  HorizontalAlignment="Left"
+                                                                  VerticalAlignment="Bottom"
+                                                                  Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  SharedHorizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                    </designer:DeltaContentControl>
+                                    
+                                    <designer:DeltaContentControl Style="{StaticResource DeltaContentControlStyle}"
+                                                                  HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Bottom"
+                                                                  AllowHorizontal="False"
+                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                    </designer:DeltaContentControl>
+
+                                    <designer:DeltaContentControl Style="{StaticResource DeltaContentControlStyle}"
+                                                                  HorizontalAlignment="Right"
+                                                                  VerticalAlignment="Bottom"
+                                                                  Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                    </designer:DeltaContentControl></Grid>
+                            </Grid>
                         </Grid>
 
 

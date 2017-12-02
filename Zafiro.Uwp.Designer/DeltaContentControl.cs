@@ -27,19 +27,37 @@ namespace Zafiro.Uwp.Designer
         {
             if (AllowHorizontal)
             {
-                var newValue = Horizontal + e.HorizontalChange;
-                if (newValue > 0)
+                if (!double.IsNaN(SharedHorizontal))
                 {
-                    Horizontal = newValue;
+                    var applicableChange = e.HorizontalChange;
+                    Horizontal += applicableChange;
+                    SharedHorizontal -= applicableChange;
                 }
+                else
+                {
+                    var newValue = Horizontal + e.HorizontalChange;
+                    if (newValue > 0)
+                    {
+                        Horizontal = newValue;
+                    }
+                }                
             }
 
             if (AllowVertical)
             {
-                var newValue = Vertical + e.VerticalChange;
-                if (newValue > 0)
+                if (!double.IsNaN(SharedVertical))
                 {
-                    Vertical = newValue;
+                    var applicableChange = e.VerticalChange;
+                    Vertical += applicableChange;
+                    SharedVertical -= applicableChange;
+                }
+                else
+                {
+                    var newValue = Vertical + e.VerticalChange;
+                    if (newValue > 0)
+                    {
+                        Vertical = newValue;
+                    }
                 }
             }
         }
@@ -84,6 +102,24 @@ namespace Zafiro.Uwp.Designer
         {
             get { return (bool)GetValue(AllowHorizontalProperty); }
             set { SetValue(AllowHorizontalProperty, value); }
+        }
+
+        public static readonly DependencyProperty SharedHorizontalProperty = DependencyProperty.Register(
+            "SharedHorizontal", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(double.NaN));
+
+        public double SharedHorizontal
+        {
+            get { return (double) GetValue(SharedHorizontalProperty); }
+            set { SetValue(SharedHorizontalProperty, value); }
+        }
+
+        public static readonly DependencyProperty SharedVerticalProperty = DependencyProperty.Register(
+            "SharedVertical", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(double.NaN));
+
+        public double SharedVertical
+        {
+            get { return (double) GetValue(SharedVerticalProperty); }
+            set { SetValue(SharedVerticalProperty, value); }
         }
     }
 }

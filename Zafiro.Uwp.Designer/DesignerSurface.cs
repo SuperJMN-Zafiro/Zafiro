@@ -85,6 +85,10 @@ namespace Zafiro.Uwp.Designer
             subscriptions.Add(di.SelectionRequest.Subscribe(ea =>
             {
                 ea.EventArgs.Handled = true;
+                if (IsMultiSelectionEnabled)
+                {
+                    ClearSelection();
+                }
                 di.IsSelected = true;
                 SelectedItems = GetSelectedItems();
             }));
@@ -108,6 +112,15 @@ namespace Zafiro.Uwp.Designer
         {
             get { return (IEnumerable) GetValue(SelectedItemsProperty); }
             set { SetValue(SelectedItemsProperty, value); }
+        }
+
+        public static readonly DependencyProperty IsMultiSelectionEnabledProperty = DependencyProperty.Register(
+            "IsMultiSelectionEnabled", typeof(bool), typeof(DesignerSurface), new PropertyMetadata(true));
+
+        public bool IsMultiSelectionEnabled
+        {
+            get { return (bool) GetValue(IsMultiSelectionEnabledProperty); }
+            set { SetValue(IsMultiSelectionEnabledProperty, value); }
         }
     }
 }
