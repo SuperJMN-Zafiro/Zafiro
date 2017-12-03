@@ -30,7 +30,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <designer:ExtensibleCanvas Background="Transparent" />
+                    <Canvas Background="Transparent" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
@@ -89,6 +89,7 @@
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.IsHitTestVisible" Value="True" />
                                         <Setter Target="Mover.IsHitTestVisible" Value="False" />
+                                        <Setter Target="Resizers.Visibility" Value="Collapsed" />
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
@@ -150,10 +151,8 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Top"
                                         AllowHorizontal="False"
-                                        
                                         Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                         SharedVertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-
                                         Style="{StaticResource DeltaContentControlStyle}">
                                     </designer:DeltaContentControl>
 
@@ -161,7 +160,8 @@
                                                                   HorizontalAlignment="Right"
                                                                   VerticalAlignment="Top"
                                                                   Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                                                  Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                                  SharedVertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
                                     </designer:DeltaContentControl>
                                 </Grid>
 

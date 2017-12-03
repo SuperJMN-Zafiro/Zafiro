@@ -107,6 +107,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="HeadereContainerControl.cs" />
+    <Compile Include="Lightweight\ActualSizePropertyProxy.cs" />
     <Compile Include="Lightweight\RichEditBoxEx.cs" />
     <Compile Include="Lightweight\Ruler.cs" />
     <Compile Include="ObjEditor\Editor.cs" />

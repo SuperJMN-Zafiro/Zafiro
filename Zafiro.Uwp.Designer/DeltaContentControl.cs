@@ -30,8 +30,11 @@ namespace Zafiro.Uwp.Designer
                 if (!double.IsNaN(SharedHorizontal))
                 {
                     var applicableChange = e.HorizontalChange;
-                    Horizontal += applicableChange;
-                    SharedHorizontal -= applicableChange;
+                    if (SharedHorizontal - applicableChange > 0)
+                    {
+                        SharedHorizontal -= applicableChange;
+                        Horizontal += applicableChange;
+                    }                    
                 }
                 else
                 {
@@ -48,8 +51,11 @@ namespace Zafiro.Uwp.Designer
                 if (!double.IsNaN(SharedVertical))
                 {
                     var applicableChange = e.VerticalChange;
-                    Vertical += applicableChange;
-                    SharedVertical -= applicableChange;
+                    if (SharedVertical - applicableChange > 0)
+                    {
+                        Vertical += applicableChange;
+                        SharedVertical -= applicableChange;
+                    }
                 }
                 else
                 {
