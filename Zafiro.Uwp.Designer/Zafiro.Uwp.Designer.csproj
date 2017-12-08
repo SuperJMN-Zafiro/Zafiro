@@ -106,6 +106,7 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DelegateCommand.cs" />
     <Compile Include="ExtensibleCanvas.cs" />
     <Compile Include="DeltaContentControl.cs" />
     <Compile Include="DesignerItem.cs" />
@@ -134,6 +135,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Zafiro.Uwp.Controls\Zafiro.Uwp.Controls.csproj">
+      <Project>{889d7132-88f9-4254-9640-1e38ed419184}</Project>
+      <Name>Zafiro.Uwp.Controls</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

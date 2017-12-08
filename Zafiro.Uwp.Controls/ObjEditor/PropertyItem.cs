@@ -84,9 +84,9 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private FrameworkElement CreateEditor(PropertyItem propertyItem)
         {
-            if (IsExpandible)
+            if (IsExpandable)
             {
-                return CreateExpandibleEditor();
+                return CreateExpandableEditor();
             }
 
             var objectEditor = propertyItem.FindAscendant<ObjectEditor>();
@@ -104,7 +104,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             return matchesType && matchesPropName;
         }
 
-        private FrameworkElement CreateExpandibleEditor()
+        private FrameworkElement CreateExpandableEditor()
         {
             return new ObjectEditor
             {
@@ -117,7 +117,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             return Activator.CreateInstance(PropType);            
         }
 
-        public bool IsExpandible => PropName == "Shadow";
+        public bool IsExpandable => PropName == "Shadow";
 
         private void Subscribe(IEnumerable<INotifyPropertyChanged> observables)
         {

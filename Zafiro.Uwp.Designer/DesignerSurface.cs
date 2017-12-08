@@ -5,26 +5,51 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 
+
 namespace Zafiro.Uwp.Designer
 {
     public sealed class DesignerSurface : ItemsControl
     {
-        private CompositeDisposable tapDisponsables;
+        private CompositeDisposable tapDisposables;
 
         public DesignerSurface()
         {
-            this.DefaultStyleKey = typeof(DesignerSurface);
-            tapDisponsables = new CompositeDisposable();
+            DefaultStyleKey = typeof(DesignerSurface);
+
+            tapDisposables = new CompositeDisposable();
 
             Observable
                 .FromEventPattern<TappedEventHandler, TappedRoutedEventArgs>(h => Tapped += h, h => Tapped -= h)
                 .Subscribe(_ => ResetAll());
+
+            SelectBoundsCommand = new DelegateCommand(SelectItemsInBounds);
         }
+
+        private void SelectItemsInBounds()
+        {
+            ClearSelection();
+
+            foreach (var ci in ContainersUndersSelection)
+            {
+                ci.IsSelected = true;
+            }                  
+
+            SelectedItems = GetSelectedItems();
+        }
+
+        private IEnumerable<DesignerItem> ContainersUndersSelection => Containers.Where(i =>
+        {
+            var intersect = RectHelper.Union(SelectionBounds, i.Bounds);
+            return intersect.Equals(SelectionBounds);
+        });
+
+        public DelegateCommand SelectBoundsCommand { get; }
 
         private void ResetAll()
         {
@@ -122,5 +147,7 @@ namespace Zafiro.Uwp.Designer
             get { return (bool) GetValue(IsMultiSelectionEnabledProperty); }
             set { SetValue(IsMultiSelectionEnabledProperty, value); }
         }
+
+        public Rect SelectionBounds { get;set; }
     }
 }

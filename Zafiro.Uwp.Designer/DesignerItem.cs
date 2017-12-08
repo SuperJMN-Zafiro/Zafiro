@@ -2,6 +2,7 @@
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -116,5 +117,7 @@ namespace Zafiro.Uwp.Designer
             get { return (bool) GetValue(IsEditingProperty); }
             set { SetValue(IsEditingProperty, value); }
         }
+
+        public Rect Bounds => new Rect(Left, Top, Width, Height);
     }
 }
