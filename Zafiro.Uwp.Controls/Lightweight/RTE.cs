@@ -14,7 +14,7 @@ namespace Zafiro.Uwp.Controls.Lightweight
                 .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(x => this.LostFocus += x, x => this.LostFocus -= x)
                 .Select(ea =>
                 {
-                    Document.GetText(TextGetOptions.None, out var t);
+                    Document.GetText(TextGetOptions.FormatRtf, out var t);
                     return t;
                 })
                 .DistinctUntilChanged()
@@ -35,7 +35,7 @@ namespace Zafiro.Uwp.Controls.Lightweight
 
         private void OnTextChanged(string oldValue, string newValue)
         {
-            Document.SetText(TextSetOptions.None | TextSetOptions.CheckTextLimit | TextSetOptions.ApplyRtfDocumentDefaults, newValue);
+            Document.SetText(TextSetOptions.FormatRtf | TextSetOptions.CheckTextLimit | TextSetOptions.ApplyRtfDocumentDefaults, newValue);
         }
 
         public string Text
