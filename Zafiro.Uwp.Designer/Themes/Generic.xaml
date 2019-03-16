@@ -81,7 +81,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="designer:DesignerItem">
-                    <Border ext:VisualEx.CenterPoint="50,50,0">
+                    <Border CenterPoint="50,50,0">
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="Selection">

@@ -1,18 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFramework>netstandard1.2</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputType>library</OutputType>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Reactive" Version="3.1.1" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.1" />
+    <PackageReference Include="System.Reactive" Version="4.1.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="NETStandard.Library" Version="1.6.1" />
-  </ItemGroup>
+
 </Project>
