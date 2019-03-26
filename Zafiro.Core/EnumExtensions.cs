@@ -1,4 +1,7 @@
-﻿namespace Zafiro.Core
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Zafiro.Core
 {
     using System;
 
@@ -14,6 +17,11 @@
 
             result = null;
             return false;
+        }
+
+        public static bool IsSubsetOf<T>(this IEnumerable<T> one, IEnumerable<T> another)
+        {
+            return !one.Except(another).Any();
         }
     }
 }
