@@ -10,7 +10,7 @@
 
     public static class Extensions
     {
-        public static Stream FromUTF8ToStream(this string str)
+        public static Stream FromUtf8ToStream(this string str)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(str));
         }
@@ -19,12 +19,18 @@
         {
             var builder = new StringBuilder();
 
-            foreach (var xamlNodeType in items)
+            foreach (var item in items)
             {
-                builder.Append(" ·" + xamlNodeType + "\n");
+                builder.Append(" ·" + item + "\n");
             }
 
             return builder.ToString();
+        }
+
+        public static string AsNumberedList<T>(this IEnumerable<T> enumerable)
+        {
+            var partitionsList = string.Join("\n", enumerable.Select((item, i) => $"{i + 1} - {item}"));
+            return partitionsList;
         }
 
         public static void AddAll<T>(this IAdd<T> collection, IEnumerable<T> items)
