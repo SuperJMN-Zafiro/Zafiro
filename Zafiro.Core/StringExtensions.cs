@@ -14,6 +14,11 @@ namespace Zafiro.Core
             return new string(array.ToArray());
         }
 
+        public static string Join(this IEnumerable<string> strings, string separator = "\n")
+        {
+            return string.Join(separator, strings);
+        }
+
         public static IEnumerable<string> Split(this string str, int chunkSize)
         {
             return Enumerable.Range(0, str.Length / chunkSize)
