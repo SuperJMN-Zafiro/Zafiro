@@ -3,7 +3,7 @@
     <DocumentationFile />
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>netstandard1.2</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Zafiro.Core</PackageId>
     <PackageVersion>2.0.0</PackageVersion>
     <Authors>José Manuel Nieto (@SuperJMN)</Authors>
@@ -14,13 +14,8 @@
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Version>2.1.0</Version>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputType>library</OutputType>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Reactive" Version="3.1.1" />
+    <PackageReference Include="System.Reactive" Version="4.1.6" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="NETStandard.Library" Version="1.6.1" />
-  </ItemGroup> 
+
 </Project>
