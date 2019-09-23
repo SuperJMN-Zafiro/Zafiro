@@ -116,11 +116,11 @@
 
                         </VisualStateManager.VisualStateGroups>
 
-                        <animations:Implicit.ShowAnimations>
+                        <!--<animations:Implicit.ShowAnimations>
                             <animations:ScaleAnimation Duration="0:0:1" From="0" To="1" />
-                            <!--<animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>-->
+                            --><!--<animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>--><!--
                             <animations:OpacityAnimation Duration="0:0:1" From="0" To="1.0" />
-                        </animations:Implicit.ShowAnimations>
+                        </animations:Implicit.ShowAnimations>-->
 
                         <Grid>
 
