@@ -1,4 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using System;
+using System.Numerics;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 
@@ -23,49 +25,45 @@ namespace Zafiro.Uwp.Designer
             }
         }
 
+        public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
+            "Angle", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(default(double)));
+
+        public double Angle
+        {
+            get { return (double) GetValue(AngleProperty); }
+            set { SetValue(AngleProperty, value); }
+        }
+
         private void ThumbOnDragDelta(object sender, DragDeltaEventArgs e)
         {
+            var vector = new Vector2((float) e.HorizontalChange, (float) e.VerticalChange);
+            var result = ProjectVector(Angle, vector);
+
+            var horzDelta = result.X;
+            var vertDelta = result.Y;
+
             if (AllowHorizontal)
             {
-                if (!double.IsNaN(SharedHorizontal))
-                {
-                    var applicableChange = e.HorizontalChange;
-                    if (SharedHorizontal - applicableChange > 0)
-                    {
-                        SharedHorizontal -= applicableChange;
-                        Horizontal += applicableChange;
-                    }                    
-                }
-                else
-                {
-                    var newValue = Horizontal + e.HorizontalChange;
-                    if (newValue > 0)
-                    {
-                        Horizontal = newValue;
-                    }
-                }                
+                Horizontal += horzDelta;
             }
 
             if (AllowVertical)
             {
-                if (!double.IsNaN(SharedVertical))
-                {
-                    var applicableChange = e.VerticalChange;
-                    if (SharedVertical - applicableChange > 0)
-                    {
-                        Vertical += applicableChange;
-                        SharedVertical -= applicableChange;
-                    }
-                }
-                else
-                {
-                    var newValue = Vertical + e.VerticalChange;
-                    if (newValue > 0)
-                    {
-                        Vertical = newValue;
-                    }
-                }
+                Vertical += vertDelta;
             }
+        }
+
+        private static Vector2 ProjectVector(double angle, Vector2 vector)
+        {
+            var angleRad = angle * Math.PI * 2 / 360;
+            var x = new Vector2((float) Math.Cos(angleRad), -(float) Math.Sin(angleRad));
+            var y = new Vector2((float) Math.Sin(angleRad), (float) Math.Cos(angleRad));
+
+            var xProj = Vector2.Dot(vector, x);
+            var yProj = Vector2.Dot(vector, y);
+
+            var result = new Vector2(xProj, yProj);
+            return result;
         }
 
         protected override void OnApplyTemplate()
@@ -112,20 +110,5 @@ namespace Zafiro.Uwp.Designer
 
         public static readonly DependencyProperty SharedHorizontalProperty = DependencyProperty.Register(
             "SharedHorizontal", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(double.NaN));
-
-        public double SharedHorizontal
-        {
-            get { return (double) GetValue(SharedHorizontalProperty); }
-            set { SetValue(SharedHorizontalProperty, value); }
-        }
-
-        public static readonly DependencyProperty SharedVerticalProperty = DependencyProperty.Register(
-            "SharedVertical", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(double.NaN));
-
-        public double SharedVertical
-        {
-            get { return (double) GetValue(SharedVerticalProperty); }
-            set { SetValue(SharedVerticalProperty, value); }
-        }
     }
 }

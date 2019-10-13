@@ -14,9 +14,23 @@ namespace Zafiro.Uwp.Designer
         public DesignerItem()
         {
             DefaultStyleKey = typeof(DesignerItem);
-            Loaded += OnLoaded;            
+            Loaded += OnLoaded;    
+            Unloaded += OnUnloaded;
         }
 
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+        }
+
+        public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
+            "Angle", typeof(double), typeof(DesignerItem), new PropertyMetadata(default(double)));
+
+        public double Angle
+        {
+            get { return (double) GetValue(AngleProperty); }
+            set { SetValue(AngleProperty, value); }
+        }
+        
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             SetSelectionState(false);
@@ -80,19 +94,21 @@ namespace Zafiro.Uwp.Designer
 
         protected override void OnApplyTemplate()
         {
-            var e = (FrameworkElement)GetTemplateChild("Mover");
+            var mover = (FrameworkElement)GetTemplateChild("Mover");
+            if (mover != null)
+            {
+                // TODO: those subscriptions should be disposed eventually!
 
-            // TODO: those subscriptions should be disposed eventually!
+                Observable
+                    .FromEventPattern<TappedEventHandler, TappedRoutedEventArgs>(h => mover.Tapped += h, h => mover.Tapped -= h)
+                    .Subscribe(SelectionRequest);
 
-            Observable
-                .FromEventPattern<TappedEventHandler, TappedRoutedEventArgs>(h => e.Tapped += h, h => e.Tapped -= h)
-                .Subscribe(SelectionRequest);
-            
-            Observable
-                .FromEventPattern<DoubleTappedEventHandler, DoubleTappedRoutedEventArgs>(h => e.DoubleTapped += h,
-                    h => e.DoubleTapped -= h)
-                .Select(_ => Unit.Default)
-                .Subscribe(EditRequest);
+                Observable
+                    .FromEventPattern<DoubleTappedEventHandler, DoubleTappedRoutedEventArgs>(h => mover.DoubleTapped += h,
+                        h => mover.DoubleTapped -= h)
+                    .Select(_ => Unit.Default)
+                    .Subscribe(EditRequest);
+            }
 
             base.OnApplyTemplate();
         }

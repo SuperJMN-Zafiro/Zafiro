@@ -6,7 +6,8 @@
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     xmlns:designer="using:Zafiro.Uwp.Designer"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviors="using:Zafiro.Uwp.Controls.Behaviors">
+    xmlns:behaviors="using:Zafiro.Uwp.Controls.Behaviors"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
     <Brush x:Key="DesignerBrush">Transparent</Brush>
     <Brush x:Key="DesignerBorderBrush">#D100F9FF</Brush>
@@ -18,7 +19,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="designer:DesignerSurface">
                     <Border Background="Transparent">
-                        
+
                         <ItemsPresenter />
 
                         <interactivity:Interaction.Behaviors>
@@ -81,7 +82,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="designer:DesignerItem">
-                    <Border CenterPoint="50,50,0">
+                    <Border>
+                        <Border.RenderTransform>
+                            <RotateTransform CenterY="0.5" CenterX="0.5" Angle="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Angle}" />
+                        </Border.RenderTransform>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="Selection">
                                 <VisualState x:Name="Selected">
@@ -116,17 +120,20 @@
 
                         </VisualStateManager.VisualStateGroups>
 
-                        <!--<animations:Implicit.ShowAnimations>
+                        <animations:Implicit.ShowAnimations>
                             <animations:ScaleAnimation Duration="0:0:1" From="0" To="1" />
-                            --><!--<animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>--><!--
+                            
+                            <animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>
+                            
                             <animations:OpacityAnimation Duration="0:0:1" From="0" To="1.0" />
-                        </animations:Implicit.ShowAnimations>-->
+                        </animations:Implicit.ShowAnimations>
 
                         <Grid>
 
                             <Grid>
                                 <ContentPresenter x:Name="ContentPresenter" IsHitTestVisible="False" />
                                 <designer:DeltaContentControl x:Name="Mover"
+                                                              Angle="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Angle}"
                                                               ext:Mouse.Cursor="SizeAll"
                                                               Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                                               Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
@@ -148,84 +155,21 @@
                                         <Setter Property="ContentTemplate">
                                             <Setter.Value>
                                                 <DataTemplate>
-                                                    <Grid Background="White" BorderBrush="Black" BorderThickness="1" />
+                                                    <Grid Background="White" BorderBrush="Black"
+                                                          BorderThickness="1" />
                                                 </DataTemplate>
                                             </Setter.Value>
                                         </Setter>
                                     </Style>
                                 </Grid.Resources>
 
-                                <Grid Margin="-4,-4,-4,0" x:Name="Top">
-
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeNorthwestSoutheast"
-                                                                  Style="{StaticResource DeltaContentControlStyle}"
-
-                                                                  HorizontalAlignment="Left"
-                                                                  VerticalAlignment="Top"
-                                                                  Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  SharedHorizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  SharedVertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
-
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeNorthSouth"
-                                                                  HorizontalAlignment="Center"
-                                                                  VerticalAlignment="Top"
-                                                                  AllowHorizontal="False"
-                                                                  Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  SharedVertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  Style="{StaticResource DeltaContentControlStyle}" />
-
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeNortheastSouthwest"
-                                                                  Style="{StaticResource DeltaContentControlStyle}"
-                                                                  HorizontalAlignment="Right"
-                                                                  VerticalAlignment="Top"
-
-                                                                  Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  Vertical="{Binding Path=Top, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  SharedVertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
-                                </Grid>
-
-                                <Grid x:Name="Center" Margin="-4,0,-4,0">
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeWestEast"
-                                                                  Style="{StaticResource DeltaContentControlStyle}"
-
-                                                                  HorizontalAlignment="Left"
-                                                                  VerticalAlignment="Center"
-                                                                  AllowVertical="False"
-                                                                  Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  SharedHorizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeWestEast"
-                                                                  Style="{StaticResource DeltaContentControlStyle}"
-                                                                  HorizontalAlignment="Right"
-                                                                  VerticalAlignment="Center"
-                                                                  Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  AllowVertical="False" />
-                                </Grid>
-
-                                <Grid x:Name="Bottom" Margin="-4,0,-4,-4">
-
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeNortheastSouthwest"
-                                                                  Style="{StaticResource DeltaContentControlStyle}"
-                                                                  HorizontalAlignment="Left"
-                                                                  VerticalAlignment="Bottom"
-                                                                  Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  SharedHorizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
-
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeNorthSouth"
-                                                                  Style="{StaticResource DeltaContentControlStyle}"
-                                                                  HorizontalAlignment="Center"
-                                                                  VerticalAlignment="Bottom"
-                                                                  AllowHorizontal="False"
-                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
-
-                                    <designer:DeltaContentControl ext:Mouse.Cursor="SizeNorthwestSoutheast"
-                                                                  Style="{StaticResource DeltaContentControlStyle}"
-                                                                  HorizontalAlignment="Right"
-                                                                  VerticalAlignment="Bottom"
-                                                                  Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                                  Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
-                                </Grid>
+                                <designer:DeltaContentControl ext:Mouse.Cursor="SizeNorthwestSoutheast"
+                                                              Style="{StaticResource DeltaContentControlStyle}"
+                                                              HorizontalAlignment="Right"
+                                                              VerticalAlignment="Bottom"
+                                                                  
+                                                              Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                              Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
                             </Grid>
                         </Grid>
 

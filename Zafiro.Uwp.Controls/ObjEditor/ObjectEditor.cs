@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Zafiro.Core;
 
 namespace Zafiro.Uwp.Controls.ObjEditor
 {
@@ -57,8 +58,8 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                         .Where(p => p.GetMethod != null && p.SetMethod != null)
                         .Where(p => !(p.GetMethod.IsStatic || p.SetMethod.IsStatic))
                         .Where(p => p.SetMethod.IsPublic && p.GetMethod.IsPublic)
-                        .Select(p =>
-                            new KeyedProperty { Key = (p.PropertyType, p.Name), Property = p }))
+                        .Where(x => x.GetCustomAttribute<HiddenAttribute>() == null)
+                        .Select(p => new KeyedProperty { Key = (p.PropertyType, p.Name), Property = p }))
                 .ToList();
 
             if (keyedProperies.Count == 0)

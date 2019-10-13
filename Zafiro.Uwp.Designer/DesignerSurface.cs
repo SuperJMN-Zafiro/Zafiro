@@ -85,6 +85,7 @@ namespace Zafiro.Uwp.Designer
         public BindingBase TopBinding { get; set; }
         public BindingBase HeightBinding { get; set; }
         public BindingBase WidthBinding { get; set; }
+        public BindingBase AngleBinding { get; set; }
 
         protected override DependencyObject GetContainerForItemOverride()
         {
@@ -104,6 +105,7 @@ namespace Zafiro.Uwp.Designer
             di.SetBinding(DesignerItem.TopProperty, TopBinding);
             di.SetBinding(WidthProperty, WidthBinding);
             di.SetBinding(HeightProperty, HeightBinding);
+            di.SetBinding(DesignerItem.AngleProperty, AngleBinding);
 
             var subscriptions = new CompositeDisposable();
 
