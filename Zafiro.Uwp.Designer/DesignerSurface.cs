@@ -101,11 +101,7 @@ namespace Zafiro.Uwp.Designer
         {
             var di = (DesignerItem) element;
 
-            di.SetBinding(DesignerItem.LeftProperty, LeftBinding);
-            di.SetBinding(DesignerItem.TopProperty, TopBinding);
-            di.SetBinding(WidthProperty, WidthBinding);
-            di.SetBinding(HeightProperty, HeightBinding);
-            di.SetBinding(DesignerItem.AngleProperty, AngleBinding);
+            SetBindings(di);
 
             var subscriptions = new CompositeDisposable();
 
@@ -123,6 +119,34 @@ namespace Zafiro.Uwp.Designer
             subscriptions.Add(di.EditRequest.Subscribe(_ => di.IsEditing = true));
 
             base.PrepareContainerForItemOverride(element, item);
+        }
+
+        private void SetBindings(DesignerItem di)
+        {
+            if (LeftBinding != null)
+            {
+                di.SetBinding(DesignerItem.LeftProperty, LeftBinding);
+            }
+
+            if (TopBinding != null)
+            {
+                di.SetBinding(DesignerItem.TopProperty, TopBinding);
+            }
+
+            if (WidthBinding != null)
+            {
+                di.SetBinding(WidthProperty, WidthBinding);
+            }
+
+            if (HeightBinding != null)
+            {
+                di.SetBinding(HeightProperty, HeightBinding);
+            }
+
+            if (AngleBinding != null)
+            {
+                di.SetBinding(DesignerItem.AngleProperty, AngleBinding);
+            }
         }
 
         private IList<object> GetSelectedItems()
@@ -151,5 +175,14 @@ namespace Zafiro.Uwp.Designer
         }
 
         public Rect SelectionBounds { get;set; }
+
+        public static readonly DependencyProperty CanResizeProperty = DependencyProperty.Register(
+            "CanResize", typeof(bool), typeof(DesignerSurface), new PropertyMetadata(default(bool)));
+
+        public bool CanResize
+        {
+            get { return (bool) GetValue(CanResizeProperty); }
+            set { SetValue(CanResizeProperty, value); }
+        }
     }
 }

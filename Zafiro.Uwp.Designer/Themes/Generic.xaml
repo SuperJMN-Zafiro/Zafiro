@@ -6,8 +6,7 @@
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     xmlns:designer="using:Zafiro.Uwp.Designer"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviors="using:Zafiro.Uwp.Controls.Behaviors"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls">
+    xmlns:behaviors="using:Zafiro.Uwp.Controls.Behaviors">
 
     <Brush x:Key="DesignerBrush">Transparent</Brush>
     <Brush x:Key="DesignerBorderBrush">#D100F9FF</Brush>
@@ -163,13 +162,16 @@
                                     </Style>
                                 </Grid.Resources>
 
-                                <designer:DeltaContentControl ext:Mouse.Cursor="SizeNorthwestSoutheast"
+                                <designer:DeltaContentControl
+                                    DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                    ext:Mouse.Cursor="SizeNorthwestSoutheast"
                                                               Style="{StaticResource DeltaContentControlStyle}"
                                                               HorizontalAlignment="Right"
                                                               VerticalAlignment="Bottom"
-                                                                  
-                                                              Horizontal="{Binding Path=Width, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                                              Vertical="{Binding Path=Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
+                                                              Horizontal="{Binding Width}"
+                                                              Vertical="{Binding Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                              Visibility="{Binding CanResize, Converter={StaticResource BoolToVisibilityConverter}}">
+                                </designer:DeltaContentControl>
                             </Grid>
                         </Grid>
 

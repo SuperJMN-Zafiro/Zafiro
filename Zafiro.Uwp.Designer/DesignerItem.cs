@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using Cimbalino.Toolkit.Extensions;
+using Microsoft.Toolkit.Uwp.UI.Helpers;
 
 namespace Zafiro.Uwp.Designer
 {
@@ -16,6 +21,15 @@ namespace Zafiro.Uwp.Designer
             DefaultStyleKey = typeof(DesignerItem);
             Loaded += OnLoaded;    
             Unloaded += OnUnloaded;
+
+            RegisterPropertyChangedCallback(WidthProperty, (sender, dp) => { UpdateCanResize(); });
+            RegisterPropertyChangedCallback(HeightProperty, (sender, dp) => { UpdateCanResize(); });
+            UpdateCanResize();
+        }
+
+        private void UpdateCanResize()
+        {
+            CanResize = !(double.IsNaN(Width) || double.IsNaN(Height));
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -126,6 +140,17 @@ namespace Zafiro.Uwp.Designer
         private void IsEditingChanged(bool newValue)
         {
             SetEditState(newValue);
+
+            if (newValue)
+            {
+                TrySetFocus();
+            }
+        }
+
+        private void TrySetFocus()
+        {
+            var child = this.GetVisualDescendents<Control>();
+            child.FirstOrDefault()?.Focus(FocusState.Programmatic);
         }
 
         public bool IsEditing
@@ -135,5 +160,13 @@ namespace Zafiro.Uwp.Designer
         }
 
         public Rect Bounds => new Rect(Left, Top, Width, Height);
+
+        public static readonly DependencyProperty CanResizeProperty = DependencyProperty.Register("CanResize", typeof(bool), typeof(DesignerItem), new PropertyMetadata(default(bool)));
+
+        public bool CanResize
+        {
+            get { return (bool) GetValue(CanResizeProperty); }
+            set { SetValue(CanResizeProperty, value); }
+        }
     }
 }

@@ -114,7 +114,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private object CreateNewInstance()
         {
-            return Activator.CreateInstance(PropType);            
+            return Activator.CreateInstance(PropType);
         }
 
         public bool IsExpandable => PropName == "Shadow";
