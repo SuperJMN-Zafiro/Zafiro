@@ -119,8 +119,8 @@
     <Compile Include="ObjEditor\ObjectEditor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ObjEditor\PropertyItem.cs" />
-    <Compile Include="Reactive\ObservableFileExtensions.cs" />
-    <Compile Include="Reactive\UwpFilePicker.cs" />
+    <Compile Include="ObservableFileExtensions.cs" />
+    <Compile Include="UwpFilePicker.cs" />
     <Compile Include="StorageFileExtensions.cs" />
     <EmbeddedResource Include="Properties\Zafiro.Controls.rd.xml" />
   </ItemGroup>
