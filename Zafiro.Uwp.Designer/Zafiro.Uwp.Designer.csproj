@@ -128,9 +128,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Zafiro.Uwp.Controls\Zafiro.Uwp.Controls.csproj">
+    <ProjectReference Include="..\Zafiro.Uwp.Controls\Zafiro.Uwp.csproj">
       <Project>{889d7132-88f9-4254-9640-1e38ed419184}</Project>
-      <Name>Zafiro.Uwp.Controls</Name>
+      <Name>Zafiro.Uwp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
