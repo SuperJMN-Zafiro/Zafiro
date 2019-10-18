@@ -69,8 +69,8 @@
 
     <Style TargetType="controls:HeadereContainerControl" >
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="{ThemeResource AccentButtonBackground}" />
-        <Setter Property="Background" Value="{ThemeResource AccentButtonBackground}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
+        <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:HeadereContainerControl">
