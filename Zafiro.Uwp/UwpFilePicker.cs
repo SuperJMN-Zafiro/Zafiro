@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
-using Windows.Storage;
 using Windows.Storage.Pickers;
 using Zafiro.Core;
 
-namespace Zafiro.Uwp.Controls.Reactive
+namespace Zafiro.Uwp.Controls
 {
     public class UwpFilePicker : IFilePicker
     {
@@ -25,31 +23,27 @@ namespace Zafiro.Uwp.Controls.Reactive
 
             return Observable
                 .FromAsync(() => picker.PickSingleFileAsync().AsTask())
-                .Where(x => x != null)
-                .Select(x =>
-                {
-                    Func<Task<Stream>> f = x.OpenStreamForReadAsync;
-
-                    return new UwpFile(f, x.Name);
-                });
-        }
-    }
-
-    public class UwpFile : ZafiroFile
-    {
-        public override string Name { get; }
-        private readonly Func<Task<Stream>> open;
-
-        public UwpFile(Func<Task<Stream>> open, string name)
-        {
-            Name = name;
-            this.open = open;
+                .Where(storageFile => storageFile != null)
+                .Select(storageFile => new UwpFile(storageFile));
         }
 
-
-        public override Func<Task<Stream>> Open()
+        public IObservable<ZafiroFile> PickSave(string title, KeyValuePair<string, IList<string>>[] extensions)
         {
-            return open;
+            var picker = new FileSavePicker
+            {
+                CommitButtonText = title,
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+            };
+
+            foreach (var pair in extensions)
+            {
+                picker.FileTypeChoices.Add(pair);
+            }
+
+            return Observable
+                .FromAsync(() => picker.PickSaveFileAsync().AsTask())
+                .Where(storageFile => storageFile != null)
+                .Select(storageFile => new UwpFile(storageFile));
         }
     }
 }

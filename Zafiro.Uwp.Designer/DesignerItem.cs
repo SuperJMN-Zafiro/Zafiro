@@ -159,7 +159,7 @@ namespace Zafiro.Uwp.Designer
             set { SetValue(IsEditingProperty, value); }
         }
 
-        public Rect Bounds => new Rect(Left, Top, Width, Height);
+        public Rect Bounds => new Rect(Left, Top, ActualWidth, ActualHeight);
 
         public static readonly DependencyProperty CanResizeProperty = DependencyProperty.Register("CanResize", typeof(bool), typeof(DesignerItem), new PropertyMetadata(default(bool)));
 

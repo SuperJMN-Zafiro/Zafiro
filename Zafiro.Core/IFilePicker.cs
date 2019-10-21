@@ -1,17 +1,11 @@
 ﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Zafiro.Core
 {
     public interface IFilePicker
     {
         IObservable<ZafiroFile> Pick(string title, string[] extensions);
-    }
-
-    public abstract class ZafiroFile
-    {
-        public abstract Func<Task<Stream>> Open();
-        public abstract string Name { get; }
+        IObservable<ZafiroFile> PickSave(string title, KeyValuePair<string, IList<string>>[] extensions);
     }
 }

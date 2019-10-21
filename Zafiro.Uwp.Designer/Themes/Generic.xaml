@@ -17,7 +17,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="designer:DesignerSurface">
-                    <Border Background="Transparent">
+                    <Border Background="White">
 
                         <ItemsPresenter />
 
@@ -122,7 +122,7 @@
                         <animations:Implicit.ShowAnimations>
                             <animations:ScaleAnimation Duration="0:0:1" From="0" To="1" />
                             
-                            <animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>
+                            <!--<animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>-->
                             
                             <animations:OpacityAnimation Duration="0:0:1" From="0" To="1.0" />
                         </animations:Implicit.ShowAnimations>

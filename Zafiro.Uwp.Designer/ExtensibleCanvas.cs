@@ -22,8 +22,8 @@ namespace Zafiro.Uwp.Designer
                 return new Size(0, 0);
             }
 
-            var w = frameworkElements.Max(e => (double)e.GetValue(LeftProperty) + e.Width);
-            var h = frameworkElements.Max(e => (double)e.GetValue(TopProperty) + e.Height);
+            var w = frameworkElements.Max(e => (double)e.GetValue(LeftProperty) + e.ActualWidth);
+            var h = frameworkElements.Max(e => (double)e.GetValue(TopProperty) + e.ActualHeight);
 
             return new Size(w, h);
         }
