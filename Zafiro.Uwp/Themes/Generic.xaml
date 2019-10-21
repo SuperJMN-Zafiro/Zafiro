@@ -4,7 +4,8 @@
     xmlns:xaml="using:Microsoft.Graphics.Canvas.UI.Xaml"
     xmlns:objEditor="using:Zafiro.Uwp.Controls.ObjEditor"
     xmlns:lightweight="using:Zafiro.Uwp.Controls.Lightweight"
-    xmlns:controls="using:Zafiro.Uwp.Controls">
+    xmlns:controls="using:Zafiro.Uwp.Controls"
+    xmlns:ct="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
     <Style TargetType="objEditor:ObjectEditor">
         <Setter Property="Background" Value="#CFCFCF" />
@@ -67,13 +68,13 @@
     </Style>
 
 
-    <Style TargetType="controls:HeadereContainerControl" >
+    <Style TargetType="ct:HeaderedContentControl" >
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
         <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="controls:HeadereContainerControl">
+                <ControlTemplate TargetType="ct:HeaderedContentControl">
                     <Border
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">

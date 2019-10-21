@@ -107,10 +107,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Behaviors\RubberBandBehavior.cs" />
-    <Compile Include="HeadereContainerControl.cs" />
+    <Compile Include="Converters\ByteArrayToImageConverter.cs" />
     <Compile Include="Lightweight\ActualSizePropertyProxy.cs" />
     <Compile Include="Lightweight\RTE.cs" />
     <Compile Include="Lightweight\Ruler.cs" />
+    <Compile Include="MultiBinding\DependencyObjectCollection{T}.cs" />
+    <Compile Include="MultiBinding\MultiBindingBehavior.cs" />
+    <Compile Include="MultiBinding\MultiBindingItem.cs" />
+    <Compile Include="MultiBinding\MultiBindingItemCollection.cs" />
     <Compile Include="ObjEditor\Editor.cs" />
     <Compile Include="ObjEditor\EditorCollection.cs" />
     <Compile Include="ObjEditor\EditorKey.cs" />
@@ -154,7 +158,11 @@
       <Name>Zafiro.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Reference Include="Microsoft.Toolkit.Uwp.UI.Controls">
+      <HintPath>C:\Users\JMN\.nuget\packages\microsoft.toolkit.uwp.ui.controls\5.1.1\lib\uap10.0.16299\Microsoft.Toolkit.Uwp.UI.Controls.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
