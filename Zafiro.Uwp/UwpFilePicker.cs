@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Zafiro.Core;
 
@@ -8,7 +9,7 @@ namespace Zafiro.Uwp.Controls
 {
     public class UwpFilePicker : IFilePicker
     {
-        public IObservable<ZafiroFile> Pick(string title, string[] extensions)
+        public IObservable<ZafiroFile> Pick(string title, string[] extensions, bool allowNone = false)
         {
             var picker = new FileOpenPicker
             {
@@ -21,9 +22,13 @@ namespace Zafiro.Uwp.Controls
                 picker.FileTypeFilter.Add(ext);
             }
 
+            Func<StorageFile, bool> nulls = file => true;
+            Func<StorageFile, bool> notNulls = file => true;
+            var filter = allowNone ? nulls : notNulls;
+
             return Observable
                 .FromAsync(() => picker.PickSingleFileAsync().AsTask())
-                .Where(storageFile => storageFile != null)
+                .Where(filter)
                 .Select(storageFile => new UwpFile(storageFile));
         }
 
