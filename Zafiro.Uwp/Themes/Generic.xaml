@@ -3,9 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:xaml="using:Microsoft.Graphics.Canvas.UI.Xaml"
     xmlns:objEditor="using:Zafiro.Uwp.Controls.ObjEditor"
-    xmlns:lightweight="using:Zafiro.Uwp.Controls.Lightweight"
-    xmlns:controls="using:Zafiro.Uwp.Controls"
-    xmlns:ct="using:Microsoft.Toolkit.Uwp.UI.Controls">
+    xmlns:lightweight="using:Zafiro.Uwp.Controls.Lightweight">
 
     <Style TargetType="objEditor:ObjectEditor">
         <Setter Property="Background" Value="#CFCFCF" />
@@ -67,32 +65,6 @@
         </Setter>
     </Style>
 
-
-    <Style TargetType="ct:HeaderedContentControl" >
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
-        <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundAccentBrush}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ct:HeaderedContentControl">
-                    <Border
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <Border Background="{TemplateBinding Background}" Padding="{ThemeResource ButtonBorderThemeThickness}">
-                                <TextBlock Text="{TemplateBinding Header}" TextAlignment="Center" FontWeight="Bold" TextWrapping="Wrap" Foreground="{ThemeResource AppBarBorderThemeBrush}"/>
-                            </Border>
-                            <ContentPresenter Grid.Row="1" />
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 </ResourceDictionary>
 
 
