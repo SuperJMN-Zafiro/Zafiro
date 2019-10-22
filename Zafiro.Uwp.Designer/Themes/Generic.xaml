@@ -168,8 +168,8 @@
                                                               Style="{StaticResource DeltaContentControlStyle}"
                                                               HorizontalAlignment="Right"
                                                               VerticalAlignment="Bottom"
-                                                              Horizontal="{Binding Width}"
-                                                              Vertical="{Binding Height, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                                              Horizontal="{Binding Width, Mode=TwoWay}"
+                                                              Vertical="{Binding Height, Mode=TwoWay}"
                                                               Visibility="{Binding CanResize, Converter={StaticResource BoolToVisibilityConverter}}">
                                 </designer:DeltaContentControl>
                             </Grid>
