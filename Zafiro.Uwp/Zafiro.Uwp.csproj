@@ -111,7 +111,7 @@
     <Compile Include="Lightweight\ActualSizePropertyProxy.cs" />
     <Compile Include="Lightweight\RTE.cs" />
     <Compile Include="Lightweight\Ruler.cs" />
-    <Compile Include="MultiBinding\DependencyObjectCollection{T}.cs" />
+    <Compile Include="MultiBinding\DependencyObjectCollection.cs" />
     <Compile Include="MultiBinding\MultiBindingBehavior.cs" />
     <Compile Include="MultiBinding\MultiBindingItem.cs" />
     <Compile Include="MultiBinding\MultiBindingItemCollection.cs" />

@@ -18,14 +18,12 @@ using System.Linq;
 using System.Windows;
 #else
 using System.Collections.Specialized;
+#endif
 using System.Linq;
-using Cimbalino.Toolkit.Helpers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-#endif
-
-namespace Cimbalino.Toolkit.Behaviors
+namespace Zafiro.Uwp.Controls.MultiBinding
 {
     /// <summary>
     /// Represents a collection of <see cref="MultiBindingBehavior" />.

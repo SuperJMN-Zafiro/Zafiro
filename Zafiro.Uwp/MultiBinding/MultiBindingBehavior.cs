@@ -23,14 +23,14 @@ using System.Windows.Interactivity;
 using System.Windows.Markup;
 #else
 using System;
+#endif
 using System.Reflection;
-using Microsoft.Xaml.Interactivity;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
-#endif
+using Microsoft.Xaml.Interactivity;
 
-namespace Cimbalino.Toolkit.Behaviors
+namespace Zafiro.Uwp.Controls.MultiBinding
 {
     /// <summary>
     /// The behavior that enables multiple binding.

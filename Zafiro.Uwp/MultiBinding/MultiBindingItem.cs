@@ -16,11 +16,10 @@
 using System.Windows;
 #else
 using Windows.UI.Xaml;
+#endif
 using Windows.UI.Xaml.Data;
 
-#endif
-
-namespace Cimbalino.Toolkit.Behaviors
+namespace Zafiro.Uwp.Controls.MultiBinding
 {
     /// <summary>
     /// A multiple binding item.
