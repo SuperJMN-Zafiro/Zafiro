@@ -39,12 +39,12 @@
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" Margin="2">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="3*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding PropName}" VerticalAlignment="Center" />
+                            <TextBlock FontWeight="Bold" Text="{Binding PropName}" VerticalAlignment="Center" Margin="2 0 10 0" TextTrimming="CharacterEllipsis" />
                             <ContentControl HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Content="{Binding Editor}" />
                         </Grid>
                     </Border>
