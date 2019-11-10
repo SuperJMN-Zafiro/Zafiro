@@ -72,7 +72,10 @@ namespace Zafiro.Uwp.Controls.Behaviors
             RemovePopup();
             var transform = ((UIElement)Window.Current.Content).TransformToVisual(AssociatedObject);
             LastRectBounds = new Rect(transform.TransformPoint(Origin), transform.TransformPoint(p));
-            TryExecuteCommand();
+            if (Distance(Origin, p) > 5)
+            {
+                TryExecuteCommand();
+            }
         }
 
         private void TryExecuteCommand()

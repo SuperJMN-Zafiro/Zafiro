@@ -136,6 +136,7 @@
     <Compile Include="DesignerItem.cs" />
     <Compile Include="DesignerItemCollection.cs" />
     <Compile Include="DesignerSurface.cs" />
+    <Compile Include="ObjectCommands.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetterValueBindingHelper.cs" />
     <EmbeddedResource Include="Properties\Zafiro.Designer.rd.xml" />
@@ -144,11 +145,17 @@
     <PackageReference Include="Cimbalino.Toolkit">
       <Version>2.5.2</Version>
     </PackageReference>
+    <PackageReference Include="DynamicData">
+      <Version>6.13.21</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>5.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="ReactiveUI">
+      <Version>10.5.7</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive">
       <Version>4.2.0</Version>

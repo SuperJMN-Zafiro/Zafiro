@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Windows.Foundation;
@@ -10,6 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using ReactiveUI;
 
 
 namespace Zafiro.Uwp.Designer
@@ -29,7 +31,20 @@ namespace Zafiro.Uwp.Designer
                 .Subscribe(_ => ResetAll());
 
             SelectBoundsCommand = new DelegateCommand(SelectItemsInBounds);
+            SelectedItemsObservable = this.WhenAnyValue(x => x.SelectedItems);
+            SelectedContainersChanged =
+                SelectedItemsObservable.Select(x => x == null ? Enumerable.Empty<DesignerItem>() : x.Cast<object>().Select(o => (DesignerItem)ContainerFromItem(o)));
+            objectCommands = new ObjectCommands(this);
         }
+
+        public ReactiveCommand<Unit, Unit> AlignToTopCommand => objectCommands.AlignToTopCommand;
+        public ReactiveCommand<Unit, Unit> AlignToRightCommand => objectCommands.AlignToRightCommand;
+        public ReactiveCommand<Unit, Unit> AlignToLeftCommand => objectCommands.AlignToLeftCommand;
+        public ReactiveCommand<Unit, Unit> AlignToBottomCommand => objectCommands.AlignToBottomCommand;
+
+        public IObservable<IEnumerable<DesignerItem>> SelectedContainersChanged { get; }
+
+        public IObservable<IEnumerable> SelectedItemsObservable { get; }
 
         private void SelectItemsInBounds()
         {
@@ -178,6 +193,8 @@ namespace Zafiro.Uwp.Designer
 
         public static readonly DependencyProperty CanResizeProperty = DependencyProperty.Register(
             "CanResize", typeof(bool), typeof(DesignerSurface), new PropertyMetadata(default(bool)));
+
+        private ObjectCommands objectCommands;
 
         public bool CanResize
         {
