@@ -16,10 +16,10 @@ namespace Zafiro.Uwp.Designer
             
             var canExecute = designerSurface.SelectedContainersChanged.Select(x => x.Count() > 1);
 
-            AlignToTopCommand = ReactiveCommand.Create(() => AlignToTop(SelectedContainers.ToList()));
-            AlignToLeftCommand = ReactiveCommand.Create(() => AlignToLeft(SelectedContainers.ToList()));
-            AlignToRightCommand = ReactiveCommand.Create(() => AlignToRight(SelectedContainers.ToList()));
-            AlignToBottomCommand = ReactiveCommand.Create(() => AlignToBottom(SelectedContainers.ToList()));
+            AlignToTopCommand = ReactiveCommand.Create(() => AlignToTop(SelectedContainers.ToList()), canExecute);
+            AlignToLeftCommand = ReactiveCommand.Create(() => AlignToLeft(SelectedContainers.ToList()), canExecute);
+            AlignToRightCommand = ReactiveCommand.Create(() => AlignToRight(SelectedContainers.ToList()), canExecute);
+            AlignToBottomCommand = ReactiveCommand.Create(() => AlignToBottom(SelectedContainers.ToList()), canExecute);
         }
 
         public IEnumerable<DesignerItem> SelectedContainers => selectedContainers.Value;
