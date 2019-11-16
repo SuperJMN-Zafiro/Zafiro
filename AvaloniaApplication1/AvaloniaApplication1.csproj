@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <AvaloniaResource Include="**\*.xaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.9.0-preview7" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.0-preview7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Zafiro.Avalonia\Zafiro.Avalonia.csproj" />
+  </ItemGroup>
+</Project>

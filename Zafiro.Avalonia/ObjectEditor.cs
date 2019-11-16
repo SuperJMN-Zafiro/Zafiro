@@ -1,29 +1,41 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Markup.Xaml.Templates;
 using Zafiro.Core;
 
-namespace Zafiro.Uwp.Controls.ObjEditor
+namespace TempNs
 {
     public class ObjectEditor : Control
     {
         public ObjectEditor()
         {
-            DefaultStyleKey = typeof(ObjectEditor);
+            
+            SelectedItemsProperty.Changed.Subscribe(args => OnSelectedItemsChanged(args.OldValue, args.NewValue));
+            PropertyItemsProperty.Changed.Subscribe(args => OnPropertyItemsChanged((IList<PropertyItem>) args.OldValue, (IList<PropertyItem>) args.NewValue));
         }
 
-        public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
-            "SelectedItems", typeof(object), typeof(ObjectEditor), new PropertyMetadata(default(object), OnSelectedItemsChanged));
+        public static readonly AvaloniaProperty SelectedItemsProperty = AvaloniaProperty.Register<ObjectEditor, object>(
+            "SelectedItems", null, false, BindingMode.OneWayToSource);
 
-        private static void OnSelectedItemsChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        public static readonly AvaloniaProperty PropertyItemsProperty = AvaloniaProperty.Register<ObjectEditor, IList<PropertyItem>>(
+            "PropertyItems", default, false, BindingMode.TwoWay);
+
+        public static readonly AvaloniaProperty EditorsProperty = AvaloniaProperty.Register<ObjectEditor, EditorCollection>(
+            "Editors", new EditorCollection(), false, BindingMode.TwoWay);
+
+        public static readonly AvaloniaProperty DefaultEditorTemplateProperty = AvaloniaProperty.Register<ObjectEditor, DataTemplate>(
+            "Editors", null, false, BindingMode.TwoWay);
+
+        public EditorCollection Editors
         {
-            var target = (ObjectEditor)dependencyObject;
-            target.OnSelectedItemsChanged(dependencyPropertyChangedEventArgs.OldValue,
-                dependencyPropertyChangedEventArgs.NewValue);
+            get { return (EditorCollection)GetValue(EditorsProperty); }
+            set { SetValue(EditorsProperty, value); }
         }
 
         private void OnSelectedItemsChanged(object oldValue, object newValue)
@@ -82,15 +94,6 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             UpdatePropertyItems((IList<object>)SelectedItems);
         }
 
-        public static readonly DependencyProperty PropertyItemsProperty = DependencyProperty.Register(
-            "PropertyItems", typeof(IList<PropertyItem>), typeof(ObjectEditor), new PropertyMetadata(default(IList<PropertyItem>), OnProperyItemsChanged));
-
-        private static void OnProperyItemsChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            var target = (ObjectEditor)dependencyObject;
-            target.OnPropertyItemsChanged((IList<PropertyItem>)args.OldValue, (IList<PropertyItem>)args.NewValue);
-        }
-
         private void OnPropertyItemsChanged(IList<PropertyItem> oldValue, IList<PropertyItem> newValue)
         {
             if (oldValue == null)
@@ -103,7 +106,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                 i.Dispose();
             }
         }
-        
+
         public IList<PropertyItem> PropertyItems
         {
             get { return (IList<PropertyItem>)GetValue(PropertyItemsProperty); }
@@ -122,21 +125,9 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             public PropertyInfo Property { get; set; }
         }
 
-        public static readonly DependencyProperty EditorsProperty = DependencyProperty.Register(
-            "Editors", typeof(EditorCollection), typeof(ObjectEditor), new PropertyMetadata(new EditorCollection()));
-
-        public EditorCollection Editors
-        {
-            get { return (EditorCollection)GetValue(EditorsProperty); }
-            set { SetValue(EditorsProperty, value); }
-        }
-
-        public static readonly DependencyProperty DefaultEditorTemplateProperty = DependencyProperty.Register(
-            "DefaultEditorTemplate", typeof(DataTemplate), typeof(ObjectEditor), new PropertyMetadata(default(DataTemplate)));
-
         public DataTemplate DefaultEditorTemplate
         {
-            get { return (DataTemplate) GetValue(DefaultEditorTemplateProperty); }
+            get { return (DataTemplate)GetValue(DefaultEditorTemplateProperty); }
             set { SetValue(DefaultEditorTemplateProperty, value); }
         }
     }
