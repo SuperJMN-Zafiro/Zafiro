@@ -3,6 +3,7 @@
              x:Class="AvaloniaApplication1.App">
     <Application.Styles>
         <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
-        <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>        
+        <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
+        <StyleInclude Source="avares://Zafiro.Avalonia/Themes/Default.xaml" />
     </Application.Styles>
 </Application>
