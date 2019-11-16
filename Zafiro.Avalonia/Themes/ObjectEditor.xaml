@@ -1,11 +1,10 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:oe="clr-namespace:Zafiro.Avalonia.ObjEditor;assembly=Zafiro.Avalonia">
-  <Style Selector="oe:ObjectEditor">
-    <Setter Property="Background" Value="Red"/>
+  <Style Selector="oe|ObjectEditor">
     <Setter Property="Template">
       <ControlTemplate>
-        <Grid Background="{TemplateBinding Background}">
-            <TextBlock Text="Hello World! Control Temp"
+        <Grid>
+          <TextBlock Text="Hello World! Control Temp" />
         </Grid>
       </ControlTemplate>
     </Setter>

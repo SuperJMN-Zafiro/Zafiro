@@ -8,10 +8,13 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.Templates;
 using Zafiro.Core;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 
 namespace Zafiro.Avalonia.ObjEditor
 {
-    public class ObjectEditor : Control
+    public class ObjectEditor : TemplatedControl
     {
         public ObjectEditor()
         {
