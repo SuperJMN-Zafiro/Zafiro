@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TempNs
+namespace Zafiro.Avalonia.ObjEditor
 {
     public class LambdaComparer<T> : IEqualityComparer<T>
     {

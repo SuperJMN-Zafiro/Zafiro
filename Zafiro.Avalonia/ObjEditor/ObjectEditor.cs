@@ -9,7 +9,7 @@ using Avalonia.Data;
 using Avalonia.Markup.Xaml.Templates;
 using Zafiro.Core;
 
-namespace TempNs
+namespace Zafiro.Avalonia.ObjEditor
 {
     public class ObjectEditor : Control
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TempNs
+namespace Zafiro.Avalonia.ObjEditor
 {
     public class EditorKey
     {

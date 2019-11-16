@@ -6,7 +6,5 @@
         xmlns:local="clr-namespace:TempNs;assembly=TempNs"
         x:Class="AvaloniaApplication1.MainWindow"
         Title="AvaloniaApplication1">
-
-  <local:ObjectEditor />
-    
+   
 </Window>

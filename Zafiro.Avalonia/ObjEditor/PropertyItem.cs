@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 
-namespace TempNs
+namespace Zafiro.Avalonia.ObjEditor
 {
     public class PropertyItem : Control, INotifyPropertyChanged, IDisposable
     {

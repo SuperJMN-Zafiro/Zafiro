@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace TempNs
+namespace Zafiro.Avalonia.ObjEditor
 {
     public static class EnumerableExtensions
     {

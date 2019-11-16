@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>TempNs</AssemblyName>
-    <RootNamespace>TempNs</RootNamespace>
+    <AssemblyName>Zafiro.Avalonia</AssemblyName>
+    <RootNamespace>Zafiro.Avalonia</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Styles.xaml">
+    <None Update="Themes\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>

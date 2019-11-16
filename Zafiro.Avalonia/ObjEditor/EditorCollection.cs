@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace TempNs
+namespace Zafiro.Avalonia.ObjEditor
 {
     public class EditorCollection : Collection<Editor>
     {

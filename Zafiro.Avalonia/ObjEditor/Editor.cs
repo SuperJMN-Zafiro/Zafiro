@@ -1,6 +1,6 @@
 ﻿using Avalonia.Markup.Xaml.Templates;
 
-namespace TempNs
+namespace Zafiro.Avalonia.ObjEditor
 {
     public class Editor
     {
