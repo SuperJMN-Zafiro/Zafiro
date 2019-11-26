@@ -2,61 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
-using Serilog;
-using Zafiro.Core;
+using Zafiro.Core.Values;
 
 namespace Zafiro.Uwp.Controls.ObjEditor
 {
-    public class GroupGetter
-    {
-        private readonly PropertyInfo property;
-
-        public GroupGetter(PropertyInfo property)
-        {
-            this.property = property;
-        }
-
-        public object GetValue(IEnumerable<object> targets)
-        {
-            var query = from target in targets
-                from prop in target.GetType().GetRuntimeProperties().Where(x => string.Equals(x.Name, property.Name))
-                select new { target, prop };
-
-            var values = query.Select(x =>
-            {
-                try
-                {
-                    var value = x.prop.GetValue(x.target);
-                    return value;
-                }
-                catch (Exception e)
-                {
-                    Log.Warning(e, "Could not get values of property {Property}", x);
-                    return null;
-                }
-            }).ToList();
-
-            if (values.Distinct().Count() == 1)
-            {
-                return values.First();
-            }
-
-            return property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
-        }
-    }
-
     public class PropertyItem : Control, INotifyPropertyChanged, IDisposable
     {
         private readonly PropertyInfo property;
         private readonly IList<object> targets;
-        private readonly IList<INotifyPropertyChanged> observables;
         private readonly GroupSetter groupSetter;
         private readonly GroupGetter groupGetter;
+        private readonly CompositeDisposable disposables = new CompositeDisposable();
 
         private PropertyItem()
         {
@@ -70,7 +33,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
             groupSetter = new GroupSetter(property);
             groupGetter = new GroupGetter(property);
-            observables = targets.OfType<INotifyPropertyChanged>().ToList();
+            var observables = targets.OfType<INotifyPropertyChanged>().ToList();
             Subscribe(observables);
         }
 
@@ -124,23 +87,22 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private void Subscribe(IEnumerable<INotifyPropertyChanged> observables)
         {
-            foreach (var obs in observables)
+            var subscriptions = from observable in observables
+                let subscription =
+                    Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
+                        h => observable.PropertyChanged += h, h => PropertyChanged -= h)
+                        .Subscribe(args => ObsOnPropertyChanged(args.EventArgs.PropertyName))
+                select subscription;
+
+            foreach (var subscription in subscriptions)
             {
-                obs.PropertyChanged += ObsOnPropertyChanged;
+                disposables.Add(subscription);
             }
         }
 
-        private void Unsubscribe(IEnumerable<INotifyPropertyChanged> observables)
+        private void ObsOnPropertyChanged(string propertyName)
         {
-            foreach (var obs in observables)
-            {
-                obs.PropertyChanged -= ObsOnPropertyChanged;
-            }
-        }
-
-        private void ObsOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (PropName == propertyChangedEventArgs.PropertyName)
+            if (PropName == propertyName)
             {
                 UpdateValue();
             }
@@ -160,7 +122,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         public void Dispose()
         {
-            Unsubscribe(observables);
+            disposables.Dispose();
         }
     }
 }

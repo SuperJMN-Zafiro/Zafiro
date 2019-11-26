@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Files
 {
     public abstract class ZafiroFile
     {

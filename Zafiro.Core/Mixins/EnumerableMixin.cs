@@ -1,10 +1,10 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
-    public static class EnumerableExtensions
+namespace Zafiro.Core.Mixins
+{
+    public static class EnumerableMixin
     {
         public static string AsCommaSeparatedList<T>(this IEnumerable<T> enumerable)
         {

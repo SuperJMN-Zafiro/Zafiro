@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Zafiro.Core;
+using Zafiro.Core.Files;
 
 namespace Zafiro.Uwp.Controls
 {

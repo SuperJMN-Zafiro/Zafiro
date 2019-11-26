@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Mixins
 {
-    using System;
-
     public static class EnumExtensions
     {
         public static bool TryParse(Type enumType, string value, out object result)

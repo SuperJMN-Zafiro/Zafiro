@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reactive.Linq;
 using Windows.Storage.Pickers;
 using Zafiro.Core;
+using Zafiro.Core.Files;
 
 namespace Zafiro.Uwp.Controls
 {

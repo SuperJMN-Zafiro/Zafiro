@@ -1,11 +1,11 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
+namespace Zafiro.Core.Mixins
+{
     public static class ReflectionExtensions
     {
         public static string GetFullPropertyName<T, TProperty>(this Expression<Func<T, TProperty>> propertySelector)

@@ -1,9 +1,9 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Reactive.Linq;
-    using System.Reactive.Subjects;
+﻿using System;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
+namespace Zafiro.Core.Mixins
+{
     public class TreeExtensions
     {
         public static IObservable<T> ParentAttached<T>(object targetInstance,

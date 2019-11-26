@@ -2,15 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reflection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Zafiro.Core;
+using Zafiro.Core.Mixins;
 
 namespace Zafiro.Uwp.Controls.ObjEditor
 {
     public class ObjectEditor : Control
     {
+        CompositeDisposable disposables = new CompositeDisposable();
+
         public ObjectEditor()
         {
             DefaultStyleKey = typeof(ObjectEditor);
@@ -28,13 +33,19 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private void OnSelectedItemsChanged(object oldValue, object newValue)
         {
+            disposables.Dispose();
+            disposables = new CompositeDisposable();
+
             IList<object> targets;
             if (newValue is IList<object> list)
             {
                 targets = list;
                 if (list is INotifyCollectionChanged col)
                 {
-                    col.CollectionChanged += OnCollectionChanged;
+                    Observable.FromEventPattern<NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
+                        h => col.CollectionChanged += h, h => col.CollectionChanged -= h)
+                        .Subscribe(x => OnCollectionChanged())
+                        .DisposeWith(disposables);
                 }
             }
             else
@@ -42,17 +53,22 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                 targets = new List<object> { newValue };
             }
 
-            UpdatePropertyItems(targets);
+            PropertyItems = UpdatePropertyItems(targets);
+
+            foreach (var propertyItem in PropertyItems)
+            {
+                disposables.Add(propertyItem);
+            }
         }
 
-        private void UpdatePropertyItems(IList<object> targets)
+        private static List<PropertyItem> UpdatePropertyItems(IList<object> targets)
         {
             if (targets == null || targets.Any(o => o == null))
             {
-                return;
+                return new List<PropertyItem>();
             }
 
-            var keyedProperies = targets
+            var allProperties = targets
                 .Select(o =>
                     o.GetType().GetRuntimeProperties()
                         .Where(p => p.GetMethod != null && p.SetMethod != null)
@@ -60,22 +76,21 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                         .Where(p => p.SetMethod.IsPublic && p.GetMethod.IsPublic)
                         .Where(x => x.GetCustomAttribute<HiddenAttribute>() == null))
                 .ToList();
-
-            if (keyedProperies.Count == 0)
+            
+            if (allProperties.Count == 0)
             {
-                PropertyItems = null;
+                return new List<PropertyItem>();
             }
-            else
-            {
-                var properties = keyedProperies.Count == 1 ? keyedProperies.First() : keyedProperies.GetCommon();
 
-                PropertyItems = properties.Select(o => new PropertyItem(o, targets))
-                    .OrderBy(item => item.PropName)
-                    .ToList();
-            }
+            var equalityComparer = new LambdaComparer<PropertyInfo>((a, b) => a.PropertyType == b.PropertyType && a.Name == b.Name);
+            var commonProperties = allProperties.Count == 1 ? allProperties.First() : allProperties.GetCommon(equalityComparer);
+
+            return commonProperties.Select(o => new PropertyItem(o, targets))
+                .OrderBy(item => item.PropName)
+                .ToList();
         }
 
-        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnCollectionChanged()
         {
             UpdatePropertyItems((IList<object>)SelectedItems);
         }

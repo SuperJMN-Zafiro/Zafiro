@@ -1,11 +1,11 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
+namespace Zafiro.Core.Mixins
+{
     public static class TypeExtensions
     {
         public static bool IsCollection(this Type type)

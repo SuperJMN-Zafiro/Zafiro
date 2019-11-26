@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Mixins
 {
-    using System;
-    using System.Collections.Generic;
-
     public static class DictionaryMixin
     {
         public static TValue GetCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, Func<TValue> create)

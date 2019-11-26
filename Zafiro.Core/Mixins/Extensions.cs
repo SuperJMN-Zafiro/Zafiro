@@ -1,13 +1,13 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 
+namespace Zafiro.Core.Mixins
+{
     public static class Extensions
     {
         public static Stream FromUtf8ToStream(this string str)
@@ -75,7 +75,8 @@
         }
 
 
-        public static IEnumerable<TResult> GatherAttributes<TAttribute, TResult>(this IEnumerable<Type> types, Func<Type, TAttribute, TResult> converter)
+        public static IEnumerable<TResult> GatherAttributes<TAttribute, TResult>(this IEnumerable<Type> types,
+            Func<Type, TAttribute, TResult> converter)
             where TAttribute : Attribute
         {
             return from type in types
@@ -84,7 +85,8 @@
                 select converter(type, att);
         }
 
-        public static IEnumerable<TResult> GatherAttributesFromMembers<TAttribute, TResult>(this IEnumerable<Type> types,
+        public static IEnumerable<TResult> GatherAttributesFromMembers<TAttribute, TResult>(
+            this IEnumerable<Type> types,
             Func<PropertyInfo, TAttribute, TResult> converter)
             where TAttribute : Attribute
         {
@@ -98,16 +100,17 @@
         public static IEnumerable<IEnumerable<T>> Chunkify<T>(this IEnumerable<T> source,
             int chunkSize)
         {
-            IEnumerator<T> e = source.GetEnumerator();
+            var e = source.GetEnumerator();
             Func<bool> mover = () => e.MoveNext();
-            int count = 0;
+            var count = 0;
             while (mover())
             {
-                List<T> chunk = new List<T>(chunkSize);
+                var chunk = new List<T>(chunkSize);
                 do
                 {
                     chunk.Add(e.Current);
                 } while (++count < chunkSize && e.MoveNext());
+
                 yield return chunk;
                 count = 0;
             }

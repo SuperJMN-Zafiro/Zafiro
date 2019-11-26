@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Mixins
 {
-    public static class ArrayConversion
+    public static class ArrayMixin
     {
         public static byte[] ToByteArray(this int[] buffer)
         {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Mixins
 {
     public static class StringExtensions
     {

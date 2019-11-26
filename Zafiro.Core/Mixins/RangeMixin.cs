@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Mixins
 {
     public static class RangeMixin
     {

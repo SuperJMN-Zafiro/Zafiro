@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Serilog;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Values
 {
     public class GroupSetter
     {
