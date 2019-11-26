@@ -8,78 +8,24 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Serilog;
+using Zafiro.Core;
 
 namespace Zafiro.Uwp.Controls.ObjEditor
 {
-    public class PropertyItem : Control, INotifyPropertyChanged, IDisposable
+    public class GroupGetter
     {
         private readonly PropertyInfo property;
-        private readonly IList<object> targets;
-        private readonly IList<INotifyPropertyChanged> observables;
 
-        private PropertyItem()
+        public GroupGetter(PropertyInfo property)
         {
-            DefaultStyleKey = typeof(PropertyItem);
+            this.property = property;
         }
 
-        public PropertyItem(PropertyInfo property, IList<object> targets) : this()
-        {
-            this.property = property ?? throw new ArgumentNullException(nameof(property));
-            this.targets = targets ?? throw new ArgumentNullException(nameof(targets));
-
-            observables = targets.OfType<INotifyPropertyChanged>().ToList();
-            Subscribe(observables);
-        }
-
-        public Type PropType => property.PropertyType;
-        public string PropName => property.Name;
-
-        public object Value
-        {
-            get => GetValue();
-            set => SetValue(this, value, targets, property);
-        }
-
-        private static void SetValue(PropertyItem parent, object value, IEnumerable<object> objects, PropertyInfo property)
-        {
-            try
-            {
-                foreach (var target in objects)
-                {
-                    object finalValue;
-                    if (!property.PropertyType.IsInstanceOfType(value))
-                    {
-                        var typeConverter = TypeDescriptor.GetConverter(property.PropertyType);
-                        if (typeConverter.CanConvertFrom(value.GetType()))
-                        {
-                            finalValue = typeConverter.ConvertFrom(value);
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        finalValue = value;
-                    }
-
-                    property.SetValue(target, finalValue);
-
-                    ReplicateValueToParentObjectIfAny(parent, property, finalValue);
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Warning(e, "Could not set property {PropName} to value {Value}", property.Name, value);
-            }
-        }
-
-        private object GetValue()
+        public object GetValue(IEnumerable<object> targets)
         {
             var query = from target in targets
-                        from prop in target.GetType().GetProperties().Where(x => x.Name == PropName)
-                        select new { target, prop };
+                from prop in target.GetType().GetRuntimeProperties().Where(x => string.Equals(x.Name, property.Name))
+                select new { target, prop };
 
             var values = query.Select(x =>
             {
@@ -100,25 +46,41 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                 return values.First();
             }
 
-            return (PropType.IsValueType) ? Activator.CreateInstance(this.PropType) : null;
+            return property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
+        }
+    }
+
+    public class PropertyItem : Control, INotifyPropertyChanged, IDisposable
+    {
+        private readonly PropertyInfo property;
+        private readonly IList<object> targets;
+        private readonly IList<INotifyPropertyChanged> observables;
+        private readonly GroupSetter groupSetter;
+        private readonly GroupGetter groupGetter;
+
+        private PropertyItem()
+        {
+            DefaultStyleKey = typeof(PropertyItem);
         }
 
-        private static void ReplicateValueToParentObjectIfAny(PropertyItem parentEditor, PropertyInfo propertyInfo, object finalValue)
+        public PropertyItem(PropertyInfo property, IList<object> targets) : this()
         {
-            var objectEditor = parentEditor.FindAscendant<ObjectEditor>();
+            this.property = property ?? throw new ArgumentNullException(nameof(property));
+            this.targets = targets ?? throw new ArgumentNullException(nameof(targets));
 
-            if (objectEditor != null)
-            {
-                var parent = objectEditor.FindAscendant<PropertyItem>();
-                if (parent != null)
-                {
-                    foreach (var obs in parent.observables)
-                    {
-                        var rootInstance = obs.GetType().GetRuntimeProperty(parent.PropName).GetValue(obs);
-                        propertyInfo.SetValue(rootInstance, finalValue);
-                    }
-                }
-            }
+            groupSetter = new GroupSetter(property);
+            groupGetter = new GroupGetter(property);
+            observables = targets.OfType<INotifyPropertyChanged>().ToList();
+            Subscribe(observables);
+        }
+
+        public Type PropType => property.PropertyType;
+        public string PropName => property.Name;
+
+        public object Value
+        {
+            get => groupGetter.GetValue(targets);
+            set => groupSetter.Set(targets, value);
         }
 
         public FrameworkElement Editor => CreateEditor(this);
@@ -155,10 +117,10 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private object CreateNewInstance()
         {
-            return Activator.CreateInstance(PropType);
+            return Activator.CreateInstance(property.PropertyType);
         }
 
-        public bool IsExpandable => PropName == "Shadow";
+        public bool IsExpandable => property.Name == "Shadow";
 
         private void Subscribe(IEnumerable<INotifyPropertyChanged> observables)
         {
