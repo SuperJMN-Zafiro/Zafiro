@@ -58,8 +58,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                         .Where(p => p.GetMethod != null && p.SetMethod != null)
                         .Where(p => !(p.GetMethod.IsStatic || p.SetMethod.IsStatic))
                         .Where(p => p.SetMethod.IsPublic && p.GetMethod.IsPublic)
-                        .Where(x => x.GetCustomAttribute<HiddenAttribute>() == null)
-                        .Select(p => new KeyedProperty { Key = (p.PropertyType, p.Name), Property = p }))
+                        .Where(x => x.GetCustomAttribute<HiddenAttribute>() == null))
                 .ToList();
 
             if (keyedProperies.Count == 0)
@@ -68,10 +67,9 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             }
             else
             {
-                var comparer = new LambdaComparer<KeyedProperty>((a, b) => a.Key.Equals(b.Key));
-                var properties = keyedProperies.Count == 1 ? keyedProperies.First() : keyedProperies.GetCommon(comparer);
+                var properties = keyedProperies.Count == 1 ? keyedProperies.First() : keyedProperies.GetCommon();
 
-                PropertyItems = properties.Select(o => new PropertyItem(o.Key.Item1, o.Key.Item2, targets))
+                PropertyItems = properties.Select(o => new PropertyItem(o, targets))
                     .OrderBy(item => item.PropName)
                     .ToList();
             }

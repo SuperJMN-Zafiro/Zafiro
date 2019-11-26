@@ -7,65 +7,106 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
+using Serilog;
 
 namespace Zafiro.Uwp.Controls.ObjEditor
 {
     public class PropertyItem : Control, INotifyPropertyChanged, IDisposable
     {
+        private readonly PropertyInfo property;
         private readonly IList<object> targets;
         private readonly IList<INotifyPropertyChanged> observables;
 
-        public PropertyItem(Type propType, string propName, IList<object> targets)
+        private PropertyItem()
         {
             DefaultStyleKey = typeof(PropertyItem);
-            this.targets = targets;
-            PropType = propType;
-            PropName = propName;
+        }
+
+        public PropertyItem(PropertyInfo property, IList<object> targets) : this()
+        {
+            this.property = property ?? throw new ArgumentNullException(nameof(property));
+            this.targets = targets ?? throw new ArgumentNullException(nameof(targets));
 
             observables = targets.OfType<INotifyPropertyChanged>().ToList();
             Subscribe(observables);
         }
 
-        public Type PropType { get; }
-        public string PropName { get; }
+        public Type PropType => property.PropertyType;
+        public string PropName => property.Name;
 
         public object Value
         {
-            get
-            {
-                var values = targets.Select(o => o.GetType().GetProperty(PropName).GetValue(o)).ToList();
-                if (values.Distinct().Count() == 1)
-                {
-                    return values.First();
-                }
+            get => GetValue();
+            set => SetValue(this, value, targets, property);
+        }
 
-                return (PropType.IsValueType) ? Activator.CreateInstance(this.PropType) : null;
-            }
-            set
+        private static void SetValue(PropertyItem parent, object value, IEnumerable<object> objects, PropertyInfo property)
+        {
+            try
             {
-                foreach (var target in targets)
+                foreach (var target in objects)
                 {
                     object finalValue;
-                    if (!PropType.IsInstanceOfType(value))
+                    if (!property.PropertyType.IsInstanceOfType(value))
                     {
-                        finalValue = TypeDescriptor.GetConverter(PropType).ConvertFrom(value);
+                        var typeConverter = TypeDescriptor.GetConverter(property.PropertyType);
+                        if (typeConverter.CanConvertFrom(value.GetType()))
+                        {
+                            finalValue = typeConverter.ConvertFrom(value);
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                     else
                     {
                         finalValue = value;
                     }
 
-                    var propertyInfo = target.GetType().GetProperty(PropName);
-                    propertyInfo.SetValue(target, finalValue);
+                    property.SetValue(target, finalValue);
 
-                    ReplicateValueToParentObjectIfAny(propertyInfo, finalValue);
+                    ReplicateValueToParentObjectIfAny(parent, property, finalValue);
                 }
+            }
+            catch (Exception e)
+            {
+                Log.Warning(e, "Could not set property {PropName} to value {Value}", property.Name, value);
             }
         }
 
-        private void ReplicateValueToParentObjectIfAny(PropertyInfo propertyInfo, object finalValue)
+        private object GetValue()
         {
-            var objectEditor = this.FindAscendant<ObjectEditor>();
+            var query = from target in targets
+                        from prop in target.GetType().GetProperties().Where(x => x.Name == PropName)
+                        select new { target, prop };
+
+            var values = query.Select(x =>
+            {
+                try
+                {
+                    var value = x.prop.GetValue(x.target);
+                    return value;
+                }
+                catch (Exception e)
+                {
+                    Log.Warning(e, "Could not get values of property {Property}", x);
+                    return null;
+                }
+            }).ToList();
+
+            if (values.Distinct().Count() == 1)
+            {
+                return values.First();
+            }
+
+            return (PropType.IsValueType) ? Activator.CreateInstance(this.PropType) : null;
+        }
+
+        private static void ReplicateValueToParentObjectIfAny(PropertyItem parentEditor, PropertyInfo propertyInfo, object finalValue)
+        {
+            var objectEditor = parentEditor.FindAscendant<ObjectEditor>();
+
             if (objectEditor != null)
             {
                 var parent = objectEditor.FindAscendant<PropertyItem>();
