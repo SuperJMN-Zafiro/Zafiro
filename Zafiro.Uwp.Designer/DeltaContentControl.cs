@@ -8,16 +8,34 @@ namespace Zafiro.Uwp.Designer
 {
     public sealed class DeltaContentControl : ContentControl
     {
+        public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
+            "Angle", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(default(double)));
+
+        public static readonly DependencyProperty HorizontalProperty = DependencyProperty.Register(
+            "Horizontal", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(default(double)));
+
+        public static readonly DependencyProperty VerticalProperty = DependencyProperty.Register(
+            "Vertical", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(default(double)));
+
+        public static readonly DependencyProperty AllowVerticalProperty = DependencyProperty.Register(
+            "AllowVertical", typeof(bool), typeof(DeltaContentControl), new PropertyMetadata(true));
+
+        public static readonly DependencyProperty AllowHorizontalProperty = DependencyProperty.Register(
+            "AllowHorizontal", typeof(bool), typeof(DeltaContentControl), new PropertyMetadata(true));
+
+        public static readonly DependencyProperty SharedHorizontalProperty = DependencyProperty.Register(
+            "SharedHorizontal", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(double.NaN));
+
         private Thumb thumb;
 
         public DeltaContentControl()
         {
-            this.DefaultStyleKey = typeof(DeltaContentControl);
+            DefaultStyleKey = typeof(DeltaContentControl);
         }
 
         public Thumb Thumb
         {
-            get { return thumb; }
+            get => thumb;
             private set
             {
                 thumb = value;
@@ -25,13 +43,34 @@ namespace Zafiro.Uwp.Designer
             }
         }
 
-        public static readonly DependencyProperty AngleProperty = DependencyProperty.Register(
-            "Angle", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(default(double)));
-
         public double Angle
         {
-            get { return (double) GetValue(AngleProperty); }
-            set { SetValue(AngleProperty, value); }
+            get => (double) GetValue(AngleProperty);
+            set => SetValue(AngleProperty, value);
+        }
+
+        public double Horizontal
+        {
+            get => (double) GetValue(HorizontalProperty);
+            set => SetValue(HorizontalProperty, value);
+        }
+
+        public double Vertical
+        {
+            get => (double) GetValue(VerticalProperty);
+            set => SetValue(VerticalProperty, value);
+        }
+
+        public bool AllowVertical
+        {
+            get => (bool) GetValue(AllowVerticalProperty);
+            set => SetValue(AllowVerticalProperty, value);
+        }
+
+        public bool AllowHorizontal
+        {
+            get => (bool) GetValue(AllowHorizontalProperty);
+            set => SetValue(AllowHorizontalProperty, value);
         }
 
         private void ThumbOnDragDelta(object sender, DragDeltaEventArgs e)
@@ -68,47 +107,8 @@ namespace Zafiro.Uwp.Designer
 
         protected override void OnApplyTemplate()
         {
-            Thumb = (Thumb)GetTemplateChild("Thumb");
+            Thumb = (Thumb) GetTemplateChild("Thumb");
             base.OnApplyTemplate();
         }
-
-        public static readonly DependencyProperty HorizontalProperty = DependencyProperty.Register(
-            "Horizontal", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(default(double)));
-
-        public double Horizontal
-        {
-            get { return (double)GetValue(HorizontalProperty); }
-            set { SetValue(HorizontalProperty, value); }
-        }
-
-        public static readonly DependencyProperty VerticalProperty = DependencyProperty.Register(
-            "Vertical", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(default(double)));
-
-        public double Vertical
-        {
-            get { return (double)GetValue(VerticalProperty); }
-            set { SetValue(VerticalProperty, value); }
-        }
-
-        public static readonly DependencyProperty AllowVerticalProperty = DependencyProperty.Register(
-            "AllowVertical", typeof(bool), typeof(DeltaContentControl), new PropertyMetadata(true));
-
-        public bool AllowVertical
-        {
-            get { return (bool)GetValue(AllowVerticalProperty); }
-            set { SetValue(AllowVerticalProperty, value); }
-        }
-
-        public static readonly DependencyProperty AllowHorizontalProperty = DependencyProperty.Register(
-            "AllowHorizontal", typeof(bool), typeof(DeltaContentControl), new PropertyMetadata(true));
-
-        public bool AllowHorizontal
-        {
-            get { return (bool)GetValue(AllowHorizontalProperty); }
-            set { SetValue(AllowHorizontalProperty, value); }
-        }
-
-        public static readonly DependencyProperty SharedHorizontalProperty = DependencyProperty.Register(
-            "SharedHorizontal", typeof(double), typeof(DeltaContentControl), new PropertyMetadata(double.NaN));
     }
 }

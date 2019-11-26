@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -13,27 +12,45 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using ReactiveUI;
 
-
 namespace Zafiro.Uwp.Designer
 {
     public sealed class DesignerSurface : ItemsControl
     {
-        private CompositeDisposable tapDisposables;
+        public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
+            "SelectedItems", typeof(IEnumerable), typeof(DesignerSurface), new PropertyMetadata(default(IEnumerable)));
+
+        public static readonly DependencyProperty IsMultiSelectionEnabledProperty = DependencyProperty.Register(
+            "IsMultiSelectionEnabled", typeof(bool), typeof(DesignerSurface), new PropertyMetadata(false));
+
+        public static readonly DependencyProperty CanResizeProperty = DependencyProperty.Register(
+            "CanResize", typeof(bool), typeof(DesignerSurface), new PropertyMetadata(default(bool)));
+
+        private readonly CompositeDisposable disposables = new CompositeDisposable();
+
+        private readonly ObjectCommands objectCommands;
 
         public DesignerSurface()
         {
             DefaultStyleKey = typeof(DesignerSurface);
 
-            tapDisposables = new CompositeDisposable();
+            Observable
+                .FromEventPattern<RoutedEventHandler, RoutedEventArgs>(h => Unloaded += h, h => Unloaded -= h)
+                .Subscribe(_ => disposables.Dispose())
+                .DisposeWith(disposables);
 
             Observable
                 .FromEventPattern<TappedEventHandler, TappedRoutedEventArgs>(h => Tapped += h, h => Tapped -= h)
-                .Subscribe(_ => ResetAll());
+                .Subscribe(_ => ResetAll())
+                .DisposeWith(disposables);
 
             SelectBoundsCommand = new DelegateCommand(SelectItemsInBounds);
             SelectedItemsObservable = this.WhenAnyValue(x => x.SelectedItems);
             SelectedContainersChanged =
-                SelectedItemsObservable.Select(x => x == null ? Enumerable.Empty<DesignerItem>() : x.Cast<object>().Select(o => (DesignerItem)ContainerFromItem(o)));
+                SelectedItemsObservable.Select(x =>
+                    x == null
+                        ? Enumerable.Empty<DesignerItem>()
+                        : x.Cast<object>().Select(o => (DesignerItem) ContainerFromItem(o)));
+
             objectCommands = new ObjectCommands(this);
         }
 
@@ -46,25 +63,53 @@ namespace Zafiro.Uwp.Designer
 
         public IObservable<IEnumerable> SelectedItemsObservable { get; }
 
-        private void SelectItemsInBounds()
-        {
-            ClearSelection();
-
-            foreach (var ci in ContainersUndersSelection)
-            {
-                ci.IsSelected = true;
-            }                  
-
-            SelectedItems = GetSelectedItems();
-        }
-
-        private IEnumerable<DesignerItem> ContainersUndersSelection => Containers.Where(i =>
+        private IEnumerable<DesignerItem> ContainersUnderSelection => Containers.Where(i =>
         {
             var intersect = RectHelper.Union(SelectionBounds, i.Bounds);
             return intersect.Equals(SelectionBounds);
         });
 
         public DelegateCommand SelectBoundsCommand { get; }
+
+        public BindingBase LeftBinding { get; set; }
+        public BindingBase TopBinding { get; set; }
+        public BindingBase HeightBinding { get; set; }
+        public BindingBase WidthBinding { get; set; }
+        public BindingBase AngleBinding { get; set; }
+
+        private IEnumerable<DesignerItem> Containers => Items.Select(o => (DesignerItem) ContainerFromItem(o));
+
+        public IEnumerable SelectedItems
+        {
+            get => (IEnumerable) GetValue(SelectedItemsProperty);
+            set => SetValue(SelectedItemsProperty, value);
+        }
+
+        public bool IsMultiSelectionEnabled
+        {
+            get => (bool) GetValue(IsMultiSelectionEnabledProperty);
+            set => SetValue(IsMultiSelectionEnabledProperty, value);
+        }
+
+        public Rect SelectionBounds { get; set; }
+
+        public bool CanResize
+        {
+            get => (bool) GetValue(CanResizeProperty);
+            set => SetValue(CanResizeProperty, value);
+        }
+
+        private void SelectItemsInBounds()
+        {
+            ClearSelection();
+
+            foreach (var container in ContainersUnderSelection)
+            {
+                container.IsSelected = true;
+            }
+
+            SelectedItems = GetSelectedItems();
+        }
 
         private void ResetAll()
         {
@@ -89,18 +134,12 @@ namespace Zafiro.Uwp.Designer
 
             foreach (var selectedItem in SelectedItems)
             {
-                var di = (DesignerItem)ContainerFromItem(selectedItem);
+                var di = (DesignerItem) ContainerFromItem(selectedItem);
                 di.IsSelected = false;
             }
 
             SelectedItems = GetSelectedItems();
         }
-
-        public BindingBase LeftBinding { get; set; }
-        public BindingBase TopBinding { get; set; }
-        public BindingBase HeightBinding { get; set; }
-        public BindingBase WidthBinding { get; set; }
-        public BindingBase AngleBinding { get; set; }
 
         protected override DependencyObject GetContainerForItemOverride()
         {
@@ -118,22 +157,27 @@ namespace Zafiro.Uwp.Designer
 
             SetBindings(di);
 
-            var subscriptions = new CompositeDisposable();
+            di.SelectionRequest
+                .Subscribe(ea => { OnSelectionRequest(di, ea.EventArgs); })
+                .DisposeWith(disposables);
 
-            subscriptions.Add(di.SelectionRequest.Subscribe(ea =>
-            {
-                ea.EventArgs.Handled = true;
-                if (IsMultiSelectionEnabled)
-                {
-                    ClearSelection();
-                }
-                di.IsSelected = true;
-                SelectedItems = GetSelectedItems();
-            }));
-
-            subscriptions.Add(di.EditRequest.Subscribe(_ => di.IsEditing = true));
+            di.EditRequest
+                .Subscribe(_ => di.IsEditing = true)
+                .DisposeWith(disposables);
 
             base.PrepareContainerForItemOverride(element, item);
+        }
+
+        private void OnSelectionRequest(DesignerItem di, TappedRoutedEventArgs tappedRoutedEventArgs)
+        {
+            tappedRoutedEventArgs.Handled = true;
+            if (!IsMultiSelectionEnabled)
+            {
+                ClearSelection();
+            }
+
+            di.IsSelected = true;
+            SelectedItems = GetSelectedItems();
         }
 
         private void SetBindings(DesignerItem di)
@@ -167,39 +211,6 @@ namespace Zafiro.Uwp.Designer
         private IList<object> GetSelectedItems()
         {
             return Containers.Where(x => x.IsSelected).Select(ItemFromContainer).ToList();
-        }
-
-        private IEnumerable<DesignerItem> Containers => Items.Select(o => (DesignerItem)ContainerFromItem(o));
-
-        public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
-            "SelectedItems", typeof(ObservableCollection<object>), typeof(DesignerSurface), new PropertyMetadata(default(IEnumerable)));
-
-        public IEnumerable SelectedItems
-        {
-            get { return (IEnumerable) GetValue(SelectedItemsProperty); }
-            set { SetValue(SelectedItemsProperty, value); }
-        }
-
-        public static readonly DependencyProperty IsMultiSelectionEnabledProperty = DependencyProperty.Register(
-            "IsMultiSelectionEnabled", typeof(bool), typeof(DesignerSurface), new PropertyMetadata(true));
-
-        public bool IsMultiSelectionEnabled
-        {
-            get { return (bool) GetValue(IsMultiSelectionEnabledProperty); }
-            set { SetValue(IsMultiSelectionEnabledProperty, value); }
-        }
-
-        public Rect SelectionBounds { get;set; }
-
-        public static readonly DependencyProperty CanResizeProperty = DependencyProperty.Register(
-            "CanResize", typeof(bool), typeof(DesignerSurface), new PropertyMetadata(default(bool)));
-
-        private ObjectCommands objectCommands;
-
-        public bool CanResize
-        {
-            get { return (bool) GetValue(CanResizeProperty); }
-            set { SetValue(CanResizeProperty, value); }
         }
     }
 }
