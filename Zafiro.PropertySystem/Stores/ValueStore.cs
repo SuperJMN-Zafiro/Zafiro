@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using Zafiro.Core;
+using Zafiro.Core.Mixins;
 using Zafiro.PropertySystem.Standard;
 
 namespace Zafiro.PropertySystem.Stores
