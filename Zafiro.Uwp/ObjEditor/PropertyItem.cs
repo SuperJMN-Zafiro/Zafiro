@@ -10,6 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Zafiro.Core.Values;
+using Zafiro.Uwp.Controls.ObjEditor.TemplateMatchers;
 
 namespace Zafiro.Uwp.Controls.ObjEditor
 {
@@ -21,9 +22,16 @@ namespace Zafiro.Uwp.Controls.ObjEditor
         private readonly PropertyInfo property;
         private readonly IList<object> targets;
 
+        private readonly ITemplateMatcher editorTemplateMatcher;
+            
         private PropertyItem()
         {
             DefaultStyleKey = typeof(PropertyItem);
+
+            editorTemplateMatcher = new NameAndTypeTemplateMatcher()
+                .Chain(new TypeTemplateMatcher()
+                    .Chain(new EnumTemplateMatcher()
+                        .Chain(new DefaultTemplateMatcher(this))));
         }
 
         public PropertyItem(PropertyInfo property, IList<object> targets) : this()
@@ -67,18 +75,9 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
             var objectEditor = propertyItem.FindAscendant<ObjectEditor>();
             var editorTemplates = objectEditor.Editors;
-            var template = editorTemplates
-                               .FirstOrDefault(e => IsMatch(propertyItem, e))?.Template ??
-                           objectEditor.DefaultEditorTemplate;
+            var template = editorTemplateMatcher.Select(editorTemplates, property);
 
             return (FrameworkElement) template.LoadContent();
-        }
-
-        private static bool IsMatch(PropertyItem propertyItem, Editor e)
-        {
-            var matchesPropName = e.Key.PropertyName == null || e.Key.PropertyName == propertyItem.PropertyName;
-            var matchesType = e.Key.TargetType == propertyItem.PropertyType;
-            return matchesType && matchesPropName;
         }
 
         private FrameworkElement CreateExpandableEditor()
