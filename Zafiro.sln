@@ -17,11 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Core.Tests", "Zafiro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zafiro.Uwp", "Zafiro.Uwp\Zafiro.Uwp.csproj", "{889D7132-88F9-4254-9640-1E38ED419184}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zafiro.Avalonia", "Zafiro.Avalonia\Zafiro.Avalonia.csproj", "{8DEF02AA-0878-432C-B788-E8B3D24D7B6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Avalonia", "Zafiro.Avalonia\Zafiro.Avalonia.csproj", "{8DEF02AA-0878-432C-B788-E8B3D24D7B6B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{6F1804E6-2965-4BA3-B5A8-3CB704D34A54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApplication1", "AvaloniaApplication1\AvaloniaApplication1.csproj", "{5C2280CB-4E34-48A1-9A41-8631EB3C010F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApp", "AvaloniaApplication1\SampleApp.csproj", "{5C2280CB-4E34-48A1-9A41-8631EB3C010F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

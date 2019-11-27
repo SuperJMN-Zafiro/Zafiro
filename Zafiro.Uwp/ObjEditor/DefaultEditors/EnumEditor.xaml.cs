@@ -28,13 +28,22 @@ namespace Zafiro.Uwp.Controls.ObjEditor.DefaultEditors
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue?.GetType() == e.OldValue?.GetType())
+           
+            var target = (EnumEditor) d;
+            target.Values = Enum.GetValues(target.Value.GetType());
+            var newValue = e.NewValue;
+            var oldValue = e.OldValue;
+            target.OnValueChanged(oldValue, newValue);
+        }
+
+        private void OnValueChanged(object oldValue, object newValue)
+        {
+            if (newValue?.GetType() == oldValue?.GetType())
             {
                 return;
             }
 
-            var target = (EnumEditor) d;
-            target.Values = Enum.GetValues(target.Value.GetType());
+            Values = Enum.GetValues(Value.GetType());
         }
 
         public object Value

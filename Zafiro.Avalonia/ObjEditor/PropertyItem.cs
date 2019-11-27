@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Zafiro.Avalonia.ObjEditor.TemplateMatchers;
 using Zafiro.Core.Values;
 
 namespace Zafiro.Avalonia.ObjEditor
@@ -20,7 +21,17 @@ namespace Zafiro.Avalonia.ObjEditor
         private readonly PropertyInfo property;
         private readonly IList<object> targets;
 
-        public PropertyItem(PropertyInfo property, IList<object> targets) 
+        private readonly ITemplateMatcher editorTemplateMatcher;
+
+        public PropertyItem()
+        {
+            editorTemplateMatcher = new NameAndTypeTemplateMatcher()
+                .Chain(new TypeTemplateMatcher()
+                    .Chain(new EnumTemplateMatcher()
+                        .Chain(new DefaultTemplateMatcher(this))));
+        }
+
+        public PropertyItem(PropertyInfo property, IList<object> targets) : this()
         {
             this.property = property ?? throw new ArgumentNullException(nameof(property));
             this.targets = targets ?? throw new ArgumentNullException(nameof(targets));
@@ -61,9 +72,7 @@ namespace Zafiro.Avalonia.ObjEditor
 
             var objectEditor = propertyItem.FindAscendant<ObjectEditor>();
             var editorTemplates = objectEditor.Editors;
-            var template = editorTemplates
-                               .FirstOrDefault(e => IsMatch(propertyItem, e))?.Template ??
-                           objectEditor.DefaultEditorTemplate;
+            var template = editorTemplateMatcher.Select(editorTemplates, property);
 
             return (Control)template.Build(propertyItem);
         }

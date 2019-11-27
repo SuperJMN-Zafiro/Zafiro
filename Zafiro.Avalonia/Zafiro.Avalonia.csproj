@@ -12,11 +12,25 @@
     </Compile>
     <AvaloniaResource Include="**\*.xaml;Assets\*" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>
+
+   <ItemGroup>
+     <AvaloniaResource Remove="ObjEditor\EnumEditor.xaml" />
+   </ItemGroup>
+
+   <ItemGroup>
+     <None Remove="ObjEditor\EnumEditor.xaml" />
+   </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.0-preview7" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.0-preview7" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.0-preview7" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="ObjEditor\DefaultEditors\EnumEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:oe="clr-namespace:Zafiro.Avalonia.ObjEditor;assembly=Zafiro.Avalonia"
+        xmlns:de="clr-namespace:Zafiro.Avalonia.ObjEditor.DefaultEditors;assembly=Zafiro.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         xmlns:local="clr-namespace:AvaloniaApplication1"
         x:Class="AvaloniaApplication1.MainWindow"
@@ -28,6 +29,18 @@
                 <oe:EditorKey TargetTypeString="System.Double, mscorlib" />
               </oe:Editor.Key>
             </oe:Editor>
+
+            <oe:Editor>
+              <oe:Editor.Template>
+                <DataTemplate>
+                  <de:EnumEditor Value="{Binding Value, Mode=TwoWay}" />
+                </DataTemplate>
+              </oe:Editor.Template>
+              <oe:Editor.Key>
+                <oe:EditorKey TargetTypeString="System.Enum, mscorlib" />
+              </oe:Editor.Key>
+            </oe:Editor>
+            
           </oe:EditorCollection>
         </oe:ObjectEditor.Editors>
       </oe:ObjectEditor>
