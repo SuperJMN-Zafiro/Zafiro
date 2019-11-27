@@ -1,39 +1,42 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Avalonia;
+using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Markup.Xaml.Templates;
 using Zafiro.Core;
-using Zafiro.Core.Mixins;
 
-namespace Zafiro.Uwp.Controls.ObjEditor
+namespace Zafiro.Avalonia.ObjEditor
 {
-    public class ObjectEditor : Control
+    public class ObjectEditor : TemplatedControl
     {
-        public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
-            "SelectedItems", typeof(object), typeof(ObjectEditor),
-            new PropertyMetadata(default, OnSelectedItemsChanged));
+        public static readonly AvaloniaProperty SelectedItemsProperty = AvaloniaProperty.Register<ObjectEditor, object>(
+            "SelectedItems", null, false, BindingMode.TwoWay);
 
-        public static readonly DependencyProperty PropertyItemsProperty = DependencyProperty.Register(
-            "PropertyItems", typeof(IList<PropertyItem>), typeof(ObjectEditor),
-            new PropertyMetadata(default(IList<PropertyItem>), OnProperyItemsChanged));
+        public static readonly AvaloniaProperty PropertyItemsProperty =
+            AvaloniaProperty.Register<ObjectEditor, IList<PropertyItem>>(
+                "PropertyItems", default, false, BindingMode.TwoWay);
 
-        public static readonly DependencyProperty EditorsProperty = DependencyProperty.Register(
-            "Editors", typeof(EditorCollection), typeof(ObjectEditor), new PropertyMetadata(new EditorCollection()));
+        public static readonly AvaloniaProperty EditorsProperty =
+            AvaloniaProperty.Register<ObjectEditor, EditorCollection>(
+                "Editors", new EditorCollection(), false, BindingMode.TwoWay);
 
-        public static readonly DependencyProperty DefaultEditorTemplateProperty = DependencyProperty.Register(
-            "DefaultEditorTemplate", typeof(DataTemplate), typeof(ObjectEditor),
-            new PropertyMetadata(default(DataTemplate)));
+        public static readonly AvaloniaProperty DefaultEditorTemplateProperty =
+            AvaloniaProperty.Register<ObjectEditor, DataTemplate>(
+                "Editors", null, false, BindingMode.TwoWay);
 
         private CompositeDisposable disposables = new CompositeDisposable();
 
         public ObjectEditor()
         {
-            DefaultStyleKey = typeof(ObjectEditor);
+            SelectedItemsProperty.Changed.Subscribe(args => OnSelectedItemsChanged(args.OldValue, args.NewValue));
+            PropertyItemsProperty.Changed.Subscribe(args =>
+                OnPropertyItemsChanged((IList<PropertyItem>) args.OldValue, (IList<PropertyItem>) args.NewValue));
         }
 
         public IList<PropertyItem> PropertyItems
@@ -58,14 +61,6 @@ namespace Zafiro.Uwp.Controls.ObjEditor
         {
             get => (DataTemplate) GetValue(DefaultEditorTemplateProperty);
             set => SetValue(DefaultEditorTemplateProperty, value);
-        }
-
-        private static void OnSelectedItemsChanged(DependencyObject dependencyObject,
-            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
-        {
-            var target = (ObjectEditor) dependencyObject;
-            target.OnSelectedItemsChanged(dependencyPropertyChangedEventArgs.OldValue,
-                dependencyPropertyChangedEventArgs.NewValue);
         }
 
         private void OnSelectedItemsChanged(object oldValue, object newValue)
@@ -133,13 +128,6 @@ namespace Zafiro.Uwp.Controls.ObjEditor
         private void OnCollectionChanged()
         {
             UpdatePropertyItems((IList<object>) SelectedItems);
-        }
-
-        private static void OnProperyItemsChanged(DependencyObject dependencyObject,
-            DependencyPropertyChangedEventArgs args)
-        {
-            var target = (ObjectEditor) dependencyObject;
-            target.OnPropertyItemsChanged((IList<PropertyItem>) args.OldValue, (IList<PropertyItem>) args.NewValue);
         }
 
         private void OnPropertyItemsChanged(IList<PropertyItem> oldValue, IList<PropertyItem> newValue)

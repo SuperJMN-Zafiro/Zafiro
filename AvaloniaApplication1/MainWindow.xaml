@@ -1,0 +1,36 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oe="clr-namespace:Zafiro.Avalonia.ObjEditor;assembly=Zafiro.Avalonia"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:local="clr-namespace:AvaloniaApplication1"
+        x:Class="AvaloniaApplication1.MainWindow"
+        Title="AvaloniaApplication1">
+
+  <Window.Resources>
+    <local:MyObject x:Key="MyObject"></local:MyObject>
+  </Window.Resources>
+
+  <Grid RowDefinitions="Auto *">
+    <TextBlock Grid.Row="0" Text="Hola" x:Name="TextBlock"></TextBlock>
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
+      <oe:ObjectEditor SelectedItems="{Binding ElementName=TextBlock}">
+        <oe:ObjectEditor.Editors>
+          <oe:EditorCollection>
+            <oe:Editor>
+              <oe:Editor.Template>
+                <DataTemplate>
+                  <NumericUpDown Value="{Binding Value}" />
+                </DataTemplate>
+              </oe:Editor.Template>
+              <oe:Editor.Key>
+                <oe:EditorKey TargetTypeString="System.Double, mscorlib" />
+              </oe:Editor.Key>
+            </oe:Editor>
+          </oe:EditorCollection>
+        </oe:ObjectEditor.Editors>
+      </oe:ObjectEditor>
+    </ScrollViewer>
+  </Grid>
+</Window>
