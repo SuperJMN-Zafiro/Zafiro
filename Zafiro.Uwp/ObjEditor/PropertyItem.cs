@@ -15,11 +15,11 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 {
     public class PropertyItem : Control, INotifyPropertyChanged, IDisposable
     {
+        private readonly CompositeDisposable disposables = new CompositeDisposable();
+        private readonly GroupGetter groupGetter;
+        private readonly GroupSetter groupSetter;
         private readonly PropertyInfo property;
         private readonly IList<object> targets;
-        private readonly GroupSetter groupSetter;
-        private readonly GroupGetter groupGetter;
-        private readonly CompositeDisposable disposables = new CompositeDisposable();
 
         private PropertyItem()
         {
@@ -34,11 +34,12 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             groupSetter = new GroupSetter(property);
             groupGetter = new GroupGetter(property);
             var observables = targets.OfType<INotifyPropertyChanged>().ToList();
-            Subscribe(observables);
+            SubscribeToPropertyChangesOf(observables);
         }
 
-        public Type PropType => property.PropertyType;
-        public string PropName => property.Name;
+        public Type PropertyType => property.PropertyType;
+
+        public string PropertyName => property.Name;
 
         public object Value
         {
@@ -47,6 +48,15 @@ namespace Zafiro.Uwp.Controls.ObjEditor
         }
 
         public FrameworkElement Editor => CreateEditor(this);
+
+        public bool IsExpandable => property.Name == "Shadow";
+
+        public void Dispose()
+        {
+            disposables.Dispose();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private FrameworkElement CreateEditor(PropertyItem propertyItem)
         {
@@ -58,15 +68,16 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             var objectEditor = propertyItem.FindAscendant<ObjectEditor>();
             var editorTemplates = objectEditor.Editors;
             var template = editorTemplates
-                .FirstOrDefault(e => IsMatch(propertyItem, e))?.Template ?? objectEditor.DefaultEditorTemplate;
+                               .FirstOrDefault(e => IsMatch(propertyItem, e))?.Template ??
+                           objectEditor.DefaultEditorTemplate;
 
-            return (FrameworkElement)template.LoadContent();
+            return (FrameworkElement) template.LoadContent();
         }
 
         private static bool IsMatch(PropertyItem propertyItem, Editor e)
         {
-            var matchesPropName = e.Key.PropertyName == null || e.Key.PropertyName == propertyItem.PropName;
-            var matchesType = e.Key.TargetType == propertyItem.PropType;
+            var matchesPropName = e.Key.PropertyName == null || e.Key.PropertyName == propertyItem.PropertyName;
+            var matchesType = e.Key.TargetType == propertyItem.PropertyType;
             return matchesType && matchesPropName;
         }
 
@@ -74,7 +85,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
         {
             return new ObjectEditor
             {
-                SelectedItems = Value ?? CreateNewInstance(),
+                SelectedItems = Value ?? CreateNewInstance()
             };
         }
 
@@ -83,14 +94,12 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             return Activator.CreateInstance(property.PropertyType);
         }
 
-        public bool IsExpandable => property.Name == "Shadow";
-
-        private void Subscribe(IEnumerable<INotifyPropertyChanged> observables)
+        private void SubscribeToPropertyChangesOf(IEnumerable<INotifyPropertyChanged> observables)
         {
             var subscriptions = from observable in observables
                 let subscription =
                     Observable.FromEventPattern<PropertyChangedEventHandler, PropertyChangedEventArgs>(
-                        h => observable.PropertyChanged += h, h => PropertyChanged -= h)
+                            h => observable.PropertyChanged += h, h => PropertyChanged -= h)
                         .Subscribe(args => ObsOnPropertyChanged(args.EventArgs.PropertyName))
                 select subscription;
 
@@ -102,7 +111,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private void ObsOnPropertyChanged(string propertyName)
         {
-            if (PropName == propertyName)
+            if (PropertyName == propertyName)
             {
                 UpdateValue();
             }
@@ -113,16 +122,9 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             OnPropertyChanged(nameof(Value));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public void Dispose()
-        {
-            disposables.Dispose();
         }
     }
 }

@@ -86,7 +86,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
             var commonProperties = allProperties.Count == 1 ? allProperties.First() : allProperties.GetCommon(equalityComparer);
 
             return commonProperties.Select(o => new PropertyItem(o, targets))
-                .OrderBy(item => item.PropName)
+                .OrderBy(item => item.PropertyName)
                 .ToList();
         }
 
