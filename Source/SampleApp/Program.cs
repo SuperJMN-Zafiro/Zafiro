@@ -1,10 +1,10 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Logging.Serilog;
+using SampleApp.DesignerSurfaceDemo;
 using Serilog;
 
-namespace AvaloniaApplication1
+namespace SampleApp
 {
     class Program
     {
@@ -22,7 +22,7 @@ namespace AvaloniaApplication1
         // Your application's entry point. Here you can initialize your MVVM framework, DI
         // container, etc.
         private static void AppMain(Application app, string[] args)
-        { app.Run(new MainWindow());
+        { app.Run(new Window1());
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
                 .CreateLogger();

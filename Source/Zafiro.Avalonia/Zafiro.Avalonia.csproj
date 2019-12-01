@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Zafiro.Avalonia</AssemblyName>
+    <RootNamespace>Zafiro.Avalonia</RootNamespace>
+  </PropertyGroup>
+
+   <ItemGroup>
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <AvaloniaResource Include="**\*.xaml;Assets\*" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.9.0-preview7" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.0-preview7" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.0-preview7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
+  </ItemGroup>
+
+</Project>

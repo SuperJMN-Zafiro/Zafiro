@@ -4,13 +4,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:oe="clr-namespace:Zafiro.Avalonia.ObjEditor;assembly=Zafiro.Avalonia"
         xmlns:de="clr-namespace:Zafiro.Avalonia.ObjEditor.DefaultEditors;assembly=Zafiro.Avalonia"
+        xmlns:sample="clr-namespace:SampleApp"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        xmlns:local="clr-namespace:AvaloniaApplication1"
-        x:Class="AvaloniaApplication1.MainWindow"
+        x:Class="SampleApp.MainWindow"
         Title="AvaloniaApplication1">
 
   <Window.Resources>
-    <local:MyObject x:Key="MyObject"></local:MyObject>
+    <sample:MyObject x:Key="MyObject"></sample:MyObject>
   </Window.Resources>
 
   <Grid RowDefinitions="Auto *">

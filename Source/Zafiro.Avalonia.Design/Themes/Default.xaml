@@ -1,0 +1,6 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <StyleInclude Source="avares://Zafiro.Avalonia.Design/Themes/DesignerSurface.xaml"/>
+  <StyleInclude Source="avares://Zafiro.Avalonia.Design/Themes/DesignerItem.xaml"/>
+  <StyleInclude Source="avares://Zafiro.Avalonia.Design/Themes/DeltaContentControl.xaml"/>
+</Styles>

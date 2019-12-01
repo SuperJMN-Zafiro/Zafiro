@@ -1,4 +1,4 @@
-﻿namespace AvaloniaApplication1
+﻿namespace SampleApp
 {
     public class MyObject
     {

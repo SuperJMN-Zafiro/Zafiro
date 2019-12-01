@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Zafiro.Avalonia</AssemblyName>
-    <RootNamespace>Zafiro.Avalonia</RootNamespace>
+    <AssemblyName>Zafiro.Avalonia.Design</AssemblyName>
+    <RootNamespace>Zafiro.Avalonia.Design</RootNamespace>
   </PropertyGroup>
 
    <ItemGroup>
@@ -13,28 +13,23 @@
     <AvaloniaResource Include="**\*.xaml;Assets\*" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>
 
-   <ItemGroup>
-     <AvaloniaResource Remove="ObjEditor\EnumEditor.xaml" />
-   </ItemGroup>
-
-   <ItemGroup>
-     <None Remove="ObjEditor\EnumEditor.xaml" />
-   </ItemGroup>
-  
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.0-preview7" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.0-preview7" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.0-preview7" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <EmbeddedResource Include="ObjEditor\DefaultEditors\EnumEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Themes\DesignerItem.xaml">
+      <Generator></Generator>
+    </None>
+    <None Update="Themes\DeltaContentControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
 
 </Project>
