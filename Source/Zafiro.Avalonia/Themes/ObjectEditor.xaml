@@ -12,7 +12,8 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="oe:ObjectEditor">
-                    <Border VerticalAlignment="Top" Background="{TemplateBinding Background}"
+                    <Border VerticalAlignment="Top"
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <ItemsControl Items="{TemplateBinding PropertyItems}" />
