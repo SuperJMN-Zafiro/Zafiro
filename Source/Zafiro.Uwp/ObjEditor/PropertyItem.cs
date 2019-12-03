@@ -10,9 +10,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Zafiro.Core.Values;
-using Zafiro.Uwp.Controls.ObjEditor.TemplateMatchers;
+using Zafiro.Uwp.ObjEditor.TemplateMatchers;
 
-namespace Zafiro.Uwp.Controls.ObjEditor
+namespace Zafiro.Uwp.ObjEditor
 {
     public class PropertyItem : Control, INotifyPropertyChanged, IDisposable
     {
@@ -68,12 +68,12 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private FrameworkElement CreateEditor(PropertyItem propertyItem)
         {
-            if (IsExpandable)
-            {
-                return CreateExpandableEditor();
-            }
+            //if (IsExpandable)
+            //{
+            //    return CreateExpandableEditor();
+            //}
 
-            var objectEditor = propertyItem.FindAscendant<ObjectEditor>();
+            var objectEditor = propertyItem.FindAscendant<Uwp.ObjEditor.ObjectEditor>();
             var editorTemplates = objectEditor.Editors;
             var template = editorTemplateMatcher.Select(editorTemplates, property);
 
@@ -82,7 +82,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
 
         private FrameworkElement CreateExpandableEditor()
         {
-            return new ObjectEditor
+            return new Uwp.ObjEditor.ObjectEditor
             {
                 SelectedItems = Value ?? CreateNewInstance()
             };

@@ -6,7 +6,7 @@
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     xmlns:designer="using:Zafiro.Uwp.Designer"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviors="using:Zafiro.Uwp.Controls.Behaviors">
+    xmlns:behaviors="using:Zafiro.Uwp.Behaviors">
 
     <Brush x:Key="DesignerBrush">Transparent</Brush>
     <Brush x:Key="DesignerBorderBrush">#D100F9FF</Brush>

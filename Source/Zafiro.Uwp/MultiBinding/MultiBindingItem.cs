@@ -19,7 +19,7 @@ using Windows.UI.Xaml;
 #endif
 using Windows.UI.Xaml.Data;
 
-namespace Zafiro.Uwp.Controls.MultiBinding
+namespace Zafiro.Uwp.MultiBinding
 {
     /// <summary>
     /// A multiple binding item.

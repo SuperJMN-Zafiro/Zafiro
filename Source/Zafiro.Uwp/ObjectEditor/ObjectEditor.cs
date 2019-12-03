@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using ReactiveUI;
+using Zafiro.Core.ObjectEditor;
+using Zafiro.Core.ObjectEditor.TemplateMatchers;
+using Zafiro.Uwp.ObjEditor;
+
+namespace Zafiro.Uwp.ObjectEditor
+{
+    public class UwpObjectEditor : Control, IObjectEditor<FrameworkElement, DataTemplate>
+    {
+        public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
+            "SelectedItems", typeof(object), typeof(UwpObjectEditor),
+            new PropertyMetadata(default, OnSelectedItemsChanged));
+
+        public static readonly DependencyProperty DefaultEditorTemplateProperty = DependencyProperty.Register(
+            "DefaultEditorTemplate", typeof(DataTemplate), typeof(UwpObjectEditor),
+            new PropertyMetadata(default(DataTemplate)));
+
+        public static readonly DependencyProperty PropertyItemsProperty = DependencyProperty.Register(
+            "PropertyItems", typeof(IList<PropertyItem>), typeof(UwpObjectEditor),
+            new PropertyMetadata(default(IList<PropertyItem>)));
+
+        private readonly ObjectEditorCore<FrameworkElement, DataTemplate> objectEditorCore;
+
+        public UwpObjectEditor()
+        {
+            DefaultStyleKey = typeof(UwpObjectEditor);
+            objectEditorCore = new ObjectEditorCore<FrameworkElement, DataTemplate>(this,
+                (dataTemplate, propertyInfo, targets) => new PropertyItem((FrameworkElement) dataTemplate.LoadContent(), propertyInfo, targets), () => DefaultEditorTemplate);
+
+            objectEditorCore
+                .WhenAnyValue(x => x.PropertyItems)
+                .Subscribe(items => PropertyItems = items?.Cast<PropertyItem>().ToList());
+        }
+
+        public IList<PropertyItem> PropertyItems
+        {
+            get => (IList<PropertyItem>) GetValue(PropertyItemsProperty);
+            set => SetValue(PropertyItemsProperty, value);
+        }
+
+        public EditorCollection<DataTemplate> Editors { get; set; } = new EditorCollection<DataTemplate>();
+
+        public object SelectedItems
+        {
+            get => GetValue(SelectedItemsProperty);
+            set => SetValue(SelectedItemsProperty, value);
+        }
+
+        public DataTemplate DefaultEditorTemplate { get; set; } 
+
+        private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var target = (UwpObjectEditor) d;
+            target.objectEditorCore.OnSelectedItemsChanged(e.NewValue);
+        }
+    }
+}

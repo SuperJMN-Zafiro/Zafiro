@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Windows.UI.Xaml;
 
-namespace Zafiro.Uwp.Controls.Lightweight
+namespace Zafiro.Uwp.Lightweight
 {
     public class ActualSizePropertyProxy : FrameworkElement, INotifyPropertyChanged
     {

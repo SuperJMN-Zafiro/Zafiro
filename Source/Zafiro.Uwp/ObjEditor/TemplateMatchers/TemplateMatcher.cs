@@ -1,7 +1,7 @@
 using System.Reflection;
 using Windows.UI.Xaml;
 
-namespace Zafiro.Uwp.Controls.ObjEditor.TemplateMatchers
+namespace Zafiro.Uwp.ObjEditor.TemplateMatchers
 {
     public abstract class TemplateMatcher : ITemplateMatcher
     {

@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 
-namespace Zafiro.Uwp.Controls
+namespace Zafiro.Uwp
 {
     public static class StorageFileExtensions
     {

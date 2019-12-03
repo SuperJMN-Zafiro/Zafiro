@@ -1,12 +1,11 @@
 using System.Linq;
 using System.Reflection;
-using Windows.UI.Xaml;
 
-namespace Zafiro.Uwp.ObjEditor.TemplateMatchers
+namespace Zafiro.Core.ObjectEditor.TemplateMatchers
 {
-    public class TypeTemplateMatcher : TemplateMatcher
+    public class TypeTemplateMatcher<T> : TemplateMatcher<T> where T : class
     {
-        protected override DataTemplate SelectOverride(EditorCollection editors, PropertyInfo property)
+        protected override T SelectOverride(EditorCollection<T> editors, PropertyInfo property)
         {
             var editorKey = editors.FirstOrDefault(x => x.Key.TargetType == property.PropertyType && x.Key.PropertyName == null);
 

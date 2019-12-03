@@ -23,7 +23,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace Zafiro.Uwp.Controls.MultiBinding
+namespace Zafiro.Uwp.MultiBinding
 {
     /// <summary>
     /// Represents a collection of <see cref="MultiBindingBehavior" />.

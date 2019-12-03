@@ -3,9 +3,11 @@ using System.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Zafiro.Uwp.ObjEditor.DefaultEditors
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+
+namespace Zafiro.Uwp.ObjectEditor.DefaultEditors
 {
-    public sealed partial class EnumEditor : UserControl
+    public sealed partial class EnumEditor
     {
         public EnumEditor()
         {
@@ -13,7 +15,7 @@ namespace Zafiro.Uwp.ObjEditor.DefaultEditors
         }
 
         public static readonly DependencyProperty ValuesProperty = DependencyProperty.Register(
-            "Values", typeof(IEnumerable), typeof(Uwp.ObjectEditor.DefaultEditors.EnumEditor), new PropertyMetadata(default(IEnumerable)));
+            "Values", typeof(IEnumerable), typeof(EnumEditor), new PropertyMetadata(default(IEnumerable)));
 
         public IEnumerable Values
         {
@@ -22,7 +24,7 @@ namespace Zafiro.Uwp.ObjEditor.DefaultEditors
         }
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
-            "Value", typeof(object), typeof(Uwp.ObjectEditor.DefaultEditors.EnumEditor), new PropertyMetadata(default(object), OnValueChanged));
+            "Value", typeof(object), typeof(EnumEditor), new PropertyMetadata(default(object), OnValueChanged));
 
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

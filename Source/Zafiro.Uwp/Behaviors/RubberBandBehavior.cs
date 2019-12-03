@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Microsoft.Xaml.Interactivity;
 
-namespace Zafiro.Uwp.Controls.Behaviors
+namespace Zafiro.Uwp.Behaviors
 {
     public class RubberBandBehavior : Behavior<FrameworkElement>
     {

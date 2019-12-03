@@ -2,7 +2,7 @@ using System.Linq;
 using System.Reflection;
 using Windows.UI.Xaml;
 
-namespace Zafiro.Uwp.Controls.ObjEditor.TemplateMatchers
+namespace Zafiro.Uwp.ObjEditor.TemplateMatchers
 {
     public class NameAndTypeTemplateMatcher : TemplateMatcher
     {

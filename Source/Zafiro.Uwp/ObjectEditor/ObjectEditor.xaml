@@ -1,0 +1,46 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:objectEditor="using:Zafiro.Uwp.ObjectEditor">
+
+    <Style TargetType="objectEditor:UwpObjectEditor">
+        <Setter Property="Background" Value="#CFCFCF" />
+        <Setter Property="DefaultEditorTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBox Text="{Binding Value, Mode=TwoWay}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="objectEditor:UwpObjectEditor">
+                    <Border VerticalAlignment="Top" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ItemsControl
+                            ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PropertyItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Background="White"
+                                        Margin="0,0,0,1">
+                                        <Grid Margin="2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition Width="3*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock FontWeight="Bold" Text="{Binding PropertyName}" VerticalAlignment="Center" Margin="2 0 10 0" TextTrimming="CharacterEllipsis" />
+                                            <ContentControl HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Content="{Binding ValueEditor}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

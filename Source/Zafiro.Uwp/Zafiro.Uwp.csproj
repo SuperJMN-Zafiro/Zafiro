@@ -7,8 +7,8 @@
     <ProjectGuid>{889D7132-88F9-4254-9640-1E38ED419184}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Zafiro.Uwp.Controls</RootNamespace>
-    <AssemblyName>Zafiro.Uwp.Controls</AssemblyName>
+    <RootNamespace>Zafiro.Uwp</RootNamespace>
+    <AssemblyName>Zafiro.Uwp</AssemblyName>
     <DefaultLanguage>es-ES</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>
@@ -115,6 +115,12 @@
     <Compile Include="MultiBinding\MultiBindingBehavior.cs" />
     <Compile Include="MultiBinding\MultiBindingItem.cs" />
     <Compile Include="MultiBinding\MultiBindingItemCollection.cs" />
+    <Compile Include="ObjectEditor\DefaultEditors\EnumEditor.xaml.cs">
+      <DependentUpon>EnumEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ObjectEditor\EditorCollection.cs" />
+    <Compile Include="ObjectEditor\ObjectEditor.cs" />
+    <Compile Include="ObjectEditor\PropertyItem.cs" />
     <Compile Include="ObjEditor\DefaultEditors\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
@@ -148,6 +154,9 @@
     <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
       <Version>2.0.1</Version>
     </PackageReference>
+    <PackageReference Include="ReactiveUI">
+      <Version>10.5.31</Version>
+    </PackageReference>
     <PackageReference Include="Serilog">
       <Version>2.9.0</Version>
     </PackageReference>
@@ -159,6 +168,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ObjectEditor\DefaultEditors\EnumEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ObjEditor\DefaultEditors\EnumEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -166,6 +179,10 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ObjectEditor\ObjectEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 
-namespace Zafiro.Uwp.Controls.Lightweight
+namespace Zafiro.Uwp.Lightweight
 {
     public class Ruler : Control
     {
