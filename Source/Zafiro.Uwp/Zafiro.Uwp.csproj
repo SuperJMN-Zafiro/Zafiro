@@ -118,7 +118,7 @@
     <Compile Include="ObjectEditor\DefaultEditors\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectEditor\EditorCollection.cs" />
+    <Compile Include="ObjectEditor\Editor.cs" />
     <Compile Include="ObjectEditor\ObjectEditor.cs" />
     <Compile Include="ObjectEditor\PropertyItem.cs" />
     <Compile Include="ObjEditor\DefaultEditors\EnumEditor.xaml.cs">

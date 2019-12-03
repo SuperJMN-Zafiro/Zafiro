@@ -10,25 +10,25 @@ using Zafiro.Uwp.ObjEditor;
 
 namespace Zafiro.Uwp.ObjectEditor
 {
-    public class UwpObjectEditor : Control, IObjectEditor<FrameworkElement, DataTemplate>
+    public class ObjectEditor : Control, IObjectEditor<FrameworkElement, DataTemplate>
     {
         public static readonly DependencyProperty SelectedItemsProperty = DependencyProperty.Register(
-            "SelectedItems", typeof(object), typeof(UwpObjectEditor),
+            "SelectedItems", typeof(object), typeof(ObjectEditor),
             new PropertyMetadata(default, OnSelectedItemsChanged));
 
         public static readonly DependencyProperty DefaultEditorTemplateProperty = DependencyProperty.Register(
-            "DefaultEditorTemplate", typeof(DataTemplate), typeof(UwpObjectEditor),
+            "DefaultEditorTemplate", typeof(DataTemplate), typeof(ObjectEditor),
             new PropertyMetadata(default(DataTemplate)));
 
         public static readonly DependencyProperty PropertyItemsProperty = DependencyProperty.Register(
-            "PropertyItems", typeof(IList<PropertyItem>), typeof(UwpObjectEditor),
+            "PropertyItems", typeof(IList<PropertyItem>), typeof(ObjectEditor),
             new PropertyMetadata(default(IList<PropertyItem>)));
 
         private readonly ObjectEditorCore<FrameworkElement, DataTemplate> objectEditorCore;
 
-        public UwpObjectEditor()
+        public ObjectEditor()
         {
-            DefaultStyleKey = typeof(UwpObjectEditor);
+            DefaultStyleKey = typeof(ObjectEditor);
             objectEditorCore = new ObjectEditorCore<FrameworkElement, DataTemplate>(this,
                 (dataTemplate, propertyInfo, targets) => new PropertyItem((FrameworkElement) dataTemplate.LoadContent(), propertyInfo, targets), () => DefaultEditorTemplate);
 
@@ -55,7 +55,7 @@ namespace Zafiro.Uwp.ObjectEditor
 
         private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var target = (UwpObjectEditor) d;
+            var target = (ObjectEditor) d;
             target.objectEditorCore.OnSelectedItemsChanged(e.NewValue);
         }
     }

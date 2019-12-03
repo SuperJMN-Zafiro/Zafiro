@@ -7,7 +7,16 @@ namespace Zafiro.Core.ObjectEditor.TemplateMatchers
     {
         protected override T SelectOverride(EditorCollection<T> editors, PropertyInfo property)
         {
-            return editors.FirstOrDefault(x => x.Key.TargetType == property.PropertyType && x.Key.PropertyName == property.Name)?.Template;
+            var match = editors.FirstOrDefault(x => HasSameTypeAndName(property, x));
+
+            return match?.Template;
+        }
+
+        private static bool HasSameTypeAndName(PropertyInfo property, Editor<T> x)
+        {
+            var sameType = x.Key.TargetType == property.PropertyType;
+            var sameName = x.Key.PropertyName == property.Name;
+            return sameType && sameName;
         }
     }
 }
