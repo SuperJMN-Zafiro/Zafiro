@@ -54,7 +54,7 @@ namespace Zafiro.Avalonia.ObjEditor
 
         public Control Editor => CreateEditor(this);
 
-        public bool IsExpandable => property.Name == "Shadow";
+        public bool IsExpandable => false;
 
         public void Dispose()
         {
@@ -75,13 +75,6 @@ namespace Zafiro.Avalonia.ObjEditor
             var template = editorTemplateMatcher.Select(editorTemplates, property);
 
             return (Control)template.Build(propertyItem);
-        }
-
-        private static bool IsMatch(PropertyItem propertyItem, Editor e)
-        {
-            var matchesPropName = e.Key.PropertyName == null || e.Key.PropertyName == propertyItem.PropertyName;
-            var matchesType = e.Key.TargetType == propertyItem.PropertyType;
-            return matchesType && matchesPropName;
         }
 
         private Control CreateExpandableEditor()
