@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 
 namespace SampleApp
@@ -10,7 +11,7 @@ namespace SampleApp
         {
             InitializeComponent();
 #if DEBUG
-            this.AttachDevTools();
+            this.AttachDevTools(KeyGesture.Parse("F1"));
 #endif
         }
 

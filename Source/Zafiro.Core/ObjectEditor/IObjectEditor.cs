@@ -1,4 +1,5 @@
-﻿using Zafiro.Core.ObjectEditor.TemplateMatchers;
+﻿using System.Collections.Generic;
+using Zafiro.Core.ObjectEditor.TemplateMatchers;
 
 namespace Zafiro.Core.ObjectEditor
 {
@@ -6,6 +7,6 @@ namespace Zafiro.Core.ObjectEditor
     {
         object SelectedItems { get; set; }
         TTemplate DefaultEditorTemplate { get; set; }
-        EditorCollection<TTemplate> Editors { get; set; }
+        EditorCollection<TTemplate> EditorsCore { get; }
     }
 }

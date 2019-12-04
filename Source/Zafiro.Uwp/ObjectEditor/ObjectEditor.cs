@@ -6,7 +6,6 @@ using Windows.UI.Xaml.Controls;
 using ReactiveUI;
 using Zafiro.Core.ObjectEditor;
 using Zafiro.Core.ObjectEditor.TemplateMatchers;
-using Zafiro.Uwp.ObjEditor;
 
 namespace Zafiro.Uwp.ObjectEditor
 {
@@ -51,7 +50,8 @@ namespace Zafiro.Uwp.ObjectEditor
             set => SetValue(SelectedItemsProperty, value);
         }
 
-        public DataTemplate DefaultEditorTemplate { get; set; } 
+        public DataTemplate DefaultEditorTemplate { get; set; }
+        public EditorCollection<DataTemplate> EditorsCore => new EditorCollection<DataTemplate>(Editors.ToList());
 
         private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

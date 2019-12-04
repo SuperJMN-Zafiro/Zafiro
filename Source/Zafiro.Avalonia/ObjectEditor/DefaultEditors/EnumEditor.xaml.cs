@@ -30,12 +30,17 @@ namespace Zafiro.Avalonia.ObjectEditor.DefaultEditors
 
         private void OnValueChanged(object oldValue, object newValue)
         {
-            if (newValue?.GetType() == oldValue?.GetType())
+            if (newValue == null)
             {
                 return;
             }
 
-            Values = Enum.GetValues(Value.GetType());
+            if (newValue.GetType() == oldValue?.GetType())
+            {
+                return;
+            }
+
+            Values = Enum.GetValues(newValue.GetType());
         }
 
         public object Value

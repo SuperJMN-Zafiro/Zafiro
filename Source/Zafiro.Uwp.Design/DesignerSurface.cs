@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using ReactiveUI;
 
-namespace Zafiro.Uwp.Designer
+namespace Zafiro.Uwp.Design
 {
     public sealed class DesignerSurface : ItemsControl
     {

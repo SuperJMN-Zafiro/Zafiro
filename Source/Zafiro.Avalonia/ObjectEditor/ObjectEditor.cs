@@ -38,6 +38,11 @@ namespace Zafiro.Avalonia.ObjectEditor
                     return new PropertyItem(control, propertyInfo, targets);
                 }, () => DefaultEditorTemplate);
 
+            DefaultEditorTemplateProperty.Changed.Subscribe(args =>
+            {
+                objectEditorCore.OnSelectedItemsChanged(SelectedItems);
+            });
+
             SelectedItemsProperty.Changed
                 .Subscribe(x => objectEditorCore.OnSelectedItemsChanged(x.NewValue))
                 .DisposeWith(disposables);
@@ -60,7 +65,8 @@ namespace Zafiro.Avalonia.ObjectEditor
             set => SetValue(DefaultEditorTemplateProperty, value);
         }
 
-        public EditorCollection<DataTemplate> Editors { get; set; } = new EditorCollection<DataTemplate>();
+        public EditorCollection Editors { get; set; } = new EditorCollection();
+        public EditorCollection<DataTemplate> EditorsCore => new EditorCollection<DataTemplate>(Editors.ToList());
 
         public object SelectedItems
         {

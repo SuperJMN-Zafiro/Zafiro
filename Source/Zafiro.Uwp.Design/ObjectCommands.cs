@@ -4,7 +4,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using ReactiveUI;
 
-namespace Zafiro.Uwp.Designer
+namespace Zafiro.Uwp.Design
 {
     public class ObjectCommands : ReactiveObject
     {

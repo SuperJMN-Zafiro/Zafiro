@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 
-namespace Zafiro.Uwp.Designer
+namespace Zafiro.Uwp.Design
 {
     /// <summary>
     /// Class that implements a workaround for a Silverlight XAML parser

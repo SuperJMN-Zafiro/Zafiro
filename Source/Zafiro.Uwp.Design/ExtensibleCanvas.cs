@@ -3,7 +3,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Zafiro.Uwp.Designer
+namespace Zafiro.Uwp.Design
 {
     public class ExtensibleCanvas : Canvas
     {

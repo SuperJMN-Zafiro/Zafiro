@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Data;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -102,7 +104,7 @@ namespace Zafiro.Core.ObjectEditor
 
             return commonProperties.Select(o =>
                 {
-                    var editor = SelectPropertyEditor(o, objectEditor.Editors);
+                    var editor = SelectPropertyEditor(o, objectEditor.EditorsCore);
                     return propertyItemFactory(editor, o, targets);
                 })
                 .OrderBy(item => item.PropertyName)
