@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Zafiro.Uwp.Controls.ObjEditor
+namespace Zafiro.Uwp.ObjEditor
 {
     public class LambdaComparer<T> : IEqualityComparer<T>
     {

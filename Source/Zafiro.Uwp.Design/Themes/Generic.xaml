@@ -4,19 +4,19 @@
     xmlns:converters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
-    xmlns:designer="using:Zafiro.Uwp.Designer"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviors="using:Zafiro.Uwp.Controls.Behaviors">
+    xmlns:behaviors="using:Zafiro.Uwp.Behaviors"
+    xmlns:design="using:Zafiro.Uwp.Design">
 
     <Brush x:Key="DesignerBrush">Transparent</Brush>
     <Brush x:Key="DesignerBorderBrush">#D100F9FF</Brush>
     <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
 
-    <Style TargetType="designer:DesignerSurface">
+    <Style TargetType="design:DesignerSurface">
 
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="designer:DesignerSurface">
+                <ControlTemplate TargetType="design:DesignerSurface">
                     <Border Background="White">
 
                         <ItemsPresenter />
@@ -32,15 +32,15 @@
 
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
-                <Style TargetType="designer:DesignerItem">
-                    <Setter Property="designer:SetterValueBindingHelper.PropertyBinding">
+                <Style TargetType="design:DesignerItem">
+                    <Setter Property="design:SetterValueBindingHelper.PropertyBinding">
                         <Setter.Value>
-                            <designer:SetterValueBindingHelper>
-                                <designer:SetterValueBindingHelper Type="Canvas" Property="Left"
+                            <design:SetterValueBindingHelper>
+                                <design:SetterValueBindingHelper Type="Canvas" Property="Left"
                                                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Left}" />
-                                <designer:SetterValueBindingHelper Type="Canvas" Property="Top"
+                                <design:SetterValueBindingHelper Type="Canvas" Property="Top"
                                                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=Top}" />
-                            </designer:SetterValueBindingHelper>
+                            </design:SetterValueBindingHelper>
                         </Setter.Value>
                     </Setter>
                 </Style>
@@ -58,10 +58,10 @@
 
     </Style>
 
-    <Style TargetType="designer:DeltaContentControl">
+    <Style TargetType="design:DeltaContentControl">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="designer:DeltaContentControl">
+                <ControlTemplate TargetType="design:DeltaContentControl">
                     <Border
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
@@ -77,10 +77,10 @@
     </Style>
 
 
-    <Style TargetType="designer:DesignerItem">
+    <Style TargetType="design:DesignerItem">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="designer:DesignerItem">
+                <ControlTemplate TargetType="design:DesignerItem">
                     <Border>
                         <Border.RenderTransform>
                             <RotateTransform CenterY="0.5" CenterX="0.5" Angle="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Angle}" />
@@ -131,7 +131,7 @@
 
                             <Grid>
                                 <ContentPresenter x:Name="ContentPresenter" IsHitTestVisible="False" />
-                                <designer:DeltaContentControl x:Name="Mover"
+                                <design:DeltaContentControl x:Name="Mover"
                                                               Angle="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Angle}"
                                                               ext:Mouse.Cursor="SizeAll"
                                                               Horizontal="{Binding Path=Left, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
@@ -148,7 +148,7 @@
 
                                 <Grid.Resources>
                                     <Style x:Key="DeltaContentControlStyle"
-                                           TargetType="designer:DeltaContentControl">
+                                           TargetType="design:DeltaContentControl">
                                         <Setter Property="Width" Value="8" />
                                         <Setter Property="Height" Value="8" />
                                         <Setter Property="ContentTemplate">
@@ -162,7 +162,7 @@
                                     </Style>
                                 </Grid.Resources>
 
-                                <designer:DeltaContentControl
+                                <design:DeltaContentControl
                                     DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                     ext:Mouse.Cursor="SizeNorthwestSoutheast"
                                                               Style="{StaticResource DeltaContentControlStyle}"
@@ -171,7 +171,7 @@
                                                               Horizontal="{Binding Width, Mode=TwoWay}"
                                                               Vertical="{Binding Height, Mode=TwoWay}"
                                                               Visibility="{Binding CanResize, Converter={StaticResource BoolToVisibilityConverter}}">
-                                </designer:DeltaContentControl>
+                                </design:DeltaContentControl>
                             </Grid>
                         </Grid>
 

@@ -8,9 +8,8 @@ using System.Reflection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Zafiro.Core;
-using Zafiro.Core.Mixins;
 
-namespace Zafiro.Uwp.Controls.ObjEditor
+namespace Zafiro.Uwp.ObjEditor
 {
     public class ObjectEditor : Control
     {
@@ -79,10 +78,10 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                 targets = list;
                 if (list is INotifyCollectionChanged col)
                 {
-                    Observable.FromEventPattern<NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
+                    System.Reactive.Disposables.DisposableMixins.DisposeWith(Observable
+                        .FromEventPattern<NotifyCollectionChangedEventHandler, NotifyCollectionChangedEventArgs>(
                             h => col.CollectionChanged += h, h => col.CollectionChanged -= h)
-                        .Subscribe(x => OnCollectionChanged())
-                        .DisposeWith(disposables);
+                        .Subscribe(x => OnCollectionChanged()), disposables);
                 }
             }
             else
@@ -123,7 +122,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor
                 new LambdaComparer<PropertyInfo>((a, b) => a.PropertyType == b.PropertyType && a.Name == b.Name);
             var commonProperties = allProperties.Count == 1
                 ? allProperties.First()
-                : allProperties.GetCommon(equalityComparer);
+                : EnumerableExtensions.GetCommon(allProperties, equalityComparer);
 
             return commonProperties.Select(o => new PropertyItem(o, targets))
                 .OrderBy(item => item.PropertyName)

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace Zafiro.Uwp.Designer
+namespace Zafiro.Uwp.Design
 {
     public class DesignerItemCollection : Collection<DesignerItem>
     {

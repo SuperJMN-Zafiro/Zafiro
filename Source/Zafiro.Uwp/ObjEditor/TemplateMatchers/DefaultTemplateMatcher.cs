@@ -2,7 +2,7 @@ using System.Reflection;
 using Windows.UI.Xaml;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 
-namespace Zafiro.Uwp.Controls.ObjEditor.TemplateMatchers
+namespace Zafiro.Uwp.ObjEditor.TemplateMatchers
 {
     internal class DefaultTemplateMatcher : TemplateMatcher
     {
@@ -15,7 +15,7 @@ namespace Zafiro.Uwp.Controls.ObjEditor.TemplateMatchers
 
         protected override DataTemplate SelectOverride(EditorCollection editors, PropertyInfo property)
         {
-            var objEditor = parent.FindAscendant<ObjectEditor>();
+            var objEditor = parent.FindAscendant<Uwp.ObjEditor.ObjectEditor>();
             return objEditor.DefaultEditorTemplate;
         }
     }

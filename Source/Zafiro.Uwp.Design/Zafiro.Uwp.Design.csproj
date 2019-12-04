@@ -7,8 +7,8 @@
     <ProjectGuid>{A8D0162A-4A08-40B0-91D5-E5290C1E8A0D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Zafiro.Uwp.Designer</RootNamespace>
-    <AssemblyName>Zafiro.Uwp.Designer</AssemblyName>
+    <RootNamespace>Zafiro.Uwp.Design</RootNamespace>
+    <AssemblyName>Zafiro.Uwp.Design</AssemblyName>
     <DefaultLanguage>es-ES</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.18362.0</TargetPlatformVersion>

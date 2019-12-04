@@ -2,9 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:oe="clr-namespace:Zafiro.Avalonia.ObjEditor;assembly=Zafiro.Avalonia"
-        xmlns:de="clr-namespace:Zafiro.Avalonia.ObjEditor.DefaultEditors;assembly=Zafiro.Avalonia"
+        xmlns:oe="clr-namespace:Zafiro.Avalonia.ObjectEditor;assembly=Zafiro.Avalonia"
+        xmlns:de="clr-namespace:Zafiro.Avalonia.ObjectEditor.DefaultEditors;assembly=Zafiro.Avalonia"
         xmlns:sample="clr-namespace:SampleApp"
+        xmlns:objectEditor="clr-namespace:Zafiro.Core.ObjectEditor;assembly=Zafiro.Core"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SampleApp.MainWindow"
         Title="AvaloniaApplication1">
@@ -14,10 +15,10 @@
   </Window.Resources>
 
   <Grid RowDefinitions="Auto *">
-    <TextBlock Grid.Row="0" Text="Hola" x:Name="TextBlock"></TextBlock>
+    <TextBlock Grid.Row="0" Text="Hola" x:Name="TextBlock" />
     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
       <oe:ObjectEditor SelectedItems="{Binding ElementName=TextBlock}">
-        <oe:ObjectEditor.Editors>
+               <oe:ObjectEditor.Editors>
           <oe:EditorCollection>
             <oe:Editor>
               <oe:Editor.Template>
@@ -26,18 +27,7 @@
                 </DataTemplate>
               </oe:Editor.Template>
               <oe:Editor.Key>
-                <oe:EditorKey TargetTypeString="System.Double, mscorlib" />
-              </oe:Editor.Key>
-            </oe:Editor>
-
-            <oe:Editor>
-              <oe:Editor.Template>
-                <DataTemplate>
-                  <de:EnumEditor Value="{Binding Value, Mode=TwoWay}" />
-                </DataTemplate>
-              </oe:Editor.Template>
-              <oe:Editor.Key>
-                <oe:EditorKey TargetTypeString="System.Enum, mscorlib" />
+                <objectEditor:EditorKey TargetTypeString="System.Double, mscorlib" />
               </oe:Editor.Key>
             </oe:Editor>
             

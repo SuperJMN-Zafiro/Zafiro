@@ -23,4 +23,19 @@
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ObjectEditor\DefaultEditors\EnumEditor.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ObjectEditor\DefaultEditors\EnumEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="ObjectEditor\ObjectEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+
 </Project>

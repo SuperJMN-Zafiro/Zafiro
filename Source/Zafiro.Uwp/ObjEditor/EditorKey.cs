@@ -1,6 +1,6 @@
 using System;
 
-namespace Zafiro.Uwp.Controls.ObjEditor
+namespace Zafiro.Uwp.ObjEditor
 {
     public class EditorKey
     {
