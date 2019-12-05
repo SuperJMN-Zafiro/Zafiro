@@ -51,7 +51,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <Canvas Background="Transparent" />
+                    <design:ExtensibleCanvas Background="Transparent" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

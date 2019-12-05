@@ -20,7 +20,7 @@
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <Canvas />
+                    <de:ExtensibleCanvas />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
