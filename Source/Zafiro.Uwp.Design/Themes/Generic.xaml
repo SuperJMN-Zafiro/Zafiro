@@ -30,24 +30,6 @@
             </Setter.Value>
         </Setter>
 
-        <Setter Property="ItemContainerStyle">
-            <Setter.Value>
-                <Style TargetType="design:DesignerItem">
-                    <Setter Property="design:SetterValueBindingHelper.PropertyBinding">
-                        <Setter.Value>
-                            <design:SetterValueBindingHelper>
-                                <design:SetterValueBindingHelper Type="Canvas" Property="Left"
-                                                                   Binding="{Binding RelativeSource={RelativeSource Self}, Path=Left}" />
-                                <design:SetterValueBindingHelper Type="Canvas" Property="Top"
-                                                                   Binding="{Binding RelativeSource={RelativeSource Self}, Path=Top}" />
-                            </design:SetterValueBindingHelper>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </Setter.Value>
-
-        </Setter>
-
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -121,9 +103,9 @@
 
                         <animations:Implicit.ShowAnimations>
                             <animations:ScaleAnimation Duration="0:0:1" From="0" To="1" />
-                            
+
                             <!--<animations:TranslationAnimation Duration="0:0:1" From="0, -200, 0" To="0" ></animations:TranslationAnimation>-->
-                            
+
                             <animations:OpacityAnimation Duration="0:0:1" From="0" To="1.0" />
                         </animations:Implicit.ShowAnimations>
 
