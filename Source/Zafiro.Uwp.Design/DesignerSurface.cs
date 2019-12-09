@@ -182,29 +182,31 @@ namespace Zafiro.Uwp.Design
 
         private void SetBindings(DesignerItem di)
         {
+            
             if (LeftBinding != null)
             {
                 di.SetBinding(DesignerItem.LeftProperty, LeftBinding);
+                di.SetBinding(Canvas.LeftProperty, new Binding { Path = new PropertyPath("Left"), Source = di });
             }
 
             if (TopBinding != null)
             {
                 di.SetBinding(DesignerItem.TopProperty, TopBinding);
+                di.SetBinding(Canvas.TopProperty, new Binding { Path = new PropertyPath("Top"), Source = di });
+
             }
 
             if (WidthBinding != null)
             {
                 di.SetBinding(WidthProperty, WidthBinding);
+                di.SetBinding(WidthProperty, new Binding { Path = new PropertyPath("Width"), Source = di });
+
             }
 
             if (HeightBinding != null)
             {
                 di.SetBinding(HeightProperty, HeightBinding);
-            }
-
-            if (AngleBinding != null)
-            {
-                di.SetBinding(DesignerItem.AngleProperty, AngleBinding);
+                di.SetBinding(HeightProperty, new Binding { Path = new PropertyPath("Height"), Source = di });
             }
         }
 
