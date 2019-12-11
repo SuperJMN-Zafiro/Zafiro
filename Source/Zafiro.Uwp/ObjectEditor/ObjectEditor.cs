@@ -42,21 +42,21 @@ namespace Zafiro.Uwp.ObjectEditor
             set => SetValue(PropertyItemsProperty, value);
         }
 
-        public EditorCollection<DataTemplate> Editors { get; set; } = new EditorCollection<DataTemplate>();
-
-        public object SelectedItems
-        {
-            get => GetValue(SelectedItemsProperty);
-            set => SetValue(SelectedItemsProperty, value);
-        }
-
         public DataTemplate DefaultEditorTemplate { get; set; }
+
+        public EditorCollection Editors { get; set; } = new EditorCollection();
         public EditorCollection<DataTemplate> EditorsCore => new EditorCollection<DataTemplate>(Editors.ToList());
 
         private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var target = (ObjectEditor) d;
             target.objectEditorCore.OnSelectedItemsChanged(e.NewValue);
+        }
+
+        public object SelectedItems
+        {
+            get => GetValue(SelectedItemsProperty);
+            set => SetValue(SelectedItemsProperty, value);
         }
     }
 }
