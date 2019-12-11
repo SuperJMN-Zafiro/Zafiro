@@ -12,7 +12,6 @@ namespace Zafiro.Uwp
         {
             var picker = new FileOpenPicker
             {
-                CommitButtonText = title,
                 SuggestedStartLocation = PickerLocationId.DocumentsLibrary
             };
 
@@ -30,7 +29,6 @@ namespace Zafiro.Uwp
         {
             var picker = new FileSavePicker
             {
-                CommitButtonText = title,
                 SuggestedStartLocation = PickerLocationId.DocumentsLibrary
             };
 
