@@ -17,15 +17,6 @@ variables:
 
 steps:
 - task: NuGetToolInstaller@1
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '**/Zafiro.*.csproj'
-    versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '1'
-    minorVersion: '0'
-    patchVersion: '0'
-    includeSymbols: true
     
 - task: NuGetCommand@2
   inputs:
@@ -37,3 +28,13 @@ steps:
     solution: '$(solution)'
     configuration: '$(buildConfiguration)'
     msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
+
+- task: NuGetCommand@2
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/Zafiro.*.csproj'
+    versioningScheme: 'byPrereleaseNumber'
+    majorVersion: '1'
+    minorVersion: '0'
+    patchVersion: '0'
+    includeSymbols: true
