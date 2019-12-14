@@ -32,7 +32,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '**/Zafiro.*.csproj';!**\\*.Tests.csproj'
+    packagesToPack: '**/Zafiro.*.csproj;!**\\*.Tests.csproj'
     versioningScheme: 'byPrereleaseNumber'
     majorVersion: '1'
     minorVersion: '0'
