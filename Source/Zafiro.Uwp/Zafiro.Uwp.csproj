@@ -108,6 +108,8 @@
   <ItemGroup>
     <Compile Include="Behaviors\RubberBandBehavior.cs" />
     <Compile Include="Converters\ByteArrayToImageConverter.cs" />
+    <Compile Include="Converters\PipelineConverter.cs" />
+    <Compile Include="Converters\StringToResourceConverter.cs" />
     <Compile Include="Lightweight\ActualSizePropertyProxy.cs" />
     <Compile Include="Lightweight\RTE.cs" />
     <Compile Include="Lightweight\Ruler.cs" />
