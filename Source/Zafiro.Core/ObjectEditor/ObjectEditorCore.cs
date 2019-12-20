@@ -8,6 +8,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
 using ReactiveUI;
+using Serilog;
 using Zafiro.Core.Mixins;
 using Zafiro.Core.ObjectEditor.TemplateMatchers;
 
@@ -102,11 +103,10 @@ namespace Zafiro.Core.ObjectEditor
                 ? allProperties.First()
                 : allProperties.GetCommon(equalityComparer);
 
-            return commonProperties.Select(o =>
-                {
-                    var editor = SelectPropertyEditor(o, objectEditor.EditorsCore);
-                    return propertyItemFactory(editor, o, targets);
-                })
+            return commonProperties
+                .Select(property => new { Editor = SelectPropertyEditor(property, objectEditor.EditorsCore), Property = property })
+                .Where(tuple => tuple.Editor != null)
+                .Select(tuple => propertyItemFactory(tuple.Editor, tuple.Property, targets))
                 .OrderBy(item => item.PropertyName)
                 .ToList();
         }
