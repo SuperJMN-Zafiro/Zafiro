@@ -22,7 +22,6 @@ namespace Zafiro.Core.Values
                 try
                 {
                     Set(target, value);
-                    //ReplicateValueToParentObjectIfAny(parent, property, finalValue);
                 }
                 catch (Exception e)
                 {
