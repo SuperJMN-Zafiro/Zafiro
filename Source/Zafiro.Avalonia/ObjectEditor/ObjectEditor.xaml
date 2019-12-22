@@ -18,8 +18,8 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <ItemsControl
-                            Items="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PropertyItems}">
+                        <ItemsControl Grid.IsSharedSizeScope="True"
+                                      Items="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PropertyItems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="oe:PropertyItem">
                                     <Border
@@ -27,7 +27,7 @@
                                         Margin="0,0,0,1">
                                         <Grid Margin="2">
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition SharedSizeGroup="PropertyName" Width="Auto" />
                                                 <ColumnDefinition Width="3*" />
                                             </Grid.ColumnDefinitions>
                                             <TextBlock FontWeight="Bold" Text="{Binding PropertyName}" VerticalAlignment="Center" Margin="2 0 10 0" />
