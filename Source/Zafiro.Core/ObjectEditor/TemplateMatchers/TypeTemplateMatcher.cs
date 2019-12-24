@@ -8,7 +8,7 @@ namespace Zafiro.Core.ObjectEditor.TemplateMatchers
     {
         protected override T SelectOverride(EditorCollection<T> editors, PropertyInfo property)
         {
-            var editorKey = editors.FirstOrDefault(x => x.Key.TargetType == property.PropertyType && x.Key.PropertyName == null);
+            var editorKey = editors.FirstOrDefault(x => x.Key.TargetType == property.PropertyType && !x.Key.Properties.Any());
 
             return editorKey?.Template;
         }

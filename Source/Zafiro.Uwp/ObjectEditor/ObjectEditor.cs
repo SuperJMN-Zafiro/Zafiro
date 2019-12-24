@@ -4,6 +4,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using ReactiveUI;
+using Zafiro.Core.Mixins;
 using Zafiro.Core.ObjectEditor;
 using Zafiro.Core.ObjectEditor.TemplateMatchers;
 
@@ -44,8 +45,9 @@ namespace Zafiro.Uwp.ObjectEditor
 
         public DataTemplate DefaultEditorTemplate { get; set; }
 
-        public EditorCollection Editors { get; set; } = new EditorCollection();
-        public EditorCollection<DataTemplate> EditorsCore => new EditorCollection<DataTemplate>(Editors.ToList());
+        public EditorCollection<DataTemplate> EditorsCore => new EditorCollection<DataTemplate>(EditorDefinitions
+            .Select(d => new Editor<DataTemplate>(d.Template, new EditorKey(d.Key.TargetType, d.Key.Properties.ToList())))
+            .ToList());
 
         private static void OnSelectedItemsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -58,5 +60,7 @@ namespace Zafiro.Uwp.ObjectEditor
             get => GetValue(SelectedItemsProperty);
             set => SetValue(SelectedItemsProperty, value);
         }
+
+        public EditorDefinitionCollection EditorDefinitions { get; set; } = new EditorDefinitionCollection();
     }
 }

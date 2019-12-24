@@ -16,7 +16,7 @@ namespace Zafiro.Core.ObjectEditor.TemplateMatchers
         private static bool HasSameTypeAndName(PropertyInfo property, Editor<T> x)
         {
             var sameType = x.Key.TargetType == property.PropertyType;
-            var sameName = x.Key.PropertyName == property.Name;
+            var sameName = x.Key.Properties.Any(propName => string.Equals(propName, property.Name));
             return sameType && sameName;
         }
     }

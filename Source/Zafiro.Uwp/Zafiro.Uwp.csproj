@@ -121,27 +121,12 @@
     <Compile Include="ObjectEditor\DefaultEditors\EnumEditor.xaml.cs">
       <DependentUpon>EnumEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ObjectEditor\Editor.cs" />
-    <Compile Include="ObjectEditor\EditorCollection.cs" />
+    <Compile Include="ObjectEditor\EditorDefinition.cs" />
+    <Compile Include="ObjectEditor\EditorDefinitionCollection.cs" />
+    <Compile Include="ObjectEditor\EditorDefinitionKey.cs" />
     <Compile Include="ObjectEditor\ObjectEditor.cs" />
     <Compile Include="ObjectEditor\PropertyItem.cs" />
-    <Compile Include="ObjEditor\DefaultEditors\EnumEditor.xaml.cs">
-      <DependentUpon>EnumEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ObjEditor\TemplateMatchers\NameAndTypeTemplateMatcher.cs" />
-    <Compile Include="ObjEditor\TemplateMatchers\DefaultTemplateMatcher.cs" />
-    <Compile Include="ObjEditor\Editor.cs" />
-    <Compile Include="ObjEditor\EditorCollection.cs" />
-    <Compile Include="ObjEditor\EditorKey.cs" />
-    <Compile Include="ObjEditor\EnumerableExtensions.cs" />
-    <Compile Include="ObjEditor\TemplateMatchers\EnumTemplateMatcher.cs" />
-    <Compile Include="ObjEditor\TemplateMatchers\ITemplateMatcher.cs" />
-    <Compile Include="ObjEditor\LambdaComparer.cs" />
-    <Compile Include="ObjEditor\ObjectEditor.cs" />
-    <Compile Include="ObjEditor\TemplateMatchers\TemplateMatcher.cs" />
-    <Compile Include="ObjEditor\TemplateMatchers\TypeTemplateMatcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ObjEditor\PropertyItem.cs" />
     <Compile Include="ObservableFileExtensions.cs" />
     <Compile Include="UwpFile.cs" />
     <Compile Include="UwpFilePicker.cs" />
@@ -176,15 +161,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ObjEditor\DefaultEditors\EnumEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ObjectEditor\ObjectEditor.xaml">
+    <Page Include="ResourceDictionaries\ObjectEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

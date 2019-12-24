@@ -16,7 +16,7 @@ namespace Zafiro.Avalonia.ObjectEditor
     public class ObjectEditor : TemplatedControl, IObjectEditor<Control, DataTemplate>
     {
         public static readonly AvaloniaProperty SelectedItemsProperty =
-            AvaloniaProperty.Register<ObjEditor.ObjectEditor, object>(
+            AvaloniaProperty.Register<ObjectEditor, object>(
                 "SelectedItems", null, false, BindingMode.TwoWay);
 
         public static readonly AvaloniaProperty PropertyItemsProperty =
@@ -65,8 +65,8 @@ namespace Zafiro.Avalonia.ObjectEditor
             set => SetValue(DefaultEditorTemplateProperty, value);
         }
 
-        public EditorCollection Editors { get; set; } = new EditorCollection();
-        public EditorCollection<DataTemplate> EditorsCore => new EditorCollection<DataTemplate>(Editors.ToList());
+        public EditorDefinitionCollection EditorDefinitions { get; set; } = new EditorDefinitionCollection();
+        public EditorCollection<DataTemplate> EditorsCore => new EditorCollection<DataTemplate>(EditorDefinitions.Select(definition => new Editor<DataTemplate>(definition.Template, new EditorKey(definition.Key.TargetType, definition.Key.Properties.ToList()))).ToList());
 
         public object SelectedItems
         {
