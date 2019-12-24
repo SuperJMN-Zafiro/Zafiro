@@ -2,74 +2,83 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:de="clr-namespace:Zafiro.Avalonia.Design;assembly=Zafiro.Avalonia.Design">
 
-    <Design.PreviewWith>
-        <Border>
-            <de:DesignerItem Width="200" Height="100">
-                <TextBlock>Hello</TextBlock>
-            </de:DesignerItem>
-        </Border>
-    </Design.PreviewWith>
+  <Design.PreviewWith>
+    <Border>
+      <de:DesignerItem Width="200" Height="100">
+        <TextBlock>Hello</TextBlock>
+      </de:DesignerItem>
+    </Border>
+  </Design.PreviewWith>
 
-    <Style Selector="de|DesignerItem">
-        <Setter Property="Background" Value="Transparent"></Setter>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="de:DesignerItem">
+  <Style Selector="de|DesignerItem">
+    <Setter Property="Background" Value="Transparent"></Setter>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="de:DesignerItem">
 
+          <Border>
 
-                    <Grid>
+            <Border.RenderTransformOrigin>
+              <RelativePoint>0, 0</RelativePoint>
+            </Border.RenderTransformOrigin>
 
-                        <ContentPresenter
-                                Background="{TemplateBinding Background}"
-                                VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                                Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
-                                IsHitTestVisible="False"/>
-                        <de:DeltaContentControl x:Name="Mover"
-                                                    Background="Transparent"
-                                                    DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                                                    Horizontal="{Binding Left, Mode=TwoWay}"
-                                                    Vertical="{Binding Top, Mode=TwoWay}"/>
+            <Border.RenderTransform>
+              <RotateTransform Angle="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Angle}" />
+            </Border.RenderTransform>
 
-                        <Border x:Name="SelectionPart" IsHitTestVisible="False" BorderThickness="1"  />
-                        <Border x:Name="HoverPart" IsHitTestVisible="False" />
+            <Grid>
+              <ContentPresenter
+                  Background="{TemplateBinding Background}"
+                  VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                  Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                  IsHitTestVisible="False" />
+              <de:DeltaContentControl x:Name="Mover"
+                                      Background="Transparent"
+                                      DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                      Horizontal="{Binding Left, Mode=TwoWay}"
+                                      Vertical="{Binding Top, Mode=TwoWay}" />
 
-                        <de:DeltaContentControl x:Name="Resizer"
-                                                Background="White"
-                                                BorderThickness="1"
-                                                BorderBrush="Black"
-                                                Width="14"
-                                                Height="14"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Bottom"
-                                                DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                                                Horizontal="{Binding Width, Mode=TwoWay}"
-                                                Vertical="{Binding Height, Mode=TwoWay}"/>
-                    </Grid>
+              <Border x:Name="SelectionPart" IsHitTestVisible="False" BorderThickness="1" />
+              <Border x:Name="HoverPart" IsHitTestVisible="False" />
 
-                </ControlTemplate>
-            </Setter.Value>
+              <de:DeltaContentControl x:Name="Resizer"
+                                      Background="White"
+                                      BorderThickness="1"
+                                      BorderBrush="Black"
+                                      Width="14"
+                                      Height="14"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Bottom"
+                                      DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                      Horizontal="{Binding Width, Mode=TwoWay}"
+                                      Vertical="{Binding Height, Mode=TwoWay}" />
+            </Grid>
+          </Border>
 
-        </Setter>
-    </Style>
+        </ControlTemplate>
+      </Setter.Value>
 
-    <Style Selector="de|DesignerItem:pointerover /template/ Border#HoverPart">
-        <Setter Property="Background" Value="#4C009BFF"/>
-    </Style>
+    </Setter>
+  </Style>
 
-    <Style Selector="de|DesignerItem:selected /template/ Border#SelectionPart">
-        <Setter Property="BorderBrush" Value="#D100F9FF"/>
-    </Style>
+  <Style Selector="de|DesignerItem:pointerover /template/ Border#HoverPart">
+    <Setter Property="Background" Value="#4C009BFF"/>
+  </Style>
 
-    <Style Selector="de|DesignerItem /template/ de|DeltaContentControl#Resizer">
-        <Setter Property="IsVisible" Value="False"/>
-    </Style>
+  <Style Selector="de|DesignerItem:selected /template/ Border#SelectionPart">
+    <Setter Property="BorderBrush" Value="#D100F9FF"/>
+  </Style>
 
-    <Style Selector="de|DesignerItem:editing /template/ de|DeltaContentControl#Mover">
-        <Setter Property="IsHitTestVisible" Value="False"/>
-    </Style>
+  <Style Selector="de|DesignerItem /template/ de|DeltaContentControl#Resizer">
+    <Setter Property="IsVisible" Value="False"/>
+  </Style>
 
-    <Style Selector="de|DesignerItem:selected /template/ de|DeltaContentControl#Resizer">
-        <Setter Property="IsVisible" Value="True"/>
-    </Style>
+  <Style Selector="de|DesignerItem:editing /template/ de|DeltaContentControl#Mover">
+    <Setter Property="IsHitTestVisible" Value="False"/>
+  </Style>
+
+  <Style Selector="de|DesignerItem:selected /template/ de|DeltaContentControl#Resizer">
+    <Setter Property="IsVisible" Value="True"/>
+  </Style>
 
 </Styles>

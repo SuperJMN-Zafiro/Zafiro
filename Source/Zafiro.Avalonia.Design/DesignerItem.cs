@@ -58,6 +58,15 @@ namespace Zafiro.Avalonia.Design
         public static readonly AvaloniaProperty IsEditingProperty = AvaloniaProperty.Register<DesignerItem, bool>(
             "IsEditing", default, false, BindingMode.TwoWay);
 
+        public static readonly AvaloniaProperty AngleProperty = AvaloniaProperty.Register<DesignerItem, double>(
+            "Angle", default, false, BindingMode.TwoWay);
+
+        public double Angle
+        {
+            get { return (double) GetValue(AngleProperty); }
+            set { SetValue(AngleProperty, value); }
+        }
+
         public bool IsEditing
         {
             get { return (bool) GetValue(IsEditingProperty); }

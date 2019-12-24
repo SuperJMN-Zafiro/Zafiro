@@ -54,6 +54,7 @@ namespace Zafiro.Avalonia.Design
         public Binding TopBinding { get; set; }
         public Binding WidthBinding { get; set; }
         public Binding HeightBinding { get; set; }
+        public Binding AngleBinding { get; set; }
 
         public IEnumerable SelectedItems
         {
@@ -132,17 +133,17 @@ namespace Zafiro.Avalonia.Design
 
         private void SetBindings(DesignerItem containerControl)
         {
-            containerControl.Bind(Canvas.LeftProperty, new Binding("Left") {Source = containerControl});
             containerControl.Bind(DesignerItem.LeftProperty, LeftBinding);
+            containerControl.Bind(Canvas.LeftProperty, new Binding("Left") { Source = containerControl });
 
-            containerControl.Bind(Canvas.TopProperty, new Binding("Top") {Source = containerControl});
             containerControl.Bind(DesignerItem.TopProperty, TopBinding);
+            containerControl.Bind(Canvas.TopProperty, new Binding("Top") {Source = containerControl});
 
-            containerControl.Bind(WidthProperty, new Binding("Width") {Source = containerControl});
             containerControl.Bind(WidthProperty, WidthBinding);
 
-            containerControl.Bind(HeightProperty, new Binding("Height") {Source = containerControl});
             containerControl.Bind(HeightProperty, HeightBinding);
+
+            containerControl.Bind(DesignerItem.AngleProperty, AngleBinding);
         }
     }
 }
