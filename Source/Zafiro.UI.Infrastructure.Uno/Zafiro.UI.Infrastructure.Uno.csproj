@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid80;monoandroid90;uap10.0.17763</TargetFrameworks>
+    <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <Product>Zafiro.UI.Infrastructure.Uno</Product>
+    <Description>Infrastructure for Uno Platform apps</Description>
+    <PackageId>Zafiro.UI.Infrastructure.Uno</PackageId>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <PackageReleaseNotes>Nothing to remark</PackageReleaseNotes>
+    <Version>1.0.0</Version>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <Company>Zafiro.UI.Infrastructure.Uno</Company>
+    <Authors>Zafiro.UI.Infrastructure.Uno</Authors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='xamarinios10' or '$(TargetFramework)'=='monoandroid80' or '$(TargetFramework)'=='monoandroid90' or '$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="Uno.UI" Version="2.1.0-dev.870" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grace" Version="7.1.0" />
+    <PackageReference Include="ReactiveUI.Uno" Version="11.1.12" />
+    <PackageReference Include="Serilog.Sinks.Debug" Version="1.0.1" />
+    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="5.1.0-build.200.gf9c311b069" />
+    <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Uwp.Managed" Version="2.0.1-uno.28" />
+  </ItemGroup>
+
+</Project>
