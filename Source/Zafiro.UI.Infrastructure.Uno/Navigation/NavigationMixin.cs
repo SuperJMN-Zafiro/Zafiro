@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SampleApp.Infrastructure.Navigation
+namespace Zafiro.UI.Infrastructure.Uno.Navigation
 {
     public static class NavigationMixin
     {

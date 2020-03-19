@@ -2,7 +2,7 @@ using System;
 using System.Reactive;
 using Windows.UI.Xaml.Data;
 
-namespace SampleApp.Infrastructure
+namespace Zafiro.UI.Infrastructure.Uno
 {
     public class UnitConverter : IValueConverter
     {

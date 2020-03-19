@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 
-namespace SampleApp.Infrastructure
+namespace Zafiro.UI.Infrastructure.Uno
 {
     public class DialogService : IDialogService
     {

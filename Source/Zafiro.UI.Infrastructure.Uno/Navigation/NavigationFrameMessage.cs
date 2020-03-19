@@ -1,6 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
 
-namespace SampleApp.Infrastructure.Navigation
+namespace Zafiro.UI.Infrastructure.Uno.Navigation
 {
     public class NavigationFrameMessage
     {

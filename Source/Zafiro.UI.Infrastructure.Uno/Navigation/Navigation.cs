@@ -9,7 +9,7 @@ using Grace.DependencyInjection;
 using ReactiveUI;
 using Serilog;
 
-namespace SampleApp.Infrastructure.Navigation
+namespace Zafiro.UI.Infrastructure.Uno.Navigation
 {
     public class Navigation : INavigation
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Grace.DependencyInjection;
-using SampleApp.Infrastructure.Navigation;
 using Serilog;
+using Zafiro.UI.Infrastructure.Uno.Navigation;
 
-namespace SampleApp.Infrastructure
+namespace Zafiro.UI.Infrastructure.Uno
 {
     public abstract class CompositionBase
     {

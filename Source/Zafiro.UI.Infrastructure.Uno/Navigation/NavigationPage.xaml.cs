@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Navigation;
 
-namespace SampleApp.Infrastructure.Navigation
+namespace Zafiro.UI.Infrastructure.Uno.Navigation
 {
     public sealed partial class NavigationPage
     {
