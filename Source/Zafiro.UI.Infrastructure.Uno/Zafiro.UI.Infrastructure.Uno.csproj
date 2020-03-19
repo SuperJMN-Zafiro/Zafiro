@@ -9,7 +9,7 @@
     <PackageId>Zafiro.UI.Infrastructure.Uno</PackageId>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <PackageReleaseNotes>Nothing to remark</PackageReleaseNotes>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Company>Zafiro.UI.Infrastructure.Uno</Company>
     <Authors>Zafiro.UI.Infrastructure.Uno</Authors>
