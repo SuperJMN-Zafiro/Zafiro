@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace Zafiro.UI.Infrastructure.Uno
 {
-    public class BytesToImageSourceConverter : IValueConverter
+    public class ByteArrayToImageSourceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -16,17 +16,19 @@ namespace Zafiro.UI.Infrastructure.Uno
             var image = new BitmapImage();
 
 #if WINDOWS_UWP
-            using (var stream = new InMemoryRandomAccessStream())
+            using (var ms = new InMemoryRandomAccessStream())
             {
-              image.SetSource(stream);
-              var s = stream.AsStreamForWrite();
-              s.Write(bytes, 0, bytes.Length);
+                using (var writer = new DataWriter(ms.GetOutputStreamAt(0)))
+                {
+                    writer.WriteBytes((byte[])value);
+                    writer.StoreAsync().GetResults();
+                }
+
+                image.SetSource(ms);
             }
 #else
-            using (Stream stream = new MemoryStream(bytes))
-            {
-                image.SetSource(stream);
-            }
+            Stream stream = new MemoryStream(bytes);
+            image.SetSource(stream);
 #endif
             return image;
         }
