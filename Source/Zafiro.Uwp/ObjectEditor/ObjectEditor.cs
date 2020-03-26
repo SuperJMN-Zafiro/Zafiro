@@ -4,11 +4,10 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using ReactiveUI;
-using Zafiro.Core.Mixins;
 using Zafiro.Core.ObjectEditor;
 using Zafiro.Core.ObjectEditor.TemplateMatchers;
 
-namespace Zafiro.Uwp.ObjectEditor
+namespace Zafiro.Uwp.Controls.ObjectEditor
 {
     public class ObjectEditor : Control, IObjectEditor<FrameworkElement, DataTemplate>
     {

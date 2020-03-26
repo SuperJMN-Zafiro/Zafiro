@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using Windows.UI.Xaml.Data;
 
-namespace Zafiro.Uwp.Converters
+namespace Zafiro.Uwp.Controls.Converters
 {
     public class PipelineConverter : List<IValueConverter>, IValueConverter
     {

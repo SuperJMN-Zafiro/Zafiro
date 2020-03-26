@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:objectEditor="using:Zafiro.Uwp.ObjectEditor">
+    xmlns:objectEditor="using:Zafiro.Uwp.Controls.ObjectEditor">
 
     <Style TargetType="objectEditor:ObjectEditor">
         <Setter Property="Background" Value="#CFCFCF" />

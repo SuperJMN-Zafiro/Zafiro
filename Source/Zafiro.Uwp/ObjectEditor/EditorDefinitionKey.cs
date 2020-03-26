@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Windows.Foundation.Metadata;
 
-namespace Zafiro.Uwp.ObjectEditor
+namespace Zafiro.Uwp.Controls.ObjectEditor
 {
     [CreateFromString(MethodName = nameof(FromString))]
     public class EditorDefinitionKey

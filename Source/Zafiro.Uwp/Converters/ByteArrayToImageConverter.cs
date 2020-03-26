@@ -3,7 +3,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace Zafiro.Uwp.Converters
+namespace Zafiro.Uwp.Controls.Converters
 {
     public class ByteArrayToImageConverter : IValueConverter
     {

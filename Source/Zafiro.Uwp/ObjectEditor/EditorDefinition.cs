@@ -1,6 +1,6 @@
 ﻿using Windows.UI.Xaml;
 
-namespace Zafiro.Uwp.ObjectEditor
+namespace Zafiro.Uwp.Controls.ObjectEditor
 {
     public class EditorDefinition
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Windows.Storage;
 
-namespace Zafiro.Uwp
+namespace Zafiro.Uwp.Controls
 {
     public static class StorageFileExtensions
     {

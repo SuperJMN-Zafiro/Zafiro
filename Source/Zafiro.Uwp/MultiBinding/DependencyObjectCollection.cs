@@ -18,7 +18,7 @@ using System.Collections.Specialized;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 
-namespace Zafiro.Uwp.MultiBinding
+namespace Zafiro.Uwp.Controls.MultiBinding
 {
     /// <summary>
     /// Represents a collection of <see cref="DependencyObject"/> instances of a specified type.

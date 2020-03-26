@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using Windows.Storage.Pickers;
 using Zafiro.Core.Files;
 
-namespace Zafiro.Uwp
+namespace Zafiro.Uwp.Controls
 {
     public class UwpFilePicker : IFilePicker
     {

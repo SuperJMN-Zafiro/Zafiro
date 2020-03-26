@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Zafiro.Uwp.ObjectEditor
+namespace Zafiro.Uwp.Controls.ObjectEditor
 {
     public class EditorDefinitionCollection : Collection<EditorDefinition>
     {

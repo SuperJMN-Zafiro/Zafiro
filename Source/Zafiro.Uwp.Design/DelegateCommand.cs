@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 
-namespace Zafiro.Uwp.Design
+namespace Zafiro.Uwp.Controls.Design
 {
     public class DelegateCommand : ICommand
     {

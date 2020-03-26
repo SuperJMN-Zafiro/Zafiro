@@ -12,7 +12,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using ReactiveUI;
 
-namespace Zafiro.Uwp.Design
+namespace Zafiro.Uwp.Controls.Design
 {
     public sealed class DesignerSurface : ItemsControl
     {
@@ -157,12 +157,10 @@ namespace Zafiro.Uwp.Design
 
             SetBindings(di);
 
-            di.SelectionRequest
-                .Subscribe(ea => { OnSelectionRequest(di, ea.EventArgs); })
+            ObservableExtensions.Subscribe<EventPattern<TappedRoutedEventArgs>>(di.SelectionRequest, ea => { OnSelectionRequest(di, ea.EventArgs); })
                 .DisposeWith(disposables);
 
-            di.EditRequest
-                .Subscribe(_ => di.IsEditing = true)
+            ObservableExtensions.Subscribe<Unit>(di.EditRequest, _ => di.IsEditing = true)
                 .DisposeWith(disposables);
 
             base.PrepareContainerForItemOverride(element, item);

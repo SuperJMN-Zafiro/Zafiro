@@ -2,7 +2,7 @@
 using System.Collections;
 using Windows.UI.Xaml;
 
-namespace Zafiro.Uwp.ObjectEditor.DefaultEditors
+namespace Zafiro.Uwp.Controls.ObjectEditor.DefaultEditors
 {
     public sealed partial class EnumEditor
     {

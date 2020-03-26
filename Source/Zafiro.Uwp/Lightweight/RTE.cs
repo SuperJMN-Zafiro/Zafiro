@@ -4,7 +4,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Zafiro.Uwp.Lightweight
+namespace Zafiro.Uwp.Controls.Lightweight
 {
     public class RTE : RichEditBox
     {

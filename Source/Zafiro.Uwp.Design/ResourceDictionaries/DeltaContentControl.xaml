@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:design="using:Zafiro.Uwp.Design">
-
+    xmlns:design="using:Zafiro.Uwp.Controls.Design">
 
     <Style TargetType="design:DeltaContentControl">
         <Setter Property="Template">

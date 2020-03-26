@@ -3,7 +3,7 @@ using System.Reactive.Linq;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 
-namespace Zafiro.Uwp
+namespace Zafiro.Uwp.Controls
 {
     public static class ObservableFileExtensions
     {

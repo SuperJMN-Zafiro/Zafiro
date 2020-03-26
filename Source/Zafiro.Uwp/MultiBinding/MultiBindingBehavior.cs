@@ -30,7 +30,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 using Microsoft.Xaml.Interactivity;
 
-namespace Zafiro.Uwp.MultiBinding
+namespace Zafiro.Uwp.Controls.MultiBinding
 {
     /// <summary>
     /// The behavior that enables multiple binding.

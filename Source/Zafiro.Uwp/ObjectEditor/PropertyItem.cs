@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using Windows.UI.Xaml;
-using ReactiveUI;
 using Zafiro.Core.ObjectEditor;
-using Zafiro.Core.Values;
 
-namespace Zafiro.Uwp.ObjectEditor
+namespace Zafiro.Uwp.Controls.ObjectEditor
 {
     public class PropertyItem : PropertyItem<FrameworkElement>
     {

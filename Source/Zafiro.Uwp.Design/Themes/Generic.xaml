@@ -5,14 +5,13 @@
     xmlns:ext="using:Microsoft.Toolkit.Uwp.UI.Extensions"
     xmlns:animations="using:Microsoft.Toolkit.Uwp.UI.Animations"
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
-    xmlns:behaviors="using:Zafiro.Uwp.Behaviors"
     xmlns:design="using:Zafiro.Uwp.Design">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Design/ResourceDictionaries/DeltaContentControl.xaml" />
-        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Design/ResourceDictionaries/DesignerItem.xaml" />
-        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Design/ResourceDictionaries/DesignerSurface.xaml" />
-        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Design/ResourceDictionaries/Ruler.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Controls.Design/ResourceDictionaries/DeltaContentControl.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Controls.Design/ResourceDictionaries/DesignerItem.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Controls.Design/ResourceDictionaries/DesignerSurface.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Controls.Design/ResourceDictionaries/Ruler.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

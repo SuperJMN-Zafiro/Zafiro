@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Globalization;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace Zafiro.Uwp.Converters
+namespace Zafiro.Uwp.Controls.Converters
 {
     public class StringToResourceConverter : IValueConverter
     {
