@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Zafiro.UI.Infrastructure.Uno
+namespace Zafiro.Uno.Infrastructure
 {
     public class Section
     {

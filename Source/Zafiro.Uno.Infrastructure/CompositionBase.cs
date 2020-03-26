@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Grace.DependencyInjection;
 using Serilog;
-using Zafiro.UI.Infrastructure.Uno.Navigation;
+using Zafiro.Uno.Infrastructure.Navigation;
 
-namespace Zafiro.UI.Infrastructure.Uno
+namespace Zafiro.Uno.Infrastructure
 {
     public abstract class CompositionBase
     {

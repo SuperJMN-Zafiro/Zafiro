@@ -3,9 +3,9 @@ using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
-using Zafiro.UI.Infrastructure.Uno.Navigation;
+using Zafiro.Uno.Infrastructure.Navigation;
 
-namespace Zafiro.UI.Infrastructure.Uno
+namespace Zafiro.Uno.Infrastructure
 {
     public class MainViewModel : ReactiveObject
     {
