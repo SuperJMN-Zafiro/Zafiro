@@ -15,7 +15,7 @@
     <Authors>Zafiro.UI.Infrastructure.Uno</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SuperJMN-Zafiro/Zafiro</PackageProjectUrl>
-    <PackageIcon>58861298.png</PackageIcon>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
@@ -40,6 +40,13 @@
     <PackageReference Include="Serilog.Sinks.Debug" Version="1.0.1" />
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="5.1.0-build.200.gf9c311b069" />
     <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Uwp.Managed" Version="2.0.1-uno.28" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

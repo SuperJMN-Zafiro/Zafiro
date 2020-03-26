@@ -5,6 +5,7 @@
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
     <AssemblyName>Zafiro.Uno.Controls.Design</AssemblyName>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
@@ -25,6 +26,10 @@
     <None Remove="DesignerSurface.xaml" />
     <None Remove="Styles\DeltaContentControl.xaml" />
     <None Remove="Styles\DesignerItem.xaml" />
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Remove="DesignerSurface.xaml" />
