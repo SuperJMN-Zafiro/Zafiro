@@ -5,12 +5,14 @@
     <PackageId>Zafiro.Core</PackageId>
     <PackageVersion>2.0.0</PackageVersion>
     <Authors>José Manuel Nieto (@SuperJMN)</Authors>
-    <Description>The Cross-platform XAML Framework</Description>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <Description>The Cross-platform Crema for Windows Devs</Description>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
     <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Version>2.1.0</Version>
+    <Product>Zafiro.Core</Product>
+    <Company>José Manuel Nieto (@SuperJMN)</Company>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="11.0.1" />
