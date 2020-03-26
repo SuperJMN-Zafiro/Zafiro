@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Zafiro.Uno.Infrastructure
+namespace Zafiro.ReactiveUI
 {
     public interface IDialogService
     {

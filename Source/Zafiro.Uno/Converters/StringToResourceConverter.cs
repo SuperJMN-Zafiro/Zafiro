@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace Zafiro.Uno.Controls.Converters
+namespace Zafiro.Uno.Converters
 {
     public class StringToResourceConverter : IValueConverter
     {

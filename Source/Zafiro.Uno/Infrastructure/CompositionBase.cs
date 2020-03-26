@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Grace.DependencyInjection;
 using Serilog;
+using Zafiro.ReactiveUI;
 using Zafiro.Uno.Infrastructure.Navigation;
 
 namespace Zafiro.Uno.Infrastructure

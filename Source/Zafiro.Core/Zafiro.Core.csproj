@@ -11,7 +11,7 @@
     <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Version>2.1.1</Version>
-    <Product>Zafiro.Core</Product>
+    <Product>Zafiro.Uno</Product>
     <Company>José Manuel Nieto (@SuperJMN)</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>

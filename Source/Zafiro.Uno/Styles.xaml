@@ -6,6 +6,10 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="ms-appx:///Zafiro.Uno.Controls/ObjectEditor/ObjectEditor.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uno.Controls.Design/Styles/DesignerSurface.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uno.Controls.Design/Styles/DesignerItem.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uno.Controls.Design/Styles/DeltaContentControl.xaml" />
+
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
