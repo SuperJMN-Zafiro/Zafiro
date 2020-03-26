@@ -8,7 +8,7 @@
     mc:Ignorable="d xamarin">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="ms-appx:///Zafiro.Uwp.Design.Uno/Styles/DesignerItem.xaml" />
+        <ResourceDictionary Source="ms-appx:///Zafiro.Uno.Controls.Design/Styles/DesignerItem.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Brush x:Key="DesignerBrush">Transparent</Brush>
