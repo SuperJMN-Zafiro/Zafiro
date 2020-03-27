@@ -7,7 +7,7 @@ namespace Zafiro.Core.UI
     public static class DialogMixin
     {
         public static IDisposable HandleExceptionsFromCommand<TInput, TOutput>(this IDialogService dialogService,
-            ReactiveCommand<TInput, TOutput> command, string title = null, string message = null)
+            IReactiveCommand command, string title = null, string message = null)
         {
             return command.ThrownExceptions
                 .SelectMany(exception =>
