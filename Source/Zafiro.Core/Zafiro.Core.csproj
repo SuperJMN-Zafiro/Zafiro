@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Zafiro.Core</PackageId>
-    <PackageVersion>2.0.2</PackageVersion>
+    <PackageVersion>2.0.3</PackageVersion>
     <Authors>SuperJMN</Authors>
     <Description>The Cross-platform Crema for Windows Devs</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
@@ -14,7 +14,7 @@
     <Company>José Manuel Nieto (@SuperJMN)</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>2.0.2</Version>
+    <Version>2.0.3</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="11.0.1" />
