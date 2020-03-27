@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Zafiro.Core</PackageId>
-    <PackageVersion>2.0.0</PackageVersion>
+    <PackageVersion>2.0.1</PackageVersion>
     <Authors>José Manuel Nieto (@SuperJMN)</Authors>
     <Description>The Cross-platform Crema for Windows Devs</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>

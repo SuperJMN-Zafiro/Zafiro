@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
-using Zafiro.ReactiveUI;
+using Zafiro.Core.UI;
 
 namespace Zafiro.Uno.Infrastructure
 {
