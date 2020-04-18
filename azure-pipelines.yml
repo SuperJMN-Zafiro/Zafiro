@@ -10,7 +10,8 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'Source\Packages.sln'
+  solution: 'Source\Zafiro.sln'
+  projects: Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj;Source\Zafiro.Uno\Zafiro.Uno.csproj
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
@@ -30,7 +31,7 @@ steps:
 - task: NuGetCommand@2
   inputs:
     command: 'pack'
-    packagesToPack: '$(solution)'
+    packagesToPack: '$(projects)'
     versioningScheme: 'byPrereleaseNumber'
     majorVersion: '2'
     minorVersion: '1'
