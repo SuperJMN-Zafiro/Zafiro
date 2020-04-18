@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using ReactiveUI;
 
 namespace Zafiro.Core.UI
@@ -14,6 +15,18 @@ namespace Zafiro.Core.UI
                 {
                     return Observable.FromAsync(
                         () => dialogService.Show(title ?? "An error has occurred", message ?? exception.Message));
+                }).Subscribe();
+        }
+
+        public static IDisposable HandleExceptionsFromCommand(this IDialogService dialogService,
+            IReactiveCommand command, Func<Exception, (string Title, string Message)> handler)
+        {
+            return command.ThrownExceptions
+                .SelectMany(exception =>
+                {
+                    var props = handler(exception);
+                    return Observable.FromAsync(
+                        () => dialogService.Show(props.Title, props.Message));
                 }).Subscribe();
         }
     }
