@@ -7,13 +7,17 @@ trigger:
 - master
 
 pool:
-  name: 'Default'
+  vmImage: 'windows-latest'
 
 variables:
   solution: 'Source\Zafiro.sln'
   projects: 'Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  major: 2
+  minor: 2
+  patch: $[counter(variables['minor'], 0)] #this will reset when we bump minor
+  NugetVersion: $(major).$(minor).$(patch)
 
 steps:
 - task: NuGetToolInstaller@1
@@ -32,11 +36,8 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '$(projects)'
-    versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '2'
-    minorVersion: '1'
-    patchVersion: '0'
-    includeSymbols: true
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'NugetVersion'
 
 - task: NuGetCommand@2
   inputs:

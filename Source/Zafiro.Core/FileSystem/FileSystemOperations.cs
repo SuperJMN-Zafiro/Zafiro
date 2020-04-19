@@ -53,7 +53,20 @@ namespace Zafiro.Core.FileSystem
         public string WorkingDirectory
         {
             get => Environment.CurrentDirectory;
-            set => Environment.CurrentDirectory = value;
+            set
+            {
+                if (Environment.CurrentDirectory == value)
+                {
+                    return;
+                }
+
+                if (value.Trim().Length == 0)
+                {
+                    return;
+                }
+
+                Environment.CurrentDirectory = value;
+            }
         }
 
         public void WriteAllText(string path, string text)
