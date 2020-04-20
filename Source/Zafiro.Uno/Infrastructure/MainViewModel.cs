@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
+using Zafiro.Core.UI;
 using Zafiro.Uno.Infrastructure.Navigation;
 
 namespace Zafiro.Uno.Infrastructure

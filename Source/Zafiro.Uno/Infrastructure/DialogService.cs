@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
+using Deployer;
 using Zafiro.Core.UI;
 
 namespace Zafiro.Uno.Infrastructure
@@ -10,6 +12,11 @@ namespace Zafiro.Uno.Infrastructure
         public Task Show(string title, string content)
         {
             return new MessageDialog(content) { Title = title }.ShowAsync().AsTask();
+        }
+
+        public Task<Option> Pick(string title, string markdown, IEnumerable<Option> options, string assetBasePath = "")
+        {
+            throw new NotSupportedException();
         }
     }
 }

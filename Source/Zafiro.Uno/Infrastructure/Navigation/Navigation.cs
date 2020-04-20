@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Navigation;
 using Grace.DependencyInjection;
 using ReactiveUI;
 using Serilog;
+using Zafiro.Core.UI;
 
 namespace Zafiro.Uno.Infrastructure.Navigation
 {
