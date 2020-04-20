@@ -11,7 +11,7 @@ pool:
 
 variables:
   solution: 'Source\Zafiro.sln'
-  projects: 'Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj'
+  projects: 'Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj;Source\Zafiro.Wpf\Zafiro.Wpf.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   major: 2
