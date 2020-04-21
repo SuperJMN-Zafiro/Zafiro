@@ -23,5 +23,6 @@ namespace Zafiro.Core.FileSystem
         IEnumerable<string> QueryDirectory(string root, Func<string, bool> selector = null);
         Stream OpenForWrite(string path);
         string GetTempDirectoryName();
+        Stream OpenForRead(string path);
     }
 }

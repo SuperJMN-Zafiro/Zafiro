@@ -29,17 +29,17 @@ namespace Zafiro.Wpf.Services
             }
         }
 
-        private object Locate(string key)
+        private FrameworkElement Locate(string key)
         {
             if (!viewDic.TryGetValue(key, out var viewType))
             {
                 return null;
             }
 
-            return Activator.CreateInstance(viewType);
+            return (FrameworkElement) Activator.CreateInstance(viewType);
         }
 
-        public async Task<DialogResult> Show(string key, string title, object context)
+        public async Task<DialogResult> Show(string key, string title, object vm)
         {
             var dialogWindow = new DialogWindow();
             var options = new List<Option>
@@ -48,10 +48,12 @@ namespace Zafiro.Wpf.Services
                 new Option("Cancel", OptionValue.Cancel)
             };
 
-            var dialogViewModel = new DialogViewModel(title, context, options, dialogWindow);
-            dialogViewModel.Content = Locate(key);
+            var content = Locate(key);
+            var dialogViewModel = new DialogViewModel(title, content, options, dialogWindow);
             dialogWindow.DataContext = dialogViewModel;
 
+            content.DataContext = vm;
+            
             var confirmed = (await dialogWindow.ShowDialogAsync()).HasValue && dialogViewModel.SelectedOption?.OptionValue == OptionValue.OK;
             dialogWindow.Close();
 

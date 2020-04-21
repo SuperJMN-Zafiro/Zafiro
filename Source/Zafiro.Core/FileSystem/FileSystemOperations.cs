@@ -120,20 +120,43 @@ namespace Zafiro.Core.FileSystem
             var fileOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
             var bufferSize = 4096;
 
-            using (var sourceStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize, fileOptions))
-            using (var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize, fileOptions))
+            using (var sourceStream = new FileStream(source, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize,
+                fileOptions))
+            using (var destinationStream = new FileStream(destination, FileMode.Create, FileAccess.Write,
+                FileShare.None, bufferSize, fileOptions))
             {
                 await sourceStream.CopyToAsync(destinationStream, bufferSize).ConfigureAwait(false);
             }
-
         }
 
-        public Task CopyDirectory(string source, string destination, string fileSearchPattern = null, CancellationToken cancellationToken = default)
+        public Task CopyDirectory(string source, string destination, string fileSearchPattern = null,
+            CancellationToken cancellationToken = default)
         {
-            return CopyDirectory(new DirectoryInfo(source), new DirectoryInfo(destination), fileSearchPattern, false, cancellationToken);
+            return CopyDirectory(new DirectoryInfo(source), new DirectoryInfo(destination), fileSearchPattern, false,
+                cancellationToken);
         }
 
-        private async Task CopyDirectory(DirectoryInfo source, DirectoryInfo destination, string fileSearchPattern, bool skipEmptyDirectories, CancellationToken cancellationToken)
+        public void CreateDirectory(string destPath)
+        {
+            if (!IsExistingPath(destPath))
+            {
+                Directory.CreateDirectory(destPath);
+            }
+        }
+
+        public string GetTempDirectoryName()
+        {
+            var randomFilename = Path.GetRandomFileName();
+            return Path.Combine(Path.GetTempPath(), randomFilename);
+        }
+
+        public Stream OpenForRead(string path)
+        {
+            return File.OpenRead(path);
+        }
+
+        private async Task CopyDirectory(DirectoryInfo source, DirectoryInfo destination, string fileSearchPattern,
+            bool skipEmptyDirectories, CancellationToken cancellationToken)
         {
             try
             {
@@ -171,20 +194,6 @@ namespace Zafiro.Core.FileSystem
             Log.Verbose($"Checking path: {{Path}} {status}", path);
 
             return isExistingPath;
-        }
-
-        public void CreateDirectory(string destPath)
-        {
-            if (!IsExistingPath(destPath))
-            {
-                Directory.CreateDirectory(destPath);
-            }
-        }
-
-        public string GetTempDirectoryName()
-        {
-            var randomFilename = Path.GetRandomFileName();
-            return Path.Combine(Path.GetTempPath(), randomFilename);
         }
     }
 }

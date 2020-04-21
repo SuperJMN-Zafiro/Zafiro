@@ -60,6 +60,7 @@
     </Compile>
     <Compile Include="Services\MarkupWindow\MarkupMessageViewModel.cs" />
     <Compile Include="Services\MarkupWindow\OptionViewModel.cs" />
+    <Compile Include="Services\OpenFilePicker.cs" />
     <Compile Include="Services\ViewService.cs" />
     <Compile Include="Services\WpfDialogService.cs" />
     <Page Include="Services\MarkupWindow\DialogWindow.xaml">
@@ -78,7 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="CustomControl1.cs">
+    <Compile Include="FilePickerMixin.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
