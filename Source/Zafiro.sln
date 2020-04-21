@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Uno", "Zafiro.Uno\Za
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zafiro.Wpf", "Zafiro.Wpf\Zafiro.Wpf.csproj", "{0F24E550-CA98-493C-A829-F34F8AD85BFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdown.Xaml", "..\..\..\..\..\..\SuperJMN-Zafiro\Zafiro\Source\Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj", "{34186C3B-C308-4CAE-B462-DB7B5F5E378C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Markdown.Xaml", "Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj", "{34186C3B-C308-4CAE-B462-DB7B5F5E378C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
