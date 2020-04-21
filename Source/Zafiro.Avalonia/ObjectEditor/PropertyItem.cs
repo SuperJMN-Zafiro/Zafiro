@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Avalonia.Controls;
-using Zafiro.Core.ObjectEditor;
+using Zafiro.Core.UI.ObjectEditor;
 
 namespace Zafiro.Avalonia.ObjectEditor
 {

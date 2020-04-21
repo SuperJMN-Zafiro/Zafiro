@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Windows.UI.Xaml;
-using Zafiro.Core.ObjectEditor;
+using Zafiro.Core.UI.ObjectEditor;
 
 namespace Zafiro.Uno.Controls.ObjectEditor
 {

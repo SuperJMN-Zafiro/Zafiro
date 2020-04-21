@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
-using Deployer;
+using Zafiro.Core;
 using Zafiro.Core.UI;
 
 namespace Zafiro.Uno.Infrastructure

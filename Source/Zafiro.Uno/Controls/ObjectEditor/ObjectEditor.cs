@@ -4,8 +4,8 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using ReactiveUI;
-using Zafiro.Core.ObjectEditor;
-using Zafiro.Core.ObjectEditor.TemplateMatchers;
+using Zafiro.Core.UI.ObjectEditor;
+using Zafiro.Core.UI.ObjectEditor.TemplateMatchers;
 
 namespace Zafiro.Uno.Controls.ObjectEditor
 {
