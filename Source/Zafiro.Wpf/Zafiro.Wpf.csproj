@@ -108,7 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj">
-      <Project>{34186c3b-c308-4cae-b462-db7b5f5e378c}</Project>
+      <Project>{ef4ea04a-2f25-450a-8f7b-029cd5a02be0}</Project>
       <Name>Markdown.Xaml</Name>
     </ProjectReference>
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj">
