@@ -8,8 +8,8 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml.Templates;
 using ReactiveUI;
-using Zafiro.Core.ObjectEditor;
-using Zafiro.Core.ObjectEditor.TemplateMatchers;
+using Zafiro.Core.UI.ObjectEditor;
+using Zafiro.Core.UI.ObjectEditor.TemplateMatchers;
 
 namespace Zafiro.Avalonia.ObjectEditor
 {
