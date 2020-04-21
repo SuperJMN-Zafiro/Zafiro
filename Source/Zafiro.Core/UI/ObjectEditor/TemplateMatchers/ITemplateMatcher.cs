@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using System.Reflection;
 
-namespace Zafiro.Core.ObjectEditor.TemplateMatchers
+namespace Zafiro.Core.UI.ObjectEditor.TemplateMatchers
 {
     public interface ITemplateMatcher<T>
     {

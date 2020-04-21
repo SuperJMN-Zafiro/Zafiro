@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows.Input;
+using Zafiro.Core;
 
 namespace Zafiro.Wpf.Services.MarkupWindow
 {

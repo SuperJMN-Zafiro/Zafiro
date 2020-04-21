@@ -1,4 +1,4 @@
-﻿namespace Deployer
+﻿namespace Zafiro.Core
 {
     public class Option
     {

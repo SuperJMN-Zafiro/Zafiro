@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Zafiro.Core.ObjectEditor.TemplateMatchers
+namespace Zafiro.Core.UI.ObjectEditor.TemplateMatchers
 {
     public class EnumTemplateMatcher<T> : TemplateMatcher<T> where T : class
     {

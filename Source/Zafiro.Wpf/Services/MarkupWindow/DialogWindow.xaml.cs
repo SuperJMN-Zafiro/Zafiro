@@ -1,4 +1,6 @@
-﻿namespace Zafiro.Wpf.Services.MarkupWindow
+﻿using Zafiro.Core;
+
+namespace Zafiro.Wpf.Services.MarkupWindow
 {
     /// <summary>
     /// Interaction logic for DialogWindow.xaml

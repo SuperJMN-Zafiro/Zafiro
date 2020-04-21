@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Deployer;
 
 namespace Zafiro.Core.UI
 {

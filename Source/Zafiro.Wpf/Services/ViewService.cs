@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using Deployer;
+using Zafiro.Core;
 using Zafiro.Core.UI;
 using Zafiro.Wpf.Services.MarkupWindow;
 

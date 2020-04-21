@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Wpf.Services.MarkupWindow
+﻿namespace Zafiro.Core
 {
     public interface ICloseable
     {

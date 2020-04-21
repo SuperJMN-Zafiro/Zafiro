@@ -106,12 +106,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj">
+    <ProjectReference Include="..\..\..\Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj">
       <Project>{34186c3b-c308-4cae-b462-db7b5f5e378c}</Project>
       <Name>Markdown.Xaml</Name>
     </ProjectReference>
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj">
-      <Project>{DDA1D6CD-B0A6-4988-9D8B-189F7395F1A8}</Project>
+      <Project>{c6dcc8a4-734e-4fa0-b20e-4b5fda02862d}</Project>
       <Name>Zafiro.Core</Name>
     </ProjectReference>
   </ItemGroup>

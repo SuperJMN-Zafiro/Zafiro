@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Data;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
 using ReactiveUI;
-using Serilog;
 using Zafiro.Core.Mixins;
-using Zafiro.Core.ObjectEditor.TemplateMatchers;
+using Zafiro.Core.UI.ObjectEditor.TemplateMatchers;
 
-namespace Zafiro.Core.ObjectEditor
+namespace Zafiro.Core.UI.ObjectEditor
 {
     public class ObjectEditorCore<TEditor, TTemplate> : ReactiveObject where TTemplate : class
     {

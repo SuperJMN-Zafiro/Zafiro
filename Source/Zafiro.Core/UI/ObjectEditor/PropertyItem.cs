@@ -8,7 +8,7 @@ using System.Reflection;
 using ReactiveUI;
 using Zafiro.Core.Values;
 
-namespace Zafiro.Core.ObjectEditor
+namespace Zafiro.Core.UI.ObjectEditor
 {
     public abstract class PropertyItem<T> : ReactiveObject, IDisposable
     {

@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Windows;
-using Deployer;
+using Zafiro.Core;
 using Zafiro.Core.UI;
 using Zafiro.Wpf.Services.MarkupWindow;
 

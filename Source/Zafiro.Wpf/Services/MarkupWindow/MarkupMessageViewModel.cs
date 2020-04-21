@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using Deployer;
 using ReactiveUI;
+using Zafiro.Core;
 
 namespace Zafiro.Wpf.Services.MarkupWindow
 {
