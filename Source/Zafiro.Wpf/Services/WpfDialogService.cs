@@ -12,7 +12,7 @@ namespace Zafiro.Wpf.Services
 {
     public class WpfDialogService : IDialogService
     {
-        public Task Show(string title, string content)
+        public Task Notice(string title, string content)
         {
             var observable = Observable.Defer<Unit>(() =>
             {
@@ -23,7 +23,7 @@ namespace Zafiro.Wpf.Services
             return observable.ToTask();
         }
 
-        public async Task<Option> Pick(string title, string markdown, IEnumerable<Option> options, string assetBasePath = "")
+        public async Task<Option> Interaction(string title, string markdown, IEnumerable<Option> options, string assetBasePath = "")
         {
             var markdownViewerWindow = new MarkdownViewerWindow();
             Option option;

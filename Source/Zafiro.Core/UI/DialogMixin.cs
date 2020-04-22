@@ -14,7 +14,7 @@ namespace Zafiro.Core.UI
                 .SelectMany(exception =>
                 {
                     return Observable.FromAsync(
-                        () => dialogService.Show(title ?? "An error has occurred", message ?? exception.Message));
+                        () => dialogService.Notice(title ?? "An error has occurred", message ?? exception.Message));
                 }).Subscribe();
         }
 
@@ -26,7 +26,7 @@ namespace Zafiro.Core.UI
                 {
                     var props = handler(exception);
                     return Observable.FromAsync(
-                        () => dialogService.Show(props.Title, props.Message));
+                        () => dialogService.Notice(props.Title, props.Message));
                 }).Subscribe();
         }
     }
