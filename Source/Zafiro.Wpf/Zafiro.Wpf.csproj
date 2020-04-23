@@ -51,6 +51,8 @@
     <Compile Include="AsyncWindowExtension.cs" />
     <Compile Include="BindingProxy.cs" />
     <Compile Include="Converters\CollapseOnNullOrEmpty.cs" />
+    <Compile Include="Services\ISimpleInteraction.cs" />
+    <Compile Include="Services\SimpleInteraction.cs" />
     <Compile Include="Services\MarkupWindow\DialogViewModel.cs" />
     <Compile Include="Services\MarkupWindow\DialogWindow.xaml.cs">
       <DependentUpon>DialogWindow.xaml</DependentUpon>
@@ -61,7 +63,6 @@
     <Compile Include="Services\MarkupWindow\MarkupMessageViewModel.cs" />
     <Compile Include="Services\MarkupWindow\OptionViewModel.cs" />
     <Compile Include="Services\OpenFilePicker.cs" />
-    <Compile Include="Services\ViewService.cs" />
     <Compile Include="Services\WpfDialogService.cs" />
     <Page Include="Services\MarkupWindow\DialogWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

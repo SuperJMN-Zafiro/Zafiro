@@ -15,10 +15,10 @@
 
         <ContentControl Content="{Binding Content}" />
         
-        <ItemsControl Grid.Row="1" Margin="16" ItemsSource="{Binding Options}" DockPanel.Dock="Bottom">
+        <ItemsControl Grid.Row="1" Margin="16" ItemsSource="{Binding Buttons}" DockPanel.Dock="Bottom">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Content="{Binding Option.Name}" Command="{Binding Command}" CommandParameter="{Binding}" MaxWidth="320" />
+                    <Button Content="{Binding Button.Text}" Command="{Binding Command}" MaxWidth="320" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>
