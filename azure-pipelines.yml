@@ -18,6 +18,8 @@ variables:
   minor: 2
   patch: $[counter(variables['minor'], 0)] #this will reset when we bump minor
   NugetVersion: $(major).$(minor).$(patch)
+  packages: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+
 
 steps:
 - checkout: self
@@ -42,9 +44,16 @@ steps:
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'NugetVersion'
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(packages)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
 - task: NuGetCommand@2
+  enabled: false
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    packagesToPush: '$(packages)'
     nuGetFeedType: 'external'
     publishFeedCredentials: 'Nuget'
