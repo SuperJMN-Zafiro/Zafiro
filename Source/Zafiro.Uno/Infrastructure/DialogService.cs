@@ -9,12 +9,12 @@ namespace Zafiro.Uno.Infrastructure
 {
     public class DialogService : IDialogService
     {
-        public Task Show(string title, string content)
+        public Task Notice(string title, string content)
         {
             return new MessageDialog(content) { Title = title }.ShowAsync().AsTask();
         }
 
-        public Task<Option> Pick(string title, string markdown, IEnumerable<Option> options, string assetBasePath = "")
+        public Task<Option> Interaction(string title, string markdown, IEnumerable<Option> options, string assetBasePath = "")
         {
             throw new NotSupportedException();
         }
