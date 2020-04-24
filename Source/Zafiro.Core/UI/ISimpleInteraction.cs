@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Zafiro.Core;
 
-namespace Zafiro.Wpf.Services
+namespace Zafiro.Core.UI
 {
     public interface ISimpleInteraction
     {

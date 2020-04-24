@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Zafiro.Core;
+using Zafiro.Core.UI;
 using Zafiro.Wpf.Services.MarkupWindow;
 
 namespace Zafiro.Wpf.Services

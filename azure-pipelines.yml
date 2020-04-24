@@ -10,8 +10,6 @@ pool:
   vmImage: 'windows-latest'  
 
 variables:
-  solution: 'Source\Zafiro.sln'
-  projects: 'Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj;Source\Zafiro.Wpf\Zafiro.Wpf.csproj'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   major: 2
@@ -19,32 +17,60 @@ variables:
   patch: $[counter(variables['minor'], 0)] #this will reset when we bump minor
   NugetVersion: $(major).$(minor).$(patch)
 
-steps:
-- checkout: self
-  submodules: recursive
+stages:
+  - stage: Stage
+    displayName: WPF
+    jobs:
+    - job: wpf
+      steps:
+        - checkout: self
+          submodules: recursive
+      
+        - task: NuGetToolInstaller@1
+      
+        - task: NuGetCommand@2
+          inputs:
+            restoreSolution: 'Source\Zafiro.sln'
+      
+        - task: VSBuild@1
+          displayName: Build Zafiro.Wpf
+          inputs:
+            solution: 'Source\Zafiro.sln'    
+            platform: '$(buildPlatform)'
+            configuration: '$(buildConfiguration)'
+        
+        - task: NuGetCommand@2
+          displayName: Create Zafiro.Wpf Package
+          inputs:
+            command: 'pack'
+            packagesToPack: 'Source\Zafiro.Wpf\Zafiro.Wpf.nuspec'
+            versioningScheme: 'byEnvVar'
+            versionEnvVar: 'NugetVersion'
+        - task: NuGetCommand@2
+          displayName: Publish packages
+          inputs:
+            command: 'push'
+            packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+            nuGetFeedType: 'external'
+            publishFeedCredentials: 'Nuget'
+    - job: netstd
+      steps:
+      - checkout: self
+        submodules: recursive
+      
+      - task: NuGetToolInstaller@1
+      
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: 'Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj'          
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'NugetVersion'
 
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'    
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'pack'
-    packagesToPack: '$(projects)'
-    versioningScheme: 'byEnvVar'
-    versionEnvVar: 'NugetVersion'
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'Nuget'
+      - task: DotNetCoreCLI@2
+        displayName: Publish packages
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'Nuget'
