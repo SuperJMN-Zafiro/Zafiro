@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Zafiro.Core.Files
@@ -8,5 +9,6 @@ namespace Zafiro.Core.Files
         public abstract Task<Stream> OpenForRead();
         public abstract Task<Stream> OpenForWrite();
         public abstract string Name { get; }
+        public abstract Uri Source { get; }
     }
 }

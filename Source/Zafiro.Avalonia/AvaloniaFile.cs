@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Zafiro.Core.Files;
 
@@ -24,5 +25,6 @@ namespace Zafiro.Avalonia
         }
 
         public override string Name => Path.GetFileName(path);
+        public override Uri Source => new Uri(path);
     }
 }

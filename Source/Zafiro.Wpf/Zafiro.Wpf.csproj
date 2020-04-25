@@ -51,6 +51,8 @@
     <Compile Include="AsyncWindowExtension.cs" />
     <Compile Include="BindingProxy.cs" />
     <Compile Include="Converters\CollapseOnNullOrEmpty.cs" />
+    <Compile Include="Services\DesktopFilePicker.cs" />
+    <Compile Include="DesktopZafiroFile.cs" />
     <Compile Include="Services\SimpleInteraction.cs" />
     <Compile Include="Services\MarkupWindow\DialogViewModel.cs" />
     <Compile Include="Services\MarkupWindow\DialogWindow.xaml.cs">
