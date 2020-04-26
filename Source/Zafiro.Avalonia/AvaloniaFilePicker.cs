@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Zafiro.Core.Files;
+using Zafiro.Core.UI;
 
 namespace Zafiro.Avalonia
 {
@@ -20,16 +21,9 @@ namespace Zafiro.Avalonia
             this.mainWindow = mainWindow;
         }
 
-        public IObservable<ZafiroFile> Pick(string title, string[] extensions)
+        public IObservable<ZafiroFile> Open(string title, IEnumerable<FileTypeFilter> filters)
         {
-            foreach (var ext in extensions)
-            {
-                openDlg.Filters.Add(new FileDialogFilter()
-                {
-                    Name = ext,
-                    Extensions = new List<string> { ext.Substring(1, ext.Length - 1) },
-                });
-            }
+            openDlg.Filters = GetFilters(filters).ToList();
 
             var window = mainWindow.Value;
 
@@ -38,18 +32,20 @@ namespace Zafiro.Avalonia
                 .Select(storageFile => storageFile != null && storageFile.Any() ? new AvaloniaFile(storageFile.First()) : null);
         }
 
-        public IObservable<ZafiroFile> PickSave(string title, KeyValuePair<string, IList<string>>[] extensions)
+        private IEnumerable<FileDialogFilter> GetFilters(IEnumerable<FileTypeFilter> filters)
+        {
+            return filters.Select(x => new FileDialogFilter()
+            {
+                Name = x.Description,
+                Extensions = x.Extensions.Select(e => e.Substring(1, e.Length - 1)).ToList(),
+            });
+        }
+
+        public IObservable<ZafiroFile> Save(string title, IEnumerable<FileTypeFilter> filters)
         {
             saveDlg.Title = title;
 
-            foreach (var ext in extensions)
-            {
-                openDlg.Filters.Add(new FileDialogFilter()
-                {
-                    Name = ext.Key,
-                    Extensions = ext.Value.ToList(),
-                });
-            }
+            openDlg.Filters = GetFilters(filters).ToList();
 
             var window = mainWindow.Value;
 
