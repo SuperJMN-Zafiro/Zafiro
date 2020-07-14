@@ -34,7 +34,7 @@ stages:
             restoreSolution: 'Source\Zafiro.sln'
       
         - task: VSBuild@1
-          displayName: Build Zafiro.Wpf
+          displayName: Build solution with VSBuild
           inputs:
             solution: 'Source\Zafiro.sln'    
             platform: '$(buildPlatform)'
@@ -52,7 +52,7 @@ stages:
           displayName: Create Zafiro.Uno Package
           inputs:
             command: 'pack'
-            packagesToPack: 'Source\Zafiro.Uno\Zafiro.Wpf.csproj'
+            packagesToPack: 'Source\Zafiro.Uno\Zafiro.Uno.csproj'
             versioningScheme: 'byEnvVar'
             versionEnvVar: 'NugetVersion'
 
