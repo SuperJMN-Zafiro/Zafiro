@@ -19,7 +19,7 @@ variables:
 
 stages:
   - stage: Stage
-    displayName: WPF
+    displayName: MS Build projects
     jobs:
     - job: wpf
       steps:
@@ -38,7 +38,7 @@ stages:
             solution: 'Source\Zafiro.sln'    
             platform: '$(buildPlatform)'
             configuration: '$(buildConfiguration)'
-        
+      
         - task: NuGetCommand@2
           displayName: Create Zafiro.Wpf Package
           inputs:
@@ -46,6 +46,15 @@ stages:
             packagesToPack: 'Source\Zafiro.Wpf\Zafiro.Wpf.nuspec'
             versioningScheme: 'byEnvVar'
             versionEnvVar: 'NugetVersion'
+
+        - task: NuGetCommand@2
+          displayName: Create Zafiro.Uno Package
+          inputs:
+            command: 'pack'
+            packagesToPack: 'Source\Zafiro.Uno\Zafiro.Wpf.csproj'
+            versioningScheme: 'byEnvVar'
+            versionEnvVar: 'NugetVersion'
+
         - task: NuGetCommand@2
           displayName: Publish packages
           inputs:
