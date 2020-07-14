@@ -72,7 +72,7 @@ stages:
       - task: DotNetCoreCLI@2
         inputs:
           command: 'pack'
-          packagesToPack: 'Source\Zafiro.Uno\Zafiro.Uno.csproj;Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj'          
+          packagesToPack: 'Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj'          
           versioningScheme: 'byEnvVar'
           versionEnvVar: 'NugetVersion'
 
