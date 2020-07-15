@@ -47,13 +47,12 @@ stages:
             versioningScheme: 'byEnvVar'
             versionEnvVar: 'NugetVersion'
 
-        - task: NuGetCommand@2
-          displayName: Create Zafiro.Uno Package
+        - task: MSBuild@1
           inputs:
-            command: 'pack'
-            packagesToPack: 'Source\Zafiro.Uno\Zafiro.Uno.csproj'
-            versioningScheme: 'byEnvVar'
-            versionEnvVar: 'NugetVersion'
+            solution: 'Source\Zafiro.Uno\Zafiro.Uno.csproj'
+            msbuildArchitecture: 'x64'
+            configuration: 'Release'
+            msbuildArguments: '-t:pack'
 
         - task: DotNetCoreCLI@2
           inputs:
