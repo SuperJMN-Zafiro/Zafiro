@@ -11,16 +11,16 @@
     <Product>Zafiro.Uno</Product>
     <Description>Goodies for Uno Platform</Description>
     <PackageId>Zafiro.Uno</PackageId>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes>Nothing</PackageReleaseNotes>
-    <Version>2.2.36</Version>
+    <Version>2.2.52</Version>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Company>SuperJMN</Company>
     <Authors>SuperJMN</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/SuperJMN-Zafiro/Zafiro</PackageProjectUrl>
-    <FileVersion>2.2.36</FileVersion>
-    <AssemblyVersion>2.2.36</AssemblyVersion>
+    <FileVersion>2.2.52</FileVersion>
+    <AssemblyVersion>2.2.52</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">

@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Zafiro.Avalonia</AssemblyName>
     <RootNamespace>Zafiro.Avalonia</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
    <ItemGroup>
