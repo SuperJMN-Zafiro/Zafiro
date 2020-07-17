@@ -9,12 +9,12 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
     <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>Zafiro.Core</Product>
     <Company>José Manuel Nieto (@SuperJMN)</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>2.0.4</Version>
+    <Version>2.2.52</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="11.4.17" />

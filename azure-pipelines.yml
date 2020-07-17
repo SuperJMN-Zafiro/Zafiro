@@ -19,26 +19,37 @@ variables:
 
 stages:
   - stage: Stage
-    displayName: WPF
+    displayName: Build and publish
     jobs:
-    - job: wpf
+    - job: job
       steps:
         - checkout: self
           submodules: recursive
       
         - task: NuGetToolInstaller@1
+          displayName: 'Install NuGet'
       
         - task: NuGetCommand@2
+          displayName: 'Restore packages'
           inputs:
             restoreSolution: 'Source\Zafiro.sln'
       
-        - task: VSBuild@1
-          displayName: Build Zafiro.Wpf
+        - task: MSBuild@1
+          displayName: 'Build solution in $(buildConfiguration) | $(buildPlatform)'
           inputs:
-            solution: 'Source\Zafiro.sln'    
-            platform: '$(buildPlatform)'
-            configuration: '$(buildConfiguration)'
-        
+            solution: 'Source\Zafiro.sln'
+            msbuildLocationMethod: version
+            msbuildVersion: latest
+            msbuildArchitecture: x86
+            configuration: $(buildConfiguration)
+            platform: $(buildPlatform)
+            clean: false
+            maximumCpuCount: true
+            restoreNugetPackages: false
+            logProjectEvents: false
+            createLogFile: false
+            msbuildArguments: /p:PackageVersion=$(NugetVersion) # Set the version of the packages, will have no effect on application projects (Heads).
+
         - task: NuGetCommand@2
           displayName: Create Zafiro.Wpf Package
           inputs:
@@ -46,6 +57,7 @@ stages:
             packagesToPack: 'Source\Zafiro.Wpf\Zafiro.Wpf.nuspec'
             versioningScheme: 'byEnvVar'
             versionEnvVar: 'NugetVersion'
+
         - task: NuGetCommand@2
           displayName: Publish packages
           inputs:
@@ -53,24 +65,3 @@ stages:
             packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
             nuGetFeedType: 'external'
             publishFeedCredentials: 'Nuget'
-    - job: netstd
-      steps:
-      - checkout: self
-        submodules: recursive
-      
-      - task: NuGetToolInstaller@1
-      
-      - task: DotNetCoreCLI@2
-        inputs:
-          command: 'pack'
-          packagesToPack: 'Source\Zafiro.Core\Zafiro.Core.csproj;Source\Zafiro.Avalonia\Zafiro.Avalonia.csproj;Source\Zafiro.Avalonia.Design\Zafiro.Avalonia.Design.csproj'          
-          versioningScheme: 'byEnvVar'
-          versionEnvVar: 'NugetVersion'
-
-      - task: NuGetCommand@2
-        displayName: Publish packages
-        inputs:
-          command: 'push'
-          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-          nuGetFeedType: 'external'
-          publishFeedCredentials: 'Nuget'
