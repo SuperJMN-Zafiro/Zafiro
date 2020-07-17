@@ -19,16 +19,18 @@ variables:
 
 stages:
   - stage: Stage
-    displayName: WPF
+    displayName: Build and publish
     jobs:
-    - job: wpf
+    - job: job
       steps:
         - checkout: self
           submodules: recursive
       
         - task: NuGetToolInstaller@1
+          displayName: 'Install NuGet'
       
         - task: NuGetCommand@2
+          displayName: 'Restore packages'
           inputs:
             restoreSolution: 'Source\Zafiro.sln'
       
