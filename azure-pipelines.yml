@@ -32,20 +32,22 @@ stages:
           inputs:
             restoreSolution: 'Source\Zafiro.sln'
       
-        - task: VSBuild@1
-          displayName: Build Zafiro.Wpf
+        - task: MSBuild@1
+          displayName: 'Build solution in $(ApplicationConfiguration) | $(ApplicationPlatform)'
           inputs:
-            solution: 'Source\Zafiro.sln'    
-            platform: '$(buildPlatform)'
-            configuration: '$(buildConfiguration)'
-        
-        - task: NuGetCommand@2
-          displayName: Create Zafiro.Wpf Package
-          inputs:
-            command: 'pack'
-            packagesToPack: 'Source\Zafiro.Wpf\Zafiro.Wpf.nuspec'
-            versioningScheme: 'byEnvVar'
-            versionEnvVar: 'NugetVersion'
+            solution: 'Source\Zafiro.sln'
+            msbuildLocationMethod: version
+            msbuildVersion: latest
+            msbuildArchitecture: x86
+            configuration: $(buildConfiguration)
+            platform: $(buildPlatform)
+            clean: false
+            maximumCpuCount: true
+            restoreNugetPackages: false
+            logProjectEvents: false
+            createLogFile: false
+            msbuildArguments: /p:PackageVersion=$(NugetVersion) # Set the version of the packages, will have no effect on application projects (Heads).
+
         - task: NuGetCommand@2
           displayName: Publish packages
           inputs:
@@ -53,6 +55,7 @@ stages:
             packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
             nuGetFeedType: 'external'
             publishFeedCredentials: 'Nuget'
+
     - job: netstd
       steps:
       - checkout: self
