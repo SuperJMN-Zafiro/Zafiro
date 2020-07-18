@@ -46,8 +46,8 @@ stages:
         
         - task: CopyFiles@2
           inputs:
-            SourceFolder: '$(Agent.BuildDirectory)'
-            Contents: '**\Zafiro.*\*.nupkg'
+            SourceFolder: 'Source'
+            Contents: '**\*.nupkg'
             TargetFolder: '$(build.artifactstagingdirectory)'
             flattenFolders: true
 
