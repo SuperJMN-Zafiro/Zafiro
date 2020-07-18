@@ -49,7 +49,7 @@ stages:
             SourceFolder: '$(Agent.BuildDirectory)'
             Contents: |
               **/*.nupkg
-              !**/Markdown.XAML/*
+              !Markdown.XAML/*
             TargetFolder: '$(build.artifactstagingdirectory)'
             flattenFolders: true
 
