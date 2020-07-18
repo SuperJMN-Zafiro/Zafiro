@@ -44,6 +44,12 @@ stages:
             platform: $(buildPlatform)
             msbuildArguments: /p:PackageVersion=$(NugetVersion) # Set the version of the packages, will have no effect on application projects (Heads).
 
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: 'Copy Packages to Staging'
+            Contents: 'Source/**/*.nupkg'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
         - task: NuGetCommand@2
           displayName: Create Zafiro.Wpf Package
           inputs:
@@ -56,6 +62,6 @@ stages:
           displayName: Publish packages
           inputs:
             command: 'push'
-            packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+            packagesToPush: '**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
             nuGetFeedType: 'external'
             publishFeedCredentials: 'Nuget'
