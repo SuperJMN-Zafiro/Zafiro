@@ -47,8 +47,11 @@ stages:
         - task: CopyFiles@2
           inputs:
             SourceFolder: '$(Agent.BuildDirectory)'
-            Contents: '**/*.nupkg'
+            Contents: |
+              **/*.nupkg
+              !**/Markdown.XAML/*
             TargetFolder: '$(build.artifactstagingdirectory)'
+            flattenFolders: true
 
         - task: PublishBuildArtifacts@1
           displayName: 'Publish artifact $(ApplicationConfiguration)'
