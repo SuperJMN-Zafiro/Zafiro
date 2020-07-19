@@ -1,5 +1,5 @@
  - checkout: self
- submodules: recursive
+    submodules: recursive
       
 - task: NuGetToolInstaller@1
     displayName: 'Install NuGet'
