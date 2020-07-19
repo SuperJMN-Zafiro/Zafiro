@@ -22,4 +22,4 @@ stages:
     jobs:
     - job: job
       steps:
-       - template: build.yml
+       - template: stage-build.yml
