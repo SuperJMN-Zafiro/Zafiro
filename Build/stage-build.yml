@@ -1,4 +1,5 @@
- - checkout: self
+steps:
+- checkout: self
     submodules: recursive
       
 - task: NuGetToolInstaller@1
