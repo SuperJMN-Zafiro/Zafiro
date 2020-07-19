@@ -9,8 +9,8 @@ trigger:
 pool: Default
 
 variables:
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  BuildPlatform: 'Any CPU'
+  BuildConfiguration: 'Release'
   major: 2
   minor: 2
   patch: $[counter(variables['minor'], 0)] #this will reset when we bump minor
@@ -22,4 +22,37 @@ stages:
     jobs:
     - job: job
       steps:
-       - template: stage-build.yml
+      - checkout: self
+        submodules: recursive            
+      - task: NuGetToolInstaller@1
+        displayName: 'Install NuGet'
+
+      - task: NuGetCommand@2
+        displayName: 'Restore packages'
+        inputs:
+          restoreSolution: 'Source\Zafiro.sln'
+          
+      - task: MSBuild@1
+        displayName: 'Build solution in $(BuildConfiguration) | $(BuildPlatform)'
+        inputs:
+          solution: 'Source\Zafiro.sln'
+          msbuildLocationMethod: version
+          msbuildVersion: latest
+          msbuildArchitecture: x86
+          configuration: $(BuildConfiguration)
+          platform: $(BuildPlatform)
+          msbuildArguments: /p:PackageVersion=$(NugetVersion) # Set the version of the packages, will have no effect on application projects (Heads).
+              
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: 'Source'
+          Contents: '**\Zafiro*.nupkg'
+          TargetFolder: '$(build.artifactstagingdirectory)'
+          flattenFolders: true
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish artifact $(ApplicationConfiguration)'
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'Nuget Packages'
+          publishLocation: 'Container'
