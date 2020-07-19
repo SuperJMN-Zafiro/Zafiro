@@ -59,7 +59,7 @@ stages:
           publishLocation: 'Container'
 
   - stage: Release
-    condition: and(succeeded())
+    condition: succeeded()
     jobs:
     - job: Publish_NuGet_External
   
