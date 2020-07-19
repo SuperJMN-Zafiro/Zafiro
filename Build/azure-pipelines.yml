@@ -15,6 +15,7 @@ variables:
   minor: 2
   patch: $[counter(variables['minor'], 0)] #this will reset when we bump minor
   NugetVersion: $(major).$(minor).$(patch)
+  ArtifactName: 'Nuget Packages'
 
 stages:
   - stage: Stage
@@ -54,5 +55,33 @@ stages:
         displayName: 'Publish artifact $(ApplicationConfiguration)'
         inputs:
           PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-          ArtifactName: 'Nuget Packages'
+          ArtifactName: $(ArtifactName)
           publishLocation: 'Container'
+
+  - stage: Release
+    condition: and(succeeded())
+    jobs:
+    - job: Publish_NuGet_External
+  
+    pool:
+      name: Default
+
+      steps:        
+      - checkout: none
+
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          buildType: current
+          downloadType: single
+          artifactName: $(ArtifactName)
+
+      - task: NuGetToolInstaller@1
+        displayName: 'Install NuGet'
+
+      - task: NuGetCommand@2
+        displayName: Publish packages
+        inputs:
+          command: 'push'
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+          nuGetFeedType: 'external'
+          publishFeedCredentials: 'Nuget'
