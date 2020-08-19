@@ -17,14 +17,17 @@
     <Version>2.2.52</Version>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="NodaTime" Version="3.0.0" />
     <PackageReference Include="ReactiveUI" Version="11.4.17" />
     <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="Intervals\Pricing.Api.csproj" />
   </ItemGroup>
 
 </Project>
