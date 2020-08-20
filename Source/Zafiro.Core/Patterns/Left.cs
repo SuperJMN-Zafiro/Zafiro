@@ -35,5 +35,7 @@ namespace Zafiro.Core.Patterns
         {
             return map(Value);
         }
+
+        public override bool IsRight => false;
     }
 }
