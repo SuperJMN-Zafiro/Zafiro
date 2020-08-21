@@ -1,4 +1,5 @@
 using System;
+using Optional;
 
 namespace Zafiro.Core.Patterns
 {
@@ -9,7 +10,11 @@ namespace Zafiro.Core.Patterns
             Value = value;
         }
 
-        public TRight Value { get; }
+        private TRight Value { get; }
+
+        public override bool IsRight => true;
+        public override Option<TLeft> LeftValue => Optional.Option.None<TLeft>();
+        public override Option<TRight> RightValue => Value.Some();
 
         public override Either<TLeft, TNewRight> MapSuccess<TNewRight>(Func<TRight, TNewRight> map)
         {
@@ -35,7 +40,5 @@ namespace Zafiro.Core.Patterns
         {
             return Value;
         }
-
-        public override bool IsRight => true;
     }
 }

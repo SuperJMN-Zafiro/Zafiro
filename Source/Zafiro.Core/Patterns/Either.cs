@@ -1,4 +1,5 @@
 using System;
+using Optional;
 
 namespace Zafiro.Core.Patterns
 {
@@ -23,6 +24,9 @@ namespace Zafiro.Core.Patterns
         {
             return new Right<TLeft, TRight>(right);
         }
+
+        public abstract Option<TLeft> LeftValue { get; }
+        public abstract Option<TRight> RightValue { get; }
     }
 
     public static class Either
