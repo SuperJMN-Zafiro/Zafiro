@@ -17,6 +17,7 @@
     <Version>2.2.52</Version>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="NodaTime" Version="3.0.0" />
     <PackageReference Include="Optional" Version="4.0.0" />
     <PackageReference Include="ReactiveUI" Version="11.4.17" />
