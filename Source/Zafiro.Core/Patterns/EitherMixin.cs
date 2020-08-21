@@ -7,24 +7,33 @@ namespace Zafiro.Core.Patterns
 {
     public static class EitherMixin
     {
-        public static Either<IEnumerable<TError>, T> Combine<T, TError>(this Either<IEnumerable<TError>, T> ea, Either<IEnumerable<TError>, T> eb,
-            Func<T, T, Either<IEnumerable<TError>, T>> map)
-        {
-            return ea
+        public static Either<IEnumerable<TLeft>, TRight> Combine<TLeft, TRight>(this Either<IEnumerable<TLeft>, TRight> ea, Either<IEnumerable<TLeft>, TRight> eb,
+            Func<TRight, TRight, Either<IEnumerable<TLeft>, TRight>> map) =>
+            ea
                 .MapError(el1 => eb
                     .MapError(el1.Concat)
-                    .MapSuccess(_ => Either.Error<IEnumerable<TError>, T>(el1)))
+                    .MapSuccess(_ => Either.Error<IEnumerable<TLeft>, TRight>(el1)))
                 .MapSuccess(x => eb
                     .MapSuccess(y => map(x, y))
                     .MapError(el => el));
-        }
 
-        public static Either<TError, TValue> Map<TError, TValue>(this IEnumerable<Either<TError, TValue>> eithers, Func<IEnumerable<TValue>, Either<TError, TValue>> mapSuccess, Func<IEnumerable<TError>, Either<TError, TValue>> mapError)
+        public static Either<TLeft, TRight> Combine<TLeft, TRight>(
+            this Either<TLeft, TRight> ea,
+            Either<TLeft, TRight> eb,
+            Func<TRight, TRight, Either<TLeft, TRight>> mapSuccess, Func<TLeft, TLeft, TLeft> combineError) => ea
+            .MapError(el1 => eb
+                .MapError(el2 => combineError(el1, el2))
+                .MapSuccess(_ => Either.Error<TLeft, TRight>(el1)))
+            .MapSuccess(x => eb
+                .MapSuccess(y => mapSuccess(x, y))
+                .MapError(el => el));
+
+        public static Either<TLeft, TRight> Map<TLeft, TRight>(this IEnumerable<Either<TLeft, TRight>> eithers, Func<IEnumerable<TRight>, Either<TLeft, TRight>> mapSuccess, Func<IEnumerable<TLeft>, Either<TLeft, TRight>> mapError)
         {
-            return Map<TError, TValue, TValue>(eithers, mapSuccess, mapError);
+            return Map<TLeft, TRight, TRight>(eithers, mapSuccess, mapError);
         }
 
-        public static Either<TError, TDest> Map<TError, TSource, TDest>(this IEnumerable<Either<TError, TSource>> eithers, Func<IEnumerable<TSource>, Either<TError, TDest>> mapSuccess, Func<IEnumerable<TError>, Either<TError, TDest>> mapError)
+        public static Either<TLeft, TNewRight> Map<TLeft, TRight, TNewRight>(this IEnumerable<Either<TLeft, TRight>> eithers, Func<IEnumerable<TRight>, Either<TLeft, TNewRight>> mapSuccess, Func<IEnumerable<TLeft>, Either<TLeft, TNewRight>> mapError)
         {
             var partition = eithers.Partition(either => either.IsRight);
 
