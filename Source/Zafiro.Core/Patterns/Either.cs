@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
 using Optional;
 using Optional.Linq;
 
@@ -40,6 +42,22 @@ namespace Zafiro.Core.Patterns
         public static Either<TLeft, TRight> Error<TLeft, TRight>(TLeft left)
         {
             return new Left<TLeft, TRight>(left);
+        }
+
+        public static Either<ErrorList, TResult> Summarize<T1, TResult>(IEnumerable<Either<ErrorList, T1>> eithers,
+            Func<IEnumerable<T1>, Either<ErrorList, TResult>> onSuccess)
+        {
+
+            var errors = eithers.Partition(x => x.IsRight);
+
+            if (errors.False.Any())
+            {
+                return errors.False
+                    .SelectMany(either => either.LeftValue.ToEnumerable())
+                    .Aggregate((x, y) => new ErrorList(x.Concat(y)));
+            }
+            
+            return onSuccess(errors.True.SelectMany(either => either.RightValue.ToEnumerable()));
         }
 
         public static Either<ErrorList, TResult> Summarize<T1, T2, TResult>(Either<ErrorList, T1> a,
