@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 using Zafiro.Core.Patterns;
@@ -71,20 +72,20 @@ namespace Zafiro.Core.Tests
             var ea = Emit(a);
             var eb = Emit(b);
 
-            var ec = ea.Combine(eb, (x, y) => Either.Success<IEnumerable<string>, string>(x + y));
+            var ec = ea.Combine<ErrorList, string>(eb, (x, y) => Either.Success<ErrorList, string>(x + y), (e1, e2) => new ErrorList(e1.Concat(e2)));
 
             var r = ec.Handle(list => string.Join(",", list));
             r.Should().Be(expected);
         }
 
-        private Either<IEnumerable<string>, string> Emit(string token)
+        private Either<ErrorList, string> Emit(string token)
         {
             if (token.EndsWith("s"))
             {
-                return Either.Success<IEnumerable<string>, string>(token);
+                return Either.Success<ErrorList, string>(token);
             }
 
-            return Either.Error<IEnumerable<string>, string>(new [] { token });
+            return Either.Error<ErrorList, string>(new ErrorList(token));
         }
     }
 }
