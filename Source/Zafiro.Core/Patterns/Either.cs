@@ -102,8 +102,8 @@ namespace Zafiro.Core.Patterns
                 .MapSuccess(y => mapSuccess(x, y))
                 .MapError(el => el));
 
-        public static Either<ErrorList, TResult> Combine<T1, TResult>(IEnumerable<Either<ErrorList, T1>> eithers,
-            Func<IEnumerable<T1>, Either<ErrorList, TResult>> onSuccess)
+        public static Either<TLeft, TResult> Combine<TLeft, T1, TResult>(IEnumerable<Either<TLeft, T1>> eithers,
+            Func<IEnumerable<T1>, Either<TLeft, TResult>> onSuccess, Func<TLeft, TLeft, TLeft> combineError)
         {
 
             var errors = eithers.Partition(x => x.IsRight);
@@ -112,7 +112,7 @@ namespace Zafiro.Core.Patterns
             {
                 return errors.False
                     .SelectMany(either => either.LeftValue.ToEnumerable())
-                    .Aggregate((x, y) => new ErrorList(x.Concat(y)));
+                    .Aggregate(combineError);
             }
 
             return onSuccess(errors.True.SelectMany(either => either.RightValue.ToEnumerable()));
