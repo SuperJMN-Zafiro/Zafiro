@@ -20,6 +20,9 @@ namespace Zafiro.Core.Patterns
 
         public abstract TRight Handle(Func<TLeft, TRight> map);
 
+        public abstract void WhenRight(Action<TRight> action);
+        public abstract void WhenLeft(Action<TLeft> action1);
+
         public static implicit operator Either<TLeft, TRight>(TLeft left)
         {
             return new Left<TLeft, TRight>(left);

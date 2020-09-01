@@ -41,5 +41,14 @@ namespace Zafiro.Core.Patterns
         {
             return map(Value);
         }
+
+        public override void WhenRight(Action<TRight> action)
+        {
+        }
+
+        public override void WhenLeft(Action<TLeft> action)
+        {
+            action(Value);
+        }
     }
 }

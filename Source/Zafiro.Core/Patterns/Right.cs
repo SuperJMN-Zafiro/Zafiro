@@ -40,5 +40,14 @@ namespace Zafiro.Core.Patterns
         {
             return Value;
         }
+
+        public override void WhenRight(Action<TRight> action)
+        {
+            action(Value);
+        }
+
+        public override void WhenLeft(Action<TLeft> action1)
+        {
+        }
     }
 }
