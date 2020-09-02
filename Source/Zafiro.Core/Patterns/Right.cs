@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Optional;
 
 namespace Zafiro.Core.Patterns
@@ -48,6 +49,16 @@ namespace Zafiro.Core.Patterns
 
         public override void WhenLeft(Action<TLeft> action1)
         {
+        }
+
+        public override Task WhenRight(Func<TRight, Task> action)
+        {
+            return action(Value);
+        }
+
+        public override Task WhenLeft(Func<TLeft, Task> action)
+        {
+            return Task.CompletedTask;
         }
     }
 }

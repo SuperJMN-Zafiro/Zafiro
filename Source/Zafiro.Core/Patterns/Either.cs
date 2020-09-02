@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MoreLinq.Extensions;
 using Optional;
 
@@ -22,6 +23,9 @@ namespace Zafiro.Core.Patterns
 
         public abstract void WhenRight(Action<TRight> action);
         public abstract void WhenLeft(Action<TLeft> action1);
+
+        public abstract Task WhenRight(Func<TRight, Task> action);
+        public abstract Task WhenLeft(Func<TLeft, Task> action);
 
         public static implicit operator Either<TLeft, TRight>(TLeft left)
         {
