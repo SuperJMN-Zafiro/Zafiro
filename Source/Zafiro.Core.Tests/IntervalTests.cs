@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using FluentAssertions;
 using NodaTime;
 using Xunit;
+using Zafiro.Core.Intervals;
 
 namespace Zafiro.Core.Tests
 {
@@ -109,6 +111,20 @@ namespace Zafiro.Core.Tests
 
             var intersection = i1.Convert().Intersection(i2.Convert());
             intersection.Convert().Should().Be(new Interval(twelve, twentyfour));
+        }
+
+        [Theory]
+        [InlineData(1, 4, 4, 7, false)]
+        [InlineData(1, 4, 3.999, 7, true)]
+        [InlineData(1, 4.0000001, 4, 7, true)]
+        public void IntersectionSimple(double startA, double endA, double startB, double endB, bool expected)
+        {
+            var a = new Interval<double>(startA, endA);
+            var b = new Interval<double>(startB, endB);
+
+            var isIntersecting = !Equals(a.Intersection(b), Interval<double>.Empty);
+
+            isIntersecting.Should().Be(expected);
         }
 
         public static IEnumerable<object[]> SimplifyData()

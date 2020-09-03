@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NodaTime;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Intervals
 {
     public static class NodaTimeIntervalExtensions
     {

@@ -10,7 +10,6 @@ namespace Zafiro.Core
         T End { get; }
     }
 
-    [DebuggerDisplay("{Start} .. {End}")]
     public class Interval<T> : IInterval<T> where T : IComparable
     {
         public Interval(T start, T end)
@@ -20,8 +19,7 @@ namespace Zafiro.Core
         }
 
         public static Interval<T> Empty => new Interval<T>(default, default);
-
-
+        
         public T Start { get; }
         public T End { get; }
 
@@ -49,7 +47,7 @@ namespace Zafiro.Core
 
         public static Interval<T> Intersection(Interval<T> a, Interval<T> b)
         {
-            if (b.Start.GreaterThan(a.End) || a.Start.GreaterThan(b.End)) return Empty;
+            if (b.Start.GreaterThanOrEqual(a.End) || a.Start.GreaterThanOrEqual(b.End)) return Empty;
 
             var start = a.Start.Max(b.Start);
             var end = a.End.Min(b.End);
@@ -59,7 +57,7 @@ namespace Zafiro.Core
 
         public override string ToString()
         {
-            return $"{Start} => {End}";
+            return Equals(Start, End) ? "<Empty>" :  $"[{Start}, {End})";
         }
 
         public static bool Overlaps(Interval<T> a, Interval<T> b)
