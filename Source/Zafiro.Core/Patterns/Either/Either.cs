@@ -1,6 +1,6 @@
 using Optional;
 
-namespace Zafiro.Core.Patterns
+namespace Zafiro.Core.Patterns.Either
 {
     public class Either<TLeft, TRight>
     {

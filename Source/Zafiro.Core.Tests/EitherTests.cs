@@ -3,6 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using Xunit;
 using Zafiro.Core.Patterns;
+using Zafiro.Core.Patterns.Either;
 
 namespace Zafiro.Core.Tests
 {
