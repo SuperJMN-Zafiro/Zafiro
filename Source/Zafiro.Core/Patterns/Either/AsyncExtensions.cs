@@ -1,8 +1,7 @@
 using System.Threading.Tasks;
 using Optional.Unsafe;
-using Zafiro.Core.Patterns.Either;
 
-namespace Zafiro.Core.Patterns
+namespace Zafiro.Core.Patterns.Either
 {
     public static class AsyncExtensions
     {

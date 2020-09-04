@@ -13,6 +13,5 @@ namespace Zafiro.Core.Patterns.Either
         {
             either.Left.MatchSome(action);
         }
-
     }
 }
