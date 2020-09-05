@@ -5,7 +5,7 @@ namespace Zafiro.Core.Patterns.Either
 {
     public static class MapExtensions
     {
-        public static Either<TLeft, TNewRight> MapSuccess<TLeft, TRight, TNewRight>(this Either<TLeft, TRight> self,
+        public static Either<TLeft, TNewRight> MapRight<TLeft, TRight, TNewRight>(this Either<TLeft, TRight> self,
             Func<TRight, TNewRight> map)
         {
             return self.Right.Match(
@@ -13,7 +13,7 @@ namespace Zafiro.Core.Patterns.Either
                 () => new Either<TLeft, TNewRight>(self.Left.ValueOrDefault()));
         }
 
-        public static Either<TNewLeft, TRight> MapError<TLeft, TRight, TNewLeft>(this Either<TLeft, TRight> self,
+        public static Either<TNewLeft, TRight> MapLeft<TLeft, TRight, TNewLeft>(this Either<TLeft, TRight> self,
             Func<TLeft, TNewLeft> map)
         {
             return self.Left.Match(
@@ -21,7 +21,7 @@ namespace Zafiro.Core.Patterns.Either
                 () => new Either<TNewLeft, TRight>(self.Right.ValueOrDefault()));
         }
 
-        public static Either<TLeft, TNewRight> MapSuccess<TLeft, TRight, TNewRight>(this Either<TLeft, TRight> self,
+        public static Either<TLeft, TNewRight> MapRight<TLeft, TRight, TNewRight>(this Either<TLeft, TRight> self,
             Func<TRight, Either<TLeft, TNewRight>> map)
         {
             return self.Right.Match(
@@ -29,7 +29,7 @@ namespace Zafiro.Core.Patterns.Either
                 () => new Either<TLeft, TNewRight>(self.Left.ValueOrDefault()));
         }
 
-        public static Either<TNewLeft, TRight> MapError<TNewLeft, TLeft, TRight>(this Either<TLeft, TRight> self,
+        public static Either<TNewLeft, TRight> MapLeft<TNewLeft, TLeft, TRight>(this Either<TLeft, TRight> self,
             Func<TLeft, Either<TNewLeft, TRight>> map)
         {
             return self.Left.Match(

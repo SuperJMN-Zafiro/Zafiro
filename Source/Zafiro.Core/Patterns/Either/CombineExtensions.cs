@@ -12,12 +12,12 @@ namespace Zafiro.Core.Patterns.Either
             Func<T1, T2, Either<TLeft, TResult>> map, Func<TLeft, TLeft, TLeft> combineError)
         {
             var mapSuccess = a
-                .MapError(el1 => b
-                    .MapError(el2 => combineError(el1, el2))
-                    .MapSuccess(_ => Patterns.Either.Either.Error<TLeft, T1>(el1)))
-                .MapSuccess(x => b
-                    .MapSuccess(y => map(x, y))
-                    .MapError(el => el));
+                .MapLeft(el1 => b
+                    .MapLeft(el2 => combineError(el1, el2))
+                    .MapRight(_ => Patterns.Either.Either.Error<TLeft, T1>(el1)))
+                .MapRight(x => b
+                    .MapRight(y => map(x, y))
+                    .MapLeft(el => el));
 
             return mapSuccess;
         }
@@ -63,12 +63,12 @@ namespace Zafiro.Core.Patterns.Either
             Func<TRight, TRight, Either<TLeft, TRight>> mapSuccess, Func<TLeft, TLeft, TLeft> combineError)
         {
             return ea
-                .MapError(el1 => eb
-                    .MapError(el2 => combineError(el1, el2))
-                    .MapSuccess(_ => Patterns.Either.Either.Error<TLeft, TRight>(el1)))
-                .MapSuccess(x => eb
-                    .MapSuccess(y => mapSuccess(x, y))
-                    .MapError(el => el));
+                .MapLeft(el1 => eb
+                    .MapLeft(el2 => combineError(el1, el2))
+                    .MapRight(_ => Patterns.Either.Either.Error<TLeft, TRight>(el1)))
+                .MapRight(x => eb
+                    .MapRight(y => mapSuccess(x, y))
+                    .MapLeft(el => el));
         }
 
         public static Either<TLeft, IEnumerable<TResult>> Combine<TLeft, TResult>(
