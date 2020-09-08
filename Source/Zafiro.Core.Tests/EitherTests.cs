@@ -24,7 +24,7 @@ namespace Zafiro.Core.Tests
         {
             var result = Either.Success<Error, int>(2);
             var a = result
-                .MapSuccess(i => 5*i)
+                .MapRight(i => 5*i)
                 .Handle(error => -1);
 
             a.Should().Be(10);
@@ -35,7 +35,7 @@ namespace Zafiro.Core.Tests
         {
             var result = Either.Error<Error, int>(new Error("error"));
             var a = result
-                .MapSuccess(i => i.ToString())
+                .MapRight(i => i.ToString())
                 .Handle(error => error.Message);
 
             a.Should().Be("error");
@@ -46,7 +46,7 @@ namespace Zafiro.Core.Tests
         {
             var result = Either.Error<Error, int>(new Error("error"));
             var a = result
-                .MapSuccess(i => 5 * i)
+                .MapRight(i => 5 * i)
                 .Handle(error => -1);
 
             a.Should().Be(-1);
@@ -57,7 +57,7 @@ namespace Zafiro.Core.Tests
         {
             var result = Either.Success<Error, int>(2);
             var a = result
-                .MapSuccess(i => i.ToString())
+                .MapRight(i => i.ToString())
                 .Handle(error => error.Message);
 
             a.Should().Be("2");
