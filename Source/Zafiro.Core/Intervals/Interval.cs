@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Intervals
 {
     public interface IInterval<out T> where T : IComparable
     {
@@ -74,5 +73,7 @@ namespace Zafiro.Core
         {
             return Intersection(this, another);
         }
+
+        public bool IsEmpty => this.Equals(Empty);
     }
 }

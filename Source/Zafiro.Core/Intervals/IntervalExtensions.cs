@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Intervals
 {
     public static class IntervalExtensions
     {
-        public static IEnumerable<Interval<T>> Intersections<T>(this IEnumerable<Interval<T>> intervals) where T : IComparable
+        public static IEnumerable<Interval<T>> Overlaps<T>(this IEnumerable<Interval<T>> intervals) where T : IComparable
         {
             var overlap = intervals
                 .OrderBy(x => x.Start)
-                .Buffer(Interval<T>.Intersection);
+                .Buffer(Interval<T>.Intersection)
+                .Where(x => !x.IsEmpty);
 
-            return overlap.Where(x => !x.Equals(Interval<T>.Empty));
+            return overlap;
         }
 
         public static bool IsFullyContainedIn<T>(this Interval<T> a, Interval<T> b) where T : IComparable
@@ -47,6 +48,18 @@ namespace Zafiro.Core
                 });
 
             return seq;
+        }
+
+        public static IEnumerable<Interval<T>> Intersections<T>(this IEnumerable<Interval<T>> a,
+            Interval<T> b) where T : IComparable
+        {
+            return a.Select(x => x.Intersection(b)).Where(interval => !interval.IsEmpty);
+        }
+
+        public static IEnumerable<Interval<T>> Intersections<T>(this IEnumerable<Interval<T>> a,
+            IEnumerable<Interval<T>> b) where T : IComparable
+        {
+            return a.SelectMany(b.Intersections).Where(interval => !interval.IsEmpty);
         }
     }
 }
