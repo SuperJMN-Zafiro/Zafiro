@@ -1,3 +1,4 @@
+using System;
 using Optional;
 
 namespace Zafiro.Core.Patterns.Either
@@ -25,6 +26,24 @@ namespace Zafiro.Core.Patterns.Either
         public static implicit operator Either<TLeft, TRight>(TRight right)
         {
             return new Either<TLeft, TRight>(right);
+        }
+
+        protected bool Equals(Either<TLeft, TRight> other)
+        {
+            return Left.Equals(other.Left) && Right.Equals(other.Right);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Either<TLeft, TRight>) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Left, Right);
         }
     }
 

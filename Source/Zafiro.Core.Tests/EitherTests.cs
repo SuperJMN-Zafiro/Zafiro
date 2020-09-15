@@ -88,5 +88,14 @@ namespace Zafiro.Core.Tests
 
             return Either.Error<ErrorList, string>(new ErrorList(token));
         }
+
+        [Fact]
+        public void Equality()
+        {
+            var a = Either.Success<string, int>(1);
+            var b = Either.Success<string, int>(1);
+
+            a.Should().Be(b);
+        }
     }
 }
