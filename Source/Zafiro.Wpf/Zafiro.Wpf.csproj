@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0F24E550-CA98-493C-A829-F34F8AD85BFD}</ProjectGuid>
+    <ProjectGuid>{BE601E97-0CD3-4387-9A2D-253AF940EFFF}</ProjectGuid>
     <OutputType>library</OutputType>
     <RootNamespace>Zafiro.Wpf</RootNamespace>
     <AssemblyName>Zafiro.Wpf</AssemblyName>
