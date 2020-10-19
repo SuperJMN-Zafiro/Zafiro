@@ -5,7 +5,7 @@ namespace Zafiro.Core.UI
     public interface IOpenFilePicker
     {
         string InitialDirectory { get; set; }
-        List<FileTypeFilter> FileTypeFilter { get; }
+        List<FileTypeFilter> FileTypeFilter { get; set; }
         string PickFile();
     }
 }

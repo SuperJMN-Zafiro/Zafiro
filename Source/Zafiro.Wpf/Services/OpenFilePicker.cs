@@ -17,7 +17,7 @@ namespace Zafiro.Wpf.Services
         }
 
         public string InitialDirectory { get; set; }
-        public List<FileTypeFilter> FileTypeFilter { get; } = new List<FileTypeFilter>();
+        public List<FileTypeFilter> FileTypeFilter { get; set; } = new List<FileTypeFilter>();
         public string PickFile()
         {
             var dialog = new OpenFileDialog();

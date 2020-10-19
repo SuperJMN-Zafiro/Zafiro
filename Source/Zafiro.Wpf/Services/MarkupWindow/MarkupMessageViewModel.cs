@@ -13,7 +13,7 @@ namespace Zafiro.Wpf.Services.MarkupWindow
         private readonly IDisposable closer;
         public string Text { get; }
 
-        public MarkupMessageViewModel(string title, string text, IEnumerable<Option> options, ICloseable closeable, string assetsFolder = "")
+        public MarkupMessageViewModel(string title, string text, IEnumerable<Option> options, IPopup popup, string assetsFolder = "")
         {
             Title = title;
             Text = text;
@@ -28,7 +28,7 @@ namespace Zafiro.Wpf.Services.MarkupWindow
 
             closer = this.WhenAnyValue(model => model.SelectedOption)
                 .Where(s => s != null)
-                .Subscribe(_ => closeable.Close());
+                .Subscribe(_ => popup.Close());
         }
 
         public string Title { get; set; }

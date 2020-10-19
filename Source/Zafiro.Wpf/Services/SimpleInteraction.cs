@@ -21,7 +21,7 @@ namespace Zafiro.Wpf.Services
         public async Task Interact(string key, string title, object vm,
             ICollection<DialogButton> buttons)
         {
-            var dialogWindow = new DialogWindow();
+            var dialogWindow = new PopupWindow();
             var options = buttons;
 
             var content = Locate(key);

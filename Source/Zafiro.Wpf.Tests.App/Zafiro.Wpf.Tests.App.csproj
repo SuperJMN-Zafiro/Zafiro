@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <OutputType>Library</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdown.Xaml" Version="1.0.0" />
-    <PackageReference Include="ValueConverters" Version="2.0.20011.1" />
+    <PackageReference Include="ReactiveUI.WPF" Version="11.5.35" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
+    <ProjectReference Include="..\Zafiro.Wpf\Zafiro.Wpf.csproj" />
   </ItemGroup>
 
 </Project>
