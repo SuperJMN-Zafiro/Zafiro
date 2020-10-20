@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Zafiro.Core;
 
-namespace Deployer.Gui.Registrations
+namespace Zafiro.Wpf.Services
 {
     public class WpfContextualizable : IContextualizable
     {
