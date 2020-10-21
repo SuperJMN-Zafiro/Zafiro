@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Optional;
+using Zafiro.Core.Files;
 
 namespace Zafiro.Core.UI
 {
@@ -6,6 +9,6 @@ namespace Zafiro.Core.UI
     {
         string InitialDirectory { get; set; }
         List<FileTypeFilter> FileTypeFilter { get; set; }
-        string PickFile();
+        Task<Option<IZafiroFile>> Pick();
     }
 }

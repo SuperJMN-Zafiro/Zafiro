@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Win32;
+using Optional;
+using Zafiro.Core.Files;
 using Zafiro.Core.FileSystem;
 using Zafiro.Core.UI;
 
@@ -9,16 +13,18 @@ namespace Zafiro.Wpf.Services
 {
     public class OpenFilePicker : IOpenFilePicker
     {
+        private readonly Func<string, IZafiroFile> fileFactory;
         private readonly IFileSystemOperations fileSystemOperations;
 
-        public OpenFilePicker(IFileSystemOperations fileSystemOperations)
+        public OpenFilePicker(Func<string, IZafiroFile> fileFactory, IFileSystemOperations fileSystemOperations)
         {
+            this.fileFactory = fileFactory;
             this.fileSystemOperations = fileSystemOperations;
         }
 
         public string InitialDirectory { get; set; }
         public List<FileTypeFilter> FileTypeFilter { get; set; } = new List<FileTypeFilter>();
-        public string PickFile()
+        public Task<Option<IZafiroFile>> Pick()
         {
             var dialog = new OpenFileDialog();
             var lines = FileTypeFilter.Select(x =>
@@ -39,10 +45,10 @@ namespace Zafiro.Wpf.Services
             
             if (dialog.ShowDialog(Application.Current.MainWindow) == true)
             {
-                return dialog.FileName;
+                return Task.FromResult(fileFactory(dialog.FileName).Some());
             }
 
-            return null;
+            return Task.FromResult(Option.None<IZafiroFile>());
         }       
     }
 }
