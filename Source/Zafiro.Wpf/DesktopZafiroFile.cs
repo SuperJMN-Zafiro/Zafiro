@@ -8,7 +8,7 @@ using Zafiro.Core.FileSystem;
 
 namespace Zafiro.Wpf
 {
-    public class DesktopZafiroFile : ZafiroFile
+    public class DesktopZafiroFile : IZafiroFile
     {
         private readonly Uri uri;
         private readonly IFileSystemOperations fileSystemOperations;
@@ -21,7 +21,7 @@ namespace Zafiro.Wpf
             this.downloader = downloader;
         }
 
-        public override Task<Stream> OpenForRead()
+        public Task<Stream> OpenForRead()
         {
             if (uri.IsFile)
             {
@@ -31,7 +31,7 @@ namespace Zafiro.Wpf
             return downloader.GetStream(uri.ToString());
         }
 
-        public override Task<Stream> OpenForWrite()
+        public Task<Stream> OpenForWrite()
         {
             if (uri.IsFile)
             {
@@ -41,7 +41,7 @@ namespace Zafiro.Wpf
             throw new NotSupportedException();
         }
 
-        public override string Name => uri.Segments.Last();
-        public override Uri Source => uri;
+        public string Name => uri.Segments.Last();
+        public Uri Source => uri;
     }
 }

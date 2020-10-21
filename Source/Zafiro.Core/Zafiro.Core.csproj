@@ -32,5 +32,10 @@
     </None>
     <None Include="Intervals\Pricing.Api.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="FilePickerMixin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
 
 </Project>

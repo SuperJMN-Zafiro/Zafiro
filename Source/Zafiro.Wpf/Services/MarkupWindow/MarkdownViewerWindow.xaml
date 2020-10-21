@@ -26,7 +26,7 @@
             <wpf:BindingProxy x:Key="ProxyElement" Data="{Binding}"/>
 
             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-            <xaml:Markdown x:Key="Engine"
+            <xaml:MarkdownEngine x:Key="Engine"
                            DocumentStyle="{StaticResource DocumentStyle}"
                            Heading1Style="{StaticResource H1Style}"
                            Heading2Style="{StaticResource H2Style}"
@@ -37,7 +37,7 @@
                            SeparatorStyle="{StaticResource SeparatorStyle}"
                            AssetPathRoot="{Binding Source={StaticResource ProxyElement}, Path=Data.AssetsFolder}"/>
 
-            <xaml:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" Markdown="{StaticResource Engine}"  />
+            <xaml:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter" MarkdownEngine="{StaticResource Engine}"  />
 
             <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                 <Setter Property="Margin" Value="4" />
