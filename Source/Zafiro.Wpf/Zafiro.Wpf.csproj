@@ -51,6 +51,7 @@
     <Compile Include="AsyncWindowExtension.cs" />
     <Compile Include="BindingProxy.cs" />
     <Compile Include="Converters\CollapseOnNullOrEmpty.cs" />
+    <Compile Include="Converters\ValueConverterGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DesktopZafiroFile.cs" />
     <Compile Include="Services\PopupWindow.xaml.cs">
