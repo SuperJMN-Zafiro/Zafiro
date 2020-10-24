@@ -24,5 +24,6 @@ namespace Zafiro.Core.FileSystem
         Stream OpenForWrite(string path);
         string GetTempDirectoryName();
         Stream OpenForRead(string path);
+        Task Truncate(string path);
     }
 }

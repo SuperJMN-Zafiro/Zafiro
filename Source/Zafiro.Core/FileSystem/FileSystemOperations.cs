@@ -155,6 +155,14 @@ namespace Zafiro.Core.FileSystem
             return File.OpenRead(path);
         }
 
+        public Task Truncate(string path)
+        {
+            using (new FileStream(path, FileMode.Truncate))
+            {
+                return Task.CompletedTask;
+            }
+        }
+
         private async Task CopyDirectory(DirectoryInfo source, DirectoryInfo destination, string fileSearchPattern,
             bool skipEmptyDirectories, CancellationToken cancellationToken)
         {

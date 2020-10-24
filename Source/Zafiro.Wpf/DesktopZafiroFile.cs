@@ -31,11 +31,12 @@ namespace Zafiro.Wpf
             return downloader.GetStream(uri.ToString());
         }
 
-        public Task<Stream> OpenForWrite()
+        public async Task<Stream> OpenForWrite()
         {
             if (uri.IsFile)
             {
-                return Task.FromResult(fileSystemOperations.OpenForWrite(uri.LocalPath));
+                await fileSystemOperations.Truncate(uri.LocalPath);
+                return fileSystemOperations.OpenForWrite(uri.LocalPath);
             }
 
             throw new NotSupportedException();
