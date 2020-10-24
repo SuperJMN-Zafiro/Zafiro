@@ -121,5 +121,14 @@ namespace Zafiro.Core.Mixins
                     }
                 );
         }
+
+        public static IEnumerable<T> Do<T>(this IEnumerable<T> self, Action<T> action)
+        {
+            return self.Select(x =>
+            {
+                action(x);
+                return x;
+            });
+        }
     }
 }
