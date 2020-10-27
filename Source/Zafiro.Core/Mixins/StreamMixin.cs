@@ -5,11 +5,11 @@ namespace Zafiro.Core.Mixins
 {
     public static class StreamMixin
     {
-        public static Task<string> ReadToEnd(this Stream stream)
+        public static async Task<string> ReadToEnd(this Stream stream)
         {
             using (var reader = new StreamReader(stream))
             {
-                return reader.ReadToEndAsync();
+                return await reader.ReadToEndAsync();
             }
         }
 
