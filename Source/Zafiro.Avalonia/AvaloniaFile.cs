@@ -5,7 +5,7 @@ using Zafiro.Core.Files;
 
 namespace Zafiro.Avalonia
 {
-    public class AvaloniaFile : ZafiroFile
+    public class AvaloniaFile : IZafiroFile
     {
         private readonly string path;
 
@@ -14,17 +14,17 @@ namespace Zafiro.Avalonia
             this.path = path;
         }
 
-        public override Task<Stream> OpenForRead()
+        public Task<Stream> OpenForRead()
         {
             return Task.FromResult<Stream>(File.OpenRead(path));
         }
 
-        public override Task<Stream> OpenForWrite()
+        public Task<Stream> OpenForWrite()
         {
             return Task.FromResult<Stream>(File.OpenWrite(path));
         }
 
-        public override string Name => Path.GetFileName(path);
-        public override Uri Source => new Uri(path);
+        public string Name => Path.GetFileName(path);
+        public Uri Source => new Uri(path);
     }
 }

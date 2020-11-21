@@ -14,6 +14,10 @@
     <AvaloniaResource Include="**\*.xaml;Assets\*" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>
 
+   <ItemGroup>
+     <Compile Remove="AvaloniaFilePicker.cs" />
+   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.11" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.11" />
