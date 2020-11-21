@@ -1,5 +1,6 @@
 using System;
 using Optional;
+using Optional.Unsafe;
 
 namespace Zafiro.Core.Patterns.Either
 {
@@ -44,6 +45,11 @@ namespace Zafiro.Core.Patterns.Either
         public override int GetHashCode()
         {
             return HashCode.Combine(Left, Right);
+        }
+
+        public override string ToString()
+        {
+            return Left.Match(left => typeof(TLeft).Name + left, () => typeof(TRight).Name + Right.ValueOrFailure());
         }
     }
 
