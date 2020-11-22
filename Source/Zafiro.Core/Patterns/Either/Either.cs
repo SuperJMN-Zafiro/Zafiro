@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using Optional;
 using Optional.Unsafe;
 
 namespace Zafiro.Core.Patterns.Either
 {
+    [DebuggerTypeProxy(typeof(Either<,>.EitherProxy))]
     public class Either<TLeft, TRight>
     {
         public Either(TLeft left)
@@ -49,7 +51,21 @@ namespace Zafiro.Core.Patterns.Either
 
         public override string ToString()
         {
-            return Left.Match(left => typeof(TLeft).Name + left, () => typeof(TRight).Name + Right.ValueOrFailure());
+            var leftOrRight = this.IsRight() ? "Right" : "Left";
+            return $"{leftOrRight}({this.ValueOrDefault()})";
+        }
+
+        private class EitherProxy
+        {
+            private readonly Either<TLeft, TRight> instance;
+
+            public EitherProxy(Either<TLeft, TRight> instance)
+            {
+                this.instance = instance;
+            }
+
+            public object Value => instance.ValueOrDefault();
+            public Type Type => instance.ValueOrDefault().GetType();
         }
     }
 
