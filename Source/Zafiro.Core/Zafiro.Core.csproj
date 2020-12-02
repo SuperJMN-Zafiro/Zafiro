@@ -9,7 +9,7 @@
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
     <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Product>Zafiro.Core</Product>
     <Company>José Manuel Nieto (@SuperJMN)</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -30,7 +30,6 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="Intervals\Pricing.Api.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="FilePickerMixin.cs">
