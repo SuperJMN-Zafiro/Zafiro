@@ -30,7 +30,6 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="Intervals\Pricing.Api.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="FilePickerMixin.cs">
