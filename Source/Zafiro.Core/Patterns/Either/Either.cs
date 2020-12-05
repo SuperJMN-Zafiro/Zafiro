@@ -21,16 +21,6 @@ namespace Zafiro.Core.Patterns.Either
         public Option<TLeft> Left { get; }
         public Option<TRight> Right { get; }
 
-        public static implicit operator Either<TLeft, TRight>(TLeft left)
-        {
-            return new Either<TLeft, TRight>(left);
-        }
-
-        public static implicit operator Either<TLeft, TRight>(TRight right)
-        {
-            return new Either<TLeft, TRight>(right);
-        }
-
         protected bool Equals(Either<TLeft, TRight> other)
         {
             return Left.Equals(other.Left) && Right.Equals(other.Right);
