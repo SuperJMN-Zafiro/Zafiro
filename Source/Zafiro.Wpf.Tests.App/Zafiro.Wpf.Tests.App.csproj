@@ -7,12 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI.WPF" Version="11.5.35" />
+    <PackageReference Include="MvvmLib.Core" Version="0.4.4" />
+    <PackageReference Include="ReactiveUI.WPF" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj" />
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
-    <ProjectReference Include="..\Zafiro.Wpf\Zafiro.Wpf.csproj" />
+    <ProjectReference Include="..\Zafiro.UI\Zafiro.UI.csproj" />
+    <ProjectReference Include="..\Zafiro.Wpf\Zafiro.UI.Wpf.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="Files\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

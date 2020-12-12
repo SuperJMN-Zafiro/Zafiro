@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Zafiro.Wpf
+namespace Zafiro.UI.Wpf
 {
     public static class AsyncWindowExtension
     {

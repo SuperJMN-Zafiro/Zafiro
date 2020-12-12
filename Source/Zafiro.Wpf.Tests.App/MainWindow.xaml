@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Zafiro.Wpf.Tests.App"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Loaded="Grid_Loaded">
-
-    </Grid>
+        Title="MainWindow" Height="450" Width="800" d:DataContext="{d:DesignInstance local:MainViewModel}">
+    <Window.DataContext>
+        <local:MainViewModel />
+    </Window.DataContext>
+    <StackPanel Loaded="Grid_Loaded">
+        <Button Command="{Binding ShowMessage}">Show Message</Button>
+    </StackPanel>
 </Window>

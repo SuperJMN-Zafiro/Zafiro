@@ -31,10 +31,5 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Update="FilePickerMixin.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
 
 </Project>

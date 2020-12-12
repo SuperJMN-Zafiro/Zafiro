@@ -1,17 +1,13 @@
 using System;
 using System.Reactive.Linq;
 using ReactiveUI;
-using Zafiro.Core;
+using Zafiro.UI;
 
 namespace Zafiro.Wpf.Tests
 {
-    public class Contextualized : IContextualizable
+    public class TestHaveDataContext : IHaveDataContext
     {
-        public Contextualized(object o)
-        {
-        }
-
-        public void SetContext(object o)
+        public void SetDataContext(object dataContext)
         {
         }
 

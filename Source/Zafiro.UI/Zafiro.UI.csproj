@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Title>Zafiro.UI.Wpf</Title>
+    <Description>La crema for your UI</Description>
+    <Version>1.0.0</Version>
+    <ReleaseNotes>New package system</ReleaseNotes>
+    <Authors>JMN</Authors>
+    <Owners>JMN</Owners>
+    <Copyright>Copyright © 2020</Copyright>
+    <PackageOutputPath>bin\Package</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="FilePickerMixin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+
+</Project>

@@ -1,0 +1,37 @@
+﻿<wpf1:WpfWindow x:Class="Zafiro.UI.Wpf.PopupWindow"
+           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           xmlns:ui="clr-namespace:Zafiro.UI;assembly=Zafiro.UI"
+           xmlns:wpf1="clr-namespace:Zafiro.UI.Wpf"
+           mc:Ignorable="d"
+           Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={wpf1:RatioConverter}, ConverterParameter='0.7' }" 
+           Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={wpf1:RatioConverter}, ConverterParameter='0.7' }" 
+           Title="{Binding Title}" 
+           WindowStartupLocation="CenterOwner"
+           d:DataContext="{d:DesignInstance ui:PopupModel}">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ContentControl Content="{Binding Content}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
+
+        <Border Background="WhiteSmoke" Grid.Row="1">
+            <ItemsControl  Margin="16" ItemsSource="{Binding Options}" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Title}" HorizontalAlignment="Center" Command="{Binding Command}" MinWidth="120" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl></Border>
+    </Grid>
+</wpf1:WpfWindow>

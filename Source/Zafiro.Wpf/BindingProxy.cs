@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Zafiro.Wpf
+namespace Zafiro.UI.Wpf
 {
     public class BindingProxy : Freezable
     {
