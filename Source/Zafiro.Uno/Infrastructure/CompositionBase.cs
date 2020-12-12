@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Grace.DependencyInjection;
 using Serilog;
 using Zafiro.Core.UI;
+using Zafiro.UI;
 using Zafiro.Uno.Infrastructure.Navigation;
 
 namespace Zafiro.Uno.Infrastructure
@@ -43,7 +44,7 @@ namespace Zafiro.Uno.Infrastructure
         private void ConfigureInfrastructureServices(DependencyInjectionContainer container, Dictionary<Type, Type> sections)
         { container.Configure(c =>
             {
-                c.Export<DialogService>().As<IDialogService>();
+                c.Export<Interaction>().As<IInteraction>();
                 c.Export<Navigation.Navigation>().As<INavigation>().WithCtorParam(() => sections);
             });
         }
