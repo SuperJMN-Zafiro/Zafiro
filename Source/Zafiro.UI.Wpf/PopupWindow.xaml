@@ -6,8 +6,9 @@
            xmlns:ui="clr-namespace:Zafiro.UI;assembly=Zafiro.UI"
            xmlns:wpf1="clr-namespace:Zafiro.UI.Wpf"
            mc:Ignorable="d"
-           Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={wpf1:RatioConverter}, ConverterParameter='0.7' }" 
-           Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={wpf1:RatioConverter}, ConverterParameter='0.7' }" 
+           SizeToContent="WidthAndHeight"
+           MaxWidth="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}, Converter={wpf1:RatioConverter}, ConverterParameter='0.7' }"
+           MaxHeight="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}, Converter={wpf1:RatioConverter}, ConverterParameter='0.7' }"
            Title="{Binding Title}" 
            WindowStartupLocation="CenterOwner"
            d:DataContext="{d:DesignInstance ui:PopupModel}">

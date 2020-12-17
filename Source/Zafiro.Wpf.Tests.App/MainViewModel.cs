@@ -10,7 +10,7 @@ namespace Zafiro.Wpf.Tests.App
     {
         public MainViewModel()
         {
-            var dialogService = new Interaction(new Zafiro.UI.Popup(() => new UI.Wpf.PopupWindow()));
+            var dialogService = new Interaction(new UI.Popup(() => new PopupWindow()));
             ShowMessage = ReactiveCommand.CreateFromTask(() => dialogService.Message("Bendito", File.ReadAllText("Files\\Readme.md"), "OK".Some(), @"D:\Repos\SuperJMN-Zafiro\Zafiro\Source\Zafiro.Wpf.Tests.App\bin\Debug\netcoreapp3.1\Files".Some()));
         }
 

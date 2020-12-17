@@ -13,12 +13,6 @@ namespace Zafiro.UI.Wpf
             InitializeComponent();
         }
 
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-
-        }
-
         protected override void OnActivated(EventArgs e)
         {
             this.Left = (SystemParameters.PrimaryScreenWidth - this.Width) / 2;

@@ -29,7 +29,7 @@ namespace Zafiro.Core
             int timeout = 30)
         {
             long? totalBytes = 0;
-            long bytesWritten = 0;
+            ulong bytesWritten = 0;
 
             await ObservableMixin.Using(() => client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead),
                     s =>
@@ -37,20 +37,23 @@ namespace Zafiro.Core
                         totalBytes = s.Content.Headers.ContentLength;
                         if (!totalBytes.HasValue)
                         {
-                            progressObserver?.Percentage.OnNext(double.PositiveInfinity);
+                            progressObserver?.Send(new Unknown());
                         }
                         return ObservableMixin.Using(() => s.Content.ReadAsStreamAsync(),
                             contentStream => contentStream.ReadToEndObservable());
                     })
                 .Do(bytes =>
                 {
-                    bytesWritten += bytes.Length;
+                    bytesWritten += (ulong) bytes.Length;
                     if (totalBytes.HasValue)
                     {
-                        progressObserver?.Percentage.OnNext((double)bytesWritten / totalBytes.Value);
+                        progressObserver?.Send(new Percentage((double) bytesWritten / totalBytes.Value));
+                    }
+                    else
+                    {
+                        progressObserver.Send(new UndefinedProgress<ulong>(bytesWritten));
                     }
 
-                    progressObserver?.Value?.OnNext(bytesWritten);
                 })
                 .Timeout(TimeSpan.FromSeconds(timeout))
                 .Select(bytes => Observable.FromAsync(async () =>
@@ -59,6 +62,8 @@ namespace Zafiro.Core
                     return Unit.Default;
                 }))
                 .Merge(1);
+
+            progressObserver?.Send(new Done());
         }
 
         private static readonly int BufferSize = 8 * 1024;

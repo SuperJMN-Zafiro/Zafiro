@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj" />
     <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
+    <ProjectReference Include="..\Zafiro.UI.Wpf\Zafiro.UI.Wpf.csproj" />
     <ProjectReference Include="..\Zafiro.UI\Zafiro.UI.csproj" />
     <ProjectReference Include="..\Zafiro.Wpf\Zafiro.UI.Wpf.csproj" />
   </ItemGroup>

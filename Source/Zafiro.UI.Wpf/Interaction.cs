@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MvvmLib.Commands;
 using Optional;
 using Optional.Unsafe;
@@ -18,7 +19,7 @@ namespace Zafiro.UI.Wpf
         {
             var markdownContent = new MarkdownContent()
             {
-                AssetPathRoot = assetPathRoot.ValueOrDefault(),
+                AssetPathRoot = assetPathRoot.ValueOr(Environment.CurrentDirectory),
                 Markdown = markdown,
             };
 
