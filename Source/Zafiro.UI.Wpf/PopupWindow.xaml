@@ -33,6 +33,7 @@
                         <UniformGrid Rows="1" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
-            </ItemsControl></Border>
+            </ItemsControl>
+        </Border>
     </Grid>
 </wpf1:WpfWindow>
