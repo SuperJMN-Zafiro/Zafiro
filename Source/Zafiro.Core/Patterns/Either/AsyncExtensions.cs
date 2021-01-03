@@ -18,5 +18,23 @@ namespace Zafiro.Core.Patterns.Either
         {
             return await either.Right.Match(async task => await task, () => Task.FromResult(new Either<TLeft, TRight>(either.Left.ValueOrDefault())));
         }
+
+        public static async Task<Either<TLeft, TRight>> LeftTask<TLeft, TRight>(this Either<Task<TLeft>, TRight> either)
+        {
+            return await either.Left.Match(async task =>
+            {
+                var left = await task;
+                return new Either<TLeft, TRight>(left);
+            }, () => Task.FromResult(new Either<TLeft, TRight>(either.Right.ValueOrDefault())));
+        }
+
+        public static async Task<Either<TLeft, TRight>> LeftTask<TLeft, TRight>(this Either<Task<Either<TLeft, TRight>>, TRight> either)
+        {
+            return await either.Left.Match(async task => await task, () =>
+            {
+                var valueOrDefault = either.Right.ValueOrDefault();
+                return Task.FromResult(new Either<TLeft, TRight>(valueOrDefault));
+            });
+        }
     }
 }
