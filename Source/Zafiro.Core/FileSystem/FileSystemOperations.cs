@@ -170,10 +170,10 @@ namespace Zafiro.Core.FileSystem
             {
                 var files = fileSearchPattern == null ? source.GetFiles() : source.GetFiles(fileSearchPattern);
 
-                foreach (var dir in source.GetDirectories())
+                foreach (var dir in source.GetDirectories().Where(d => !d.Attributes.HasFlag(FileAttributes.Hidden)))
                 {
-                    var subdirFiles = fileSearchPattern == null ? dir.GetFiles() : dir.GetFiles(fileSearchPattern);
-                    if (!subdirFiles.Any() && skipEmptyDirectories)
+                    var subDirFiles = fileSearchPattern == null ? dir.GetFiles() : dir.GetFiles(fileSearchPattern);
+                    if (!subDirFiles.Any() && skipEmptyDirectories)
                     {
                         continue;
                     }
@@ -182,7 +182,7 @@ namespace Zafiro.Core.FileSystem
                     await CopyDirectory(dir, subdirectory, fileSearchPattern, skipEmptyDirectories, cancellationToken);
                 }
 
-                foreach (var file in files)
+                foreach (var file in files.Where(f => !f.Attributes.HasFlag(FileAttributes.Hidden)))
                 {
                     var destFileName = Path.Combine(destination.FullName, file.Name);
                     await Copy(file.FullName, destFileName, cancellationToken);
