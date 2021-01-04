@@ -16,9 +16,9 @@ namespace Zafiro.Core
     {
     }
 
-    public class UndefinedProgress<T> : Progress
+    public class AbsoluteProgress<T> : Progress
     {
-        public UndefinedProgress(T value)
+        public AbsoluteProgress(T value)
         {
             Value = value;
         }
