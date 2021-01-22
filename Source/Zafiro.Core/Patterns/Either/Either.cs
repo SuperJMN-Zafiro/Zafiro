@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using Optional;
-using Optional.Unsafe;
 
 namespace Zafiro.Core.Patterns.Either
 {
