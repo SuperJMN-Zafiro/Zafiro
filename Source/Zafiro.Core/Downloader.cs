@@ -51,7 +51,7 @@ namespace Zafiro.Core
                     }
                     else
                     {
-                        progressObserver.Send(new UndefinedProgress<ulong>(bytesWritten));
+                        progressObserver.Send(new AbsoluteProgress<ulong>(bytesWritten));
                     }
 
                 })
