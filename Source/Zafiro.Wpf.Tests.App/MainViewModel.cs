@@ -10,8 +10,10 @@ namespace Zafiro.Wpf.Tests.App
     {
         public MainViewModel()
         {
+            var route =
+                "C:\\Users\\JMN\\Extended\\Fast\\Repos\\WOA-Project\\Deployment-Feed\\Devices\\Lumia\\950s\\Cityman\\Packages\\Changelog";
             var dialogService = new Interaction(new UI.Popup(() => new PopupWindow()));
-            ShowMessage = ReactiveCommand.CreateFromTask(() => dialogService.Message("Bendito", "Sea el señor", "OK".Some(), Option.None<string>()));
+            ShowMessage = ReactiveCommand.CreateFromTask(() => dialogService.Message("Bendito", File.ReadAllText(Path.Combine(route, "Changelog.md")), "OK".Some(), route.Some()));
         }
 
         public ReactiveCommand<Unit, Unit> ShowMessage { get; set; }
