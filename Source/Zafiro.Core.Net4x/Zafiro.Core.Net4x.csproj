@@ -92,12 +92,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj">
-      <Project>{48D712E7-7654-4104-89F6-1C1F98DCB407}</Project>
-      <Name>Zafiro.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\..\icon.png">
       <Pack>True</Pack>
       <PackagePath>

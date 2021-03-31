@@ -19,10 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="FilePickerMixin.cs">
       <SubType>Code</SubType>
     </Compile>

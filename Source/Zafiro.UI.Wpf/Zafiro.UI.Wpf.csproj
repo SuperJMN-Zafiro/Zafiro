@@ -94,14 +94,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Markdown.XAML\src\Markdown.Xaml\Markdown.Xaml.csproj">
-      <Project>{EF4EA04A-2F25-450A-8F7B-029CD5A02BE0}</Project>
-      <Name>Markdown.Xaml</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj">
-      <Project>{c6dcc8a4-734e-4fa0-b20e-4b5fda02862d}</Project>
-      <Name>Zafiro.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Zafiro.UI\Zafiro.UI.csproj">
       <Project>{6fc79263-c506-47b4-a4ec-69f4ac2138a0}</Project>
       <Name>Zafiro.UI</Name>
@@ -120,7 +112,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="ReactiveUI">
-      <Version>12.1.1</Version>
+      <Version>13.2.2</Version>
     </PackageReference>
     <PackageReference Include="ValueConverters">
       <Version>2.0.20011.1</Version>
