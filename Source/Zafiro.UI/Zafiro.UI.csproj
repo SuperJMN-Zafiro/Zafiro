@@ -31,5 +31,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
+  </ItemGroup>
+
 
 </Project>
