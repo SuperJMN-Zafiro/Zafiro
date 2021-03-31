@@ -3,45 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:xaml="clr-namespace:Markdown.Xaml;assembly=Markdown.Xaml"
-             xmlns:wpf="clr-namespace:Zafiro.UI.Wpf"
+             xmlns:mdXaml="clr-namespace:MdXaml;assembly=MdXaml"
              mc:Ignorable="d"
              x:Name="Self" d:DesignWidth="200" d:DesignHeight="180">
 
-    <UserControl.Resources>
-
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Markdown.Styles.Default.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
-            <wpf:BindingProxy x:Key="ProxyElement" Data="{Binding ElementName=Self}" />
-
-            <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-            <xaml:MarkdownEngine x:Key="Engine"
-                                 DocumentStyle="{StaticResource DocumentStyle}"
-                                 Heading1Style="{StaticResource H1Style}"
-                                 Heading2Style="{StaticResource H2Style}"
-                                 Heading3Style="{StaticResource H3Style}"
-                                 Heading4Style="{StaticResource H4Style}"
-                                 LinkStyle="{StaticResource LinkStyle}"
-                                 ImageStyle="{StaticResource ImageStyle}"
-                                 SeparatorStyle="{StaticResource SeparatorStyle}"
-                                 AssetPathRoot="{Binding Source={StaticResource ProxyElement}, Path=Data.AssetPathRoot}" />
-
-            <xaml:TextToFlowDocumentConverter x:Key="TextToFlowDocumentConverter"
-                                              MarkdownEngine="{StaticResource Engine}" />
-
-        </ResourceDictionary>
-
-    </UserControl.Resources>
-    <FlowDocumentScrollViewer
-        Margin="10"
-        VerticalScrollBarVisibility="Auto"
-        Document="{Binding ElementName=Self, Path=Markdown, Converter={StaticResource TextToFlowDocumentConverter}}">
-        <FlowDocumentScrollViewer.CommandBindings>
+    <mdXaml:MarkdownScrollViewer DataContext="{Binding ElementName=Self}" Padding="10"
+                                 AssetPathRoot="{Binding Path=AssetPathRoot}" Markdown="{Binding Path=Markdown}">
+        <mdXaml:MarkdownScrollViewer.CommandBindings>
             <CommandBinding Command="GoToPage" Executed="CommandBinding_OnExecuted" />
-        </FlowDocumentScrollViewer.CommandBindings>
-    </FlowDocumentScrollViewer>
+        </mdXaml:MarkdownScrollViewer.CommandBindings>
+        <mdXaml:MarkdownScrollViewer.MarkdownStyle>
+            <Style TargetType="FlowDocument">
+                <Setter Property="FontFamily" Value="Arial" />
+                <Setter Property="TextAlignment" Value="Left" />
+                <Setter Property="PagePadding" Value="0" />
+                <Style.Resources>
+                    <Style TargetType="Image">
+                        <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality" />
+                        <Setter Property="StretchDirection" Value="DownOnly" />
+                    </Style>
+                </Style.Resources>
+            </Style>
+        </mdXaml:MarkdownScrollViewer.MarkdownStyle>
+    </mdXaml:MarkdownScrollViewer>
 
 </UserControl>

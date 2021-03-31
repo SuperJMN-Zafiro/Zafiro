@@ -1,14 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Zafiro.UI.Wpf
 {
-    /// <summary>
-    /// Interaction logic for MarkdownCotent.xaml
-    /// </summary>
-    public partial class MarkdownContent : UserControl
+    public partial class MarkdownContent
     {
         public MarkdownContent()
         {
