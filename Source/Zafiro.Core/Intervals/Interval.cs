@@ -3,12 +3,6 @@ using System.Collections.Generic;
 
 namespace Zafiro.Core.Intervals
 {
-    public interface IInterval<out T> where T : IComparable
-    {
-        T Start { get; }
-        T End { get; }
-    }
-
     public class Interval<T> : IInterval<T> where T : IComparable
     {
         public Interval(T start, T end)

@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using CSharpFunctionalExtensions;
 
-namespace Import.Reflection
+namespace Zafiro.Reflection
 {
     public class ReflectedMember
     {
@@ -17,10 +17,11 @@ namespace Import.Reflection
         }
 
         public bool IsCollection => member.GetMemberType().IsCollection();
+        public Type MemberType => member.GetMemberType();
 
         public static ReflectedMember From<T>(T instance, Expression<Func<T, object>> memberSelector)
         {
-            var member = ReflectionHelper.FindProperty(memberSelector);
+            var member = ReflectionHelper.FindMember(memberSelector);
             return new ReflectedMember(instance, member);
         }
 
@@ -31,12 +32,17 @@ namespace Import.Reflection
 
         public Result<ReflectedCollection> AsCollection()
         {
-            return new ReflectedCollection(instance, member);
+            return ReflectedCollection.From(instance, member);
         }
 
         public void Set(object value)
         {
             member.SetMemberValue(instance, value);
+        }
+
+        public override string ToString()
+        {
+            return $"{instance.GetType()}.{member.Name}. {nameof(IsCollection)}: {IsCollection}, {nameof(MemberType)}: {MemberType}";
         }
     }
 }

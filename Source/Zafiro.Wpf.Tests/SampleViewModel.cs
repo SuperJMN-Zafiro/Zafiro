@@ -1,20 +1,9 @@
 using System;
 using System.Reactive.Linq;
 using ReactiveUI;
-using Zafiro.UI;
 
 namespace Zafiro.Wpf.Tests
 {
-    public class TestHaveDataContext : IHaveDataContext
-    {
-        public void SetDataContext(object dataContext)
-        {
-        }
-
-        public object Object { get; }
-    }
-
-
     public class SampleViewModel : ReactiveObject
     {
         public SampleViewModel()

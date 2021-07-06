@@ -4,9 +4,11 @@ using System.Net.Http;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Zafiro.Core.Files;
 using Zafiro.Core.Mixins;
+using Zafiro.Core.ProgressReporting;
 
-namespace Zafiro.Core
+namespace Zafiro.Core.Downloads
 {
     public class Downloader : IDownloader
     {
@@ -17,12 +19,11 @@ namespace Zafiro.Core
             this.client = client;
         }
 
-        public async Task Download(string url, string path, IOperationProgress progressObserver = null, int timeout = 30)
+        public async Task Download(string url, IZafiroFile destination, IOperationProgress progressObserver = null,
+            int timeout = 30)
         {
-            using (var fileStream = File.OpenWrite(path))
-            {
-                await Download(url, fileStream, progressObserver, timeout);
-            }
+            using var fileStream = await destination.OpenForWrite();
+            await Download(url, fileStream, progressObserver, timeout);
         }
 
         private async Task Download(string url, Stream destination, IOperationProgress progressObserver = null,

@@ -1,4 +1,5 @@
 ﻿using System;
+using Zafiro.Core.ProgressReporting;
 
 namespace Zafiro.Core
 {
@@ -6,37 +7,5 @@ namespace Zafiro.Core
     {
         IObservable<Progress> Progress { get; }
         void Send(Progress current);
-    }
-
-    public abstract class Progress
-    {
-    }
-
-    public class Unknown : Progress
-    {
-    }
-
-    public class AbsoluteProgress<T> : Progress
-    {
-        public AbsoluteProgress(T value)
-        {
-            Value = value;
-        }
-
-        public T Value { get; set; }
-    }
-
-    public class Percentage : Progress
-    {
-        public double Value { get; }
-
-        public Percentage(double value)
-        {
-            Value = value;
-        }
-    }
-
-    public class Done : Progress
-    {
     }
 }

@@ -4,6 +4,7 @@ using Optional;
 
 namespace Zafiro.Core.Patterns.Either
 {
+    [Obsolete("Use CSharpFunctionalExtensions. See https://github.com/vkhorikov/CSharpFunctionalExtensions")]
     [DebuggerTypeProxy(typeof(Either<,>.EitherProxy))]
     public class Either<TLeft, TRight>
     {
