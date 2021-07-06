@@ -4,8 +4,30 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Zafiro.Mapping</PackageId>
+    <Authors>SuperJMN</Authors>
+    <Description>The Cross-platform Crema for Windows Devs</Description>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
+    <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Product>Zafiro</Product>
+    <Company>José Manuel Nieto (@SuperJMN)</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageIconUrl />
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Zafiro.Reflection\Zafiro.Reflection.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

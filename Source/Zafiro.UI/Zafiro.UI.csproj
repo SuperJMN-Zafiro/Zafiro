@@ -6,16 +6,18 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Title>Zafiro.UI.Wpf</Title>
-    <Description>La crema for your UI</Description>
-    <Version>1.0.0</Version>
-    <ReleaseNotes>New package system</ReleaseNotes>
-    <Authors>JMN</Authors>
-    <Owners>JMN</Owners>
-    <Copyright>Copyright © 2020</Copyright>
-    <PackageOutputPath>bin\Package</PackageOutputPath>
+    <PackageId>Zafiro.UI</PackageId>
+    <Authors>SuperJMN</Authors>
+    <Description>The Cross-platform Crema for Windows Devs</Description>
+    <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
+    <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Product>Zafiro</Product>
+    <Company>José Manuel Nieto (@SuperJMN)</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Zafiro.Core</PackageId>
     <PackageVersion>2.0.4</PackageVersion>
     <Authors>SuperJMN</Authors>
@@ -10,13 +14,12 @@
     <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
     <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Product>Zafiro.Core</Product>
+    <Product>Zafiro</Product>
     <Company>José Manuel Nieto (@SuperJMN)</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>
-    <Version>2.2.52</Version>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="2.15.2" />
     <PackageReference Include="morelinq" Version="3.3.2" />
