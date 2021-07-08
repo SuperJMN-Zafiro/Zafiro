@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.XPath;
 using FluentAssertions;
 using Xunit;
@@ -19,7 +20,9 @@ namespace Zafiro.XPath.Tests
                     .ForMember(x => x.Text, e => e.MapFrom("/Root/Text"))
                     .ForMember(x => x.Int, e => e.MapFrom("/Root/Int", int.Parse))
                     .ForMember(x => x.Combined, e => e.MapFrom("/Root/Int", "/Root/Text", (a, b) => a + b))
-                    .ForMember(x => x.Children, e => e.MapFrom("//Child"));
+                    .ForMember(x => x.Children, e => e.MapFrom("//Child"))
+                    .ForMember(x => x.Strings, e => e.MapFrom("//Strings/String"))
+                    .ForMember(x => x.Ints, e => e.MapFrom("//Numbers/Number"));
                 c.CreateMap<Child>()
                     .ForMember(x => x.Name, x => x.MapFrom("Name"));
 
@@ -36,8 +39,10 @@ namespace Zafiro.XPath.Tests
                 {
                     new() {Name = "Hi1"},
                     new() {Name = "Hi2"},
-                    new() {Name = "Hi3"},
-                }
+                    new() {Name = "Hi3"}
+                },
+                Strings = new[] {"Hola", "Cómo", "Estás"}.ToList(),
+                Ints = new[] {1, 2, 3}.ToList()
             };
 
             mapped.Should().BeEquivalentTo(someModel);

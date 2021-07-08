@@ -10,5 +10,7 @@ namespace Zafiro.XPath.Tests
         public string Combined { get; set; }
         public Maybe<int> OptionalInt { get; set; }
         public List<Child> Children { get; set; }
+        public List<string> Strings { get; set; }
+        public List<int> Ints { get; set; }
     }
 }

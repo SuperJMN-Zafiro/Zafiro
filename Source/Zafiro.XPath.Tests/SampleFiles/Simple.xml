@@ -13,4 +13,14 @@
       <Name>Hi3</Name>
     </Child>
   </Children>
+  <Strings>
+    <String>Hola</String>
+    <String>Cómo</String>
+    <String>Estás</String>
+  </Strings>
+  <Numbers>
+    <Number>1</Number>
+    <Number>2</Number>
+    <Number>3</Number>
+  </Numbers>
 </Root>
