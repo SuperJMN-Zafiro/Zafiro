@@ -25,6 +25,6 @@ namespace Zafiro.Mapping
             return Map.DynamicInvoke(Sources.Select(map).ToArray());
         }
 
-        public IReadOnlySet<string> Sources => SourcesCore.ToImmutableHashSet();
+        public IReadOnlyList<string> Sources => SourcesCore.ToImmutableList();
     }
 }

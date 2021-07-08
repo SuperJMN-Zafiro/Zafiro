@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Root>
+  <Text>Hola</Text>
+  <Int>123</Int>
+  <Children>
+    <Child>
+      <Name>Hi1</Name>
+    </Child>
+    <Child>
+      <Name>Hi2</Name>
+    </Child>
+    <Child>
+      <Name>Hi3</Name>
+    </Child>
+  </Children>
+</Root>
