@@ -2,19 +2,17 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Zafiro.Core;
-using Zafiro.Core.Files;
 using Zafiro.Core.FileSystem;
 
-namespace Zafiro.UI
+namespace Zafiro.Core.Files
 {
-    public class DesktopZafiroFile : IZafiroFile
+    public class ZafiroFile : IZafiroFile
     {
         private readonly Uri uri;
         private readonly IFileSystemOperations fileSystemOperations;
         private readonly IDownloader downloader;
 
-        public DesktopZafiroFile(Uri uri, IFileSystemOperations fileSystemOperations, IDownloader downloader)
+        public ZafiroFile(Uri uri, IFileSystemOperations fileSystemOperations, IDownloader downloader)
         {
             this.uri = uri;
             this.fileSystemOperations = fileSystemOperations;
