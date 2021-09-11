@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using CSharpFunctionalExtensions;
 
 namespace Zafiro.Mapping
 {
@@ -42,6 +43,18 @@ namespace Zafiro.Mapping
         {
             SourcesCore.UnionWith(new[] { a, b, c, d, e });
             MapCore = conversion;
+            return this;
+        }
+
+        public ConversionMemberMap<T> UseFallbackValue(T value)
+        {
+            DefaultValue = Maybe<object>.From(value);
+            return this;
+        }
+
+        public ConversionMemberMap<T> UseFallbackValue(Func<T> valueFactory)
+        {
+            DefaultValue = Maybe<object>.From(valueFactory());
             return this;
         }
     }

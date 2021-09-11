@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.XPath;
 using FluentAssertions;
 using Xunit;
+using Zafiro.Core.Mixins;
 using Zafiro.Mapping;
 
 namespace Zafiro.XPath.Tests
@@ -46,6 +47,51 @@ namespace Zafiro.XPath.Tests
             };
 
             mapped.Should().BeEquivalentTo(someModel);
+        }
+
+        [Fact]
+        public void Fallback_value_with_one_source()
+        {
+            var doc = new XPathDocument("<Root></Root>".ToStream());
+
+            var mapper = new Configuration(c =>
+            {
+                c.CreateMap<SomeModel>()
+                    .ForMember(x => x.Int, e => e.MapFrom("/Root/Missing", _ => default).UseFallbackValue(123));
+            }).CreateMapper();
+
+            var model = mapper.Map<SomeModel>(doc);
+            model.Int.Should().Be(123);
+        }
+
+        [Fact]
+        public void Fallback_value_with_several_sources()
+        {
+            var doc = new XPathDocument("<Root><Int>1</Int></Root>".ToStream());
+
+            var mapper = new Configuration(c =>
+            {
+                c.CreateMap<SomeModel>()
+                    .ForMember(x => x.Int, e => e.MapFrom("Int", "/Root/Missing", (_, _) => default).UseFallbackValue(123));
+            }).CreateMapper();
+
+            var model = mapper.Map<SomeModel>(doc);
+            model.Int.Should().Be(123);
+        }
+
+        [Fact]
+        public void Fallback_value_with_several_sources_should_not_be_applied_when_all_are_found()
+        {
+            var doc = new XPathDocument("<Root><Int>1</Int><AnotherInt>2</AnotherInt></Root>".ToStream());
+
+            var mapper = new Configuration(c =>
+            {
+                c.CreateMap<SomeModel>()
+                    .ForMember(x => x.Int, e => e.MapFrom("/Root/Int", "/Root/AnotherInt", (_, _) => 123).UseFallbackValue(404));
+            }).CreateMapper();
+
+            var model = mapper.Map<SomeModel>(doc);
+            model.Int.Should().Be(123);
         }
     }
 }

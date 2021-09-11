@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
     <ProjectReference Include="..\Zafiro.XPathMapper\Zafiro.Mapping.csproj" />
     <ProjectReference Include="..\Zafiro.XPath\Zafiro.XPath.csproj" />
   </ItemGroup>

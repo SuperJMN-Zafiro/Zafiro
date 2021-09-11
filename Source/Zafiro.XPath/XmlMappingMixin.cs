@@ -61,7 +61,7 @@ namespace Zafiro.XPath
             }
         }
 
-        private static string GetXpathValue(string xpath, IXPathNavigable document)
+        private static Maybe<string> GetXpathValue(string xpath, IXPathNavigable document)
         {
             var nav = document.CreateNavigator();
             var selectSingleNode = nav.SelectSingleNode(xpath);
@@ -70,7 +70,7 @@ namespace Zafiro.XPath
                 return selectSingleNode.Value;
             }
 
-            throw new InvalidOperationException($"Cannot find XPath '{xpath}'");
+            return Maybe.None;
         }
     }
 }
