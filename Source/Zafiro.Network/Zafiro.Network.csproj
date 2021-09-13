@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>Zafiro.Network</PackageId>
+		<PackageVersion>2.0.4</PackageVersion>
+		<Authors>SuperJMN</Authors>
+		<Description>The Cross-platform Crema for .NET Devs</Description>
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
+		<PackageReleaseNotes>Crema all around</PackageReleaseNotes>
+		<PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Product>Zafiro</Product>
+		<Company>José Manuel Nieto (@SuperJMN)</Company>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>icon.png</PackageIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\icon.png" Link="icon.png">
+	    <PackagePath></PackagePath>
+	    <Pack>True</Pack>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+		<PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Zafiro.Core\Zafiro.Core.csproj" />
+	</ItemGroup>
+
+</Project>

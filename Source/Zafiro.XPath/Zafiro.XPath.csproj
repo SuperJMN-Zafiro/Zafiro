@@ -9,7 +9,7 @@
     <PackageId>Zafiro.XPath</PackageId>
     <PackageVersion>2.0.4</PackageVersion>
     <Authors>SuperJMN</Authors>
-    <Description>The Cross-platform Crema for Windows Devs</Description>
+    <Description>The Cross-platform Crema for .NET Devs</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
     <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>

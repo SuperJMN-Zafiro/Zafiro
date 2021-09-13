@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>Zafiro.UI</PackageId>
     <Authors>SuperJMN</Authors>
-    <Description>The Cross-platform Crema for Windows Devs</Description>
+    <Description>The Cross-platform Crema for .NET Devs</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>Crema all around</PackageReleaseNotes>
     <PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
