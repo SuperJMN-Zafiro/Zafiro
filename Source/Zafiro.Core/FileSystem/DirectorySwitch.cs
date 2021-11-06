@@ -1,26 +1,35 @@
 ﻿using System;
+using System.IO.Abstractions;
+using CSharpFunctionalExtensions;
 using Serilog;
 
 namespace Zafiro.Core.FileSystem
 {
     public class DirectorySwitch : IDisposable
     {
-        private readonly IFileSystemOperations operations;
-        private readonly string oldDirectory;
+        private readonly IFileSystem fileSystem;
+        private readonly Maybe<string> oldDirectory;
 
-        public DirectorySwitch(IFileSystemOperations operations, string directory)
+        public DirectorySwitch(IFileSystem fileSystem, string directory)
         {
-            this.operations = operations;
-            Log.Debug($"Switching to {directory}");
+            if (directory.Trim() == "")
+            {
+                return;
+            }
 
-            oldDirectory = operations.WorkingDirectory;
-            operations.WorkingDirectory = directory;
+            this.fileSystem = fileSystem;
+            Log.Debug("Switching to " + directory);
+            this.oldDirectory = fileSystem.Directory.GetCurrentDirectory();
+            fileSystem.Directory.SetCurrentDirectory(directory);
         }
 
         public void Dispose()
         {
-            Log.Debug($"Returning to {oldDirectory}");
-            operations.WorkingDirectory = oldDirectory;
+            oldDirectory.Execute(old =>
+            {
+                Log.Debug("Returning to " + this.oldDirectory);
+                fileSystem.Directory.SetCurrentDirectory(old);
+            });
         }
     }
 }
