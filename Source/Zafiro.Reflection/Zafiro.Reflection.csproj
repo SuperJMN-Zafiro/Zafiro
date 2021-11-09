@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Zafiro.Reflection</PackageId>
+    <PackageId>Zafiro.Core</PackageId>
     <Authors>SuperJMN</Authors>
     <Description>The Cross-platform Crema for .NET Devs</Description>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
