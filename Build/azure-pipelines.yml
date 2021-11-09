@@ -12,8 +12,8 @@ pool:
 variables:
   BuildPlatform: 'Any CPU'
   BuildConfiguration: 'Release'
-  Major: 2
-  Minor: 4
+  Major: 3
+  Minor: 0
   Patch: $[counter(variables['Minor'], 0)] # this will reset when we bump Minor
   NugetVersion: $(Major).$(Minor).$(Patch)
   ArtifactName: 'Nuget Packages'
