@@ -11,7 +11,6 @@
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>Crema all around</PackageReleaseNotes>
 		<PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Product>Zafiro</Product>
 		<Company>José Manuel Nieto (@SuperJMN)</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
