@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -30,7 +31,7 @@ namespace Zafiro.Reflection.Tests
             
             var child = new Child();
             sut.Add(child);
-            sut.Items.Should().Contain(child);
+            sut.Items.Cast<object>().Should().Contain(child);
         }
 
         [Fact]

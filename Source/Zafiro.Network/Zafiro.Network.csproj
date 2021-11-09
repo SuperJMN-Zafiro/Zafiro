@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 
@@ -21,14 +21,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="..\..\icon.png" Link="icon.png">
-	    <PackagePath></PackagePath>
-	    <Pack>True</Pack>
-	  </None>
+		<None Include="..\..\icon.png" Link="icon.png">
+			<PackagePath></PackagePath>
+			<Pack>True</Pack>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
 	</ItemGroup>
 
