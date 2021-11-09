@@ -26,12 +26,23 @@ stages:
       steps:
       - checkout: self
         submodules: recursive
+      
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: '6.0.x'
+        
       - task: DotNetCoreCLI@2
         inputs:
-            command: 'pack'
-            packagesToPack: '**/*.csproj'
-            versioningScheme: 'byEnvVar'
-            versionEnvVar: NugetVersion
+          command: 'build'
+          projects: '**/*.csproj'
+      
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'pack'
+          packagesToPack: '**/*.csproj;!**/*.Tests.csproj'
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'NugetVersion'
       - task: CopyFiles@2
         inputs:
           SourceFolder: 'Source'
