@@ -67,7 +67,7 @@ stages:
       - task: NuGetToolInstaller@1
         displayName: 'Install NuGet'
 
-      - task: DotNetCoreCLI@2
+      - task: NuGetCommand@2
         displayName: Publish packages
         inputs:
           command: 'push'
