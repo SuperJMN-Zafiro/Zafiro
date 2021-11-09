@@ -20,7 +20,7 @@ variables:
 
 stages:
   - stage: Stage
-    displayName: Build and publish
+    displayName: Build and pack
     jobs:
     - job: job
       steps:
@@ -28,30 +28,18 @@ stages:
         submodules: recursive            
       - task: NuGetToolInstaller@1
         displayName: 'Install NuGet'
-
-      - task: NuGetCommand@2
-        displayName: 'Restore packages'
+      - task: DotNetCoreCLI@2
         inputs:
-          restoreSolution: 'Source\Zafiro.sln'
-          
-      - task: MSBuild@1
-        displayName: 'Build solution in $(BuildConfiguration) | $(BuildPlatform)'
-        inputs:
-          solution: 'Source\Zafiro.sln'
-          msbuildLocationMethod: version
-          msbuildVersion: latest
-          msbuildArchitecture: x86
-          configuration: $(BuildConfiguration)
-          platform: $(BuildPlatform)
-          msbuildArguments: /p:PackageVersion=$(NugetVersion) # Set the version of the packages, will have no effect on application projects (Heads).
-              
+            command: 'pack'
+            packagesToPack: '**/*.csproj'
+            versioningScheme: 'byEnvVar'
+            versionEnvVar: NugetVersion
       - task: CopyFiles@2
         inputs:
           SourceFolder: 'Source'
           Contents: '**\Zafiro*.nupkg'
           TargetFolder: '$(build.artifactstagingdirectory)'
           flattenFolders: true
-
       - task: PublishBuildArtifacts@1
         displayName: 'Publish artifact $(ApplicationConfiguration)'
         inputs:
