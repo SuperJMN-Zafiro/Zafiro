@@ -25,9 +25,7 @@ stages:
     - job: job
       steps:
       - checkout: self
-        submodules: recursive            
-      - task: NuGetToolInstaller@1
-        displayName: 'Install NuGet'
+        submodules: recursive
       - task: DotNetCoreCLI@2
         inputs:
             command: 'pack'
