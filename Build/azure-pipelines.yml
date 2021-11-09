@@ -26,6 +26,12 @@ stages:
       steps:
       - checkout: self
         submodules: recursive
+      
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: '6'
+        
       - task: DotNetCoreCLI@2
         inputs:
             command: 'pack'
