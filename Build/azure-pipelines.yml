@@ -63,9 +63,6 @@ stages:
           downloadType: single
           artifactName: $(ArtifactName)
 
-      - task: NuGetToolInstaller@1
-        displayName: 'Install NuGet'
-
       - task: NuGetCommand@2
         displayName: Publish packages
         inputs:
