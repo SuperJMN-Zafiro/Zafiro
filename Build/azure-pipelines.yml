@@ -26,25 +26,16 @@ stages:
       steps:
       - checkout: self
         submodules: recursive            
-      - task: NuGetToolInstaller@1
-        displayName: 'Install NuGet'
 
-      - task: NuGetCommand@2
-        displayName: 'Restore packages'
+      - task: DotNetCoreCLI@2
         inputs:
-          restoreSolution: 'Source\Zafiro.sln'
-          
-      - task: MSBuild@1
-        displayName: 'Build solution in $(BuildConfiguration) | $(BuildPlatform)'
-        inputs:
-          solution: 'Source\Zafiro.sln'
-          msbuildLocationMethod: version
-          msbuildVersion: latest
-          msbuildArchitecture: x86
-          configuration: $(BuildConfiguration)
-          platform: $(BuildPlatform)
-          msbuildArguments: /p:PackageVersion=$(NugetVersion) # Set the version of the packages, will have no effect on application projects (Heads).
-              
+          command: 'pack'
+          packagesToPack: '**/Zafiro*.csproj'
+          includesymbols: true
+          includesource: true
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'NugetVersion'
+                             
       - task: CopyFiles@2
         inputs:
           SourceFolder: 'Source'
