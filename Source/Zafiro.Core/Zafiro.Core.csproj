@@ -6,13 +6,12 @@
   </PropertyGroup>
 
 	<PropertyGroup>
-		<PackageId>Zafiro.Reflection</PackageId>
+		<PackageId>Zafiro.Core</PackageId>
 		<Authors>SuperJMN</Authors>
 		<Description>The Cross-platform Crema for .NET Devs</Description>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<PackageReleaseNotes>Crema all around</PackageReleaseNotes>
 		<PackageTags>WPF XAML Cross-Platform Avalonia AvaloniaUI</PackageTags>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Product>Zafiro</Product>
 		<Company>José Manuel Nieto (@SuperJMN)</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -30,11 +29,8 @@
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="..\..\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="..\..\icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

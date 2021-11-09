@@ -12,36 +12,32 @@ pool:
 variables:
   BuildPlatform: 'Any CPU'
   BuildConfiguration: 'Release'
-  Major: 2
-  Minor: 4
+  Major: 3
+  Minor: 0
   Patch: $[counter(variables['Minor'], 0)] # this will reset when we bump Minor
   NugetVersion: $(Major).$(Minor).$(Patch)
   ArtifactName: 'Nuget Packages'
 
 stages:
   - stage: Stage
-    displayName: Build and publish
+    displayName: Build and pack
     jobs:
     - job: job
       steps:
       - checkout: self
-        submodules: recursive            
+        submodules: recursive
+      
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: '6.0.x'
 
       - task: DotNetCoreCLI@2
         inputs:
           command: 'pack'
-          packagesToPack: '**/Zafiro*.csproj'
-          includesymbols: true
-          includesource: true
+          packagesToPack: '**/*.csproj;!**/*.Tests.csproj'
           versioningScheme: 'byEnvVar'
           versionEnvVar: 'NugetVersion'
-                             
-      - task: CopyFiles@2
-        inputs:
-          SourceFolder: 'Source'
-          Contents: '**\Zafiro*.nupkg'
-          TargetFolder: '$(build.artifactstagingdirectory)'
-          flattenFolders: true
 
       - task: PublishBuildArtifacts@1
         displayName: 'Publish artifact $(ApplicationConfiguration)'
