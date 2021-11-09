@@ -38,11 +38,6 @@ stages:
           packagesToPack: '**/*.csproj;!**/*.Tests.csproj'
           versioningScheme: 'byEnvVar'
           versionEnvVar: 'NugetVersion'
-      - task: CopyFiles@2
-        inputs:
-          Contents: '**\*.nupkg'
-          TargetFolder: '$(Build.ArtifactStagingDirectory)'
-          flattenFolders: true
 
       - task: PublishBuildArtifacts@1
         displayName: 'Publish artifact $(ApplicationConfiguration)'
