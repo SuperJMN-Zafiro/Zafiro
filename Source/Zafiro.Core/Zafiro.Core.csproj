@@ -29,11 +29,8 @@
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Include="..\..\icon.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
     <None Include="..\..\icon.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
