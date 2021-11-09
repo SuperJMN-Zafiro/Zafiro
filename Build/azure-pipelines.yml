@@ -40,10 +40,10 @@ stages:
           versionEnvVar: 'NugetVersion'
       - task: CopyFiles@2
         inputs:
-          SourceFolder: 'Source'
-          Contents: '**\Zafiro*.nupkg'
-          TargetFolder: '$(build.artifactstagingdirectory)'
+          Contents: '**\*.nupkg'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
           flattenFolders: true
+
       - task: PublishBuildArtifacts@1
         displayName: 'Publish artifact $(ApplicationConfiguration)'
         inputs:
@@ -67,7 +67,7 @@ stages:
       - task: NuGetToolInstaller@1
         displayName: 'Install NuGet'
 
-      - task: NuGetCommand@2
+      - task: DotNetCoreCLI@2
         displayName: Publish packages
         inputs:
           command: 'push'
