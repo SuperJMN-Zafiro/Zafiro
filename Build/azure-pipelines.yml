@@ -34,10 +34,10 @@ stages:
         
       - task: DotNetCoreCLI@2
         inputs:
-            command: 'pack'
-            packagesToPack: '**/*.csproj'
-            versioningScheme: 'byEnvVar'
-            versionEnvVar: NugetVersion
+          command: 'pack'
+          packagesToPack: '**/*.csproj;!**/*.Tests.csproj'
+          versioningScheme: 'byEnvVar'
+          versionEnvVar: 'NugetVersion'
       - task: CopyFiles@2
         inputs:
           SourceFolder: 'Source'
