@@ -15,7 +15,7 @@ variables:
   Major: 3
   Minor: 0
   Patch: $[counter(variables['Minor'], 0)] # this will reset when we bump Minor
-  NugetVersion: $(Major).$(Minor).$(Patch)
+  NugetVersion: $(GitVersion.NuGetVersionV2)
   ArtifactName: 'Nuget Packages'
 
 stages:
@@ -27,6 +27,16 @@ stages:
       - checkout: self
         submodules: recursive
       
+      - task: gitversion/setup@0
+        inputs:
+         versionSpec: '5.x'
+      
+      - task: gitversion/execute@0
+      
+      - task: CmdLine@2
+        inputs: 
+          script: 'echo $(GitVersion.NuGetVersionV2)'
+
       - task: UseDotNet@2
         inputs:
           packageType: 'sdk'
@@ -37,7 +47,7 @@ stages:
           command: 'pack'
           packagesToPack: '**/*.csproj;!**/*.Tests.csproj'
           versioningScheme: 'byEnvVar'
-          versionEnvVar: 'NugetVersion'
+          versionEnvVar: 'GitVersion.NuGetVersionV2'
 
       - task: PublishBuildArtifacts@1
         displayName: 'Publish artifact $(ApplicationConfiguration)'
