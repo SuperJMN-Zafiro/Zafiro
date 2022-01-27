@@ -7,7 +7,7 @@
 	<Import Project="..\..\Build\Common.props" />
 
 	<ItemGroup>
-		<ProjectReference Include="..\Zafiro.Reflection\Reflection.csproj" />
+		<ProjectReference Include="..\Reflection\Reflection.csproj" />
 	</ItemGroup>
 
 </Project>

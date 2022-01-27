@@ -7,7 +7,7 @@
 	<Import Project="..\..\Build\Common.props" />
 
   <ItemGroup>
-    <ProjectReference Include="..\Zafiro.XPathMapper\Mapping.csproj" />
+    <ProjectReference Include="..\XPathMapper\Mapping.csproj" />
   </ItemGroup>
 
   <ItemGroup>

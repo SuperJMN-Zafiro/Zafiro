@@ -22,9 +22,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Zafiro.Core\Core.csproj" />
-		<ProjectReference Include="..\Zafiro.XPathMapper\Mapping.csproj" />
-		<ProjectReference Include="..\Zafiro.XPath\XPath.csproj" />
+		<ProjectReference Include="..\Core\Core.csproj" />
+		<ProjectReference Include="..\XPathMapper\Mapping.csproj" />
+		<ProjectReference Include="..\XPath\XPath.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
