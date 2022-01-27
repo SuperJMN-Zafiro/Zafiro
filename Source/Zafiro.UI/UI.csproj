@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+	  <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+	<Import Project="..\..\Build\Common.props" />
+
+	<ItemGroup>
+    <Compile Update="FilePickerMixin.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Zafiro.Core\Core.csproj" />
+  </ItemGroup>
+
+
+</Project>

@@ -1,25 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29311.281
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Core", "Zafiro.Core\Zafiro.Core.csproj", "{48D712E7-7654-4104-89F6-1C1F98DCB407}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Zafiro.Core\Core.csproj", "{48D712E7-7654-4104-89F6-1C1F98DCB407}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Core.Tests", "Zafiro.Core.Tests\Zafiro.Core.Tests.csproj", "{C7E727DE-D1A8-4AF4-9FB5-D670F33A70CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Zafiro.Core.Tests\Core.Tests.csproj", "{C7E727DE-D1A8-4AF4-9FB5-D670F33A70CE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.UI", "Zafiro.UI\Zafiro.UI.csproj", "{6FC79263-C506-47B4-A4EC-69F4AC2138A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UI", "Zafiro.UI\UI.csproj", "{6FC79263-C506-47B4-A4EC-69F4AC2138A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Mapping", "Zafiro.XPathMapper\Zafiro.Mapping.csproj", "{CFE42206-927B-4100-976B-B88EBE6A1EDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mapping", "Zafiro.XPathMapper\Mapping.csproj", "{CFE42206-927B-4100-976B-B88EBE6A1EDE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Reflection", "Zafiro.Reflection\Zafiro.Reflection.csproj", "{614CA639-CC65-42AE-A531-A3FF784F4BE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reflection", "Zafiro.Reflection\Reflection.csproj", "{614CA639-CC65-42AE-A531-A3FF784F4BE4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.XPath", "Zafiro.XPath\Zafiro.XPath.csproj", "{1DBA56C6-37B3-4320-91CC-77D9FA35E476}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPath", "Zafiro.XPath\XPath.csproj", "{1DBA56C6-37B3-4320-91CC-77D9FA35E476}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.XPath.Tests", "Zafiro.XPath.Tests\Zafiro.XPath.Tests.csproj", "{F888748B-8E83-47F6-95DE-999847391AF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPath.Tests", "Zafiro.XPath.Tests\XPath.Tests.csproj", "{F888748B-8E83-47F6-95DE-999847391AF6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Reflection.Tests", "Zafiro.Reflection.Tests\Zafiro.Reflection.Tests.csproj", "{3EB91448-4502-4E66-9E2A-B8C20D578A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reflection.Tests", "Zafiro.Reflection.Tests\Reflection.Tests.csproj", "{3EB91448-4502-4E66-9E2A-B8C20D578A00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zafiro.Network", "Zafiro.Network\Zafiro.Network.csproj", "{5B618CBF-70D1-4F99-AE43-D647D4CC6D88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Network", "Zafiro.Network\Network.csproj", "{5B618CBF-70D1-4F99-AE43-D647D4CC6D88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{254D3913-D178-4AFB-9EDC-9AE108644D39}"
+	ProjectSection(SolutionItems) = preProject
+		..\Build\Common.props = ..\Build\Common.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

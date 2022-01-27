@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<Import Project="..\..\Build\Common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="CSharpFunctionalExtensions" Version="2.24.3" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+	<Import Project="..\..\Build\Common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+		<PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Zafiro.Core\Core.csproj" />
+	</ItemGroup>
+
+</Project>
