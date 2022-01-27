@@ -13,7 +13,7 @@ public class FileSystem : IFileSystem
     public SftpClient Client { get; }
     public IFile File => new File(this);
     public IDirectory Directory => new Directory(this);
-    public IFileInfoFactory FileInfo { get; }
+    public IFileInfoFactory FileInfo => new FileInfoFactory(this);
     public IFileStreamFactory FileStream { get; }
     public IPath Path => new Path(this);
     public IDirectoryInfoFactory DirectoryInfo => new DirectoryInfoFactory(this);

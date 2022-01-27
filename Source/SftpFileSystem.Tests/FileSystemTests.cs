@@ -4,6 +4,7 @@ using DotNet.Testcontainers.Containers.Builders;
 using DotNet.Testcontainers.Containers.Modules;
 using DotNet.Testcontainers.Containers.WaitStrategies;
 using FluentAssertions;
+using Renci.SshNet;
 using Xunit;
 
 namespace SftpFileSystem.Tests;
@@ -13,22 +14,59 @@ public class FileSystemTests
     [Fact]
     public async Task Read_existing_file()
     {
-        await using var _ = await CreateSftpServer();
-        var sut = CreateSut();
-        sut.File.OpenText("/upload/TextFile1.txt")
-            .ReadToEnd()
-            .Should()
-            .NotBeEmpty();
+        var container = await new Builder("localhost", "tester", "password", 22)
+            .WithFile("upload/TextFile1.txt", "Hello")
+            .Build();
+
+        await using (container)
+        {
+            var sut = CreateSut();
+            var contents = await sut.File.OpenText("upload/TextFile1.txt").ReadToEndAsync();
+
+            contents
+                .Should()
+                .NotBeEmpty();
+        }
     }
 
     [Fact]
     public async Task Enumerate_existing_directory()
     {
-        await using var _ = await CreateSftpServer();
-        var sut = CreateSut();
-        sut.Directory.EnumerateFileSystemEntries("/upload")
-            .Should()
-            .NotBeEmpty();
+        var container = await new Builder("localhost", "tester", "password", 22)
+            .WithFile("upload/TextFile1.txt", "Hello")
+            .Build();
+
+        await using (container)
+        {
+            var sut = CreateSut();
+            sut.Directory.EnumerateFileSystemEntries("/upload")
+                .Should()
+                .NotBeEmpty();
+        }
+    }
+
+    [Fact]
+    public async Task Delete_existing_file()
+    {
+        var container = await new Builder("localhost", "tester", "password", 22)
+            .WithFile("upload/TextFile1.txt", "Hello")
+            .Build();
+
+        await using (container)
+        {
+            var sut = CreateSut();
+            var file = sut.FileInfo.FromFileName("upload/TextFile1.txt");
+            file.Delete();
+
+            AssertClient(client => client.Exists("upload/TextFile1.txt").Should().BeFalse());
+        }
+    }
+
+    private static void AssertClient(Action<SftpClient> assert)
+    {
+        using var client = new SftpClient("localhost", 22, "tester", "password");
+        client.Connect();
+        assert(client);
     }
 
     private static FileSystem CreateSut()
@@ -36,12 +74,11 @@ public class FileSystemTests
         return FileSystem.Create("localhost", 22, "tester", "password");
     }
 
-    private static async Task<IAsyncDisposable> CreateSftpServer()
+    public static async Task<IAsyncDisposable> CreateSftpServer()
     {
         var testcontainersBuilder = new TestcontainersBuilder<TestcontainersContainer>()
             .WithImage("atmoz/sftp")
-            .WithCommand("tester:password:1000")
-            .WithMount("testdata", "/home/tester/upload")
+            .WithCommand("tester:password:::upload")
             .WithName("Sftp")
             .WithPortBinding(22)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(22));

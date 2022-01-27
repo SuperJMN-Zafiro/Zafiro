@@ -19,7 +19,7 @@ public class FileInfo : IFileInfo
 
     public void Delete()
     {
-        throw new NotImplementedException();
+        fileSystem.File.Delete(file.FullName);
     }
 
     public void Refresh()
