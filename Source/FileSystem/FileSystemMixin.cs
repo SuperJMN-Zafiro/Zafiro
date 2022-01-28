@@ -36,12 +36,11 @@ public static class FileSystemMixin
         await file.OpenRead().CopyToAsync(newFile.Create());
     }
 
-    private static string MapPath(FileSystemPath origin, FileSystemPath destination, string path)
+    private static string MapPath(FileSystemPath origin, FileSystemPath destination, string pathToMap)
     {
-        var relativeTo = origin.FileSystem.DirectoryInfo.FromDirectoryName(origin.Path).FullName;
-        var relative = origin.FileSystem.Path.GetRelativePath(relativeTo, path);
+        var rel = origin.MakeRelative(pathToMap);
         var subDir = destination.FileSystem.DirectoryInfo.FromDirectoryName(destination.Path);
-        var newPath = destination.FileSystem.Path.Combine(subDir.FullName, relative);
-        return newPath;
+        var newFullPath = destination.FileSystem.Path.Combine(subDir.FullName, rel);
+        return newFullPath;
     }
 }

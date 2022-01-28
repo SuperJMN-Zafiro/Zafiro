@@ -22,4 +22,9 @@ public class FileSystemPath
     {
         return new FileSystemPath(FileSystem, newPath);
     }
+
+    public string MakeRelative(string path)
+    {
+        return FileSystem.Path.GetRelativePath(FileSystem.Path.GetFullPath(Path), path);
+    }
 }
