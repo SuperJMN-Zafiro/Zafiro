@@ -27,4 +27,7 @@ public class FileSystemPath
     {
         return $"{nameof(Path)}: {Path}";
     }
+
+    public IFileInfo GetFile() => FileSystem.FileInfo.FromFileName(Path);
+    public IDirectoryInfo GetDirectory() => FileSystem.DirectoryInfo.FromDirectoryName(Path);
 }
