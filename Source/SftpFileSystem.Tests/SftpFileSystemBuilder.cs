@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Renci.SshNet;
 
 namespace SftpFileSystem.Tests;
 
-public class Builder
+public class SftpFileSystemBuilder
 {
     private readonly string host;
     private readonly string username;
@@ -13,7 +14,7 @@ public class Builder
     private readonly int port;
     private readonly Dictionary<string, string> files = new();
 
-    public Builder(string host, string username, string password, int port)
+    public SftpFileSystemBuilder(string host, string username, string password, int port)
     {
         this.host = host;
         this.username = username;
@@ -36,6 +37,12 @@ public class Builder
 
             foreach (var (path, content) in files)
             {
+                var parentDir = string.Join('/', path.Split('/').SkipLast(1));
+                if (!client.Exists(parentDir))
+                {
+                    client.CreateDirectory(parentDir);
+                }
+
                 using (var stream = client.CreateText(path))
                 {
                     await stream.WriteAsync(content);
@@ -44,7 +51,7 @@ public class Builder
         }
     }
 
-    public Builder WithFile(string path, string content = "")
+    public SftpFileSystemBuilder WithFile(string path, string content = "")
     {
         files.Add(path, content);
         return this;

@@ -1,45 +1,43 @@
 ﻿using System.IO.Abstractions;
-using System.IO.Enumeration;
 using System.Security.AccessControl;
-using Renci.SshNet.Sftp;
 
 namespace SftpFileSystem;
 
-public class FileInfo : IFileInfo
+public abstract class FileInfoBase : IFileInfo
 {
-    private readonly SftpFile file;
-    private readonly FileSystem fileSystem;
+    private readonly FileSystem innerFileSystem;
 
-    public FileInfo(FileSystem fileSystem, SftpFile file)
+    protected FileInfoBase(FileSystem fileSystem)
     {
-        this.fileSystem = fileSystem;
-        this.file = file;
-        IsReadOnly = !(file.OwnerCanWrite || file.GroupCanWrite || file.OthersCanWrite);
+        this.innerFileSystem = fileSystem;
     }
 
-    public void Delete()
-    {
-        fileSystem.File.Delete(file.FullName);
-    }
-
-    public void Refresh()
-    {
-        throw new NotImplementedException();
-    }
-
-    public IFileSystem FileSystem => fileSystem;
+    public IFileSystem FileSystem => InnerFileSystem;
     public FileAttributes Attributes { get; set; }
     public DateTime CreationTime { get; set; }
     public DateTime CreationTimeUtc { get; set; }
     public bool Exists => true;
-    public string Extension => fileSystem.Path.GetExtension(Name);
-    public string FullName => file.FullName;
+    public string Extension => InnerFileSystem.Path.GetExtension(Name);
+    public abstract string FullName { get; }
     public DateTime LastAccessTime { get; set; }
     public DateTime LastAccessTimeUtc { get; set; }
     public DateTime LastWriteTime { get; set; }
     public DateTime LastWriteTimeUtc { get; set; }
     public string LinkTarget { get; }
-    public string Name => file.Name;
+    public string Name => InnerFileSystem.Path.GetFileName(FullName);
+    public IDirectoryInfo Directory => new DirectoryInfo(DirectoryName, InnerFileSystem);
+    public string DirectoryName => InnerFileSystem.Path.GetDirectoryName(FullName);
+    public bool IsReadOnly { get; set; }
+    public abstract long Length { get; }
+
+    protected FileSystem InnerFileSystem => innerFileSystem;
+
+    public abstract void Delete();
+
+    public void Refresh()
+    {
+        throw new NotImplementedException();
+    }
 
     public StreamWriter AppendText()
     {
@@ -58,7 +56,7 @@ public class FileInfo : IFileInfo
 
     public Stream Create()
     {
-        throw new NotImplementedException();
+        return InnerFileSystem.Client.Create(FullName);
     }
 
     public StreamWriter CreateText()
@@ -118,12 +116,12 @@ public class FileInfo : IFileInfo
 
     public StreamReader OpenText()
     {
-        return fileSystem.File.OpenText(FullName);
+        return InnerFileSystem.File.OpenText(FullName);
     }
 
     public Stream OpenWrite()
     {
-        throw new NotImplementedException();
+        return InnerFileSystem.File.OpenWrite(FullName);
     }
 
     public IFileInfo Replace(string destinationFileName, string destinationBackupFileName)
@@ -140,10 +138,4 @@ public class FileInfo : IFileInfo
     {
         throw new NotImplementedException();
     }
-
-    public IDirectoryInfo Directory => new DirectoryInfo(DirectoryName, fileSystem);
-    public string DirectoryName => fileSystem.Path.GetDirectoryName(FullName);
-    public bool IsReadOnly { get; set; }
-
-    public long Length => file.Length;
 }

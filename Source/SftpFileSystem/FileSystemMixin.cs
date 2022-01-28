@@ -20,7 +20,7 @@ public static class FileSystemMixin
     {
         return fileSystem.Client.ListDirectory(path)
             .Where(r => !r.IsDirectory || r.IsRegularFile)
-            .Select(file => new FileInfo(fileSystem, file));
+            .Select(file => new ExistingFileInfo(fileSystem, file));
     }
 
     public static IEnumerable<string> GetFilenames(this FileSystem fileSystem, string path)

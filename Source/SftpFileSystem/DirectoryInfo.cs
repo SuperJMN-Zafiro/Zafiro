@@ -39,7 +39,7 @@ public class DirectoryInfo : IDirectoryInfo
     public string Name => directoryName;
     public void Create()
     {
-        fileSystem.Client.Create(FullName);
+        fileSystem.Directory.CreateDirectory(FullName);
     }
 
     public void Create(DirectorySecurity directorySecurity)
@@ -56,7 +56,7 @@ public class DirectoryInfo : IDirectoryInfo
 
     public void Delete(bool recursive)
     {
-        fileSystem.Directory.Delete(FullName);
+        fileSystem.Directory.Delete(FullName, recursive);
     }
 
     public IEnumerable<IDirectoryInfo> EnumerateDirectories()
@@ -84,17 +84,17 @@ public class DirectoryInfo : IDirectoryInfo
         return GetAllFiles();
     }
 
-    private IEnumerable<FileInfo> GetAllFiles()
+    private IEnumerable<ExistingFileInfo> GetAllFiles()
     {
         return GetAll();
     }
 
-    private IEnumerable<FileInfo> GetAll()
+    private IEnumerable<ExistingFileInfo> GetAll()
     {
         var listDirectory = fileSystem.Client.ListDirectory(FullName);
         return listDirectory
             .Where(file => file.IsRegularFile)
-            .Select(file => new FileInfo(fileSystem, file));
+            .Select(file => new ExistingFileInfo(fileSystem, file));
     }
 
     public IEnumerable<IFileInfo> EnumerateFiles(string searchPattern)
