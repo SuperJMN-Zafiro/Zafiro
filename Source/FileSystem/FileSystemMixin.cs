@@ -15,32 +15,26 @@ public static class FileSystemMixin
         var parent = origin.FileSystem.DirectoryInfo.FromDirectoryName(origin.Path);
         foreach (var item in parent.GetFileSystemInfos())
         {
-            var newPath = MapPath(origin, destination, item.FullName);
+            var translatedToDestination = origin.Translate(item.FullName, destination);
 
             switch (item)
             {
                 case IFileInfo file:
-                    await CopyFile(destination, newPath, file);
+                    await CopyStream(destination, translatedToDestination, file.OpenRead);
                     break;
                 case IDirectoryInfo dir:
-                    await CopyTo(origin.From(dir.FullName), destination.From(newPath));
+                    await CopyTo(origin.WithPath(dir.FullName), destination.WithPath(translatedToDestination));
                     break;
             }
         }
     }
 
-    private static async Task CopyFile(FileSystemPath destination, string newPath, IFileInfo file)
+    private static async Task CopyStream(FileSystemPath destination, string newPath, Func<Stream> streamFactory)
     {
         var newFile = destination.FileSystem.FileInfo.FromFileName(newPath);
         newFile.Directory.Create();
-        await file.OpenRead().CopyToAsync(newFile.Create());
-    }
-
-    private static string MapPath(FileSystemPath origin, FileSystemPath destination, string pathToMap)
-    {
-        var rel = origin.MakeRelative(pathToMap);
-        var subDir = destination.FileSystem.DirectoryInfo.FromDirectoryName(destination.Path);
-        var newFullPath = destination.FileSystem.Path.Combine(subDir.FullName, rel);
-        return newFullPath;
+        await using var source = streamFactory();
+        await using var dest = newFile.Create();
+        await source.CopyToAsync(dest);
     }
 }

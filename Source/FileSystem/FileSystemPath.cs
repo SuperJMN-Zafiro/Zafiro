@@ -18,13 +18,13 @@ public class FileSystemPath
     public IFileSystem FileSystem { get; }
     public string Path { get; }
 
-    public FileSystemPath From(string newPath)
+    public FileSystemPath WithPath(string newPath)
     {
         return new FileSystemPath(FileSystem, newPath);
     }
 
-    public string MakeRelative(string path)
+    public override string ToString()
     {
-        return FileSystem.Path.GetRelativePath(FileSystem.Path.GetFullPath(Path), path);
+        return $"{nameof(Path)}: {Path}";
     }
 }
