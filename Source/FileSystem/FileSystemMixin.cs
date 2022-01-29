@@ -5,7 +5,7 @@ namespace FileSystem;
 public static class FileSystemMixin
 {
     /// <summary>
-    /// Copies a directory from a <see cref="IFileSystem"/> to another
+    ///     Copies a directory from a <see cref="IFileSystem" /> to another
     /// </summary>
     /// <param name="origin">Target to copy from</param>
     /// <param name="destination">Target to copy to</param>
