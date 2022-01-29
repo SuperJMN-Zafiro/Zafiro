@@ -6,8 +6,14 @@ public class HashGenerator : IHashGenerator
 {
     private static readonly SHA1 HashProvider = SHA1.Create();
     
-    public byte[] ComputeHash(Stream stream)
+    public Task<byte[]> ComputeHash(Stream stream)
     {
-        return HashProvider.ComputeHash(stream);
+        return HashProvider.ComputeHashAsync(stream);
+    }
+
+    public async Task<byte[]> ComputeHash(Func<Stream> streamFactory)
+    {
+        await using var stream = streamFactory();
+        return await ComputeHash(stream);
     }
 }

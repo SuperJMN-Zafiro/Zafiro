@@ -2,5 +2,6 @@ namespace FileSystem;
 
 public interface IHashGenerator
 {
-    byte[] ComputeHash(Stream stream);
+    Task<byte[]> ComputeHash(Stream stream);
+    Task<byte[]> ComputeHash(Func<Stream> streamFactory);
 }

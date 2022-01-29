@@ -2,28 +2,25 @@ namespace FileSystem;
 
 public class SmartFileSystemUtils : FileSystemUtils
 {
+    private readonly Cache cache;
+
+    private readonly Dictionary<string, IDictionary<string, byte[]>> hashes = new();
 
     public SmartFileSystemUtils(Cache cache)
     {
         this.cache = cache;
     }
 
-    private readonly Dictionary<string, IDictionary<string, byte[]>> hashes = new();
-    private readonly Cache cache;
-
     protected override async Task CopyStream(FileSystemPath destination, string newPath, Func<Stream> streamFactory)
     {
-        if (AlreadyCopied(newPath))
-        {
-            return;
-        }
+        if (await AlreadyCopied(newPath, streamFactory)) return;
 
         cache.Add(newPath, streamFactory);
         await base.CopyStream(destination, newPath, streamFactory);
     }
 
-    private bool AlreadyCopied(string path)
+    private Task<bool> AlreadyCopied(string path, Func<Stream> streamFactory)
     {
-        return cache.Contains(path);
+        return cache.Contains(path, streamFactory);
     }
 }

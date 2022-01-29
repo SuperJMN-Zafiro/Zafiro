@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
