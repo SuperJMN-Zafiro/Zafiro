@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CSharpFunctionalExtensions" Version="2.27.2" />
+		<PackageReference Include="morelinq" Version="3.3.2" />
 		<PackageReference Include="System.IO.Abstractions" Version="13.2.47" />
 	</ItemGroup>
 
