@@ -41,7 +41,47 @@ public class FilesystemComparerTests
                 FileDiffStatus.Deleted);
             Add(sourceFileSystem, new MockFileSystem(new Dictionary<string, MockFileData>()), new[] {result});
             Add(new MockFileSystem(), new MockFileSystem(), Array.Empty<FileDiff>());
+            Add(
+                Fs(new Dictionary<string, MockFileData>
+                {
+                    ["File.txt"] = MockFileData.NullObject
+                }),
+                Fs(),
+                new[]
+                {
+                    ("File.txt", FileDiffStatus.Deleted)
+                });
         }
+
+        private static MockFileSystem Fs()
+        {
+            return new MockFileSystem();
+        }
+
+        private static MockFileSystem Fs(Dictionary<string, MockFileData> mockFileDatas)
+        {
+            return new MockFileSystem(mockFileDatas);
+        }
+
+        private void Add(IFileSystem origin, IFileSystem destination,
+            IEnumerable<(string, FileDiffStatus)> diffs)
+        {
+            AddRow(origin, destination,
+                diffs.Select(tuple => new FileDiff(origin.FileInfo.FromFileName(tuple.Item1).FullName, tuple.Item2)));
+        }
+    }
+}
+
+public class Builder
+{
+    public static object[] Create(IFileSystem origin, IFileSystem destination,
+        IEnumerable<(string, FileDiffStatus)> diffs)
+    {
+        return new object[]
+        {
+            origin, destination,
+            diffs.Select(tuple => new FileDiff(origin.FileInfo.FromFileName(tuple.Item1).FullName, tuple.Item2))
+        };
     }
 }
 
