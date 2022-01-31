@@ -10,7 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="SSH.NET" Version="2020.0.1" />
-		<PackageReference Include="System.IO.Abstractions" Version="16.1.4" />
+		<PackageReference Include="System.IO.Abstractions" Version="16.1.7" />
 	</ItemGroup>
 
 </Project>

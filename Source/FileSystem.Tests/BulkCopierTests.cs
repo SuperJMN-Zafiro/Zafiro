@@ -76,7 +76,7 @@ public class BulkCopierTests
     {
         var pathTranslator = new FileSystemPathTranslator();
         var fileSystemComparer = new FileSystemComparer(pathTranslator);
-        var sut = new BulkCopier(fileSystemComparer, pathTranslator);
+        var sut = new BulkCopier(fileSystemComparer, pathTranslator, _ => new FileManager());
         return sut;
     }
 }
