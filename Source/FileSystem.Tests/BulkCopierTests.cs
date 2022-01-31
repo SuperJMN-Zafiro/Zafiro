@@ -11,10 +11,10 @@ namespace FileSystem.Tests;
 
 public class BulkCopierTests
 {
+    /// HAY QUE HACER LOS TESTS DEL SMART FILE MANAGER!!
     [Fact]
     public async Task Everything_is_added()
     {
-        var sut = CreateSut();
         var fs = new MockFileSystem(new Dictionary<string, MockFileData>
         {
             [@"C:\Subdir\Root.txt"] = new("A"),
@@ -25,6 +25,7 @@ public class BulkCopierTests
 
         var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
         var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
+        var sut = CreateSut(destination.FileSystem.FileInfo.FromFileName("C:\\database.dat"));
         await sut.Copy(origin, destination);
 
         RelativeFlatFileList(origin)
@@ -35,7 +36,6 @@ public class BulkCopierTests
     [Fact]
     public async Task Existing_destination_is_replaced()
     {
-        var sut = CreateSut();
         var fs = new MockFileSystem(new Dictionary<string, MockFileData>
         {
             [@"C:\Subdir\Root.txt"] = new("A"),
@@ -44,6 +44,7 @@ public class BulkCopierTests
 
         var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
         var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
+        var sut = CreateSut(destination.FileSystem.FileInfo.FromFileName("C:\\database.dat"));
         await sut.Copy(origin, destination);
 
         fs.GetFile(@"C:\Destination\Root.txt").TextContents.Should().Be("A");
@@ -52,7 +53,6 @@ public class BulkCopierTests
     [Fact]
     public async Task Non_existing_file_is_deleted()
     {
-        var sut = CreateSut();
         var fs = new MockFileSystem(new Dictionary<string, MockFileData>
         {
             [@"C:\Destination\Root.txt"] = new("B")
@@ -60,6 +60,7 @@ public class BulkCopierTests
 
         var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
         var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
+        var sut = CreateSut(destination.FileSystem.FileInfo.FromFileName("C:\\database.dat"));
         await sut.Copy(origin, destination);
 
         fs.GetFile(@"C:\Destination\Root.txt").Should().BeNull();
@@ -72,11 +73,11 @@ public class BulkCopierTests
             .Select(r => root.GetRelativePath(r.FullName));
     }
 
-    private static BulkCopier CreateSut()
+    private static BulkCopier CreateSut(IFileInfo databaseFile)
     {
         var pathTranslator = new FileSystemPathTranslator();
         var fileSystemComparer = new FileSystemComparer(pathTranslator);
-        var sut = new BulkCopier(fileSystemComparer, pathTranslator, _ => new FileManager());
+        var sut = new BulkCopier(fileSystemComparer, pathTranslator, _ => new SmartFileManager(databaseFile));
         return sut;
     }
 }
