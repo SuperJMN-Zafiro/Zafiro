@@ -22,7 +22,7 @@ public class FilesystemComparerTests
 
 
         var sut = new FileSystemComparer(f.Object, new FileComparer());
-        var results = await sut.Comparer(source.DirectoryInfo.FromDirectoryName("."),
+        var results = await sut.Diff(source.DirectoryInfo.FromDirectoryName("."),
             destination.DirectoryInfo.FromDirectoryName("."));
         results.Should().BeEquivalentTo(diff);
     }
@@ -35,7 +35,7 @@ public class FilesystemComparerTests
             {
                 ["File.txt"] = MockFileData.NullObject
             });
-            var result = new FileDiff(sourceFileSystem.FileInfo.FromFileName("File.txt").FullName,
+            var result = new FileDiff(sourceFileSystem.FileInfo.FromFileName("File.txt"),
                 FileDiffStatus.Deleted);
             Add(sourceFileSystem, new MockFileSystem(new Dictionary<string, MockFileData>()), new[] {result});
             Add(new MockFileSystem(), new MockFileSystem(), Array.Empty<FileDiff>());
@@ -65,7 +65,7 @@ public class FilesystemComparerTests
             IEnumerable<(string, FileDiffStatus)> diffs)
         {
             AddRow(origin, destination,
-                diffs.Select(tuple => new FileDiff(origin.FileInfo.FromFileName(tuple.Item1).FullName, tuple.Item2)));
+                diffs.Select(tuple => new FileDiff(origin.FileInfo.FromFileName(tuple.Item1), tuple.Item2)));
         }
     }
 }

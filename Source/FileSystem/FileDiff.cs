@@ -1,14 +1,16 @@
-﻿namespace FileSystem;
+﻿using System.IO.Abstractions;
+
+namespace FileSystem;
 
 public class FileDiff
 {
-    public FileDiff(string source, FileDiffStatus status)
+    public FileDiff(IFileInfo source, FileDiffStatus status)
     {
         Source = source;
         Status = status;
     }
 
-    public string Source { get; }
+    public IFileInfo Source { get; }
     public FileDiffStatus Status { get; }
 
     public override string ToString()

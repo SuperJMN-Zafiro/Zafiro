@@ -29,6 +29,11 @@ public static class FileSystemMixin
         }
     }
 
+    public static string GetRelativePath(this IFileSystemInfo origin, string path)
+    {
+        return origin.FileSystem.Path.GetRelativePath(origin.FullName, path);
+    }
+
     private static async Task CopyStream(FileSystemPath destination, string newPath, Func<Stream> streamFactory)
     {
         var newFile = destination.FileSystem.FileInfo.FromFileName(newPath);

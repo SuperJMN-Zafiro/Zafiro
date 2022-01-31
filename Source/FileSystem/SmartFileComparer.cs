@@ -2,7 +2,7 @@
 
 namespace FileSystem;
 
-public class FileComparer : IFileComparer
+public class SmartFileComparer : IFileComparer
 {
     public bool AreEqual(IFileInfo one, IFileInfo another)
     {
