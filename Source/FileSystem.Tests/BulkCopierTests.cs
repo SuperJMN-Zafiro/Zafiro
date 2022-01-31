@@ -25,7 +25,7 @@ public class BulkCopierTests
 
         var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
         var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
-        await sut.Copy(origin, destination);
+        await sut.Copy(origin, destination, new FileSystemStreamStore(destination));
 
         RelativeFlatFileList(origin)
             .Should()
@@ -42,10 +42,11 @@ public class BulkCopierTests
             [@"C:\Destination\Root.txt"] = new("B")
         });
 
-        await sut.Copy(fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir"),
-            fs.DirectoryInfo.FromDirectoryName(@"C:\Destination"));
+        var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
+        var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
+        await sut.Copy(origin, destination, new FileSystemStreamStore(destination));
 
-        fs.GetFile(@"C:\Destination\Root.txt").TextContents.Should().Be("B");
+        fs.GetFile(@"C:\Destination\Root.txt").TextContents.Should().Be("A");
     }
 
     [Fact]
@@ -57,8 +58,9 @@ public class BulkCopierTests
             [@"C:\Destination\Root.txt"] = new("B")
         });
 
-        await sut.Copy(fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir"),
-            fs.DirectoryInfo.FromDirectoryName(@"C:\Destination"));
+        var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
+        var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
+        await sut.Copy(origin, destination, new FileSystemStreamStore(destination));
 
         fs.GetFile(@"C:\Destination\Root.txt").Should().BeNull();
     }
@@ -73,7 +75,7 @@ public class BulkCopierTests
     private static BulkCopier CreateSut()
     {
         var pathTranslator = new FileSystemPathTranslator();
-        var fileSystemComparer = new FileSystemComparer(pathTranslator, new FileComparer());
+        var fileSystemComparer = new FileSystemComparer(pathTranslator, _ => new FileComparer());
         var sut = new BulkCopier(fileSystemComparer, pathTranslator);
         return sut;
     }

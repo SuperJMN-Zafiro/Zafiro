@@ -21,7 +21,7 @@ public class FilesystemComparerTests
             .Returns((IFileSystemInfo a, IFileSystemInfo b, IDirectoryInfo _) => a.FullName);
 
 
-        var sut = new FileSystemComparer(f.Object, new FileComparer());
+        var sut = new FileSystemComparer(f.Object, _ => new FileComparer());
         var results = await sut.Diff(source.DirectoryInfo.FromDirectoryName("."),
             destination.DirectoryInfo.FromDirectoryName("."));
         results.Should().BeEquivalentTo(diff);
