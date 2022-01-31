@@ -6,14 +6,11 @@ namespace FileSystem;
 
 public class FileSystemComparer : IFileSystemComparer
 {
-    private readonly Func<DiffContext, IFileComparer> fileComparerFactory;
     private readonly IFileSystemPathTranslator pathTranslator;
 
-    public FileSystemComparer(IFileSystemPathTranslator pathTranslator,
-        Func<DiffContext, IFileComparer> fileComparerFactory)
+    public FileSystemComparer(IFileSystemPathTranslator pathTranslator)
     {
         this.pathTranslator = pathTranslator;
-        this.fileComparerFactory = fileComparerFactory;
     }
 
     public Task<IEnumerable<FileDiff>> Diff(IDirectoryInfo origin, IDirectoryInfo destination)
@@ -31,11 +28,9 @@ public class FileSystemComparer : IFileSystemComparer
 
         var fileDiffs = FullJoinExtension.FullJoin(originFiles, destinationFiles,
             f => f.Key,
-            source => new FileDiff(source.File, FileDiffStatus.Deleted),
-            dest => new FileDiff(GetSource(dest.File, origin, destination), FileDiffStatus.Created),
-            (source, dest) => fileComparerFactory(new DiffContext(origin, destination)).AreEqual(source.File, dest.File)
-                ? new FileDiff(source.File, FileDiffStatus.Unchanged)
-                : new FileDiff(source.File, FileDiffStatus.Modified));
+            left => new FileDiff(left.File, null),
+            right => new FileDiff(null, right.File),
+            (left, right) => new FileDiff(left.File, right.File));
 
         return Task.FromResult(fileDiffs);
     }

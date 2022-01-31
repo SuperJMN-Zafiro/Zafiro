@@ -25,7 +25,7 @@ public class BulkCopierTests
 
         var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
         var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
-        await sut.Copy(origin, destination, new FileSystemStreamStore(destination));
+        await sut.Copy(origin, destination);
 
         RelativeFlatFileList(origin)
             .Should()
@@ -44,7 +44,7 @@ public class BulkCopierTests
 
         var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
         var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
-        await sut.Copy(origin, destination, new FileSystemStreamStore(destination));
+        await sut.Copy(origin, destination);
 
         fs.GetFile(@"C:\Destination\Root.txt").TextContents.Should().Be("A");
     }
@@ -60,7 +60,7 @@ public class BulkCopierTests
 
         var origin = fs.DirectoryInfo.FromDirectoryName(@"C:\Subdir");
         var destination = fs.DirectoryInfo.FromDirectoryName(@"C:\Destination");
-        await sut.Copy(origin, destination, new FileSystemStreamStore(destination));
+        await sut.Copy(origin, destination);
 
         fs.GetFile(@"C:\Destination\Root.txt").Should().BeNull();
     }
@@ -75,7 +75,7 @@ public class BulkCopierTests
     private static BulkCopier CreateSut()
     {
         var pathTranslator = new FileSystemPathTranslator();
-        var fileSystemComparer = new FileSystemComparer(pathTranslator, _ => new FileComparer());
+        var fileSystemComparer = new FileSystemComparer(pathTranslator);
         var sut = new BulkCopier(fileSystemComparer, pathTranslator);
         return sut;
     }

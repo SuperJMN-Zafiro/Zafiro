@@ -13,29 +13,59 @@ public class BulkCopier
         this.pathTranslator = pathTranslator;
     }
 
-    public async Task Copy(IDirectoryInfo a, IDirectoryInfo b, IStreamStore store)
+    public async Task Copy(IDirectoryInfo a, IDirectoryInfo b)
     {
         var diffs = await fileSystemComparer.Diff(a, b);
         foreach (var diff in diffs)
-        {
-            var translatedPath = pathTranslator.Translate(diff.Source, a, b);
-            var destFile = b.FileSystem.FileInfo.FromFileName(translatedPath);
-
             switch (diff.Status)
             {
-                case FileDiffStatus.Created:
-                    await store.Delete(destFile.FullName);
+                case FileDiffStatus.RightOnly:
+                    diff.Right.Delete();
                     break;
-                case FileDiffStatus.Modified:
-                    await store.Replace(destFile.FullName, diff.Source.OpenRead);
+                case FileDiffStatus.Both:
+                    await CopyFile(diff.Left, diff.Right);
                     break;
-                case FileDiffStatus.Deleted:
-                    destFile.Directory.Create();
-                    await store.Create(destFile.FullName, diff.Source.OpenRead);
+                case FileDiffStatus.LeftOnly:
+                    var path = pathTranslator.Translate(diff.Left, a, b);
+                    var toCreate = b.FileSystem.FileInfo.FromFileName(path);
+                    toCreate.Directory.Create();
+                    await CopyFile(diff.Left, toCreate);
                     break;
             }
-        }
     }
+
+    private static async Task CopyFile(IFileInfo origin, IFileInfo destination)
+    {
+        await using var destStream = destination.Create();
+        await origin.OpenRead().CopyToAsync(destStream);
+    }
+}
+
+public class CachingFileSystem : IFileSystem
+{
+    private readonly IFileSystem fileSystemImplementation;
+
+    public CachingFileSystem(IFileSystem fileSystemImplementation)
+    {
+        this.fileSystemImplementation = fileSystemImplementation;
+        FileStream = new CachingFileStreamFactory(fileSystemImplementation.FileStream);
+    }
+
+    public IFile File => fileSystemImplementation.File;
+
+    public IDirectory Directory => fileSystemImplementation.Directory;
+
+    public IFileInfoFactory FileInfo => fileSystemImplementation.FileInfo;
+
+    public IFileStreamFactory FileStream { get; }
+
+    public IPath Path => fileSystemImplementation.Path;
+
+    public IDirectoryInfoFactory DirectoryInfo => fileSystemImplementation.DirectoryInfo;
+
+    public IDriveInfoFactory DriveInfo => fileSystemImplementation.DriveInfo;
+
+    public IFileSystemWatcherFactory FileSystemWatcher => fileSystemImplementation.FileSystemWatcher;
 }
 
 public interface IStreamStore
@@ -63,11 +93,8 @@ public class FileSystemStreamStore : IStreamStore
     public async Task Replace(string path, Func<Stream> getContents)
     {
         await using var dest = root.FileSystem.FileInfo.FromFileName(path).OpenWrite();
-        using (var con = getContents())
-        {
-            var a = await new StreamReader(getContents()).ReadToEndAsync();
-            await con.CopyToAsync(dest);
-        }
+        await using var con = getContents();
+        await con.CopyToAsync(dest);
     }
 
     public Task Delete(string path)
