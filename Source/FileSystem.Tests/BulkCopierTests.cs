@@ -11,7 +11,6 @@ namespace FileSystem.Tests;
 
 public class BulkCopierTests
 {
-    /// HAY QUE HACER LOS TESTS DEL SMART FILE MANAGER!!
     [Fact]
     public async Task Everything_is_added()
     {

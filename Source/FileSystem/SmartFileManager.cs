@@ -18,9 +18,11 @@ public class SmartFileManager : FileManager
 
     public override async Task Copy(IFileInfo source, IFileInfo destination)
     {
-        if (await AreEqual(source, destination)) return;
+        var hashedFile = new HashedFile(await GetHash(source.OpenRead), source);
+        if (AreEqual(hashedFile, destination)) return;
 
         await base.Copy(source, destination);
+        hashes[ToKey(source, destination)] = hashedFile.Hash;
     }
 
     public async Task Save()
@@ -29,36 +31,50 @@ public class SmartFileManager : FileManager
         await JsonSerializer.SerializeAsync(openRead, hashes);
     }
 
+    public override void Delete(IFileInfo file)
+    {
+        var toRemove = hashes.Keys.Where(r => FromKey(r).destination == file.FullName);
+
+        foreach (var actionKey in toRemove) hashes.Remove(actionKey);
+
+        base.Delete(file);
+    }
+
     private static async Task<byte[]> GetHash(Func<Stream> getContents)
     {
         await using var stream = getContents();
         return await Hasher.ComputeHashAsync(stream);
     }
 
-    private async Task<bool> AreEqual(IFileInfo source, IFileInfo destination)
+    private bool AreEqual(HashedFile source, IFileInfo destination)
     {
-        var sourceHash = await GetHash(source.OpenRead);
+        var key = ToKey(source.File, destination);
+
         return hashes
-            .TryFind(destination.FullName)
-            .Match(destHash => sourceHash.SequenceEqual(destHash), () => false);
+            .TryFind(key)
+            .Match(destHash => source.Hash.SequenceEqual(destHash), () => false);
     }
 
-    private async Task<bool> Exists(string path, Func<Stream> getContents)
+    private string ToKey(IFileInfo sourceFile, IFileInfo destination)
     {
-        var newHash = await GetHash(getContents);
-        return hashes
-            .TryFind(path)
-            .Match(bytes => newHash.SequenceEqual(bytes), () => false);
+        return sourceFile.FullName + ";" + destination.FullName;
     }
 
-    private async Task<Dictionary<string, byte[]>> Load(IFileSystem fileSystem, string dirPath)
+    private (string sourceFile, string destination) FromKey(string key)
     {
-        if (databaseFile.Exists)
+        var indexOf = key.IndexOf(";", StringComparison.InvariantCulture);
+        return (key[indexOf..], key[..indexOf]);
+    }
+
+    private class HashedFile
+    {
+        public HashedFile(byte[] hash, IFileInfo file)
         {
-            await using var openRead = databaseFile.OpenRead();
-            return await JsonSerializer.DeserializeAsync<Dictionary<string, byte[]>>(openRead);
+            Hash = hash;
+            File = file;
         }
 
-        return new Dictionary<string, byte[]>();
+        public byte[] Hash { get; }
+        public IFileInfo File { get; }
     }
 }
