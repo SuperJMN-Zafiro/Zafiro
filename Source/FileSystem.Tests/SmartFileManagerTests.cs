@@ -8,19 +8,19 @@ namespace FileSystem.Tests;
 public class SmartFileManagerTests
 {
     [Fact]
-    public async Task Test()
+    public async Task Copying_same_file_twice_writes_it_once()
     {
         var fs = new MockFileSystem(new Dictionary<string, MockFileData>
         {
             ["file1.txt"] = new("A")
         });
 
-        var file = fs.FileInfo.FromFileName("C:\\hashes.dat");
-        var sut = new SmartFileManager(file);
+        var sut = new SmartFileManager("TestingFS");
 
-        await sut.Copy(fs.FileInfo.FromFileName("file1.txt"), fs.FileInfo.FromFileName("New\\file1.txt"));
-        sut.Delete(fs.FileInfo.FromFileName("New\\file1.txt"));
-        await sut.Copy(fs.FileInfo.FromFileName("file1.txt"), fs.FileInfo.FromFileName("New\\file1.txt"));
-        await sut.Save();
+        var origin = fs.FileInfo.FromFileName("file1.txt");
+        var destination = fs.FileInfo.FromFileName("New\\file1.txt");
+
+        await sut.Copy(origin, destination);
+        await sut.Copy(origin, destination);
     }
 }

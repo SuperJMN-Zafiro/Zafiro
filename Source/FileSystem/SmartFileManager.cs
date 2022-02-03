@@ -1,41 +1,44 @@
 ﻿using System.IO.Abstractions;
 using System.Security.Cryptography;
-using System.Text.Json;
 using CSharpFunctionalExtensions;
+using Serilog;
 
 namespace FileSystem;
 
 public class SmartFileManager : FileManager
 {
     private static readonly SHA1 Hasher = SHA1.Create();
-    private readonly IFileInfo databaseFile;
-    public readonly Dictionary<string, byte[]> hashes = new();
+    private readonly string destinationFileSystemName;
 
-    public SmartFileManager(IFileInfo databaseFile)
+    public SmartFileManager(string destinationFileSystemName)
     {
-        this.databaseFile = databaseFile;
+        this.destinationFileSystemName = destinationFileSystemName;
     }
+
+    public Dictionary<Key, byte[]> Hashes { get; } = new();
 
     public override async Task Copy(IFileInfo source, IFileInfo destination)
     {
         var hashedFile = new HashedFile(await GetHash(source.OpenRead), source);
-        if (AreEqual(hashedFile, destination)) return;
+        if (AreEqual(hashedFile, destination))
+        {
+            Log.Verbose("{Source} has already been copied to {Destination} with the same contents. Skipping.",
+                source.FullName, destinationFileSystemName);
+            return;
+        }
 
         await base.Copy(source, destination);
-        hashes[ToKey(source, destination)] = hashedFile.Hash;
-    }
-
-    public async Task Save()
-    {
-        await using var openRead = databaseFile.Create();
-        await JsonSerializer.SerializeAsync(openRead, hashes);
+        Hashes[ToKey(source, destination)] = hashedFile.Hash;
     }
 
     public override void Delete(IFileInfo file)
     {
-        var toRemove = hashes.Keys.Where(r => FromKey(r).destination == file.FullName);
+        var toRemove = Hashes.Keys.Where(r => r.DestinationPath == file.FullName);
 
-        foreach (var actionKey in toRemove) hashes.Remove(actionKey);
+        foreach (var actionKey in toRemove)
+        {
+            Hashes.Remove(actionKey);
+        }
 
         base.Delete(file);
     }
@@ -50,20 +53,19 @@ public class SmartFileManager : FileManager
     {
         var key = ToKey(source.File, destination);
 
-        return hashes
+        return Hashes
             .TryFind(key)
             .Match(destHash => source.Hash.SequenceEqual(destHash), () => false);
     }
 
-    private string ToKey(IFileInfo sourceFile, IFileInfo destination)
+    private Key ToKey(IFileInfo sourceFile, IFileInfo destination)
     {
-        return sourceFile.FullName + ";" + destination.FullName;
-    }
-
-    private (string sourceFile, string destination) FromKey(string key)
-    {
-        var indexOf = key.IndexOf(";", StringComparison.InvariantCulture);
-        return (key[indexOf..], key[..indexOf]);
+        return new Key
+        {
+            DestinationFileSystemName = destinationFileSystemName,
+            OriginPath = sourceFile.FullName,
+            DestinationPath = destination.FullName
+        };
     }
 
     private class HashedFile
@@ -76,5 +78,28 @@ public class SmartFileManager : FileManager
 
         public byte[] Hash { get; }
         public IFileInfo File { get; }
+    }
+
+    public struct Key
+    {
+        public string OriginPath { get; set; }
+        public string DestinationPath { get; set; }
+        public string DestinationFileSystemName { get; set; }
+
+        public bool Equals(Key other)
+        {
+            return OriginPath == other.OriginPath && DestinationPath == other.DestinationPath &&
+                   DestinationFileSystemName == other.DestinationFileSystemName;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Key other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(OriginPath, DestinationPath, DestinationFileSystemName);
+        }
     }
 }
