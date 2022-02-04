@@ -5,13 +5,14 @@ namespace SftpFileSystem;
 
 public class DirectoryInfo : IDirectoryInfo
 {
-    private readonly string directoryName;
     private readonly FileSystem fileSystem;
 
     public DirectoryInfo(string directoryName, FileSystem fileSystem)
     {
-        this.directoryName = directoryName;
+        Name = directoryName;
+        FullName = fileSystem.Path.GetFullPath(directoryName);
         this.fileSystem = fileSystem;
+        Exists = fileSystem.Client.Exists(FullName);
     }
 
     public void Delete()
@@ -30,16 +31,18 @@ public class DirectoryInfo : IDirectoryInfo
     public DateTime CreationTimeUtc { get; set; }
     public bool Exists { get; }
     public string Extension { get; }
-    public string FullName => directoryName;
+    public string FullName { get; }
+
     public DateTime LastAccessTime { get; set; }
     public DateTime LastAccessTimeUtc { get; set; }
     public DateTime LastWriteTime { get; set; }
     public DateTime LastWriteTimeUtc { get; set; }
     public string LinkTarget { get; }
-    public string Name => directoryName;
+    public string Name { get; }
+
     public void Create()
     {
-        fileSystem.Client.Create(FullName);
+        fileSystem.Directory.CreateDirectory(FullName);
     }
 
     public void Create(DirectorySecurity directorySecurity)
@@ -56,7 +59,7 @@ public class DirectoryInfo : IDirectoryInfo
 
     public void Delete(bool recursive)
     {
-        fileSystem.Directory.Delete(FullName);
+        fileSystem.Directory.Delete(FullName, recursive);
     }
 
     public IEnumerable<IDirectoryInfo> EnumerateDirectories()
@@ -82,19 +85,6 @@ public class DirectoryInfo : IDirectoryInfo
     public IEnumerable<IFileInfo> EnumerateFiles()
     {
         return GetAllFiles();
-    }
-
-    private IEnumerable<FileInfo> GetAllFiles()
-    {
-        return GetAll();
-    }
-
-    private IEnumerable<FileInfo> GetAll()
-    {
-        var listDirectory = fileSystem.Client.ListDirectory(FullName);
-        return listDirectory
-            .Where(file => file.IsRegularFile)
-            .Select(file => new FileInfo(fileSystem, file));
     }
 
     public IEnumerable<IFileInfo> EnumerateFiles(string searchPattern)
@@ -127,7 +117,8 @@ public class DirectoryInfo : IDirectoryInfo
         throw new NotImplementedException();
     }
 
-    public IEnumerable<IFileSystemInfo> EnumerateFileSystemInfos(string searchPattern, EnumerationOptions enumerationOptions)
+    public IEnumerable<IFileSystemInfo> EnumerateFileSystemInfos(string searchPattern,
+        EnumerationOptions enumerationOptions)
     {
         throw new NotImplementedException();
     }
@@ -225,4 +216,17 @@ public class DirectoryInfo : IDirectoryInfo
     }
 
     public IDirectoryInfo Root => new DirectoryInfo("/", fileSystem);
+
+    private IEnumerable<ExistingFileInfo> GetAllFiles()
+    {
+        return GetAll();
+    }
+
+    private IEnumerable<ExistingFileInfo> GetAll()
+    {
+        var listDirectory = fileSystem.Client.ListDirectory(FullName);
+        return listDirectory
+            .Where(file => file.IsRegularFile)
+            .Select(file => new ExistingFileInfo(fileSystem, file));
+    }
 }

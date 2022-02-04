@@ -3,26 +3,33 @@ using Renci.SshNet;
 
 namespace SftpFileSystem;
 
-public class FileSystem : IFileSystem
+public class FileSystem : IFileSystem, IDisposable
 {
-    private FileSystem(string host, int port, string username, string password)
+    private FileSystem(string host, int port, Credentials credentials)
     {
-        Client = new SftpClient(host, port, username, password);
+        Client = new SftpClient(host, port, credentials.Username, credentials.Password);
     }
 
     public SftpClient Client { get; }
+
+    public void Dispose()
+    {
+        Client.Dispose();
+    }
+
     public IFile File => new File(this);
     public IDirectory Directory => new Directory(this);
-    public IFileInfoFactory FileInfo { get; }
+    public IFileInfoFactory FileInfo => new FileInfoFactory(this);
     public IFileStreamFactory FileStream { get; }
     public IPath Path => new Path(this);
     public IDirectoryInfoFactory DirectoryInfo => new DirectoryInfoFactory(this);
     public IDriveInfoFactory DriveInfo { get; }
     public IFileSystemWatcherFactory FileSystemWatcher { get; }
 
-    public static FileSystem Create(string host, int port, string username, string password)
+    public static FileSystem Connect(string host, int port,
+        Credentials credentials)
     {
-        var fileSystem = new FileSystem(host, port, username, password);
+        var fileSystem = new FileSystem(host, port, credentials);
         fileSystem.Client.Connect();
         return fileSystem;
     }

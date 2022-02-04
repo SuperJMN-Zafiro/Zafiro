@@ -266,6 +266,11 @@ public class File : IFile
 
     public Stream OpenWrite(string path)
     {
+        if (!Exists(path))
+        {
+            Create(path);
+        }
+
         return Client.OpenWrite(path);
     }
 

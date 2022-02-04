@@ -17,7 +17,19 @@ public class Directory : IDirectory
 
     public IDirectoryInfo CreateDirectory(string path)
     {
+        if (Exists(path))
+        {
+            return new DirectoryInfo(path, fileSystem);
+        }
+
+        var parent = GetParent(path);
+        if (parent != null && !parent.Exists)
+        {
+            parent.Create();
+        }
+
         Client.CreateDirectory(path);
+
         return new DirectoryInfo(path, fileSystem);
     }
 
@@ -29,11 +41,55 @@ public class Directory : IDirectory
 
     public void Delete(string path)
     {
+        var contents = Client.ListDirectory(path);
+        foreach (var sftpFile in contents.Where(s => s.IsRegularFile))
+        {
+            sftpFile.Delete();
+        }
+
         Client.DeleteDirectory(path);
     }
 
     public void Delete(string path, bool recursive)
     {
+        if (recursive)
+        {
+            DeleteRecursive(path);
+        }
+        else
+        {
+            DeleteNonRecursive(path);
+        }
+    }
+
+    private void DeleteRecursive(string path)
+    {
+        foreach (var file in Client.ListDirectory(path))
+        {
+            if (file.Name != "." && file.Name != "..")
+            {
+                if (file.IsDirectory)
+                {
+                    DeleteRecursive(file.FullName);
+                }
+                else
+                {
+                    Client.DeleteFile(file.FullName);
+                }
+            }
+        }
+
+        Client.DeleteDirectory(path);
+    }
+
+    private void DeleteNonRecursive(string path)
+    {
+        var contents = Client.ListDirectory(path);
+        foreach (var sftpFile in contents.Where(s => s.IsRegularFile))
+        {
+            sftpFile.Delete();
+        }
+
         Client.DeleteDirectory(path);
     }
 
@@ -147,9 +203,21 @@ public class Directory : IDirectory
         throw new NotImplementedException();
     }
 
-    public IDirectoryInfo GetParent(string path)
+    public IDirectoryInfo? GetParent(string path)
     {
-        return new DirectoryInfo(fileSystem.GetParentPath(path), fileSystem);
+        if (string.IsNullOrEmpty(path))
+        {
+            return null;
+        }
+
+        var directoryName = fileSystem.GetParentPath(path);
+
+        if (string.IsNullOrEmpty(directoryName))
+        {
+            return null;
+        }
+
+        return new DirectoryInfo(directoryName, fileSystem);
     }
 
     public void Move(string sourceDirName, string destDirName)
