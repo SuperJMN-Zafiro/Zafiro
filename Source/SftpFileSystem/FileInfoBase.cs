@@ -5,18 +5,18 @@ namespace SftpFileSystem;
 
 public abstract class FileInfoBase : IFileInfo
 {
-    private readonly FileSystem innerFileSystem;
-
     protected FileInfoBase(FileSystem fileSystem)
     {
-        this.innerFileSystem = fileSystem;
+        InnerFileSystem = fileSystem;
     }
+
+    protected FileSystem InnerFileSystem { get; }
 
     public IFileSystem FileSystem => InnerFileSystem;
     public FileAttributes Attributes { get; set; }
     public DateTime CreationTime { get; set; }
     public DateTime CreationTimeUtc { get; set; }
-    public bool Exists => true;
+    public abstract bool Exists { get; }
     public string Extension => InnerFileSystem.Path.GetExtension(Name);
     public abstract string FullName { get; }
     public DateTime LastAccessTime { get; set; }
@@ -29,8 +29,6 @@ public abstract class FileInfoBase : IFileInfo
     public string DirectoryName => InnerFileSystem.Path.GetDirectoryName(FullName);
     public bool IsReadOnly { get; set; }
     public abstract long Length { get; }
-
-    protected FileSystem InnerFileSystem => innerFileSystem;
 
     public abstract void Delete();
 

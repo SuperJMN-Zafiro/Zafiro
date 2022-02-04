@@ -6,13 +6,6 @@ namespace FileSystem;
 
 public class FileSystemComparer : IFileSystemComparer
 {
-    private readonly IFileSystemPathTranslator pathTranslator;
-
-    public FileSystemComparer(IFileSystemPathTranslator pathTranslator)
-    {
-        this.pathTranslator = pathTranslator;
-    }
-
     public Task<IEnumerable<FileDiff>> Diff(IDirectoryInfo origin, IDirectoryInfo destination)
     {
         var originFiles = GetFilesRecursively(origin).Select(f => new
@@ -42,14 +35,12 @@ public class FileSystemComparer : IFileSystemComparer
 
     private static IEnumerable<IFileInfo> GetFilesRecursively(IDirectoryInfo origin)
     {
-        if (!origin.Exists) return Enumerable.Empty<IFileInfo>();
+        if (!origin.Exists)
+        {
+            return Enumerable.Empty<IFileInfo>();
+        }
 
         return MoreEnumerable.TraverseBreadthFirst(origin, dir => dir.EnumerateDirectories())
             .SelectMany(r => r.GetFiles());
-    }
-
-    private IFileInfo GetSource(IFileInfo file, IDirectoryInfo origin, IDirectoryInfo destination)
-    {
-        return origin.FileSystem.FileInfo.FromFileName(pathTranslator.Translate(file, origin, destination));
     }
 }

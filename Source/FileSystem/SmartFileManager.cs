@@ -15,12 +15,12 @@ public class SmartFileManager : FileManager
         this.destinationFileSystemName = destinationFileSystemName;
     }
 
-    public Dictionary<Key, byte[]> Hashes { get; } = new();
+    public Dictionary<Key, byte[]> Hashes { get; set; } = new();
 
     public override async Task Copy(IFileInfo source, IFileInfo destination)
     {
         var hashedFile = new HashedFile(await GetHash(source.OpenRead), source);
-        if (AreEqual(hashedFile, destination))
+        if (destination.Exists && AreEqual(hashedFile, destination))
         {
             Log.Verbose("{Source} has already been copied to {Destination} with the same contents. Skipping.",
                 source.FullName, destinationFileSystemName);

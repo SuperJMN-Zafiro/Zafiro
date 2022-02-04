@@ -11,8 +11,10 @@ public class ExistingFileInfo : FileInfoBase
         this.file = file;
     }
 
+    public override bool Exists => true;
     public override string FullName => file.FullName;
     public override long Length => file.Length;
+
     public override void Delete()
     {
         InnerFileSystem.File.Delete(FullName);

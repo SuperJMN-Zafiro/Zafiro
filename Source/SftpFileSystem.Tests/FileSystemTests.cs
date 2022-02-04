@@ -11,11 +11,25 @@ namespace SftpFileSystem.Tests;
 
 public class FileSystemTests
 {
-    private static string host = "localhost";
-    private static int hostPort = 22;
-    private static string username = "tester";
-    private static string password = "password";
     private const string rootFolder = "upload";
+    private static readonly string host = "localhost";
+    private static readonly int hostPort = 22;
+    private static readonly string username = "tester";
+    private static readonly string password = "password";
+
+    public static async Task<IAsyncDisposable> CreateSftpServer()
+    {
+        var testcontainersBuilder = new TestcontainersBuilder<TestcontainersContainer>()
+            .WithImage("atmoz/sftp")
+            .WithCommand($"{username}:{password}:::{rootFolder}")
+            .WithName("Sftp")
+            .WithPortBinding(hostPort)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(hostPort));
+
+        var container = testcontainersBuilder.Build();
+        await container.StartAsync();
+        return container;
+    }
 
     [Fact]
     public async Task Read_existing_file()
@@ -123,7 +137,7 @@ public class FileSystemTests
     }
 
     [Theory]
-    [InlineData($"/")]
+    [InlineData("/")]
     [InlineData($"{rootFolder}")]
     [InlineData($"{rootFolder}/Dir")]
     [InlineData($"{rootFolder}/Dir/Subdir")]
@@ -158,7 +172,7 @@ public class FileSystemTests
             AssertClient(client => client.Exists($"{rootFolder}/Subdir").Should().BeTrue());
         }
     }
-    
+
     private static void AssertClient(Action<SftpClient> assert)
     {
         using var client = new SftpClient(host, hostPort, username, password);
@@ -168,21 +182,7 @@ public class FileSystemTests
 
     private static FileSystem CreateSut()
     {
-        return FileSystem.Create(host, hostPort, username, password);
-    }
-
-    public static async Task<IAsyncDisposable> CreateSftpServer()
-    {
-        var testcontainersBuilder = new TestcontainersBuilder<TestcontainersContainer>()
-            .WithImage("atmoz/sftp")
-            .WithCommand($"{username}:{password}:::{rootFolder}")
-            .WithName("Sftp")
-            .WithPortBinding(hostPort)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(hostPort));
-
-        var container = testcontainersBuilder.Build();
-        await container.StartAsync();
-        return container;
+        return FileSystem.Connect(host, hostPort, new Credentials(username, password));
     }
 
     private static SftpFileSystemBuilder CreateBuilder()

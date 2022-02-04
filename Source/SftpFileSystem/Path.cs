@@ -4,6 +4,7 @@ namespace SftpFileSystem;
 
 public class Path : IPath
 {
+    private const char Separator = '/';
     private readonly FileSystem fileSystem;
 
     public Path(FileSystem fileSystem)
@@ -18,22 +19,22 @@ public class Path : IPath
 
     public string Combine(params string[] paths)
     {
-        return string.Join(this.PathSeparator, paths);
+        return string.Join(PathSeparator, paths.Select(s => s == Separator.ToString() ? "" : s));
     }
 
     public string Combine(string path1, string path2)
     {
-        return Combine(new[] { path1, path2 });
+        return Combine(new[] {path1, path2});
     }
 
     public string Combine(string path1, string path2, string path3)
     {
-        return Combine(new[] { path1, path2, path3 });
+        return Combine(new[] {path1, path2, path3});
     }
 
     public string Combine(string path1, string path2, string path3, string path4)
     {
-        return Combine(new[] { path1, path2, path3, path4 });
+        return Combine(new[] {path1, path2, path3, path4});
     }
 
     public string GetDirectoryName(string path)
@@ -60,7 +61,7 @@ public class Path : IPath
             return null;
         }
 
-        return this.GetChunks(path).Last();
+        return GetChunks(path).Last();
     }
 
     public string GetFileNameWithoutExtension(string path)
@@ -70,7 +71,12 @@ public class Path : IPath
 
     public string GetFullPath(string path)
     {
-        return path;
+        if (IsPathFullyQualified(path))
+        {
+            return path;
+        }
+
+        return Combine(fileSystem.Client.WorkingDirectory, path);
     }
 
     public string GetFullPath(string path, string basePath)
@@ -120,12 +126,13 @@ public class Path : IPath
 
     public bool IsPathFullyQualified(string path)
     {
-        throw new NotImplementedException();
+        return path.StartsWith(Separator);
     }
 
     public string GetRelativePath(string relativeTo, string path)
     {
         throw new NotImplementedException();
+        //MoreEnumerable.RightJoin(GetChunks(relativeTo), GetChunks(path), a => a, b => b, (s, a) => s);
     }
 
     public string Join(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2)
@@ -138,12 +145,14 @@ public class Path : IPath
         throw new NotImplementedException();
     }
 
-    public bool TryJoin(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2, ReadOnlySpan<char> path3, Span<char> destination, out int charsWritten)
+    public bool TryJoin(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2, ReadOnlySpan<char> path3,
+        Span<char> destination, out int charsWritten)
     {
         throw new NotImplementedException();
     }
 
-    public bool TryJoin(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2, Span<char> destination, out int charsWritten)
+    public bool TryJoin(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2, Span<char> destination,
+        out int charsWritten)
     {
         throw new NotImplementedException();
     }
@@ -223,7 +232,8 @@ public class Path : IPath
         throw new NotImplementedException();
     }
 
-    public string Join(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2, ReadOnlySpan<char> path3, ReadOnlySpan<char> path4)
+    public string Join(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2, ReadOnlySpan<char> path3,
+        ReadOnlySpan<char> path4)
     {
         throw new NotImplementedException();
     }
@@ -233,10 +243,15 @@ public class Path : IPath
         throw new NotImplementedException();
     }
 
-    public char AltDirectorySeparatorChar => DirectorySeparatorChar;
-    public char DirectorySeparatorChar { get; }
+    public char AltDirectorySeparatorChar => Separator;
+    public char DirectorySeparatorChar => Separator;
     public IFileSystem FileSystem => fileSystem;
-    public char PathSeparator => '/';
-    public char VolumeSeparatorChar => '/';
+    public char PathSeparator => Separator;
+    public char VolumeSeparatorChar => Separator;
     public char[] InvalidPathChars { get; }
+
+    private IEnumerable<string> GetChunks(string relativeTo)
+    {
+        return relativeTo.Split(PathSeparator);
+    }
 }
