@@ -5,23 +5,22 @@ namespace FileSystem;
 
 public class BulkCopier
 {
-    private readonly Func<DiffContext, IFileManager> fileManagerFactory;
+    private readonly IFileManager fileManager;
     private readonly FileSystemComparer fileSystemComparer;
     private readonly IFileSystemPathTranslator pathTranslator;
 
     public BulkCopier(FileSystemComparer systemComparer, IFileSystemPathTranslator pathTranslator,
-        Func<DiffContext, IFileManager> fileManagerFactory)
+        IFileManager fileManager)
     {
         fileSystemComparer = systemComparer;
         this.pathTranslator = pathTranslator;
-        this.fileManagerFactory = fileManagerFactory;
+        this.fileManager = fileManager;
     }
 
     public async Task<Result> Copy(IDirectoryInfo a, IDirectoryInfo b)
     {
         ICollection<string> errors = new List<string>();
         var diffs = await fileSystemComparer.Diff(a, b);
-        var fileManager = fileManagerFactory(new DiffContext(a, b));
         foreach (var diff in diffs)
         {
             try

@@ -5,33 +5,37 @@ using Serilog;
 
 namespace FileSystem;
 
-public class SmartFileManager : FileManager
+public class SmartFileManager : IFileManager
 {
     private static readonly SHA1 Hasher = SHA1.Create();
-    private readonly string destinationFileSystemName;
 
-    public SmartFileManager(string destinationFileSystemName)
+    private readonly string fileSystemName;
+    private readonly IFileManager inner;
+
+    public SmartFileManager(string fileSystemName, IFileManager inner, Dictionary<Key, byte[]> hashes)
     {
-        this.destinationFileSystemName = destinationFileSystemName;
+        this.fileSystemName = fileSystemName;
+        this.inner = inner;
+        Hashes = hashes;
     }
 
-    public Dictionary<Key, byte[]> Hashes { get; set; } = new();
+    public Dictionary<Key, byte[]> Hashes { get; }
 
-    public override async Task Copy(IFileInfo source, IFileInfo destination)
+    public async Task Copy(IFileInfo source, IFileInfo destination)
     {
         var hashedFile = new HashedFile(await GetHash(source.OpenRead), source);
         if (destination.Exists && AreEqual(hashedFile, destination))
         {
             Log.Verbose("{Source} has already been copied to {Destination} with the same contents. Skipping.",
-                source.FullName, destinationFileSystemName);
+                source.FullName, fileSystemName);
             return;
         }
 
-        await base.Copy(source, destination);
+        await inner.Copy(source, destination);
         Hashes[ToKey(source, destination)] = hashedFile.Hash;
     }
 
-    public override void Delete(IFileInfo file)
+    public void Delete(IFileInfo file)
     {
         var toRemove = Hashes.Keys.Where(r => r.DestinationPath == file.FullName);
 
@@ -40,7 +44,7 @@ public class SmartFileManager : FileManager
             Hashes.Remove(actionKey);
         }
 
-        base.Delete(file);
+        inner.Delete(file);
     }
 
     private static async Task<byte[]> GetHash(Func<Stream> getContents)
@@ -62,7 +66,7 @@ public class SmartFileManager : FileManager
     {
         return new Key
         {
-            DestinationFileSystemName = destinationFileSystemName,
+            DestinationFileSystemName = fileSystemName,
             OriginPath = sourceFile.FullName,
             DestinationPath = destination.FullName
         };

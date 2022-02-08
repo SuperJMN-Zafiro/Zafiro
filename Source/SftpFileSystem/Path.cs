@@ -1,5 +1,5 @@
 ﻿using System.IO.Abstractions;
-using MoreEnumerable = MoreLinq.MoreEnumerable;
+using MoreLinq;
 
 namespace SftpFileSystem;
 
@@ -50,7 +50,7 @@ public class Path : IPath
         }
 
         var strings = path.Split('.', StringSplitOptions.RemoveEmptyEntries);
-        var ext = strings.TakeLast(1).FirstOrDefault() ?? "";
+        var ext = Enumerable.TakeLast(strings, 1).FirstOrDefault() ?? "";
         return ext;
     }
 
@@ -131,12 +131,14 @@ public class Path : IPath
 
     public string GetRelativePath(string relativeTo, string path)
     {
-        var relativePathChunks = MoreEnumerable.Transpose(MoreEnumerable
-                .ZipLongest(GetChunks(relativeTo), GetChunks(path), (x, y) => (x, y))
+        var relativePathChunks =
+            GetChunks(relativeTo)
+                .ZipLongest(GetChunks(path), (x, y) => (x, y))
                 .SkipWhile(x => x.x == x.y)
-                .Select(x => new[] {"..", x.y}))
-            .SelectMany(x => x)
-            .Where(x => x is not default(string));
+                .Select(x => { return x.x is null ? new[] {x.y} : new[] {"..", x.y}; })
+                .Transpose()
+                .SelectMany(x => x)
+                .Where(x => x is not default(string));
 
         return Join(relativePathChunks);
     }

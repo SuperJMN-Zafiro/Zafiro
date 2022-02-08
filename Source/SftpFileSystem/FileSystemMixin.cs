@@ -32,7 +32,7 @@ public static class FileSystemMixin
     public static IEnumerable<IDirectoryInfo> GetDirectories(this FileSystem fileSystem, string path)
     {
         return fileSystem.Client.ListDirectory(path)
-            .Where(r => !r.IsDirectory || r.IsRegularFile)
+            .Where(r => r.IsDirectory && r.Name != ".." && r.Name != ".")
             .Select(file => new DirectoryInfo(file.FullName, fileSystem));
     }
 
