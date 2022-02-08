@@ -1,15 +1,15 @@
 ﻿using System.IO.Abstractions;
+using MoreLinq;
 
 namespace SftpFileSystem;
 
 public class Path : IPath
 {
-    private const char Separator = '/';
-    private readonly FileSystem fileSystem;
+    private const char SlashChar = '/';
 
-    public Path(FileSystem fileSystem)
+    public Path(IFileSystem fileSystem)
     {
-        this.fileSystem = fileSystem;
+        FileSystem = fileSystem;
     }
 
     public string ChangeExtension(string path, string extension)
@@ -19,7 +19,7 @@ public class Path : IPath
 
     public string Combine(params string[] paths)
     {
-        return string.Join(PathSeparator, paths.Select(s => s == Separator.ToString() ? "" : s));
+        return string.Join(SlashChar, paths.Select(s => s == SlashChar.ToString() ? "" : s));
     }
 
     public string Combine(string path1, string path2)
@@ -50,7 +50,7 @@ public class Path : IPath
         }
 
         var strings = path.Split('.', StringSplitOptions.RemoveEmptyEntries);
-        var ext = strings.TakeLast(1).FirstOrDefault() ?? "";
+        var ext = Enumerable.TakeLast(strings, 1).FirstOrDefault() ?? "";
         return ext;
     }
 
@@ -76,7 +76,7 @@ public class Path : IPath
             return path;
         }
 
-        return Combine(fileSystem.Client.WorkingDirectory, path);
+        return Combine(FileSystem.Directory.GetCurrentDirectory(), path);
     }
 
     public string GetFullPath(string path, string basePath)
@@ -96,7 +96,7 @@ public class Path : IPath
 
     public string GetPathRoot(string path)
     {
-        return PathSeparator.ToString();
+        return SlashChar.ToString();
     }
 
     public string GetRandomFileName()
@@ -126,13 +126,21 @@ public class Path : IPath
 
     public bool IsPathFullyQualified(string path)
     {
-        return path.StartsWith(Separator);
+        return path.StartsWith(SlashChar);
     }
 
     public string GetRelativePath(string relativeTo, string path)
     {
-        throw new NotImplementedException();
-        //MoreEnumerable.RightJoin(GetChunks(relativeTo), GetChunks(path), a => a, b => b, (s, a) => s);
+        var relativePathChunks =
+            GetChunks(relativeTo)
+                .ZipLongest(GetChunks(path), (x, y) => (x, y))
+                .SkipWhile(x => x.x == x.y)
+                .Select(x => { return x.x is null ? new[] {x.y} : new[] {"..", x.y}; })
+                .Transpose()
+                .SelectMany(x => x)
+                .Where(x => x is not default(string));
+
+        return Join(relativePathChunks);
     }
 
     public string Join(ReadOnlySpan<char> path1, ReadOnlySpan<char> path2)
@@ -243,15 +251,21 @@ public class Path : IPath
         throw new NotImplementedException();
     }
 
-    public char AltDirectorySeparatorChar => Separator;
-    public char DirectorySeparatorChar => Separator;
-    public IFileSystem FileSystem => fileSystem;
-    public char PathSeparator => Separator;
-    public char VolumeSeparatorChar => Separator;
+    public char AltDirectorySeparatorChar => SlashChar;
+    public char DirectorySeparatorChar => SlashChar;
+    public IFileSystem FileSystem { get; }
+
+    public char PathSeparator => SlashChar;
+    public char VolumeSeparatorChar => SlashChar;
     public char[] InvalidPathChars { get; }
 
     private IEnumerable<string> GetChunks(string relativeTo)
     {
-        return relativeTo.Split(PathSeparator);
+        return relativeTo.Split(SlashChar);
+    }
+
+    private string Join(IEnumerable<string> chunks)
+    {
+        return string.Join(SlashChar, chunks);
     }
 }

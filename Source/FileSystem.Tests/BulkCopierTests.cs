@@ -74,9 +74,8 @@ public class BulkCopierTests
 
     private static BulkCopier CreateSut(IFileInfo databaseFile)
     {
-        var pathTranslator = new FileSystemPathTranslator();
-        var fileSystemComparer = new FileSystemComparer(pathTranslator);
-        var sut = new BulkCopier(fileSystemComparer, pathTranslator, _ => new SmartFileManager("TestFS"));
+        var fileSystemComparer = new FileSystemComparer();
+        var sut = new BulkCopier(fileSystemComparer, new FileManager());
         return sut;
     }
 }

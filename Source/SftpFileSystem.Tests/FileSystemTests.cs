@@ -182,7 +182,7 @@ public class FileSystemTests
 
     private static FileSystem CreateSut()
     {
-        return FileSystem.Connect(host, hostPort, new Credentials(username, password));
+        return FileSystem.Connect(host, hostPort, new Credentials(username, password)).Value;
     }
 
     private static SftpFileSystemBuilder CreateBuilder()

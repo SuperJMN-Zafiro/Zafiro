@@ -1,4 +1,5 @@
 ﻿using System.IO.Abstractions;
+using CSharpFunctionalExtensions;
 using Renci.SshNet;
 
 namespace SftpFileSystem;
@@ -26,11 +27,14 @@ public class FileSystem : IFileSystem, IDisposable
     public IDriveInfoFactory DriveInfo { get; }
     public IFileSystemWatcherFactory FileSystemWatcher { get; }
 
-    public static FileSystem Connect(string host, int port,
+    public static Result<FileSystem> Connect(string host, int port,
         Credentials credentials)
     {
-        var fileSystem = new FileSystem(host, port, credentials);
-        fileSystem.Client.Connect();
-        return fileSystem;
+        return Result.Try(() =>
+        {
+            var fileSystem = new FileSystem(host, port, credentials);
+            fileSystem.Client.Connect();
+            return fileSystem;
+        });
     }
 }

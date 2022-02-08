@@ -12,12 +12,12 @@ public class FileSystemComparer : IFileSystemComparer
         {
             Key = GetKey(origin, f),
             File = f
-        });
+        }).ToList();
         var destinationFiles = GetFilesRecursively(destination).Select(f => new
         {
             Key = GetKey(destination, f),
             File = f
-        });
+        }).ToList();
 
         var fileDiffs = FullJoinExtension.FullJoin(originFiles, destinationFiles,
             f => f.Key,
@@ -30,7 +30,7 @@ public class FileSystemComparer : IFileSystemComparer
 
     private static string GetKey(IFileSystemInfo origin, IFileInfo f)
     {
-        return origin.GetRelativePath(f.FullName);
+        return origin.GetRelativePath(f.FullName).Replace(origin.FileSystem.Path.DirectorySeparatorChar, '/');
     }
 
     private static IEnumerable<IFileInfo> GetFilesRecursively(IDirectoryInfo origin)

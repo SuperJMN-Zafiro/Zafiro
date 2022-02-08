@@ -4,7 +4,7 @@ namespace FileSystem;
 
 public class FileManager : IFileManager
 {
-    public virtual async Task Copy(IFileInfo source, IFileInfo destination)
+    public async Task Copy(IFileInfo source, IFileInfo destination)
     {
         destination.Directory.Create();
         await using var openWrite = destination.OpenWrite();
@@ -12,7 +12,7 @@ public class FileManager : IFileManager
         await openRead.CopyToAsync(openWrite);
     }
 
-    public virtual void Delete(IFileInfo file)
+    public void Delete(IFileInfo file)
     {
         file.Delete();
     }

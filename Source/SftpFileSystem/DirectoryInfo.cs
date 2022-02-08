@@ -64,7 +64,7 @@ public class DirectoryInfo : IDirectoryInfo
 
     public IEnumerable<IDirectoryInfo> EnumerateDirectories()
     {
-        throw new NotImplementedException();
+        return fileSystem.Directory.EnumerateDirectories(FullName).Select(s => new DirectoryInfo(s, fileSystem));
     }
 
     public IEnumerable<IDirectoryInfo> EnumerateDirectories(string searchPattern)
