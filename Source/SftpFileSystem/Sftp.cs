@@ -24,20 +24,19 @@ public class Sftp
     public async Task<Result> CopyDirectory(string origin, string destination)
     {
         var result = await FileSystem.Connect(endpoint.Host, endpoint.Port, credentials)
-            .Bind(fs =>
+            .Bind(async fs =>
             {
                 using (fs)
                 {
-                    var fileSystemPathTranslator = new FileSystemPathTranslator();
                     var fileSystemComparer = new FileSystemComparer();
                     var destinationDir = fs.DirectoryInfo.FromDirectoryName(destination);
                     var originDir = SourceFs.DirectoryInfo.FromDirectoryName(origin);
-                    var smartFileManager = StorageWrapper.Create(HashesFile,
-                        hashes => new SmartFileManager(endpoint.Host, new FileManager(), hashes));
-                    var bulkCopier = new BulkCopier(fileSystemComparer, fileSystemPathTranslator, smartFileManager);
-
-                    return Result.Success()
-                        .Bind(() => bulkCopier.Copy(originDir, destinationDir));
+                    using (var fileManager = FileBasedCachingFileManager.Create(HashesFile,
+                               hashes => new CachingFileManager(endpoint.Host, new FileManager(), hashes)))
+                    {
+                        var bulkCopier = new BulkCopier(fileSystemComparer, fileManager);
+                        return await bulkCopier.Copy(originDir, destinationDir);
+                    }
                 }
             });
 

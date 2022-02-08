@@ -2,9 +2,10 @@
 
 namespace FileSystem;
 
-public class FileSystemPathTranslator : IFileSystemPathTranslator
+public static class FileSystemInfoMixin
 {
-    public string Translate(IFileSystemInfo fileSystemInfo, IFileSystemInfo origin, IDirectoryInfo destination)
+    public static string Translate(this IFileSystemInfo fileSystemInfo, IFileSystemInfo origin,
+        IDirectoryInfo destination)
     {
         var relativeToSource = fileSystemInfo.FileSystem.Path.GetRelativePath(origin.FullName, fileSystemInfo.FullName);
         var originPathParts = relativeToSource.Split(fileSystemInfo.FileSystem.Path.DirectorySeparatorChar);

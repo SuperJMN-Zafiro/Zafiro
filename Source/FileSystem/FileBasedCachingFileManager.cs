@@ -6,18 +6,18 @@ using ExtendedXmlSerializer.Configuration;
 
 namespace FileSystem;
 
-public sealed class StorageWrapper : IFileManager, IDisposable
+public sealed class FileBasedCachingFileManager : IFileManager, IDisposable
 {
     private static readonly IExtendedXmlSerializer ExtendedXmlSerializer = new ConfigurationContainer()
         .UseOptimizedNamespaces()
         .Create();
 
-    private readonly SmartFileManager cachedFileManager;
+    private readonly ICachingFileManager cachedFileManager;
     private readonly IFileInfo hashesFile;
 
-    private StorageWrapper(SmartFileManager smartFileManager, IFileInfo hashesFile)
+    private FileBasedCachingFileManager(ICachingFileManager cachingFileManager, IFileInfo hashesFile)
     {
-        cachedFileManager = smartFileManager;
+        cachedFileManager = cachingFileManager;
         this.hashesFile = hashesFile;
     }
 
@@ -36,34 +36,34 @@ public sealed class StorageWrapper : IFileManager, IDisposable
         cachedFileManager.Delete(file);
     }
 
-    public static StorageWrapper Create(IFileInfo hashesFile,
-        Func<Dictionary<SmartFileManager.Key, byte[]>, SmartFileManager> factory)
+    public static FileBasedCachingFileManager Create(IFileInfo hashesFile,
+        Func<Dictionary<CacheKey, byte[]>, ICachingFileManager> factory)
     {
-        var emptyHashes = new Dictionary<SmartFileManager.Key, byte[]>();
+        var emptyHashes = new Dictionary<CacheKey, byte[]>();
 
         var storageWrapper = Result
             .Try(() => LoadHashes(hashesFile))
-            .Match(r => new StorageWrapper(factory(r), hashesFile),
-                s => new StorageWrapper(factory(emptyHashes), hashesFile));
+            .Match(r => new FileBasedCachingFileManager(factory(r), hashesFile),
+                s => new FileBasedCachingFileManager(factory(emptyHashes), hashesFile));
 
         return storageWrapper;
     }
 
-    private static Dictionary<SmartFileManager.Key, byte[]> LoadHashes(IFileInfo hashesFile)
+    private static Dictionary<CacheKey, byte[]> LoadHashes(IFileInfo hashesFile)
     {
         if (!hashesFile.Exists)
         {
-            return new Dictionary<SmartFileManager.Key, byte[]>();
+            return new Dictionary<CacheKey, byte[]>();
         }
 
         using var stream = hashesFile.OpenRead();
-        return ExtendedXmlSerializer.Deserialize<Dictionary<SmartFileManager.Key, byte[]>>(stream);
+        return ExtendedXmlSerializer.Deserialize<Dictionary<CacheKey, byte[]>>(stream);
     }
 
     private void SaveHashes()
     {
         using var stream = hashesFile.Create();
-        using var xmlWriter = XmlWriter.Create(stream);
-        ExtendedXmlSerializer.Serialize(xmlWriter, cachedFileManager.Hashes);
+        using var xmlWriter = XmlWriter.Create(stream, new XmlWriterSettings {Indent = true});
+        ExtendedXmlSerializer.Serialize(xmlWriter, cachedFileManager.Cache);
     }
 }

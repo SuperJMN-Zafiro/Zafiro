@@ -13,7 +13,6 @@ public class FileSystemPathTranslatorTests
     [InlineData(@"C:\File.txt", @"C:\", @"C:\home", @"C:\home\File.txt")]
     public void Translate(string path, string origin, string destination, string expectedPath)
     {
-        var sut = new FileSystemPathTranslator();
         var originFs = new MockFileSystem(new Dictionary<string, MockFileData>
         {
             [path] = MockFileData.NullObject
@@ -24,8 +23,7 @@ public class FileSystemPathTranslatorTests
             [destination] = new MockDirectoryData()
         });
 
-        var translated = sut.Translate(
-            originFs.FileInfo.FromFileName(path),
+        var translated = originFs.FileInfo.FromFileName(path).Translate(
             originFs.DirectoryInfo.FromDirectoryName(origin),
             linuxFs.DirectoryInfo.FromDirectoryName(destination));
 

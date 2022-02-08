@@ -5,48 +5,41 @@ namespace FileSystem;
 
 public class BulkCopier
 {
+    private readonly FileSystemComparer comparer;
     private readonly IFileManager fileManager;
-    private readonly FileSystemComparer fileSystemComparer;
-    private readonly IFileSystemPathTranslator pathTranslator;
 
-    public BulkCopier(FileSystemComparer systemComparer, IFileSystemPathTranslator pathTranslator,
+    public BulkCopier(FileSystemComparer systemComparer,
         IFileManager fileManager)
     {
-        fileSystemComparer = systemComparer;
-        this.pathTranslator = pathTranslator;
+        comparer = systemComparer;
         this.fileManager = fileManager;
     }
 
-    public async Task<Result> Copy(IDirectoryInfo a, IDirectoryInfo b)
+    public async Task<Result> Copy(IDirectoryInfo source, IDirectoryInfo destination)
     {
-        ICollection<string> errors = new List<string>();
-        var diffs = await fileSystemComparer.Diff(a, b);
-        foreach (var diff in diffs)
-        {
-            try
-            {
-                switch (diff.Status)
-                {
-                    case FileDiffStatus.RightOnly:
-                        fileManager.Delete(diff.Right);
-                        break;
-                    case FileDiffStatus.Both:
-                        await fileManager.Copy(diff.Left, diff.Right);
-                        break;
-                    case FileDiffStatus.LeftOnly:
-                        var path = pathTranslator.Translate(diff.Left, a, b);
-                        var toCreate = b.FileSystem.FileInfo.FromFileName(path);
-                        toCreate.Directory.Create();
-                        await fileManager.Copy(diff.Left, toCreate);
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                errors.Add(e.Message);
-            }
-        }
+        var diffs = await comparer.Diff(source, destination);
 
-        return Result.FailureIf(() => errors.Any(), string.Join(";", errors));
+        return await diffs
+            .Select(diff => Result.Try(() => Sync(diff, source, destination)))
+            .CombineInOrder(";");
+    }
+
+    private async Task Sync(FileDiff diff, IFileSystemInfo source, IDirectoryInfo destination)
+    {
+        switch (diff.Status)
+        {
+            case FileDiffStatus.RightOnly:
+                fileManager.Delete(diff.Right);
+                break;
+            case FileDiffStatus.Both:
+                await fileManager.Copy(diff.Left, diff.Right);
+                break;
+            case FileDiffStatus.LeftOnly:
+                var path = diff.Left.Translate(source, destination);
+                var toCreate = destination.FileSystem.FileInfo.FromFileName(path);
+                toCreate.Directory.Create();
+                await fileManager.Copy(diff.Left, toCreate);
+                break;
+        }
     }
 }

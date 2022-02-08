@@ -5,21 +5,26 @@ using Serilog;
 
 namespace FileSystem;
 
-public class SmartFileManager : IFileManager
+public interface ICachingFileManager : IFileManager
+{
+    Dictionary<CacheKey, byte[]> Cache { get; }
+}
+
+public class CachingFileManager : ICachingFileManager
 {
     private static readonly SHA1 Hasher = SHA1.Create();
 
     private readonly string fileSystemName;
     private readonly IFileManager inner;
 
-    public SmartFileManager(string fileSystemName, IFileManager inner, Dictionary<Key, byte[]> hashes)
+    public CachingFileManager(string fileSystemName, IFileManager inner, Dictionary<CacheKey, byte[]> hashes)
     {
         this.fileSystemName = fileSystemName;
         this.inner = inner;
-        Hashes = hashes;
+        Cache = hashes;
     }
 
-    public Dictionary<Key, byte[]> Hashes { get; }
+    public Dictionary<CacheKey, byte[]> Cache { get; }
 
     public async Task Copy(IFileInfo source, IFileInfo destination)
     {
@@ -32,16 +37,16 @@ public class SmartFileManager : IFileManager
         }
 
         await inner.Copy(source, destination);
-        Hashes[ToKey(source, destination)] = hashedFile.Hash;
+        Cache[ToKey(source, destination)] = hashedFile.Hash;
     }
 
     public void Delete(IFileInfo file)
     {
-        var toRemove = Hashes.Keys.Where(r => r.DestinationPath == file.FullName);
+        var toRemove = Cache.Keys.Where(r => r.Destination == file.FullName);
 
         foreach (var actionKey in toRemove)
         {
-            Hashes.Remove(actionKey);
+            Cache.Remove(actionKey);
         }
 
         inner.Delete(file);
@@ -57,18 +62,18 @@ public class SmartFileManager : IFileManager
     {
         var key = ToKey(source.File, destination);
 
-        return Hashes
+        return Cache
             .TryFind(key)
             .Match(destHash => source.Hash.SequenceEqual(destHash), () => false);
     }
 
-    private Key ToKey(IFileInfo sourceFile, IFileInfo destination)
+    private CacheKey ToKey(IFileInfo sourceFile, IFileInfo destination)
     {
-        return new Key
+        return new CacheKey
         {
-            DestinationFileSystemName = fileSystemName,
-            OriginPath = sourceFile.FullName,
-            DestinationPath = destination.FullName
+            System = fileSystemName,
+            Origin = sourceFile.FullName,
+            Destination = destination.FullName
         };
     }
 
@@ -82,28 +87,5 @@ public class SmartFileManager : IFileManager
 
         public byte[] Hash { get; }
         public IFileInfo File { get; }
-    }
-
-    public struct Key
-    {
-        public string OriginPath { get; set; }
-        public string DestinationPath { get; set; }
-        public string DestinationFileSystemName { get; set; }
-
-        public bool Equals(Key other)
-        {
-            return OriginPath == other.OriginPath && DestinationPath == other.DestinationPath &&
-                   DestinationFileSystemName == other.DestinationFileSystemName;
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is Key other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(OriginPath, DestinationPath, DestinationFileSystemName);
-        }
     }
 }
