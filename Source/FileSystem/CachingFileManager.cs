@@ -26,12 +26,15 @@ public class CachingFileManager : ICachingFileManager
         var hashedFile = new HashedFile(await GetHash(source.OpenRead), source);
         if (destination.Exists && AreEqual(hashedFile, destination))
         {
-            Log.Verbose("{Source} has already been copied to {Destination} with the same contents. Skipping.",
+            Log.Verbose("[Skipped] {Source} has already been copied to {Destination} with the same contents",
                 source.FullName, fileSystemName);
             return;
         }
 
         await inner.Copy(source, destination);
+
+        Log.Verbose("[Copied] {Source} copied", source.FullName);
+
         Cache[ToKey(source, destination)] = hashedFile.Hash;
     }
 
@@ -45,6 +48,8 @@ public class CachingFileManager : ICachingFileManager
         }
 
         inner.Delete(file);
+
+        Log.Verbose("[Deleted] {Source}", file.FullName);
     }
 
     private static async Task<byte[]> GetHash(Func<Stream> getContents)
