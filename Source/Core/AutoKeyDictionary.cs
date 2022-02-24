@@ -1,9 +1,9 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
+namespace Core
+{
     public class AutoKeyDictionary<TKey, TValue> : IEnumerable<TValue>, IDictionary<TKey, TValue>
     {
         private readonly IDictionary<TKey, TValue> dict;

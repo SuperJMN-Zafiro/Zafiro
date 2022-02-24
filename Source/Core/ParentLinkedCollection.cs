@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Zafiro.Core
+namespace Core
 {
     public class ParentLinkedCollection<TChild, TParent> : Collection<TChild> where TChild : IChild<TParent>
     {

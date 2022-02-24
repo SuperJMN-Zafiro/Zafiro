@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Core
+﻿namespace Core
 {
     public interface IChild<TParent>
     {

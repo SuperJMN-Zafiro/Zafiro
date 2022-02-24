@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core.Mixins
+namespace Core.Mixins
 {
     public static class StreamMixin
     {

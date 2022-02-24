@@ -1,9 +1,9 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
+namespace Core
+{
     public static class Collection
     {
         private const string AddMethodName = "Add";

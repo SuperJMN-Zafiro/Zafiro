@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Zafiro.Core.Mixins;
+using Core.Mixins;
 
-namespace Zafiro.Core.Files
+namespace Core.Files
 {
     public static class ZafiroFileExtensions
     {

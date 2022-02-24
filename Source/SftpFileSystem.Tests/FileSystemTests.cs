@@ -27,7 +27,7 @@ public class FileSystemTests
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(hostPort));
 
         var container = testcontainersBuilder.Build();
-        await container.StartAsync();
+        await container.StartAsync().ConfigureAwait(false);
         return container;
     }
 
@@ -36,12 +36,12 @@ public class FileSystemTests
     {
         var container = await CreateBuilder()
             .WithFile("upload/TextFile1.txt", "Hello")
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
-            var contents = await sut.File.OpenText($"{rootFolder}/TextFile1.txt").ReadToEndAsync();
+            var contents = await sut.File.OpenText($"{rootFolder}/TextFile1.txt").ReadToEndAsync().ConfigureAwait(false);
 
             contents
                 .Should()
@@ -54,9 +54,9 @@ public class FileSystemTests
     {
         var container = await CreateBuilder()
             .WithFile($"{rootFolder}/TextFile1.txt", "Hello")
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
             sut.Directory.EnumerateFileSystemEntries($"/{rootFolder}")
@@ -70,9 +70,9 @@ public class FileSystemTests
     {
         var container = await CreateBuilder()
             .WithFile($"{rootFolder}/TextFile1.txt", "Hello")
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
             var file = sut.FileInfo.FromFileName("upload/TextFile1.txt");
@@ -88,9 +88,9 @@ public class FileSystemTests
         var container = await CreateBuilder()
             .WithFile($"{rootFolder}/Dir/TextFile1.txt", "Hello")
             .WithFile($"{rootFolder}/Dir/TextFile2.txt", "Hello")
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
             var subDir = sut.DirectoryInfo.FromDirectoryName($"{rootFolder}/Dir");
@@ -108,9 +108,9 @@ public class FileSystemTests
             .WithFile($"{rootFolder}/Dir/TextFile2.txt")
             .WithFile($"{rootFolder}/Dir/Subdir/TextFile1.txt")
             .WithFile($"{rootFolder}/Dir/Subdir/TextFile2.txt")
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
             var subDir = sut.DirectoryInfo.FromDirectoryName($"{rootFolder}/Dir");
@@ -124,9 +124,9 @@ public class FileSystemTests
     public async Task Create_file()
     {
         var container = await CreateBuilder()
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
             var fileInfo = sut.FileInfo.FromFileName($"{rootFolder}/newfile.txt");
@@ -145,9 +145,9 @@ public class FileSystemTests
     public async Task Create_directory(string directoryPath)
     {
         var container = await CreateBuilder()
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
             var subDir = sut.DirectoryInfo.FromDirectoryName(directoryPath);
@@ -161,9 +161,9 @@ public class FileSystemTests
     public async Task Create_subdirectory()
     {
         var container = await CreateBuilder()
-            .Build();
+            .Build().ConfigureAwait(false);
 
-        await using (container)
+        await using (container.ConfigureAwait(false))
         {
             var sut = CreateSut();
             var dir = sut.DirectoryInfo.FromDirectoryName($"{rootFolder}");
