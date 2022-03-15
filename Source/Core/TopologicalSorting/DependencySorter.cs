@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Zafiro.Core.TopologicalSorting
+namespace Core.TopologicalSorting
 {
     public static class DependencySorter
     {

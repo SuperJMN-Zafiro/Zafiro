@@ -24,8 +24,8 @@ public class SftpFileSystemBuilder
 
     public async Task<IAsyncDisposable> Build()
     {
-        var server = await FileSystemTests.CreateSftpServer();
-        await CreateFileSystem();
+        var server = await FileSystemTests.CreateSftpServer().ConfigureAwait(false);
+        await CreateFileSystem().ConfigureAwait(false);
         return server;
     }
 
@@ -45,7 +45,7 @@ public class SftpFileSystemBuilder
 
                 using (var stream = client.CreateText(path))
                 {
-                    await stream.WriteAsync(content);
+                    await stream.WriteAsync(content).ConfigureAwait(false);
                 }
             }
         }

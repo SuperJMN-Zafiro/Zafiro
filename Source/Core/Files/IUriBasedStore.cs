@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core.Files
+namespace Core.Files
 {
     public interface IUriBasedStore
     {

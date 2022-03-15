@@ -2,7 +2,7 @@
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core.Mixins
+namespace Core.Mixins
 {
     public static class ObservableMixin
     {

@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core.Files
+namespace Core.Files
 {
     public class ZafiroFile : IZafiroFile
     {

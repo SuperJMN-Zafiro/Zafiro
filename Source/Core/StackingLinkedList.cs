@@ -1,8 +1,8 @@
-﻿namespace Zafiro.Core
-{
-    using System.Collections.Generic;
-    using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
+namespace Core
+{
     public class StackingLinkedList<T>
     {
         private readonly LinkedList<T> linkedList = new LinkedList<T>();

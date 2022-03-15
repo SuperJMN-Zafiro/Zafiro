@@ -1,6 +1,6 @@
-﻿using Zafiro.Core.ProgressReporting;
+﻿using Core.ProgressReporting;
 
-namespace Zafiro.Core
+namespace Core
 {
     public class Done : Progress
     {

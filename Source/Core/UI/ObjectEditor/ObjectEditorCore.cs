@@ -5,11 +5,11 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
+using Core.Mixins;
+using Core.UI.ObjectEditor.TemplateMatchers;
 using ReactiveUI;
-using Zafiro.Core.Mixins;
-using Zafiro.Core.UI.ObjectEditor.TemplateMatchers;
 
-namespace Zafiro.Core.UI.ObjectEditor
+namespace Core.UI.ObjectEditor
 {
     public class ObjectEditorCore<TEditor, TTemplate> : ReactiveObject where TTemplate : class
     {

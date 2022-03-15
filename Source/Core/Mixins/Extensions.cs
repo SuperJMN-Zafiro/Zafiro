@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Zafiro.Core.Mixins
+namespace Core.Mixins
 {
     public static class Extensions
     {

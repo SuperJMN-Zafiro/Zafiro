@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using CSharpFunctionalExtensions;
 
 namespace FileSystem;
 
@@ -20,10 +21,10 @@ public static class FileSystemMixin
             switch (item)
             {
                 case IFileInfo file:
-                    await CopyStream(destination, translatedToDestination, file.OpenRead);
+                    await CopyStream(destination, translatedToDestination, file.OpenRead).ConfigureAwait(false);
                     break;
                 case IDirectoryInfo dir:
-                    await CopyTo(origin.WithPath(dir.FullName), destination.WithPath(translatedToDestination));
+                    await CopyTo(origin.WithPath(dir.FullName), destination.WithPath(translatedToDestination)).ConfigureAwait(false);
                     break;
             }
         }
@@ -34,12 +35,25 @@ public static class FileSystemMixin
         return origin.FileSystem.Path.GetRelativePath(origin.FullName, path);
     }
 
+    public static async Task<Result> Copy(this ICopier copier, Result<IZafiroDirectory> origin,
+        Result<IZafiroDirectory> dest)
+    {
+        var copy =
+            from o in origin
+            from d in dest
+            select new {Origin = o, Destination = d};
+
+        return await copy.Bind(arg => copier.Copy(arg.Origin, arg.Destination)).ConfigureAwait(false);
+    }
+
     private static async Task CopyStream(FileSystemPath destination, string newPath, Func<Stream> streamFactory)
     {
         var newFile = destination.FileSystem.FileInfo.FromFileName(newPath);
         newFile.Directory.Create();
-        await using var source = streamFactory();
-        await using var dest = newFile.Create();
-        await source.CopyToAsync(dest);
+        using (var source = streamFactory())
+        using (var dest = newFile.Create())
+        {
+            await source.CopyToAsync(dest).ConfigureAwait(false);
+        }
     }
 }

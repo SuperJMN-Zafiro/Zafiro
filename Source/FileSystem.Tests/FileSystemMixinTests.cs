@@ -21,7 +21,7 @@ public class FileSystemMixinTests
         var origin = new FileSystemPath(originFs, "Dir");
         var destination = new FileSystemPath(destinationFs, "New");
 
-        await origin.CopyTo(destination);
+        await origin.CopyTo(destination).ConfigureAwait(false);
 
         var expectedPaths = new[]
         {

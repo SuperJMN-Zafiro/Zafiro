@@ -2,7 +2,7 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Zafiro.Core.Mixins
+namespace Core.Mixins
 {
     public class TreeExtensions
     {

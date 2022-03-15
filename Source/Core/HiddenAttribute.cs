@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Zafiro.Core
+namespace Core
 {
     public class HiddenAttribute : Attribute
     {

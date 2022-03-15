@@ -1,8 +1,8 @@
-﻿namespace Zafiro.Core
-{
-    using System;
-    using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 
+namespace Core
+{
     public static class Guard
     {
         public static void ThrowIfNull(object argumentValue, string argumentName, [CallerMemberName] string methodName = null)

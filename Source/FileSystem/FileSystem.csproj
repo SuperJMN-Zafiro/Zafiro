@@ -17,4 +17,8 @@
 		<PackageReference Include="System.IO.Abstractions" Version="16.1.15" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Core\Core.csproj" />
+	</ItemGroup>
+
 </Project>

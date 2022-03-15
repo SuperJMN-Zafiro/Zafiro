@@ -5,10 +5,10 @@ using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
+using Core.Values;
 using ReactiveUI;
-using Zafiro.Core.Values;
 
-namespace Zafiro.Core.UI.ObjectEditor
+namespace Core.UI.ObjectEditor
 {
     public abstract class PropertyItem<T> : ReactiveObject, IDisposable
     {
