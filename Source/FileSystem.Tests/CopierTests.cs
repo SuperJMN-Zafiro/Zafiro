@@ -24,7 +24,7 @@ public class CopierTests
             [@"C:\Subdir\Data\Something2.txt"] = new("C"),
             [@"C:\Subdir\Data\InnerMost\Something1.txt"] = new("D")
         });
-        var fs = new ZafiroFileSystem(innerFs);
+        var fs = new ZafiroFileSystem(innerFs, Maybe<ILogger>.None);
 
         var result = await Copy(fs, "C:>Subdir", "C:>Destination").ConfigureAwait(false);
         result.Should().BeSuccess();
@@ -43,7 +43,7 @@ public class CopierTests
             [@"C:\Destination\Root.txt"] = new("B")
         });
 
-        var fs = new ZafiroFileSystem(innerFs);
+        var fs = new ZafiroFileSystem(innerFs, Maybe<ILogger>.None);
 
         var result = await Copy(fs, @"C:>Subdir", "C:>Destination").ConfigureAwait(false);
 
@@ -59,7 +59,7 @@ public class CopierTests
             [@"C:\Destination\Root.txt"] = new("B")
         });
 
-        var fs = new ZafiroFileSystem(innerFs);
+        var fs = new ZafiroFileSystem(innerFs, Maybe<ILogger>.None);
 
         var result = await Copy(fs, @"C:>Subdir", "C:>Destination").ConfigureAwait(false);
         result.Should().BeSuccess();
@@ -73,7 +73,7 @@ public class CopierTests
             select new {o, d};
 
         var sut = CreateSut();
-        var result = await copy.Bind(r => sut.Copy( r.o, r.d, Maybe<ILogger>.None)).ConfigureAwait(false);
+        var result = await copy.Bind(r => sut.Copy( r.o, r.d)).ConfigureAwait(false);
         return result;
     }
 

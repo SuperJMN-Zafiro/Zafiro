@@ -25,7 +25,7 @@ public class SmartZafiroFile : IZafiroFile
         var hash = await GetHash().ConfigureAwait(false);
         if (fileSystem.ContainsHash(this, destination, hash))
         {
-            fileSystem.Logger.Execute(l => l.Verbose("'{Me}' won't be copied because {Destination} already has the same contents", this, destination));
+            fileSystem.Logger.Execute(l => l.Verbose("'{Me}' won't be copied because {Destination} has the same contents", this, destination));
             return Result.Success();
         }
 
@@ -42,9 +42,7 @@ public class SmartZafiroFile : IZafiroFile
 
     public Result Delete()
     {
-        fileSystem.Logger.Execute(l => l.Verbose("Deleting '{Me}'", this));
         return inner.Delete()
-            .OnSuccessTry(() => fileSystem.Logger.Execute(l => l.Verbose("Deleted '{Me}'", this)))
             .OnSuccessTry(() => fileSystem.RemoveHash(Path));
     }
 

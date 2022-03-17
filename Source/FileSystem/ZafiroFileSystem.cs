@@ -1,14 +1,17 @@
 ﻿using System.IO.Abstractions;
 using CSharpFunctionalExtensions;
+using Serilog;
 
 namespace FileSystem;
 
 public class ZafiroFileSystem : IZafiroFileSystem
 {
+    public Maybe<ILogger> Logger { get; }
     private readonly IFileSystem fileSystem;
 
-    public ZafiroFileSystem(IFileSystem fileSystem)
+    public ZafiroFileSystem(IFileSystem fileSystem, Maybe<ILogger> logger)
     {
+        Logger = logger;
         this.fileSystem = fileSystem;
     }
 

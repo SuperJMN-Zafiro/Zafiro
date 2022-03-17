@@ -39,7 +39,9 @@ public class ZafiroFile : IZafiroFile
 
     public Result Delete()
     {
-        return Result.Try(() => fileInfo.Delete());
+        return Result
+            .Try(() => fileInfo.Delete())
+            .OnSuccessTry(() => FileSystem.Logger.Execute(l => l.Verbose("Deleted '{Me}'", this)));
     }
 
     public override string ToString()
