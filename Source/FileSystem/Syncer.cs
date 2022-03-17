@@ -2,16 +2,16 @@
 
 namespace FileSystem;
 
-public class Copier : ICopier
+public class Syncer : ISyncer
 {
     private readonly IZafiroFileSystemComparer comparer;
 
-    public Copier(IZafiroFileSystemComparer systemComparer)
+    public Syncer(IZafiroFileSystemComparer systemComparer)
     {
         comparer = systemComparer;
     }
 
-    public async Task<Result> Copy(IZafiroDirectory source, IZafiroDirectory destination)
+    public async Task<Result> Sync(IZafiroDirectory source, IZafiroDirectory destination)
     {
         var diffs = await comparer.Diff(source, destination).ConfigureAwait(false);
 

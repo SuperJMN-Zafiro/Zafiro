@@ -35,7 +35,7 @@ public static class FileSystemMixin
         return origin.FileSystem.Path.GetRelativePath(origin.FullName, path);
     }
 
-    public static async Task<Result> Copy(this ICopier copier, Result<IZafiroDirectory> origin,
+    public static async Task<Result> Copy(this ISyncer syncer, Result<IZafiroDirectory> origin,
         Result<IZafiroDirectory> dest)
     {
         var copy =
@@ -43,7 +43,7 @@ public static class FileSystemMixin
             from d in dest
             select new {Origin = o, Destination = d};
 
-        return await copy.Bind(arg => copier.Copy(arg.Origin, arg.Destination)).ConfigureAwait(false);
+        return await copy.Bind(arg => syncer.Sync(arg.Origin, arg.Destination)).ConfigureAwait(false);
     }
 
     private static async Task CopyStream(FileSystemPath destination, string newPath, Func<Stream> streamFactory)

@@ -73,7 +73,7 @@ public class CopierTests
             select new {o, d};
 
         var sut = CreateSut();
-        var result = await copy.Bind(r => sut.Copy( r.o, r.d)).ConfigureAwait(false);
+        var result = await copy.Bind(r => sut.Sync( r.o, r.d)).ConfigureAwait(false);
         return result;
     }
 
@@ -84,10 +84,10 @@ public class CopierTests
             .Select(r => root.GetRelativePath(r.FullName));
     }
 
-    private static Copier CreateSut()
+    private static Syncer CreateSut()
     {
         var fileSystemComparer = new ZafiroFileSystemComparer();
-        var sut = new Copier(fileSystemComparer);
+        var sut = new Syncer(fileSystemComparer);
         return sut;
     }
 }
