@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Zafiro.UI
+namespace UI
 {
     public interface IPopup
     {

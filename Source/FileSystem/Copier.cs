@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Serilog;
 
 namespace FileSystem;
 
@@ -11,32 +12,56 @@ public class Copier : ICopier
         comparer = systemComparer;
     }
 
-    public async Task<Result> Copy(IZafiroDirectory source, IZafiroDirectory destination)
+    public async Task<Result> Copy(IZafiroDirectory source, IZafiroDirectory destination, Maybe<ILogger> logger)
     {
         var diffs = await comparer.Diff(source, destination).ConfigureAwait(false);
 
         return await diffs
-            .Select(diff => Sync(diff, source, destination))
+            .Select(diff => Sync(diff, source, destination, logger))
             .CombineInOrder(";").ConfigureAwait(false);
     }
 
-    private async Task<Result> Sync(ZafiroFileDiff diff, IZafiroDirectory source, IZafiroDirectory destination)
+    private async Task<Result> Sync(ZafiroFileDiff diff, IZafiroDirectory source, IZafiroDirectory destination,
+        Maybe<ILogger> logger)
     {
         switch (diff.Status)
         {
             case FileDiffStatus.RightOnly:
-                return diff.Right.Match(file => file.Delete(), Result.Success);
+                return DeleteNonexistent(diff.Right.Value, logger);
             case FileDiffStatus.Both:
-                var left = diff.Left.Value;
-                var right = diff.Right.Value;
-                return await left.CopyTo(right).ConfigureAwait(false);
+                return await CopyOverExisting(diff.Left.Value, diff.Right.Value, logger);
             case FileDiffStatus.LeftOnly:
-                var l = diff.Left.Value;
-                return await destination.FileSystem
-                    .GetFile(destination.Path.Combine(l.Path.MakeRelativeTo(source.Path)))
-                    .Bind(r => l.CopyTo(r)).ConfigureAwait(false);
+                return await CopyNonexistent(source, destination, diff.Left.Value, logger);
         }
 
         return Result.Failure("Invalid status");
+    }
+
+    private static async Task<Result> CopyNonexistent(IZafiroDirectory sourceDirectory,
+        IZafiroDirectory destinationDirectory, IZafiroFile sourceFile, Maybe<ILogger> logger)
+    {
+        var destPath = destinationDirectory.Path.Combine(sourceFile.Path.MakeRelativeTo(sourceDirectory.Path));
+
+        return await destinationDirectory.FileSystem
+            .GetFile(destPath)
+            .Bind(async destFile =>
+            {
+                logger.Execute(l => l.Information("Copying {Source} to {Destination}", sourceFile, destFile));
+                return await sourceFile.CopyTo(destFile);
+            }).ConfigureAwait(false);
+    }
+
+    private static Result DeleteNonexistent(IZafiroFile file, Maybe<ILogger> logger)
+    {
+        logger.Execute(l => l.Information("Deleting {File}", file));
+        var delete = file.Delete();
+        return delete;
+    }
+
+    private static async Task<Result> CopyOverExisting(IZafiroFile left, IZafiroFile right, Maybe<ILogger> logger)
+    {
+        logger.Execute(l => l.Information("Copying {Source} to {Destination}", left, right));
+        var copyTo = await left.CopyTo(right).ConfigureAwait(false);
+        return copyTo;
     }
 }

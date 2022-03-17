@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Zafiro.Reflection
+namespace Reflection
 {
     public static class Extensions
     {

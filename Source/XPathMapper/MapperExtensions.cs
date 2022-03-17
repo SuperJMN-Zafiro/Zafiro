@@ -1,6 +1,6 @@
 ﻿using System.Xml.XPath;
 
-namespace Zafiro.Mapping
+namespace Mapping
 {
     public static class MapperExtensions
     {

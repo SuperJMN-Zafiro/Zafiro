@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Mapping
+namespace Mapping
 {
     public abstract class MemberMap
     {

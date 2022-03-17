@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Reflection.Tests
+namespace Reflection.Tests
 {
     class SomeModel
     {

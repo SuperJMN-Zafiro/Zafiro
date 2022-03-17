@@ -20,14 +20,18 @@ public class SmartZafiroFile : IZafiroFile
 
     public async Task<Result> CopyTo(IZafiroFile destination)
     {
+        fileSystem.Logger.Execute(l => l.Verbose("Attempt to copy '{Me}' to '{Destination}'", this, destination));
+
         var hash = await GetHash().ConfigureAwait(false);
         if (fileSystem.ContainsHash(this, destination, hash))
         {
+            fileSystem.Logger.Execute(l => l.Verbose("'{Me}' won't be copied because {Destination} already has the same contents", this, destination));
             return Result.Success();
         }
 
         fileSystem.AddHash(this, destination, hash);
 
+        fileSystem.Logger.Execute(l => l.Verbose("Effectively copying '{Me}' into '{Destination}'", this, destination));
         return await inner.CopyTo(destination).ConfigureAwait(false);
     }
 
@@ -38,7 +42,10 @@ public class SmartZafiroFile : IZafiroFile
 
     public Result Delete()
     {
-        return inner.Delete().OnSuccessTry(() => fileSystem.RemoveHash(Path));
+        fileSystem.Logger.Execute(l => l.Verbose("Deleting '{Me}'", this));
+        return inner.Delete()
+            .OnSuccessTry(() => fileSystem.Logger.Execute(l => l.Verbose("Deleted '{Me}'", this)))
+            .OnSuccessTry(() => fileSystem.RemoveHash(Path));
     }
 
     public Stream OpenRead()
@@ -57,5 +64,5 @@ public class SmartZafiroFile : IZafiroFile
         }
     }
 
-    public override string ToString() => inner.ToString();
+    public override string? ToString() => inner.ToString();
 }

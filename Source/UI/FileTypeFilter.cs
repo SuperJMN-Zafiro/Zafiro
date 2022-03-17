@@ -1,4 +1,4 @@
-﻿namespace Zafiro.UI
+﻿namespace UI
 {
     public class FileTypeFilter
     {

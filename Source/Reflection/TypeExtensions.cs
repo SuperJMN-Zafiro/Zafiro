@@ -5,7 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 
-namespace Zafiro.Reflection
+namespace Reflection
 {
     public static class TypeExtensions
     {

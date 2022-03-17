@@ -1,4 +1,4 @@
-namespace Zafiro.XPath.Tests
+namespace XPath.Tests
 {
     internal class Child
     {

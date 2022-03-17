@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Zafiro.Mapping
+namespace Mapping
 {
     public class CollectionMemberMap : MemberMap
     {

@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Mapping
+﻿namespace Mapping
 {
     public interface IConfiguration
     {

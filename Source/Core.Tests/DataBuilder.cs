@@ -3,7 +3,7 @@ using System.Globalization;
 using FluentAssertions.Common;
 using NodaTime;
 
-namespace Zafiro.Core.Tests
+namespace Core.Tests
 {
     public class DataBuilder
     {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Core.Files;
 using Optional;
-using Zafiro.Core.Files;
 
-namespace Zafiro.UI
+namespace UI
 {
     public interface IOpenFilePicker
     {

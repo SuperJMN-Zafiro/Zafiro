@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using CSharpFunctionalExtensions;
+using Serilog;
 
 namespace FileSystem;
 
@@ -36,14 +37,14 @@ public static class FileSystemMixin
     }
 
     public static async Task<Result> Copy(this ICopier copier, Result<IZafiroDirectory> origin,
-        Result<IZafiroDirectory> dest)
+        Result<IZafiroDirectory> dest, Maybe<ILogger> logger)
     {
         var copy =
             from o in origin
             from d in dest
             select new {Origin = o, Destination = d};
 
-        return await copy.Bind(arg => copier.Copy(arg.Origin, arg.Destination)).ConfigureAwait(false);
+        return await copy.Bind(arg => copier.Copy(arg.Origin, arg.Destination, logger)).ConfigureAwait(false);
     }
 
     private static async Task CopyStream(FileSystemPath destination, string newPath, Func<Stream> streamFactory)

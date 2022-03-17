@@ -3,7 +3,7 @@ using System.Linq;
 using FluentAssertions;
 using Xunit;
 
-namespace Zafiro.Reflection.Tests
+namespace Reflection.Tests
 {
     public class ReflectedCollectionTests
     {

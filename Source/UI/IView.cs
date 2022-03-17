@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reactive;
 using System.Threading.Tasks;
-using Zafiro.Core;
+using Core;
 
-namespace Zafiro.UI
+namespace UI
 {
     public interface IView : IContextualizable
     {

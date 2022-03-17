@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Reflection
+namespace Reflection
 {
     public class CollectionType
     {

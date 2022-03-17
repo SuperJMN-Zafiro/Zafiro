@@ -1,4 +1,4 @@
-namespace Zafiro.Reflection.Tests
+namespace Reflection.Tests
 {
     internal class Child
     {

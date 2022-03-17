@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Zafiro.Reflection
+namespace Reflection
 {
     public static class ReflectionHelper
     {

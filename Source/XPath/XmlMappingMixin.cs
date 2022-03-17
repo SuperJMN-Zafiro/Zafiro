@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.XPath;
 using CSharpFunctionalExtensions;
-using Zafiro.Mapping;
-using Zafiro.Reflection;
+using Mapping;
+using Reflection;
 
-namespace Zafiro.XPath
+namespace XPath
 {
     public static class XmlMappingMixin
     {

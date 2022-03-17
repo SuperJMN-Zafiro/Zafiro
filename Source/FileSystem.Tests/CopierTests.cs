@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using FluentAssertions.CSharpFunctionalExtensions;
+using Serilog;
 using Xunit;
 
 namespace FileSystem.Tests;
@@ -72,7 +73,7 @@ public class CopierTests
             select new {o, d};
 
         var sut = CreateSut();
-        var result = await copy.Bind(r => sut.Copy(r.o, r.d)).ConfigureAwait(false);
+        var result = await copy.Bind(r => sut.Copy( r.o, r.d, Maybe<ILogger>.None)).ConfigureAwait(false);
         return result;
     }
 

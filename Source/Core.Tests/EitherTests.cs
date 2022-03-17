@@ -1,11 +1,9 @@
-using System.Collections.Generic;
 using System.Linq;
+using Core.Patterns.Either;
 using FluentAssertions;
 using Xunit;
-using Zafiro.Core.Patterns;
-using Zafiro.Core.Patterns.Either;
 
-namespace Zafiro.Core.Tests
+namespace Core.Tests
 {
     public class EitherTests
     {

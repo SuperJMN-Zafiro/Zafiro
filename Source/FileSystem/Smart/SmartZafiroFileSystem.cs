@@ -1,5 +1,6 @@
 ﻿using Core;
 using CSharpFunctionalExtensions;
+using Serilog;
 
 namespace FileSystem.Smart;
 
@@ -8,14 +9,17 @@ public class SmartZafiroFileSystem : IZafiroFileSystem
     private readonly HashSet<CopyOperationMetadata> hashSet;
     private readonly IZafiroFileSystem inner;
 
-    public SmartZafiroFileSystem(IZafiroFileSystem inner, Host host, HashSet<CopyOperationMetadata> hashSet)
+    public SmartZafiroFileSystem(IZafiroFileSystem inner, Host host, HashSet<CopyOperationMetadata> hashSet,
+        Maybe<ILogger> logger)
     {
         this.inner = inner;
         Host = host;
+        Logger = logger;
         this.hashSet = hashSet;
     }
 
     public Host Host { get; }
+    public Maybe<ILogger> Logger { get; }
 
     public Result<IZafiroFile> GetFile(ZafiroPath path)
     {

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using Core.Intervals;
 using FluentAssertions;
 using NodaTime;
 using Xunit;
-using Zafiro.Core.Intervals;
 
-namespace Zafiro.Core.Tests
+namespace Core.Tests
 {
     public class IntervalTests
     {

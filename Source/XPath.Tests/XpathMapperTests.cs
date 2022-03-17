@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.XPath;
+using Core.Mixins;
 using FluentAssertions;
+using Mapping;
 using Xunit;
-using Zafiro.Core.Mixins;
-using Zafiro.Mapping;
 
-namespace Zafiro.XPath.Tests
+namespace XPath.Tests
 {
     public class XpathMapperTests
     {

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Reflection
+namespace Reflection
 {
     public class ReflectedCollection
     {

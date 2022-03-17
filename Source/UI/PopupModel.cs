@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Zafiro.UI
+namespace UI
 {
     public class PopupModel
     {

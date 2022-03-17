@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Zafiro.Reflection;
+using Reflection;
 
-namespace Zafiro.Mapping
+namespace Mapping
 {
     public class TypeMap<T> : IMap
     {
