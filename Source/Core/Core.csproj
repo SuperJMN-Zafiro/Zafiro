@@ -8,14 +8,14 @@
 	<Import Project="..\..\Build\Common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="CSharpFunctionalExtensions" Version="2.28.1" />
+		<PackageReference Include="CSharpFunctionalExtensions" Version="2.29.0" />
 		<PackageReference Include="morelinq" Version="3.3.2" />
-		<PackageReference Include="NodaTime" Version="3.0.9" />
+		<PackageReference Include="NodaTime" Version="3.0.10" />
 		<PackageReference Include="Optional" Version="4.0.0" />
-		<PackageReference Include="ReactiveUI" Version="16.3.10" />
+		<PackageReference Include="ReactiveUI" Version="17.1.50" />
 		<PackageReference Include="Serilog" Version="2.10.0" />
 		<PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
-		<PackageReference Include="System.IO.Abstractions" Version="16.1.15" />
+		<PackageReference Include="System.IO.Abstractions" Version="16.1.25" />
 	</ItemGroup>
 
 </Project>

@@ -9,12 +9,12 @@
 	<Import Project="..\..\Build\Common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="CSharpFunctionalExtensions" Version="2.28.1" />
+		<PackageReference Include="CSharpFunctionalExtensions" Version="2.29.0" />
 		<PackageReference Include="ExtendedXmlSerializer" Version="3.7.6" />
 		<PackageReference Include="morelinq" Version="3.3.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="Serilog" Version="2.10.0" />
-		<PackageReference Include="System.IO.Abstractions" Version="16.1.15" />
+		<PackageReference Include="System.IO.Abstractions" Version="16.1.25" />
 	</ItemGroup>
 
 	<ItemGroup>
