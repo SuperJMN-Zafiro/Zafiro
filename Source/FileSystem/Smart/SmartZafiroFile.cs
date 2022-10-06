@@ -35,7 +35,7 @@ public class SmartZafiroFile : IZafiroFile
         return await inner.CopyTo(destination).ConfigureAwait(false);
     }
 
-    public Stream OpenWrite()
+    public Task<Stream> OpenWrite()
     {
         return inner.OpenWrite();
     }
@@ -46,7 +46,7 @@ public class SmartZafiroFile : IZafiroFile
             .OnSuccessTry(() => fileSystem.RemoveHash(Path));
     }
 
-    public Stream OpenRead()
+    public Task<Stream> OpenRead()
     {
         return inner.OpenRead();
     }
@@ -55,7 +55,7 @@ public class SmartZafiroFile : IZafiroFile
 
     private async Task<Hash> GetHash()
     {
-        using (var stream = OpenRead())
+        using (var stream = await OpenRead())
         {
             var hashBytes = await Hasher.ComputeHashAsync(stream).ConfigureAwait(false);
             return new Hash(hashBytes);

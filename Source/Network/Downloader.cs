@@ -5,9 +5,9 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Core;
-using Core.Files;
 using Core.Mixins;
 using Core.ProgressReporting;
+using FileSystem;
 
 namespace Network
 {
@@ -24,7 +24,7 @@ namespace Network
         public async Task Download(Uri uri, IZafiroFile destination, IOperationProgress progressObserver = null,
             int timeout = 30)
         {
-            await using var fileStream = await destination.OpenForWrite();
+            await using var fileStream = await destination.OpenWrite();
             await Download(uri, fileStream, progressObserver, timeout);
         }
 

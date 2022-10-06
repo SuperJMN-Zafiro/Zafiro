@@ -33,7 +33,7 @@ public static class ZafiroFileSystemMixin
     public static async Task<byte[]> ReadAllBytes(this IZafiroFile file)
     {
         using (var memoryStream = new MemoryStream())
-        using (var sourceStream = file.OpenRead())
+        using (var sourceStream = await file.OpenRead())
         {
             await sourceStream.CopyToAsync(memoryStream).ConfigureAwait(false);
             return memoryStream.ToArray();

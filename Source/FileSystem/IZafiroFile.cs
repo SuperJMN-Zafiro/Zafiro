@@ -6,8 +6,8 @@ public interface IZafiroFile
 {
     ZafiroPath Path { get; }
     Task<Result> CopyTo(IZafiroFile destination);
-    Stream OpenWrite();
+    Task<Stream> OpenWrite();
     Result Delete();
-    Stream OpenRead();
+    Task<Stream> OpenRead();
     IZafiroFileSystem FileSystem { get; }
 }

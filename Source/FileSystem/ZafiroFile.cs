@@ -20,19 +20,19 @@ public class ZafiroFile : IZafiroFile
         return await Result.Try(async () =>
         {
             await using var originStream = fileInfo.OpenRead();
-            await using var destinationStream = destination.OpenWrite();
+            await using var destinationStream = await destination.OpenWrite();
             await originStream.CopyToAsync(destinationStream).ConfigureAwait(false);
         }).ConfigureAwait(false);
     }
 
-    public Stream OpenWrite()
+    public Task<Stream> OpenWrite()
     {
-        return fileInfo.OpenWrite();
+        return Task.FromResult(fileInfo.OpenWrite());
     }
 
-    public Stream OpenRead()
+    public Task<Stream> OpenRead()
     {
-        return fileInfo.OpenRead();
+        return Task.FromResult(fileInfo.OpenRead());
     }
 
     public IZafiroFileSystem FileSystem { get; }
