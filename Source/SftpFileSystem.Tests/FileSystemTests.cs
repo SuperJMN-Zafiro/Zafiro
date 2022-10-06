@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using DotNet.Testcontainers.Containers.Builders;
 using DotNet.Testcontainers.Containers.Modules;
@@ -9,6 +10,7 @@ using Xunit;
 
 namespace SftpFileSystem.Tests;
 
+[Trait("Category", "End to end")]
 public class FileSystemTests
 {
     private const string rootFolder = "upload";
