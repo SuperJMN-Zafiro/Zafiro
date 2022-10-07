@@ -1,4 +1,4 @@
-﻿namespace Core.ProgressReporting
+﻿namespace Zafiro.Core.ProgressReporting
 {
     public class AbsoluteProgress<T> : Progress
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Core.Mixins
+namespace Zafiro.Core.Mixins
 {
     public static class StringMixin
     {

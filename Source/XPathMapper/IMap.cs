@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Mapping
+namespace Zafiro.Mapping
 {
     public interface IMap
     {

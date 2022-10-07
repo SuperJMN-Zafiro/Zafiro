@@ -2,6 +2,7 @@
 using System.IO.Abstractions.TestingHelpers;
 using FluentAssertions;
 using Xunit;
+using Zafiro.FileSystem;
 
 namespace FileSystem.Tests;
 

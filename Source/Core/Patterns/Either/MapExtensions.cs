@@ -1,7 +1,7 @@
 using System;
 using Optional.Unsafe;
 
-namespace Core.Patterns.Either
+namespace Zafiro.Core.Patterns.Either
 {
     public static class MapExtensions
     {

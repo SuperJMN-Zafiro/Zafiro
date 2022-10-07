@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MoreLinq.Extensions;
 
-namespace FileSystem;
+namespace Zafiro.FileSystem;
 
 public class ZafiroFileSystemComparer : IZafiroFileSystemComparer
 {

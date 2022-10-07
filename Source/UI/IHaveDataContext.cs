@@ -1,4 +1,4 @@
-﻿namespace UI
+﻿namespace Zafiro.UI
 {
     public interface IHaveDataContext
     {

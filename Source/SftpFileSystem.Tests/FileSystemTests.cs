@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using DotNet.Testcontainers.Containers.Builders;
 using DotNet.Testcontainers.Containers.Modules;
@@ -8,7 +7,7 @@ using FluentAssertions;
 using Renci.SshNet;
 using Xunit;
 
-namespace SftpFileSystem.Tests;
+namespace Zafiro.SftpFileSystem.Tests;
 
 [Trait("Category", "End to end")]
 public class FileSystemTests

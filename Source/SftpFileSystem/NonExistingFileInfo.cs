@@ -1,4 +1,4 @@
-﻿namespace SftpFileSystem;
+﻿namespace Zafiro.SftpFileSystem;
 
 public class NonExistingFileInfo : FileInfoBase
 {

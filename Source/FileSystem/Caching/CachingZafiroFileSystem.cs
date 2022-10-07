@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 
-namespace FileSystem.Caching;
+namespace Zafiro.FileSystem.Caching;
 
 public class CachingZafiroFileSystem : IZafiroFileSystem
 {

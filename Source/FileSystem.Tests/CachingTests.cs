@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using FileSystem.Caching;
 using Serilog;
 using Xunit;
+using Zafiro.FileSystem;
+using Zafiro.FileSystem.Caching;
 
 namespace FileSystem.Tests;
 

@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using Optional;
 
-namespace Core.Patterns.Either
+namespace Zafiro.Core.Patterns.Either
 {
     [Obsolete("Use CSharpFunctionalExtensions. See https://github.com/vkhorikov/CSharpFunctionalExtensions")]
     [DebuggerTypeProxy(typeof(Either<,>.EitherProxy))]

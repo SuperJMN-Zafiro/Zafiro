@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Optional;
 
-namespace UI
+namespace Zafiro.UI
 {
     public interface IInteraction
     {

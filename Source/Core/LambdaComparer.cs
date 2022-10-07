@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Core
+namespace Zafiro.Core
 {
     public class LambdaComparer<T> : IEqualityComparer<T>
     {

@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace FileSystem.Caching;
+namespace Zafiro.FileSystem.Caching;
 
 public class CachingZafiroDirectory : IZafiroDirectory
 {

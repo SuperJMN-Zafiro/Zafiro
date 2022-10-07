@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Mixins
+namespace Zafiro.Core.Mixins
 {
     public static class EnumExtensions
     {

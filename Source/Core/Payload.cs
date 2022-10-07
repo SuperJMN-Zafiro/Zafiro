@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Core
+namespace Zafiro.Core
 {
     public class Payload : Dictionary<string, object>
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Intervals
+namespace Zafiro.Core.Intervals
 {
     public static class IntervalExtensions
     {

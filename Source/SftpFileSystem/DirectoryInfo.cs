@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
 using System.Security.AccessControl;
 
-namespace SftpFileSystem;
+namespace Zafiro.SftpFileSystem;
 
 public class DirectoryInfo : IDirectoryInfo
 {

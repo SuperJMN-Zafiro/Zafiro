@@ -1,6 +1,6 @@
 ﻿using System.IO.Abstractions;
 
-namespace FileSystem;
+namespace Zafiro.FileSystem;
 
 public static class FileSystemInfoMixin
 {

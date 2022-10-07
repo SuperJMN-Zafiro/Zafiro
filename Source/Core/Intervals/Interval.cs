@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Core.Intervals
+namespace Zafiro.Core.Intervals
 {
     public class Interval<T> : IInterval<T> where T : IComparable
     {

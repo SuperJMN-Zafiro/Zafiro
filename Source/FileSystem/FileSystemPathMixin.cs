@@ -1,4 +1,4 @@
-namespace FileSystem;
+namespace Zafiro.FileSystem;
 
 public static class FileSystemPathMixin
 {

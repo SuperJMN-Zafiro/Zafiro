@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace UI
+namespace Zafiro.UI
 {
     public class Option
     {

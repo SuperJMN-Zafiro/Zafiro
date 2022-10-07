@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Core.UI.ObjectEditor.TemplateMatchers
+namespace Zafiro.Core.UI.ObjectEditor.TemplateMatchers
 {
     internal class ReturnTemplateMatcher<T> : TemplateMatcher<T> where T : class
     {

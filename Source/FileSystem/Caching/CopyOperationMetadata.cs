@@ -1,7 +1,7 @@
-﻿using Core;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
+using Zafiro.Core;
 
-namespace FileSystem.Caching;
+namespace Zafiro.FileSystem.Caching;
 
 public class CopyOperationMetadata : ValueObject
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
-namespace Core;
+namespace Zafiro.Core;
 
 public class Login : ValueObject
 {

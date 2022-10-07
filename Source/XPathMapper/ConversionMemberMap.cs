@@ -2,7 +2,7 @@
 using System.Reflection;
 using CSharpFunctionalExtensions;
 
-namespace Mapping
+namespace Zafiro.Mapping
 {
     public class ConversionMemberMap<T> : MemberMap
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.XPath;
 
-namespace Mapping
+namespace Zafiro.Mapping
 {
     public interface IMapper
     {

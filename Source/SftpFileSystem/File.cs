@@ -3,7 +3,7 @@ using System.Security.AccessControl;
 using System.Text;
 using Renci.SshNet;
 
-namespace SftpFileSystem;
+namespace Zafiro.SftpFileSystem;
 
 public class File : IFile
 {

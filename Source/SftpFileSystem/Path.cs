@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
 using MoreLinq;
 
-namespace SftpFileSystem;
+namespace Zafiro.SftpFileSystem;
 
 public class Path : IPath
 {

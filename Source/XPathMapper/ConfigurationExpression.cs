@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Mapping
+namespace Zafiro.Mapping
 {
     public class ConfigurationExpression
     {
