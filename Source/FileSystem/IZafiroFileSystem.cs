@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Serilog;
 
-namespace FileSystem;
+namespace Zafiro.FileSystem;
 
 public interface IZafiroFileSystem
 {

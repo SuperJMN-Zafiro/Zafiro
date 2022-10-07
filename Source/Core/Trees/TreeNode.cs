@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core.Trees;
+namespace Zafiro.Core.Trees;
 
 public class TreeNode<T, TPath>
 {

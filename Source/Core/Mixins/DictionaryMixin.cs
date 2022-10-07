@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Core.Mixins
+namespace Zafiro.Core.Mixins
 {
     public static class DictionaryMixin
     {

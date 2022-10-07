@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Core;
-using FileSystem;
+using Zafiro.Core;
+using Zafiro.FileSystem;
 
-namespace Network
+namespace Zafiro.Network
 {
     public interface IDownloader
     {

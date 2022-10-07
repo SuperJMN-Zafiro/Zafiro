@@ -2,7 +2,7 @@
 using CSharpFunctionalExtensions;
 using Renci.SshNet;
 
-namespace SftpFileSystem;
+namespace Zafiro.SftpFileSystem;
 
 public class FileSystem : IFileSystem, IDisposable
 {

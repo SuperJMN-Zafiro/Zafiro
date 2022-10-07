@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace FileSystem.Smart;
+namespace Zafiro.FileSystem.Smart;
 
 public class SmartZafiroDirectory : IZafiroDirectory
 {

@@ -1,6 +1,6 @@
 ﻿using MoreLinq;
 
-namespace FileSystem;
+namespace Zafiro.FileSystem;
 
 public static class ZafiroFileSystemMixin
 {

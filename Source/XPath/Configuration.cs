@@ -1,7 +1,7 @@
 ﻿using System;
-using Mapping;
+using Zafiro.Mapping;
 
-namespace XPath
+namespace Zafiro.XPath
 {
     public class Configuration : IConfiguration
     {

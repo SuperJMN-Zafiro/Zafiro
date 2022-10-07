@@ -1,4 +1,4 @@
-﻿namespace FileSystem;
+﻿namespace Zafiro.FileSystem;
 
 public enum FileDiffStatus
 {

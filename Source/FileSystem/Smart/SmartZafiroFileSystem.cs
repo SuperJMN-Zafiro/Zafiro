@@ -1,8 +1,8 @@
-﻿using Core;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Serilog;
+using Zafiro.Core;
 
-namespace FileSystem.Smart;
+namespace Zafiro.FileSystem.Smart;
 
 public class SmartZafiroFileSystem : IZafiroFileSystem
 {

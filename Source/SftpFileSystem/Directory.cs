@@ -2,7 +2,7 @@
 using System.Security.AccessControl;
 using Renci.SshNet;
 
-namespace SftpFileSystem;
+namespace Zafiro.SftpFileSystem;
 
 public class Directory : IDirectory
 {

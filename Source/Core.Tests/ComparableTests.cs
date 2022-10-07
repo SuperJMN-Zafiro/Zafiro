@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Xunit;
+using Zafiro.Core;
 
 namespace Core.Tests
 {

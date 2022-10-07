@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Core.UI
+namespace Zafiro.Core.UI
 {
     public interface INavigation
     {

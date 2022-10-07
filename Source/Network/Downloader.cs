@@ -4,12 +4,12 @@ using System.Net.Http;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using Core;
-using Core.Mixins;
-using Core.ProgressReporting;
-using FileSystem;
+using Zafiro.Core;
+using Zafiro.Core.Mixins;
+using Zafiro.Core.ProgressReporting;
+using Zafiro.FileSystem;
 
-namespace Network
+namespace Zafiro.Network
 {
     public class Downloader : IDownloader
     {

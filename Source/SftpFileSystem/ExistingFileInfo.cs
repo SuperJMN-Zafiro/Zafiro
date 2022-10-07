@@ -1,6 +1,6 @@
 ﻿using Renci.SshNet.Sftp;
 
-namespace SftpFileSystem;
+namespace Zafiro.SftpFileSystem;
 
 public class ExistingFileInfo : FileInfoBase
 {

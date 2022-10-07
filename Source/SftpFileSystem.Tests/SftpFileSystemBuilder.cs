@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Renci.SshNet;
 
-namespace SftpFileSystem.Tests;
+namespace Zafiro.SftpFileSystem.Tests;
 
 public class SftpFileSystemBuilder
 {

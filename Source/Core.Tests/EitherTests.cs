@@ -1,7 +1,7 @@
 using System.Linq;
-using Core.Patterns.Either;
 using FluentAssertions;
 using Xunit;
+using Zafiro.Core.Patterns.Either;
 
 namespace Core.Tests
 {

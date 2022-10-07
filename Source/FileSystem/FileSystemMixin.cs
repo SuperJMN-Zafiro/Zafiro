@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using CSharpFunctionalExtensions;
 
-namespace FileSystem;
+namespace Zafiro.FileSystem;
 
 public static class FileSystemMixin
 {

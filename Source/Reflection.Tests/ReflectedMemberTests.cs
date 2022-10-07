@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Xunit;
 
-namespace Reflection.Tests
+namespace Zafiro.Reflection.Tests
 {
     public class ReflectedMemberTests
     {

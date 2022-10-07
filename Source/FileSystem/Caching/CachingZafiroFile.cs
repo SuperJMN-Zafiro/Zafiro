@@ -1,8 +1,8 @@
-﻿using Core.Mixins;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Caching.Memory;
+using Zafiro.Core.Mixins;
 
-namespace FileSystem.Caching;
+namespace Zafiro.FileSystem.Caching;
 
 public class CachingZafiroFile : IZafiroFile
 {

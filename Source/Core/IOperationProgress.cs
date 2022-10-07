@@ -1,7 +1,7 @@
 ﻿using System;
-using Core.ProgressReporting;
+using Zafiro.Core.ProgressReporting;
 
-namespace Core
+namespace Zafiro.Core
 {
     public interface IOperationProgress
     {

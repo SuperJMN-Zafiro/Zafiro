@@ -1,7 +1,7 @@
-﻿using Core;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
+using Zafiro.Core;
 
-namespace FileSystem.Smart;
+namespace Zafiro.FileSystem.Smart;
 
 public class CopyOperationMetadata : ValueObject
 {

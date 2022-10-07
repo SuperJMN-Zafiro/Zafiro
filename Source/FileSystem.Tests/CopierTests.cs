@@ -9,6 +9,7 @@ using FluentAssertions;
 using FluentAssertions.CSharpFunctionalExtensions;
 using Serilog;
 using Xunit;
+using Zafiro.FileSystem;
 
 namespace FileSystem.Tests;
 

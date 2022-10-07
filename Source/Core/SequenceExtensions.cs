@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Core
+namespace Zafiro.Core
 {
     public static class SequenceExtensions
     {

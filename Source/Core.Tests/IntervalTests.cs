@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Intervals;
 using FluentAssertions;
 using NodaTime;
 using Xunit;
+using Zafiro.Core.Intervals;
 
 namespace Core.Tests
 {

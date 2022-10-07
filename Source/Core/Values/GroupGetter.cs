@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Serilog;
 
-namespace Core.Values
+namespace Zafiro.Core.Values
 {
     public class GroupGetter
     {

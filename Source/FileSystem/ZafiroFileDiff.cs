@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace FileSystem;
+namespace Zafiro.FileSystem;
 
 public class ZafiroFileDiff
 {

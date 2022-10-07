@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Core.UI.ObjectEditor
+namespace Zafiro.Core.UI.ObjectEditor
 {
     public class EditorKey
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Core.UI
+namespace Zafiro.Core.UI
 {
     public static class NavigationMixin
     {

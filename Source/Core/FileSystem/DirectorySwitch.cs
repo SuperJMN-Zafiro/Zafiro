@@ -3,7 +3,7 @@ using System.IO.Abstractions;
 using CSharpFunctionalExtensions;
 using Serilog;
 
-namespace Core.FileSystem
+namespace Zafiro.Core.FileSystem
 {
     public class DirectorySwitch : IDisposable
     {

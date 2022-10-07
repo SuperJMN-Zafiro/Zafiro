@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace UI
+namespace Zafiro.UI
 {
     public class ViewConfiguration<T>
     {

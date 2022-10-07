@@ -3,7 +3,7 @@ using System.IO.Abstractions.TestingHelpers;
 using FluentAssertions;
 using Xunit;
 
-namespace SftpFileSystem.Tests;
+namespace Zafiro.SftpFileSystem.Tests;
 
 public class PathTests
 {

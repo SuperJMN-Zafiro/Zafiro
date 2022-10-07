@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
-namespace XPath.Tests
+namespace Zafiro.XPath.Tests
 {
     class SomeModel
     {

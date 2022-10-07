@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Xml.XPath;
-using Mapping;
+using Zafiro.Mapping;
 
-namespace XPath
+namespace Zafiro.XPath
 {
     public class Mapper : IMapper
     {
