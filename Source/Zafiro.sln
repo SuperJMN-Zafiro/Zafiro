@@ -23,6 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Network", "Network\Network.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{254D3913-D178-4AFB-9EDC-9AE108644D39}"
 	ProjectSection(SolutionItems) = preProject
+		..\Build\azure-pipelines.yml = ..\Build\azure-pipelines.yml
 		..\Build\Common.props = ..\Build\Common.props
 		..\GitVersion.yml = ..\GitVersion.yml
 	EndProjectSection
