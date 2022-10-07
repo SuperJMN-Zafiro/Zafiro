@@ -17,7 +17,7 @@ pool:
 variables:
   BuildPlatform: 'Any CPU'
   BuildConfiguration: 'Release'
-  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  isMain: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
   NugetVersion: $(GitVersion.NuGetVersionV2)
   ArtifactName: 'Nuget Packages'
 
