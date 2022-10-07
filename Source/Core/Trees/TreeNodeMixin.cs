@@ -1,44 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Mixins;
 
 namespace Core.Trees;
 
 public static class TreeNodeMixin
 {
-    public static IEnumerable<T> Flatten<T>(this IEnumerable<T> nodes, Func<T, IEnumerable<T>> getChildren)
+    public static IEnumerable<TreeNode<T, IEnumerable<int>>> ToTreeNodes<T>(this IEnumerable<T> enumerable, Func<T, IEnumerable<T>> getChildren)
     {
-        return nodes.SelectMany(node => Flatten(node, getChildren));
+        return TreeNode.Create(enumerable, null, getChildren);
     }
 
-    public static IEnumerable<T> Flatten<T>(this T node, Func<T, IEnumerable<T>> getChildren)
+    public static IEnumerable<TreeNode<T, IEnumerable<int>>> ToTreeNodes<T>(this T root, Func<T, IEnumerable<T>> getChildren)
     {
-        return new[] { node }.Concat(getChildren(node).SelectMany(x => Flatten(x, getChildren)));
+        return ToTreeNodes(new[] { root }, getChildren);
     }
 
-    public static IEnumerable<int> GetPath<T>(this T root, T toLocate, Func<T, IEnumerable<T>> getChildren)
+    public static TreeNode<T, TPath> Find<T, TPath>(this IEnumerable<TreeNode<T, TPath>> nodes, Func<T, bool> selector)
     {
-        return GetPath(new[] { root }, toLocate, getChildren);
+        return nodes
+            .Flatten(x => x.Children)
+            .FirstOrDefault(x => selector(x.Item));
     }
 
-    public static IEnumerable<int> GetPath<T>(this IEnumerable<T> enumerable, T toLocate, Func<T, IEnumerable<T>> getChildren)
+    public static TreeNode<T, TPath> Find<T, TPath>(this TreeNode<T, TPath> node, Func<T, bool> selector)
     {
-        var tree = TreeNode<T>.Create(enumerable, null, getChildren);
-        var flatten = Flatten(tree, x => x.Children);
-        var node = flatten.FirstOrDefault(x => x.Item.Equals(toLocate));
-        return GetPath(node);
-    }
-
-    public static IEnumerable<int> GetPath<T>(this TreeNode<T> node)
-    {
-        if (node.Parent != null)
-        {
-            foreach (var parentPath in GetPath(node.Parent))
-            {
-                yield return parentPath;
-            }
-        }
-
-        yield return node.Index;
+        return Find(new[] { node }, selector);
     }
 }

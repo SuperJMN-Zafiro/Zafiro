@@ -26,9 +26,12 @@ public class TreeNodeTests
             });
 
         // Act
-        var path = tree.GetPath(toLocate, x => x.Children);
+        var node = tree
+            .ToTreeNodes(x => x.Children)
+            .Find(x => x.Equals(toLocate));
 
         // Assert
-        path.Should().BeEquivalentTo(new[] {0, 1, 2});
+        node.Should().NotBeNull();
+        node.Path.Should().BeEquivalentTo(new[] { 0, 1, 2 });
     }
 }

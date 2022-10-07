@@ -1,32 +1,55 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Core.Trees;
 
-public class TreeNode<T>
+public class TreeNode<T, TPath>
 {
-    public static IEnumerable<TreeNode<T>> Create(IEnumerable<T> nodes, TreeNode<T> parent, Func<T, IEnumerable<T>> getChildren)
-    {
-        return nodes.Select(
-            (x, i) =>
-            {
-                var parentNode = new TreeNode<T>(x, i, parent);
-                var children = Create(getChildren(x), parentNode, getChildren);
-                parentNode.Children = children;
-                return parentNode;
-            });
-    }
+    public delegate TPath PathFactory(TreeNode<T, TPath>? previousNode, TreeNode<T, TPath> currentNode);
 
-    public TreeNode(T item, int index, TreeNode<T> parent)
+    private readonly PathFactory pathFactory;
+
+    public TreeNode(T item, int index, TreeNode<T, TPath>? parent, PathFactory pathFactory)
     {
+        this.pathFactory = pathFactory;
         Index = index;
         Item = item;
         Parent = parent;
     }
 
     public int Index { get; }
-    public TreeNode<T>? Parent { get; }
+    public TPath Path => pathFactory(Parent, this);
+    public TreeNode<T, TPath>? Parent { get; }
     public T Item { get; }
-    public IEnumerable<TreeNode<T>> Children { get; private set; } = null!;
+    public IEnumerable<TreeNode<T, TPath>> Children { get; private set; } = null!;
+
+    public static IEnumerable<TreeNode<T, TPath>> Create(IEnumerable<T> nodes, TreeNode<T, TPath>? parent, Func<T, IEnumerable<T>> getChildren, PathFactory pathFactory)
+    {
+        return nodes.Select(
+            (x, i) =>
+            {
+                var parentNode = new TreeNode<T, TPath>(x, i, parent, pathFactory);
+                var children = Create(getChildren(x), parentNode, getChildren, pathFactory);
+                parentNode.Children = children;
+                return parentNode;
+            });
+    }
+}
+
+public class TreeNode
+{
+    public static IEnumerable<TreeNode<T, IEnumerable<int>>> Create<T>(IEnumerable<T> nodes, TreeNode<T, IEnumerable<int>>? parent, Func<T, IEnumerable<T>> getChildren)
+    {
+        return TreeNode<T, IEnumerable<int>>.Create(nodes, parent, getChildren, (p, n) =>
+        {
+            if (p != null)
+            {
+                return p.Path.Concat(new[] { n.Index });
+            }
+
+            return new [] { n.Index };
+        });
+    }
 }
