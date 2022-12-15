@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -52,5 +53,25 @@ public static class ObservableMixin
     public static IObservable<bool> SelectNotEmpty(this IObservable<string> self)
     {
         return self.Select(s => !string.IsNullOrWhiteSpace(s));
+    }
+
+    public static IObservable<ProgressEstimation> EstimatedRemainingTime(this IObservable<double> progress)
+    {
+        return progress
+            .Timestamp()
+            .Buffer(2, 1)
+            .Where(tsProgresses => tsProgresses.Count == 2)
+            .Scan((a, b) => a.Take(1).Concat(b).Take(1).Concat(b.Skip(1)).ToList())
+            .Select(x => new
+            {
+                current = x[1].Value,
+                delta = x[1].Timestamp.Subtract(x[0].Timestamp),
+            })
+            .Select(x => new
+            {
+                x.current,
+                rate = x.current / x.delta.TotalSeconds,
+            })
+            .Select(x => new ProgressEstimation(x.current, DateTimeOffset.Now.AddSeconds((1.0 - x.current) / x.rate), TimeSpan.FromSeconds(1.0 - x.current) / x.rate));		
     }
 }
