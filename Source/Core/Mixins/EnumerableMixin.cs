@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using CSharpFunctionalExtensions;
 
 namespace Zafiro.Core.Mixins;
 
@@ -164,5 +166,26 @@ public static class EnumerableMixin
     public static IEnumerable<T> Flatten<T>(this T node, Func<T, IEnumerable<T>> getChildren)
     {
         return new[] { node }.Concat(getChildren(node).SelectMany(x => Flatten(x, getChildren)));
+    }
+
+    public static IEnumerable<bool> Not(this IEnumerable<bool> self)
+    {
+        return self.Select(b => !b);
+    }
+
+    public static IEnumerable<T> WhereSuccess<T>(this IEnumerable<Result<T>> self)
+    {
+        return self.Where(a => a.IsSuccess)
+            .Select(x => x.Value);
+    }
+
+    public static IEnumerable<string> WhereNotEmpty(this IEnumerable<string> self)
+    {
+        return self.Where(s => !string.IsNullOrWhiteSpace(s));
+    }
+
+    public static IEnumerable<bool> SelectNotEmpty(this IEnumerable<string> self)
+    {
+        return self.Select(s => !string.IsNullOrWhiteSpace(s));
     }
 }
