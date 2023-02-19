@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Optional;
-using Zafiro.FileSystem;
+using System;
+using System.Collections.Generic;
+using CSharpFunctionalExtensions;
+using Zafiro.UI;
 
-namespace Zafiro.UI
+namespace Zafiro.FileSystem;
+
+public interface IOpenFilePicker
 {
-    public interface IOpenFilePicker
-    {
-        string InitialDirectory { get; set; }
-        List<FileTypeFilter> FileTypeFilter { get; set; }
-        Task<Option<IZafiroFile>> Pick();
-    }
+    IObservable<IEnumerable<Result<IZafiroFile>>> PickMultiple(params FileTypeFilter[] filters);
+    IObservable<Result<IZafiroFile>> PickSingle(params FileTypeFilter[] filters);
 }
