@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using CSharpFunctionalExtensions;
-using Zafiro.UI;
+using Zafiro.FileSystem;
 
-namespace Zafiro.FileSystem;
+namespace Zafiro.UI;
 
 public interface IOpenFilePicker
 {
