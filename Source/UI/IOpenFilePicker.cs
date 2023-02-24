@@ -7,6 +7,6 @@ namespace Zafiro.UI;
 
 public interface IOpenFilePicker
 {
-    IObservable<IEnumerable<Result<IZafiroFile>>> PickMultiple(params FileTypeFilter[] filters);
-    IObservable<Result<IZafiroFile>> PickSingle(params FileTypeFilter[] filters);
+    IObservable<IEnumerable<IStorable>> PickMultiple(params FileTypeFilter[] filters);
+    IObservable<Maybe<IStorable>> PickSingle(params FileTypeFilter[] filters);
 }

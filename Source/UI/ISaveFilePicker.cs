@@ -1,10 +1,10 @@
 using System;
 using CSharpFunctionalExtensions;
-using Zafiro.UI;
+using Zafiro.FileSystem;
 
-namespace Zafiro.FileSystem;
+namespace Zafiro.UI;
 
 public interface ISaveFilePicker
 {
-    IObservable<Result<IZafiroFile>> Pick(params FileTypeFilter[] filters);
+    IObservable<Maybe<IStorable>> Pick(params FileTypeFilter[] filters);
 }
