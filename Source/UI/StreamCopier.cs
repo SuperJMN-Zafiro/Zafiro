@@ -3,18 +3,36 @@ using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions.ValueTasks;
 using ReactiveUI;
 using Zafiro.Core;
 using Zafiro.Core.Mixins;
 
 namespace Zafiro.UI;
 
-public class DownloadUnit
+public class StreamCopier : IDisposable
 {
     private readonly Subject<ProgressSnapshot> progressSubject = new();
 
-    public DownloadUnit(Func<FileStream> origin, Func<FileStream> destination)
+    public StreamCopier(Func<Task<Stream>> origin, Func<Task<Stream>> destination)
+    {
+        var isExecuting = new Subject<bool>();
+
+        Cancel = ReactiveCommand.Create(() => { }, isExecuting);
+        Start = ReactiveCommand.CreateFromObservable(() =>
+        {
+            return ObservableMixin.Using(origin, input => ObservableMixin.Using(destination, output => Copy(input, output)))
+                .TakeUntil(Cancel)
+                .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
+        });
+
+        Start.IsExecuting.Subscribe(isExecuting);
+        ErrorMessage = Start.WhereFailure();
+    }
+
+    public StreamCopier(Func<FileStream> origin, Func<FileStream> destination)
     {
         var isExecuting = new Subject<bool>();
 
@@ -22,14 +40,15 @@ public class DownloadUnit
         Start = ReactiveCommand.CreateFromObservable(() =>
         {
             return Observable.Using(origin, input => Observable.Using(destination, output => Copy(input, output)))
-                .TakeUntil(Cancel);
+                .TakeUntil(Cancel)
+                .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
         });
 
         Start.IsExecuting.Subscribe(isExecuting);
         ErrorMessage = Start.WhereFailure();
     }
 
-    public ReactiveCommand<Unit, Unit> Cancel { get; set; }
+    public ReactiveCommand<Unit, Unit> Cancel { get; }
 
     public IObservable<string> ErrorMessage { get; }
 
@@ -55,4 +74,11 @@ public class DownloadUnit
         .Select(tuple => tuple.Second ? tuple.First.CurrentProgress : 0d).AsObservable();
 
     public ReactiveCommand<Unit, Result> Start { get; }
+
+    public void Dispose()
+    {
+        progressSubject?.Dispose();
+        Cancel?.Dispose();
+        Start?.Dispose();
+    }
 }

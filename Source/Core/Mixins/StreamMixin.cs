@@ -35,7 +35,6 @@ namespace Zafiro.Core.Mixins
 
             return Observable
                 .FromAsync(async ct => (bytesRead: await stream.ReadAsync(buffer, 0, buffer.Length, ct), buffer))
-                .Delay(TimeSpan.FromMilliseconds(200))
                 .Repeat()
                 .TakeWhile(x => x.bytesRead != 0)	
                 .Select(x => x.buffer)
