@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -33,17 +34,7 @@ public static class ObservableMixin
         return self.Select(b => !b);
     }
 
-    public static IObservable<T> WhereSuccess<T>(this IObservable<Result<T>> self)
-    {
-        return self.Where(a => a.IsSuccess)
-            .Select(x => x.Value);
-    }
 
-    public static IObservable<bool> IsSuccess<T>(this IObservable<Result<T>> self)
-    {
-        return self
-            .Select(a => a.IsSuccess);
-    }
 
     public static IObservable<string> WhereNotEmpty(this IObservable<string> self)
     {
@@ -55,7 +46,7 @@ public static class ObservableMixin
         return self.Select(s => !string.IsNullOrWhiteSpace(s));
     }
 
-    public static IObservable<ProgressEstimation> EstimatedRemainingTime(this IObservable<double> progress)
+    public static IObservable<ProgressSnapshot> Progress(this IObservable<double> progress)
     {
         return progress
             .Timestamp()
@@ -72,6 +63,27 @@ public static class ObservableMixin
                 x.current,
                 rate = x.current / x.delta.TotalSeconds,
             })
-            .Select(x => new ProgressEstimation(x.current, DateTimeOffset.Now.AddSeconds((1.0 - x.current) / x.rate), TimeSpan.FromSeconds(1.0 - x.current) / x.rate));		
+            .Select(x => new ProgressSnapshot(x.current, DateTimeOffset.Now.AddSeconds((1.0 - x.current) / x.rate), TimeSpan.FromSeconds(1.0 - x.current) / x.rate));		
+    }
+
+    public static IObservable<long> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
+    {
+        return bytes.Select((b, i) => (b, i))
+            .Buffer(4096)
+            .Select(buffer => Observable.FromAsync(async ct =>
+            {
+                await destination.WriteAsync(buffer.Select(a => a.b).ToArray(), ct);
+                return destination.Position;
+            }))
+            .Merge(1);
+    }
+
+    public static IObservable<double> UpdateProgressTo(this IObservable<double> observable, IObserver<ProgressSnapshot> observer)
+    {
+        var progress = observable
+            .Progress()
+            .OnErrorResumeNext(Observable.Never<ProgressSnapshot>());
+        var subscription = progress.Subscribe(observer);
+        return observable.Finally(() => subscription.Dispose());
     }
 }
