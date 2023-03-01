@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace Zafiro.Core.Mixins
@@ -25,6 +27,19 @@ namespace Zafiro.Core.Mixins
             }
             
             return buffer;
+        }
+
+        public static IObservable<byte> ToObservable(this Stream stream, int bufferSize = 4096)
+        {
+            var buffer = new byte[bufferSize];
+
+            return Observable
+                .FromAsync(async ct => (bytesRead: await stream.ReadAsync(buffer, 0, buffer.Length, ct), buffer))
+                .Delay(TimeSpan.FromMilliseconds(200))
+                .Repeat()
+                .TakeWhile(x => x.bytesRead != 0)	
+                .Select(x => x.buffer)
+                .SelectMany(x => x);
         }
     }
 }
