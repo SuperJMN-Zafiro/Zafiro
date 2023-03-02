@@ -8,6 +8,7 @@ using Zafiro.Core;
 using Zafiro.Core.Mixins;
 using Zafiro.Core.ProgressReporting;
 using Zafiro.FileSystem;
+using ObservableEx = Zafiro.Core.Mixins.ObservableEx;
 
 namespace Zafiro.Network
 {
@@ -46,7 +47,7 @@ namespace Zafiro.Network
 
             var client = httpClientFactoryFactory.CreateClient();
 
-            await ObservableMixin.Using(() => client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead),
+            await ObservableEx.Using(() => client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead),
                     s =>
                     {
                         totalBytes = s.Content.Headers.ContentLength;
@@ -55,7 +56,7 @@ namespace Zafiro.Network
                             progressObserver?.Send(new Unknown());
                         }
 
-                        return ObservableMixin.Using(() => s.Content.ReadAsStreamAsync(),
+                        return ObservableEx.Using(() => s.Content.ReadAsStreamAsync(),
                             contentStream => contentStream.ReadToEndObservable());
                     })
                 .Do(bytes =>

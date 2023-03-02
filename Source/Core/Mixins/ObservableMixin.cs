@@ -3,22 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 
 namespace Zafiro.Core.Mixins;
 
 public static class ObservableMixin
 {
-    public static IObservable<TSource> Using<TSource, TResource>(
-        Func<Task<TResource>> resourceFactoryAsync,
-        Func<TResource, IObservable<TSource>> observableFactory)
-        where TResource : IDisposable
-    {
-        return Observable.FromAsync(resourceFactoryAsync).SelectMany(
-            resource => Observable.Using(() => resource, observableFactory));
-    }
-
     public static IObservable<Unit> ToSignal<T>(this IObservable<T> source)
     {
         return source.Select(_ => Unit.Default);
@@ -33,9 +22,7 @@ public static class ObservableMixin
     {
         return self.Select(b => !b);
     }
-
-
-
+    
     public static IObservable<string> WhereNotEmpty(this IObservable<string> self)
     {
         return self.Where(s => !string.IsNullOrWhiteSpace(s));
@@ -68,11 +55,11 @@ public static class ObservableMixin
 
     public static IObservable<long> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
     {
-        return bytes.Select((b, i) => (b, i))
-            .Buffer(4096)
+        return bytes
+            .Buffer(bufferSize)
             .Select(buffer => Observable.FromAsync(async ct =>
             {
-                await destination.WriteAsync(buffer.Select(a => a.b).ToArray(), ct);
+                await destination.WriteAsync(buffer.ToArray(), ct);
                 return destination.Position;
             }))
             .Merge(1);
@@ -80,10 +67,15 @@ public static class ObservableMixin
 
     public static IObservable<double> UpdateProgressTo(this IObservable<double> observable, IObserver<ProgressSnapshot> observer)
     {
-        var progress = observable
-            .Progress()
-            .OnErrorResumeNext(Observable.Never<ProgressSnapshot>());
-        var subscription = progress.Subscribe(observer);
-        return observable.Finally(() => subscription.Dispose());
+        return observable.Publish(published =>
+        {
+            var progress = published
+                .Progress()
+                .OnErrorResumeNext(Observable.Never<ProgressSnapshot>());
+
+            var subscription = progress.Subscribe(observer);
+
+            return published.Finally(() => subscription.Dispose());
+        });
     }
 }

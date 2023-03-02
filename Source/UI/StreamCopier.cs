@@ -5,10 +5,10 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using CSharpFunctionalExtensions.ValueTasks;
 using ReactiveUI;
 using Zafiro.Core;
 using Zafiro.Core.Mixins;
+using ObservableEx = Zafiro.Core.Mixins.ObservableEx;
 
 namespace Zafiro.UI;
 
@@ -23,7 +23,7 @@ public class StreamCopier : IDisposable
         Cancel = ReactiveCommand.Create(() => { }, isExecuting);
         Start = ReactiveCommand.CreateFromObservable(() =>
         {
-            return ObservableMixin.Using(origin, input => ObservableMixin.Using(destination, output => Copy(input, output)))
+            return ObservableEx.Using(origin, input => ObservableEx.Using(destination, output => Copy(input, output)))
                 .TakeUntil(Cancel)
                 .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
         });
@@ -55,7 +55,7 @@ public class StreamCopier : IDisposable
     private IObservable<Result> Copy(Stream input, Stream output)
     {
         return input
-            .ToObservable()
+            .ToObservableCustom()
             .WriteTo(output)
             .Select(written => (double) written / input.Length)
             .UpdateProgressTo(progressSubject)
