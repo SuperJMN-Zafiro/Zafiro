@@ -32,22 +32,6 @@ public class StreamCopier : IDisposable
         ErrorMessage = Start.WhereFailure();
     }
 
-    public StreamCopier(Func<FileStream> origin, Func<FileStream> destination)
-    {
-        var isExecuting = new Subject<bool>();
-
-        Cancel = ReactiveCommand.Create(() => { }, isExecuting);
-        Start = ReactiveCommand.CreateFromObservable(() =>
-        {
-            return Observable.Using(origin, input => Observable.Using(destination, output => Copy(input, output)))
-                .TakeUntil(Cancel)
-                .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
-        });
-
-        Start.IsExecuting.Subscribe(isExecuting);
-        ErrorMessage = Start.WhereFailure();
-    }
-
     public ReactiveCommand<Unit, Unit> Cancel { get; }
 
     public IObservable<string> ErrorMessage { get; }
