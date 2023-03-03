@@ -54,8 +54,8 @@ public class StreamCopier : IDisposable
         .AsObservable();
 
     public IObservable<double> Percent => progressSubject
-        .CombineLatest(Start.IsExecuting)
-        .Select(tuple => tuple.Second ? tuple.First.CurrentProgress : 0d).AsObservable();
+        .Select(progressSnapshot => progressSnapshot.CurrentProgress)
+        .StartWith(0d);
 
     public ReactiveCommand<Unit, Result> Start { get; }
 
