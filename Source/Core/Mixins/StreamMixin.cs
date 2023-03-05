@@ -32,24 +32,12 @@ namespace Zafiro.Core.Mixins
 
         public static IObservable<byte> ToObservable(this Stream stream, int bufferSize = 4096)
         {
-            var buffer = new byte[bufferSize];
-
-            return Observable
-                .FromAsync(async ct => (bytesRead: await stream.ReadAsync(buffer, 0, buffer.Length, ct), buffer), Scheduler.Immediate)
-                .Repeat()
-                .TakeWhile(x => x.bytesRead != 0)	
-                .Select(x => x.buffer)
-                .SelectMany(x => x);
-        }
-
-        public static IObservable<byte> ToObservableCustom(this Stream stream, int bufferSize = 4096)
-        {
             return Observable.Create<byte>(async (s, ct) =>
             {
                 try
                 {
                     var buffer = new byte[bufferSize];
-                    while (await stream.ReadAsync(buffer, ct) > 0 && !ct.IsCancellationRequested)
+                    while (await stream.ReadAsync(buffer, ct) > 0)
                     {
                         for (var i = 0; i < bufferSize; i++)
                         {
@@ -63,6 +51,18 @@ namespace Zafiro.Core.Mixins
                     s.OnError(e);
                 }
             });
+        }
+
+        public static IObservable<byte> ToObservableAlternate(this Stream stream, int bufferSize = 4096)
+        {
+            var buffer = new byte[bufferSize];
+
+            return Observable
+                .FromAsync(async ct => (bytesRead: await stream.ReadAsync(buffer, 0, buffer.Length, ct), buffer))
+                .Repeat()
+                .TakeWhile(x => x.bytesRead != 0)	
+                .Select(x => x.buffer)
+                .SelectMany(x => x);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -39,13 +40,23 @@ public class StreamCopier : IDisposable
     private IObservable<Result> Copy(Stream input, Stream output)
     {
         return input
-            .ToObservableCustom()
-            .WriteTo(output)
-            .Select(written => (double) written / input.Length)
-            .UpdateProgressTo(progressSubject)
+            .ToObservable()
+            .Publish(o =>
+            {
+                var obs = o.WriteTo(output).Subscribe();
+                var bos = o.Select((_, i) => i).Select(x => x / (double) input.Length)
+                    .Buffer(TimeSpan.FromSeconds(0.2))
+                    .Select(list => list.LastOrDefault(1d))
+                    .UpdateProgressTo(progressSubject).Subscribe();
+
+                return o.Finally(() =>
+                {
+                    obs.Dispose();
+                    bos.Dispose();
+                });
+            })
             .LastAsync()
-            .Select(_ => Result.Success())
-            .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
+            .Select(_ => Result.Success());;
     }
 
     public IObservable<TimeSpan> Eta => progressSubject

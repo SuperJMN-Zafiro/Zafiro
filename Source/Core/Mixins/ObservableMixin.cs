@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 
 namespace Zafiro.Core.Mixins;
 
@@ -53,16 +54,20 @@ public static class ObservableMixin
             .Select(x => new ProgressSnapshot(x.current, DateTimeOffset.Now.AddSeconds((1.0 - x.current) / x.rate), TimeSpan.FromSeconds(1.0 - x.current) / x.rate));		
     }
 
-    public static IObservable<long> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
+    public static IObservable<byte> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
     {
         return bytes
             .Buffer(bufferSize)
-            .Select(buffer => Observable.FromAsync(async ct =>
+            .Select(buffer =>
             {
-                await destination.WriteAsync(buffer.ToArray(), ct);
-                return destination.Position;
-            }))
-            .Merge(1);
+                return Observable.FromAsync(async ct =>
+                {
+                    await destination.WriteAsync(buffer.ToArray(), ct).AsTask();
+                    return buffer;
+                });
+            })
+            .Merge(1)
+            .SelectMany(list => list);
     }
 
     public static IObservable<double> UpdateProgressTo(this IObservable<double> observable, IObserver<ProgressSnapshot> observer)
