@@ -9,7 +9,6 @@
 	<Import Project="..\..\Build\Common.props" />
 
 	<ItemGroup>
-		<PackageReference Include="ExtendedXmlSerializer" Version="3.7.6" />
 		<PackageReference Include="morelinq" Version="3.3.2" />
 		<PackageReference Include="SSH.NET" Version="2020.0.2" />
 		<PackageReference Include="System.IO.Abstractions" Version="16.1.25" />
