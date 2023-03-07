@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.6.0" />
+    <PackageReference Include="FluentAssertions.CSharpFunctionalExtensions" Version="1.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="NodaTime" Version="3.0.10" />
     <PackageReference Include="xunit" Version="2.4.1" />
@@ -18,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\UI\UI.csproj" />
   </ItemGroup>
 
 </Project>
