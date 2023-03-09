@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Core.Tests;
+namespace Zafiro.Core;
 
 public class HttpResponseMessageStream : Stream
 {
@@ -22,7 +22,7 @@ public class HttpResponseMessageStream : Stream
 
     public override bool CanWrite => inner.CanWrite;
 
-    public override long Length => inner.Length;
+    public override long Length => response.Content.Headers.ContentLength ?? inner.Length;
 
     public override long Position
     {
