@@ -3,6 +3,7 @@ using System.IO;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 
 namespace Zafiro.Core.Mixins
 {
@@ -37,13 +38,17 @@ namespace Zafiro.Core.Mixins
                 try
                 {
                     var buffer = new byte[bufferSize];
-                    while (await stream.ReadAsync(buffer, ct) > 0)
+
+                    int readBytes;
+                    do
                     {
-                        for (var i = 0; i < bufferSize; i++)
+                        readBytes = await stream.ReadAsync(buffer, ct);
+                        for (var i = 0; i < readBytes; i++)
                         {
                             s.OnNext(buffer[i]);
                         }
-                    }
+                    } while (readBytes > 0);
+
                     s.OnCompleted();
                 }
                 catch (Exception e)
