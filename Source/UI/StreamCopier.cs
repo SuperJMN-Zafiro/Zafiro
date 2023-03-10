@@ -41,15 +41,16 @@ public class StreamCopier : IDisposable
     {
         return input
             .ToObservable()
-            .Publish(o =>
+            .Publish(inputBytes =>
             {
-                var writer = o.WriteTo(output).Subscribe();
-                var progressUpdater = o.Select((_, i) => i).Select(x => x / (double) input.Length)
+                var writer = inputBytes.WriteTo(output).Subscribe();
+                var progressUpdater = inputBytes.Select((_, i) => i).Select(x => x / (double) input.Length)
                     .Buffer(TimeSpan.FromSeconds(0.2))
-                    .Select(list => list.LastOrDefault(1d))
+                    .Select(list => list.TryLast())
+                    .Values()
                     .UpdateProgressTo(progressSubject).Subscribe();
 
-                return o.Finally(() =>
+                return inputBytes.Finally(() =>
                 {
                     writer.Dispose();
                     progressUpdater.Dispose();
