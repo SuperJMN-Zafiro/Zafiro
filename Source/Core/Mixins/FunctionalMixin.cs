@@ -22,4 +22,9 @@ public static class FunctionalMixin
         return self
             .Select(a => a.IsSuccess);
     }
+
+    public static IObservable<T> Values<T>(this IObservable<Maybe<T>> self)
+    {
+        return self.Where(x => x.HasValue).Select(x => x.Value);
+    }
 }
