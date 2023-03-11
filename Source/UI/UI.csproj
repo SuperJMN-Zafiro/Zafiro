@@ -7,6 +7,10 @@
 
 	<Import Project="..\..\Build\Common.props" />
 
+	<ItemGroup>
+	  <PackageReference Include="xunit.extensibility.execution" Version="2.4.2" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\FileSystem\FileSystem.csproj" />

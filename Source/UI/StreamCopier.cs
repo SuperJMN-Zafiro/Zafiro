@@ -15,23 +15,31 @@ namespace Zafiro.UI;
 
 public class StreamCopier : IDisposable
 {
+    private readonly Func<Task<Stream>> origin;
+    private readonly Func<Task<Stream>> destination;
     private readonly Subject<ProgressSnapshot> progressSubject = new();
 
     public StreamCopier(Func<Task<Stream>> origin, Func<Task<Stream>> destination)
     {
+        this.origin = origin;
+        this.destination = destination;
         var isExecuting = new Subject<bool>();
 
         Cancel = ReactiveCommand.Create(() => { }, isExecuting);
         Start = ReactiveCommand.CreateFromObservable(() =>
-        {
+        {       
             return ObservableEx.Using(origin, input => ObservableEx.Using(destination, output => Copy(input, output)))
                 .TakeUntil(Cancel)
                 .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
         });
 
+        Obs = ObservableEx.Using(origin, input => ObservableEx.Using(destination, output => Copy(input, output)));
+
         Start.IsExecuting.Subscribe(isExecuting);
         ErrorMessage = Start.WhereFailure();
     }
+
+    public IObservable<Result> Obs { get; }
 
     public ReactiveCommand<Unit, Unit> Cancel { get; }
 
@@ -44,7 +52,7 @@ public class StreamCopier : IDisposable
             .Publish(inputBytes =>
             {
                 var writer = inputBytes.WriteTo(output).Subscribe();
-                var progressUpdater = inputBytes.Select((_, i) => i).Select(x => x / (double) input.Length)
+                var progressUpdater = inputBytes.Select((_, i) => i).Select(x => x / (double)input.Length)
                     .Buffer(TimeSpan.FromSeconds(0.2))
                     .Select(list => list.TryLast())
                     .Values()
