@@ -1,0 +1,65 @@
+﻿#nullable enable
+using System;
+using System.IO;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+
+namespace Zafiro.Core.IO;
+
+public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
+{
+    private readonly Stream inner;
+    private readonly Subject<long> positionSubject = new();
+
+    public ProgressNotifyingStream(Stream inner, Func<long>? getLength = default)
+    {
+        this.inner = inner;
+        Progress = Positions.Select(x => getLength?.Invoke() ?? (double) Length / x);
+    }
+
+    public override void Flush()
+    {
+        inner.Flush();
+    }
+
+    public override int Read(byte[] buffer, int offset, int count)
+    {
+        return inner.Read(buffer, offset, count);
+    }
+
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        return inner.Seek(offset, origin);
+    }
+
+    public override void SetLength(long value)
+    {
+        inner.SetLength(value);
+    }
+
+    public override void Write(byte[] buffer, int offset, int count)
+    {
+        inner.Write(buffer, offset, count);
+    }
+
+    public override bool CanRead => inner.CanRead;
+
+    public override bool CanSeek => inner.CanSeek;
+
+    public override bool CanWrite => inner.CanWrite;
+
+    public override long Length => inner.Length;
+
+    public override long Position
+    {
+        get => inner.Position;
+        set
+        {
+            inner.Position = value;
+            positionSubject.OnNext(value);
+        }
+    }
+
+    public IObservable<long> Positions => positionSubject.AsObservable();
+    public IObservable<double> Progress { get; }
+}
