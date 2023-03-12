@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using CSharpFunctionalExtensions;
 using System;
 using System.IO;
 using System.Reactive.Linq;
@@ -14,7 +15,7 @@ public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
     public ProgressNotifyingStream(Stream inner, Func<long>? getLength = default)
     {
         this.inner = inner;
-        Progress = Positions.Select(x => getLength?.Invoke() ?? (double) Length / x);
+        Progress = Positions.Select(x => (double)x / getLength?.Invoke() ?? Length);
     }
 
     public override void Flush()
@@ -24,7 +25,9 @@ public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        return inner.Read(buffer, offset, count);
+        var read = inner.Read(buffer, offset, count);
+        positionSubject.OnNext(Position);
+        return read;
     }
 
     public override long Seek(long offset, SeekOrigin origin)
@@ -40,6 +43,7 @@ public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
     public override void Write(byte[] buffer, int offset, int count)
     {
         inner.Write(buffer, offset, count);
+        positionSubject.OnNext(Position);
     }
 
     public override bool CanRead => inner.CanRead;

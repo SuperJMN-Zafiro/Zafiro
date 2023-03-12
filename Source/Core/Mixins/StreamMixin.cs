@@ -1,20 +1,18 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 
 namespace Zafiro.Core.Mixins
 {
     public static class StreamMixin
     {
-        public static async Task<string> ReadToEnd(this Stream stream)
+        public static async Task<string> ReadToEnd(this Stream stream, Encoding? encoding = null)
         {
-            using (var reader = new StreamReader(stream))
-            {
-                return await reader.ReadToEndAsync();
-            }
+            using var reader = new StreamReader(stream, encoding ?? Encoding.Default);
+            return await reader.ReadToEndAsync();
         }
 
         public static async Task<byte[]> ReadBytes(this Stream stream)

@@ -34,7 +34,7 @@ public static class ObservableMixin
         return self.Select(s => !string.IsNullOrWhiteSpace(s));
     }
 
-    public static IObservable<ProgressSnapshot> Progress(this IObservable<double> progress)
+    public static IObservable<TimeSpan> EstimatedCompletion(this IObservable<double> progress)
     {
         return progress
             .Timestamp()
@@ -51,7 +51,7 @@ public static class ObservableMixin
                 x.current,
                 rate = x.current / x.delta.TotalSeconds,
             })
-            .Select(x => new ProgressSnapshot(x.current, DateTimeOffset.Now.AddSeconds((1.0 - x.current) / x.rate), TimeSpan.FromSeconds(1.0 - x.current) / x.rate));		
+            .Select(x => TimeSpan.FromSeconds(1.0 - x.current) / x.rate);		
     }
 
     public static IObservable<byte> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
@@ -70,17 +70,17 @@ public static class ObservableMixin
             .SelectMany(list => list);
     }
 
-    public static IObservable<double> UpdateProgressTo(this IObservable<double> observable, IObserver<ProgressSnapshot> observer)
-    {
-        return observable.Publish(published =>
-        {
-            var progress = published
-                .Progress()
-                .OnErrorResumeNext(Observable.Never<ProgressSnapshot>());
+    //public static IObservable<double> UpdateProgressTo(this IObservable<double> observable, IObserver<ProgressSnapshot> observer)
+    //{
+    //    return observable.Publish(published =>
+    //    {
+    //        var progress = published
+    //            .EstimatedCompletion()
+    //            .OnErrorResumeNext(Observable.Never<TimeSpan>());
 
-            var subscription = progress.Subscribe(observer);
+    //        var subscription = progress.Subscribe(observer);
 
-            return published.Finally(() => subscription.Dispose());
-        });
-    }
+    //        return published.Finally(() => subscription.Dispose());
+    //    });
+    //}
 }

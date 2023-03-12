@@ -44,7 +44,7 @@ public class SendTransfer : ITransfer
         Key = new TransferKey(Name);
         TransferButtonText = start.Any().Select(_ => "Re-download").StartWith("Download");
         Percent = progressSubject.AsObservable();
-        Eta = progressSubject.Progress().Select(x => x.RemainingTime);
+        Eta = progressSubject.EstimatedCompletion();
         IsIndeterminate = isIndeterminateSubject.DistinctUntilChanged().AsObservable();
         ErrorMessage = Start.WhereFailure();
     }
