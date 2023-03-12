@@ -17,7 +17,7 @@ public class TransferUnitTests
     {
         var input = new MemoryStream("test content"u8.ToArray());
         var output = new MemoryStream();
-        var sut = new TransferUnit("Test", () => Task.FromResult((Stream)input), () => Task.FromResult(new ProgressNotifyingStream(output, () => input.Length)));
+        var sut = new RegularTransferUnit("Test", () => Task.FromResult((Stream)input), () => Task.FromResult(new ProgressNotifyingStream(output, () => input.Length)));
 
         var obs = new TestScheduler().CreateObserver<double>();
 
