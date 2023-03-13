@@ -34,9 +34,7 @@ public class StreamTransferUnit : TransferUnit
                 .Using(() => outputFactory(input), output =>
                 {
                     return Observable
-                        .Using(() => output.Progress.Subscribe(progressSubject), _ => Observable.FromAsync(ct => input.CopyToAsync(output, ct)))
-                        .Select(_ => Result.Success())
-                        .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
+                        .Using(() => output.Progress.Subscribe(progressSubject), _ => Observable.FromAsync(ct => Result.Try(() => input.CopyToAsync(output, ct))));
                 }));
     }
 }

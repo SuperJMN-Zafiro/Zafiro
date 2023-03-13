@@ -1,6 +1,5 @@
 using System;
 using System.Reactive;
-using System.Windows.Input;
 using CSharpFunctionalExtensions;
 using ReactiveUI;
 

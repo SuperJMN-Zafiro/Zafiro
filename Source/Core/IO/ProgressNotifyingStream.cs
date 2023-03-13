@@ -22,6 +22,12 @@ public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
         inner.Flush();
     }
 
+    protected override void Dispose(bool disposing)
+    {
+        inner.Dispose();
+        base.Dispose(disposing);
+    }
+
     public override int Read(byte[] buffer, int offset, int count)
     {
         var read = inner.Read(buffer, offset, count);
