@@ -1,6 +1,5 @@
 using System;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CSharpFunctionalExtensions;
@@ -13,35 +12,28 @@ public abstract class TransferUnit : ITransfer
 {
     private readonly ISubject<bool> canCancel = new Subject<bool>();
 
-    public TransferUnit(string name)
+    protected TransferUnit(string name)
     {
         Name = name;
 
         Cancel = ReactiveCommand.Create(() => { }, canCancel);
-        Start = ReactiveCommand.CreateFromObservable(() => TransferObs().TakeUntil(Cancel));
+        Start = ReactiveCommand.CreateFromObservable(() => Transfer().TakeUntil(Cancel));
         Start.IsExecuting.Subscribe(canCancel);
         ErrorMessage = Start.WhereFailure();
         IsTransferring = Start.IsExecuting;
-        TransferButtonText = Start.Any().Select(_ => "Re-transfer").StartWith("Transfer");
     }
 
-    public IObservable<string> TransferButtonText { get; }
-
+    protected abstract string TransferText { get; }
+    protected abstract string ReTransferText { get; }
+    public IObservable<string> TransferButtonText => Start.Any().Select(_ => ReTransferText).StartWith(TransferText);
     public IObservable<bool> IsTransferring { get; }
-
     public IObservable<string> ErrorMessage { get; }
-
     public ReactiveCommand<Unit, Unit> Cancel { get; }
-    public abstract IObservable<double> Percent { get; }
-    public abstract IObservable<TimeSpan> Eta { get; }
-
+    public abstract IObservable<double> Progress { get; }
+    public IObservable<TimeSpan> Eta => Progress.EstimatedCompletion();
     public ReactiveCommand<Unit, Result> Start { get; }
-
-    protected abstract IObservable<Result> TransferObs();
-    
-    public abstract string TransferText { get; }
-    public abstract string ReTransferText { get; }
-    public abstract IObservable<bool> IsIndeterminate { get; }
+    public IObservable<bool> IsIndeterminate => Progress.Any().Not();
     public abstract TransferKey Key { get; }
     public string Name { get; }
+    protected abstract IObservable<Result> Transfer();
 }

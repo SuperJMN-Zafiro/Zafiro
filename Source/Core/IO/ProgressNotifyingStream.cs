@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using CSharpFunctionalExtensions;
 using System;
 using System.IO;
 using System.Reactive.Linq;
@@ -15,7 +14,7 @@ public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
     public ProgressNotifyingStream(Stream inner, Func<long>? getLength = default)
     {
         this.inner = inner;
-        Progress = Positions.Select(x => (double)x / getLength?.Invoke() ?? Length);
+        Progress = Positions.Select(x => (double)x / (getLength?.Invoke() ?? Length));
     }
 
     public override void Flush()

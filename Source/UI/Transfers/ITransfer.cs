@@ -11,7 +11,7 @@ public interface ITransfer
     IObservable<string> ErrorMessage { get; }
     string Name { get; }
     ReactiveCommand<Unit, Unit> Cancel { get; }
-    IObservable<double> Percent { get; }
+    IObservable<double> Progress { get; }
     IObservable<TimeSpan> Eta { get; }
     ReactiveCommand<Unit, Result> Start { get; }
     IObservable<bool> IsTransferring { get; }

@@ -43,7 +43,7 @@ public class SendTransfer : ITransfer
         IsTransferring = start.IsExecuting;
         Key = new TransferKey(Name);
         TransferButtonText = start.Any().Select(_ => "Re-download").StartWith("Download");
-        Percent = progressSubject.AsObservable();
+        Progress = progressSubject.AsObservable();
         Eta = progressSubject.EstimatedCompletion();
         IsIndeterminate = isIndeterminateSubject.DistinctUntilChanged().AsObservable();
         ErrorMessage = Start.WhereFailure();
@@ -63,7 +63,7 @@ public class SendTransfer : ITransfer
     public IObservable<string> ErrorMessage { get; }
     public string Name { get; }
     public ReactiveCommand<Unit, Unit> Cancel { get; }
-    public IObservable<double> Percent { get; }
+    public IObservable<double> Progress { get; }
     public IObservable<TimeSpan> Eta { get; }
     public ReactiveCommand<Unit, Result> Start { get; }
     public IObservable<bool> IsTransferring { get; }
