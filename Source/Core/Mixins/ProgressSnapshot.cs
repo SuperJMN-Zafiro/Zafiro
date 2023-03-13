@@ -2,4 +2,4 @@
 
 namespace Zafiro.Core.Mixins;
 
-public record ProgressSnapshot(double CurrentProgress, DateTimeOffset FinishTime, TimeSpan RemainingTime);
+public record ProgressSnapshot(DateTimeOffset FinishTime, TimeSpan RemainingTime);
