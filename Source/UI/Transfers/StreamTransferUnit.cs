@@ -9,14 +9,13 @@ using ObservableEx = Zafiro.Core.Mixins.ObservableEx;
 
 namespace Zafiro.UI.Transfers;
 
-public class RegularTransferUnit : TransferUnit
+public class StreamTransferUnit : TransferUnit
 {
-    private readonly Subject<TimeSpan> etaSubject = new();
     private readonly Func<Task<Stream>> inputFactory;
     private readonly Func<Stream, Task<ProgressNotifyingStream>> outputFactory;
     private readonly Subject<double> progressSubject = new();
 
-    public RegularTransferUnit(string name, Func<Task<Stream>> inputFactory, Func<Stream, Task<ProgressNotifyingStream>> outputFactory) : base(name)
+    public StreamTransferUnit(string name, Func<Task<Stream>> inputFactory, Func<Stream, Task<ProgressNotifyingStream>> outputFactory) : base(name)
     {
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
