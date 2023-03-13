@@ -24,8 +24,8 @@ public class RegularTransferUnit : TransferUnit
 
     public override IObservable<double> Progress => progressSubject.AsObservable();
 
-    protected override string TransferText { get; }
-    protected override string ReTransferText { get; }
+    protected override string TransferText => "Download";
+    protected override string ReTransferText => "Re-download";
     public override TransferKey Key => new(Name);
 
     protected override IObservable<Result> Transfer()

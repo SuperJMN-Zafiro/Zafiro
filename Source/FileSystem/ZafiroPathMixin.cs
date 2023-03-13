@@ -1,4 +1,6 @@
-﻿namespace Zafiro.FileSystem;
+﻿using CSharpFunctionalExtensions;
+
+namespace Zafiro.FileSystem;
 
 public static class ZafiroPathMixin
 {
@@ -10,11 +12,11 @@ public static class ZafiroPathMixin
         return lastIndex < 0 ? last : last[..lastIndex];
     }
 
-    public static string Extension(this ZafiroPath path)
+    public static Maybe<string> Extension(this ZafiroPath path)
     {
         var last = path.RouteFragments.Last();
         var lastIndex = last.LastIndexOf('.');
 
-        return lastIndex < 0 ? last : last[(lastIndex+1)..];
+        return lastIndex < 0 ? Maybe<string>.None : last[(lastIndex+1)..];
     }
 }

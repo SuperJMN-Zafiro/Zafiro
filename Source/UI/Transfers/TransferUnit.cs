@@ -23,8 +23,8 @@ public abstract class TransferUnit : ITransfer
         IsTransferring = Start.IsExecuting;
     }
 
-    protected abstract string TransferText { get; }
-    protected abstract string ReTransferText { get; }
+    protected virtual string TransferText => "Transfer";
+    protected virtual string ReTransferText => "Re-transfer";
     public IObservable<string> TransferButtonText => Start.Any().Select(_ => ReTransferText).StartWith(TransferText);
     public IObservable<bool> IsTransferring { get; }
     public IObservable<string> ErrorMessage { get; }
