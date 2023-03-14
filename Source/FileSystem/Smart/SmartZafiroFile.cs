@@ -17,6 +17,7 @@ public class SmartZafiroFile : IZafiroFile
     }
 
     public ZafiroPath Path => inner.Path;
+    public string Name => inner.Name;
 
     public async Task<Result> CopyTo(IZafiroFile destination)
     {

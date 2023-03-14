@@ -16,6 +16,7 @@ public class CachingZafiroFile : IZafiroFile
     }
 
     public ZafiroPath Path => inner.Path;
+    public string Name => inner.Name;
 
     public Task<Result> CopyTo(IZafiroFile destination)
     {
@@ -29,7 +30,7 @@ public class CachingZafiroFile : IZafiroFile
 
     public Result Delete()
     {
-        fileSystem.Cache.Remove(this.Path.Path);
+        fileSystem.Cache.Remove(Path.Path);
         return Result.Success();
     }
 
@@ -47,5 +48,8 @@ public class CachingZafiroFile : IZafiroFile
 
     public IZafiroFileSystem FileSystem => fileSystem;
 
-    public override string? ToString() => inner.ToString();
+    public override string? ToString()
+    {
+        return inner.ToString();
+    }
 }
