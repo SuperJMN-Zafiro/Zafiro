@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using Optional;
 
 namespace Zafiro.Core.Mixins;
 
@@ -23,15 +24,20 @@ public static class ObservableMixin
     {
         return self.Select(b => !b);
     }
-    
-    public static IObservable<string> WhereNotEmpty(this IObservable<string> self)
+
+    public static IObservable<bool> NullOrWhitespace(this IObservable<string> self)
     {
-        return self.Where(s => !string.IsNullOrWhiteSpace(s));
+        return self.Select(string.IsNullOrWhiteSpace);
     }
 
-    public static IObservable<bool> SelectNotEmpty(this IObservable<string> self)
+    public static IObservable<bool> NotNullOrEmpty(this IObservable<string> self)
     {
         return self.Select(s => !string.IsNullOrWhiteSpace(s));
+    }
+
+    public static IObservable<bool> Whitespace(this IObservable<string> self)
+    {
+        return self.Select(s => !s.Any(char.IsWhiteSpace));
     }
 
     public static IObservable<TimeSpan> EstimatedCompletion(this IObservable<double> progress)
