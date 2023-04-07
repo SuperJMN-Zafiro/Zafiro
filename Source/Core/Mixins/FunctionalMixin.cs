@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
@@ -15,6 +17,10 @@ public static class FunctionalMixin
     public static IObservable<string> WhereFailure(this IObservable<Result> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
 
     public static IObservable<string> WhereFailure<T>(this IObservable<Result<T>> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
+
+    public static IEnumerable<string> WhereFailure(this IEnumerable<Result> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
+
+    public static IEnumerable<string> WhereFailure<T>(this IEnumerable<Result<T>> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
 
     public static IObservable<bool> IsSuccess<T>(this IObservable<Result<T>> self) => self.Select(a => a.IsSuccess);
 
