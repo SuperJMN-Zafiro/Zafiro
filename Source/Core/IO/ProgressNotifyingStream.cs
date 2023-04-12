@@ -9,12 +9,15 @@ namespace Zafiro.Core.IO;
 public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
 {
     private readonly Stream inner;
+    private readonly Func<long>? getLength;
     private readonly Subject<long> positionSubject = new();
+    private long? lastKnownLength;
 
     public ProgressNotifyingStream(Stream inner, Func<long>? getLength = default)
     {
         this.inner = inner;
-        Progress = Positions.Select(x => (double)x / (getLength?.Invoke() ?? Length));
+        this.getLength = getLength;
+        Progress = Positions.Select(x => (double)x / Length);
     }
 
     public override void Flush()
@@ -57,7 +60,28 @@ public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
 
     public override bool CanWrite => inner.CanWrite;
 
-    public override long Length => inner.Length;
+    public override long Length
+    {
+        get
+        {
+            try
+            {
+                if (getLength != null)
+                {
+                    lastKnownLength = getLength();
+                }
+
+                lastKnownLength = inner.Length;
+            }
+            catch
+            {
+                // We save the last known length because Android tends to close the stream (channel) and unable to report the Length when this happens.
+                // It throws an exception instead. That's why report the last known length anyways.
+            }
+
+            return lastKnownLength ?? long.MaxValue;
+        }
+    }
 
     public override long Position
     {

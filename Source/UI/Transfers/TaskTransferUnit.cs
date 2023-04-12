@@ -30,7 +30,18 @@ public class TaskTransferUnit : TransferUnit
     {
         async Task<Result> TransferTask(CancellationToken ct)
         {
-            using (var outputStream = new ProgressNotifyingStream(await contentStreamFactory()))
+            var stream = await contentStreamFactory();
+
+            try
+            {
+                var length = stream.Length;
+            }
+            catch
+            {
+
+            }
+
+            using (var outputStream = new ProgressNotifyingStream(stream))
             {
                 using (outputStream.Progress.Subscribe(progressSubject))
                 {
