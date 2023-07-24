@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using Optional;
+using ReactiveUI;
 
 namespace Zafiro.Core.Mixins;
 
@@ -57,7 +60,7 @@ public static class ObservableMixin
                 x.current,
                 rate = x.current / x.delta.TotalSeconds,
             })
-            .Select(x => TimeSpan.FromSeconds(1.0 - x.current) / x.rate);		
+            .Select(x => TimeSpan.FromSeconds(1.0 - x.current) / x.rate);
     }
 
     public static IObservable<byte> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
@@ -76,17 +79,54 @@ public static class ObservableMixin
             .SelectMany(list => list);
     }
 
-    //public static IObservable<double> UpdateProgressTo(this IObservable<double> observable, IObserver<ProgressSnapshot> observer)
-    //{
-    //    return observable.Publish(published =>
-    //    {
-    //        var progress = published
-    //            .EstimatedCompletion()
-    //            .OnErrorResumeNext(Observable.Never<TimeSpan>());
+    // The Retry With Backoff code is created by: https://gist.github.com/niik
+    // Find the original code here: https://gist.github.com/niik/6696449
+    // Licensed under the MIT license with <3 by GitHub
 
-    //        var subscription = progress.Subscribe(observer);
+    /// <summary>
+    /// An exponential back off strategy which starts with 1 second and then 4, 9, 16...
+    /// </summary>
+    public static readonly Func<int, TimeSpan> ExponentialBackoff = n => TimeSpan.FromSeconds(Math.Pow(n, 2));
 
-    //        return published.Finally(() => subscription.Dispose());
-    //    });
-    //}
+    /// <summary>
+    /// Returns a cold observable which retries (re-subscribes to) the source observable on error up to the 
+    /// specified number of times or until it successfully terminates. Allows for customizable back off strategy.
+    /// </summary>
+    /// <param name="source">The source observable.</param>
+    /// <param name="retryCount">The number of attempts of running the source observable before failing.</param>
+    /// <param name="strategy">The strategy to use in backing off, exponential by default.</param>
+    /// <param name="retryOnError">A predicate determining for which exceptions to retry. Defaults to all</param>
+    /// <param name="scheduler">The scheduler.</param>
+    /// <returns>
+    /// A cold observable which retries (re-subscribes to) the source observable on error up to the 
+    /// specified number of times or until it successfully terminates.
+    /// </returns>
+    public static IObservable<T> RetryWithBackoffStrategy<T>(
+        this IObservable<T> source,
+        int retryCount = 3,
+        Func<int, TimeSpan> strategy = null,
+        Func<Exception, bool> retryOnError = null,
+        IScheduler scheduler = null)
+    {
+        strategy ??= ExponentialBackoff;
+        scheduler ??= RxApp.TaskpoolScheduler;
+
+        if (retryOnError == null)
+        {
+            retryOnError = _ => true;
+        }
+
+        int attempt = 0;
+
+        return Observable.Defer(() =>
+        {
+            return (++attempt == 1 ? source : source.DelaySubscription(strategy(attempt - 1), scheduler))
+                .Select(Notification.CreateOnNext)
+                .Catch((Exception e) => retryOnError(e)
+                    ? Observable.Throw<Notification<T>>(e)
+                    : Observable.Return(Notification.CreateOnError<T>(e)));
+        })
+        .Retry(retryCount)
+        .Dematerialize();
+    }
 }
