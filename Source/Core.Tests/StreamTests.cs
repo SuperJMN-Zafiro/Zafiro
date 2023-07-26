@@ -4,14 +4,13 @@ using System.IO;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Collections;
 using Microsoft.Reactive.Testing;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Xunit;
-using Xunit.Sdk;
 using Zafiro.Core.Mixins;
+using static System.TimeSpan;
 
 namespace Core.Tests;
 
@@ -33,47 +32,47 @@ public class StreamTests
         var testScheduler = new TestScheduler();
         var testStream = new TestStream(new[]
         {
-            ("Pepito"u8.ToArray(), TimeSpan.FromSeconds(1)),
-            ("Pepito"u8.ToArray(), TimeSpan.FromSeconds(1)),
-            ("Pepito"u8.ToArray(), TimeSpan.FromSeconds(1)),
-            ("Pepito"u8.ToArray(), TimeSpan.FromSeconds(0.5)),
+            ("Pepito"u8.ToArray(), FromSeconds(1)),
+            ("Pepito"u8.ToArray(), FromSeconds(1)),
+            ("Pepito"u8.ToArray(), FromSeconds(1)),
+            ("Pepito"u8.ToArray(), FromSeconds(0.5))
         }, testScheduler);
 
         testScheduler.Start();
-        var task = async () => await testStream.ToObservable().Timeout(TimeSpan.FromSeconds(2));
+        var task = async () => await testStream.ToObservable().Timeout(FromSeconds(2));
         await task.Should().ThrowAsync<TimeoutException>();
     }
 
     [Fact]
-    public async Task Timeout_does_not_happen()
+    public void Timeout_happens_when_no_data_is_pushed()
     {
-        var testScheduler = new TestScheduler();
+        // ARRANGE
+        var scheduler = new TestScheduler();
         var testStream = new TestStream(new[]
         {
-            (new byte[]{ 65 }, TimeSpan.FromSeconds(1)),
-            (new byte[]{ 66 }, TimeSpan.FromSeconds(2)),
-            (new byte[]{ 67 }, TimeSpan.FromSeconds(3)),
-        }, testScheduler);
+            (new byte[] { 65 }, FromTicks(1)),
+            (new byte[] { 66 }, FromTicks(2)),
+            (new byte[] { 67 }, FromTicks(3))
+        }, scheduler);
 
-        var sut = testStream.ToObservable().Timeout(TimeSpan.FromSeconds(2.5), scheduler: testScheduler);
-        var testableObserver = testScheduler.CreateObserver<byte>();
-        sut.Subscribe(testableObserver);
+        var observable = testStream
+            .ToObservable()
+            .Timeout(FromTicks(3), scheduler: scheduler);
 
-        testScheduler.AdvanceTo(TimeSpan.FromSeconds(6).Ticks);
-        var messages = testableObserver.Messages;
+        var observer = scheduler.CreateObserver<byte>();
 
-        messages.Should().BeEquivalentTo(new[]
-        {
-            new Recorded<Notification<byte>>(10000000, Notification.CreateOnNext<byte>(65)),
-            new Recorded<Notification<byte>>(30000000, Notification.CreateOnNext<byte>(66)),
-            new Recorded<Notification<byte>>(55000000, Notification.CreateOnError<byte>(new TimeoutException())),
-        }, ctx => ctx.Using<Recorded<Notification<byte>>>(context =>
-        {
-            if (context.Expectation.Value is { Exception: { } a } && context.Subject.Value is { Exception: { } b })
-            {
-                a.Should().BeOfType(b.GetType());
-            }
-        }).WhenTypeIs<Recorded<Notification<byte>>>());
+        // ACT
+        observable.Subscribe(observer);
+        scheduler.AdvanceTo(6);
+
+        // ASSERT
+        var expectation = new NotificationBuilder<byte>()
+            .OnNext(1, 65)
+            .OnNext(2, 66)
+            .OnError(6, new TimeoutException())
+            .Build();
+
+        AreEquivalent(observer.Messages, expectation);
     }
 
     [Fact]
@@ -81,11 +80,11 @@ public class StreamTests
     {
         var testStream = new TestStream(new[]
         {
-            ("a"u8.ToArray(), TimeSpan.FromSeconds(4)),
-            ("b"u8.ToArray(), TimeSpan.FromSeconds(5)),
+            ("a"u8.ToArray(), FromSeconds(4)),
+            ("b"u8.ToArray(), FromSeconds(5))
         }, Scheduler.Default);
 
-        await testStream.ToObservable().Timeout(TimeSpan.FromSeconds(6)).ToList();
+        await testStream.ToObservable().Timeout(FromSeconds(6)).ToList();
     }
 
     [Fact]
@@ -93,81 +92,71 @@ public class StreamTests
     {
         var testStream = new TestStream(new[]
         {
-            ("a"u8.ToArray(), TimeSpan.FromSeconds(4)),
-            ("b"u8.ToArray(), TimeSpan.FromSeconds(6)),
+            ("a"u8.ToArray(), FromSeconds(4)),
+            ("b"u8.ToArray(), FromSeconds(6))
         }, Scheduler.Default);
 
-        var task = async () => await testStream.ToObservable().Timeout(TimeSpan.FromSeconds(5)).ToList();
+        var task = async () => await testStream.ToObservable().Timeout(FromSeconds(5)).ToList();
         await task.Should().ThrowAsync<TimeoutException>();
+    }
+
+    private static AndConstraint<GenericCollectionAssertions<Recorded<Notification<T>>>> AreEquivalent<T>(IEnumerable<Recorded<Notification<T>>> messages, IEnumerable<Recorded<Notification<T>>> expectation)
+    {
+        return messages.Should().BeEquivalentTo(expectation, ctx =>
+        {
+            return ctx.Using<Recorded<Notification<T>>>(context =>
+            {
+                if (context.Expectation.Value is { Exception: { } a } && context.Subject.Value is { Exception: { } b })
+                {
+                    a.Should().BeOfType(b.GetType());
+                }
+            }).WhenTypeIs<Recorded<Notification<T>>>();
+        });
     }
 }
 
-public class TestStream : Stream
+public class Notify
 {
-    private readonly IScheduler scheduler;
-    private readonly (byte[], TimeSpan)[] datas;
-    private int read = 0; // Start with -1 to indicate that no data has been read yet
-
-    public TestStream((byte[], TimeSpan)[] datas, IScheduler scheduler)
+    public static Recorded<Notification<T>> OnNext<T>(int time, T value)
     {
-        this.scheduler = scheduler;
-        this.datas = datas;
-        this.read = 0; // Start reading from the first data array
+        return new Recorded<Notification<T>>(time, Notification.CreateOnNext(value));
     }
 
-    public override void Flush()
+    public static Recorded<Notification<T>> OnCompleted<T>(int time)
     {
-        throw new System.NotImplementedException();
+        return new Recorded<Notification<T>>(time, Notification.CreateOnCompleted<T>());
     }
 
-    public override int Read(byte[] buffer, int offset, int count)
+    public static Recorded<Notification<T>> OnError<T>(int time, Exception exception)
     {
-        if (read == datas.Length)
-        {
-            return 0;
-        }
+        return new Recorded<Notification<T>>(time, Notification.CreateOnError<T>(exception));
+    }
+}
 
-        datas[read].Item1.CopyTo(buffer, offset);
-        scheduler.Sleep(datas[read].Item2);
-        var readBytes = datas[read].Item1.Length;
-        read++;
-        return readBytes;
+public class NotificationBuilder<T>
+{
+    private readonly List<Recorded<Notification<T>>> notifications = new();
+
+    public NotificationBuilder<T> OnNext(int time, T value)
+    {
+        notifications.Add(new Recorded<Notification<T>>(time, Notification.CreateOnNext(value)));
+        return this;
     }
 
-
-    // Other methods remain unchanged...
-    public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+    public NotificationBuilder<T> OnCompleted(int time)
     {
-        if (read == datas.Length)
-        {
-            return 0;
-        }
-
-        datas[read].Item1.CopyTo(buffer, offset);
-        await scheduler.Sleep(datas[read].Item2);
-        var readBytes = datas[read].Item1.Length;
-        read++;
-        return readBytes;
+        notifications.Add(new Recorded<Notification<T>>(time, Notification.CreateOnCompleted<T>()));
+        return this;
     }
 
-    public override long Seek(long offset, SeekOrigin origin)
+    public NotificationBuilder<T> OnError(int time, Exception exception)
     {
-        throw new NotImplementedException();
+        notifications.Add(new Recorded<Notification<T>>(time, Notification.CreateOnError<T>(exception)));
+        return this;
     }
 
-    public override void SetLength(long value)
+    public IEnumerable<Recorded<Notification<T>>> Build()
     {
-        throw new NotImplementedException();
+        return notifications.AsReadOnly();
     }
-
-    public override void Write(byte[] buffer, int offset, int count)
-    {
-        throw new NotImplementedException();
-    }
-
-    public override bool CanRead => true;
-    public override bool CanSeek => true;
-    public override bool CanWrite => false;
-    public override long Length { get; }
-    public override long Position { get; set; }
 }
