@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using Xunit;
-using Zafiro.Core.Mixins;
+using Zafiro.Core.IO;
 using Zafiro.Core.Testing;
 using static System.TimeSpan;
 

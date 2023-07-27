@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Caching.Memory;
+using Zafiro.Core.IO;
 using Zafiro.Core.Mixins;
 
 namespace Zafiro.FileSystem.Caching;

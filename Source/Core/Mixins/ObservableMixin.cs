@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Reactive.Threading.Tasks;
-using Optional;
 using ReactiveUI;
 
 namespace Zafiro.Core.Mixins;
@@ -61,22 +57,6 @@ public static class ObservableMixin
                 rate = x.current / x.delta.TotalSeconds,
             })
             .Select(x => TimeSpan.FromSeconds(1.0 - x.current) / x.rate);
-    }
-
-    public static IObservable<byte> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
-    {
-        return bytes
-            .Buffer(bufferSize)
-            .Select(buffer =>
-            {
-                return Observable.FromAsync(async ct =>
-                {
-                    await destination.WriteAsync(buffer.ToArray(), ct).AsTask();
-                    return buffer;
-                });
-            })
-            .Merge(1)
-            .SelectMany(list => list);
     }
 
     // The Retry With Backoff code is created by: https://gist.github.com/niik

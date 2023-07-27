@@ -1,34 +1,60 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 namespace Zafiro.Core.IO;
 
-public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
+public class ObservableStream : Stream
 {
     private readonly Stream inner;
-    private readonly Func<long>? getLength;
     private readonly Subject<long> positionSubject = new();
     private long? lastKnownLength;
 
-    public ProgressNotifyingStream(Stream inner, Func<long>? getLength = default)
+    public ObservableStream(Stream inner)
     {
         this.inner = inner;
-        this.getLength = getLength;
-        Progress = Positions.Select(x => (double)x / Length);
     }
+
+    public override bool CanRead => inner.CanRead;
+
+    public override bool CanSeek => inner.CanSeek;
+
+    public override bool CanWrite => inner.CanWrite;
+
+    public override long Length
+    {
+        get
+        {
+            try
+            {
+                lastKnownLength = inner.Length;
+            }
+            catch
+            {
+                // We save the last known length because Android tends to close the stream (channel) and unable to report the Length when this happens.
+                // It throws an exception instead. That's why we report the last known length anyways.
+            }
+
+            return lastKnownLength ?? long.MaxValue;
+        }
+    }
+
+    public override long Position
+    {
+        get => inner.Position;
+        set
+        {
+            inner.Position = value;
+            positionSubject.OnNext(value);
+        }
+    }
+
+    public IObservable<long> Positions => positionSubject.AsObservable();
 
     public override void Flush()
     {
         inner.Flush();
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        inner.Dispose();
-        base.Dispose(disposing);
     }
 
     public override int Read(byte[] buffer, int offset, int count)
@@ -54,45 +80,9 @@ public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
         positionSubject.OnNext(Position);
     }
 
-    public override bool CanRead => inner.CanRead;
-
-    public override bool CanSeek => inner.CanSeek;
-
-    public override bool CanWrite => inner.CanWrite;
-
-    public override long Length
+    protected override void Dispose(bool disposing)
     {
-        get
-        {
-            try
-            {
-                if (getLength != null)
-                {
-                    lastKnownLength = getLength();
-                }
-
-                lastKnownLength = inner.Length;
-            }
-            catch
-            {
-                // We save the last known length because Android tends to close the stream (channel) and unable to report the Length when this happens.
-                // It throws an exception instead. That's why report the last known length anyways.
-            }
-
-            return lastKnownLength ?? long.MaxValue;
-        }
+        inner.Dispose();
+        base.Dispose(disposing);
     }
-
-    public override long Position
-    {
-        get => inner.Position;
-        set
-        {
-            inner.Position = value;
-            positionSubject.OnNext(value);
-        }
-    }
-
-    public IObservable<long> Positions => positionSubject.AsObservable();
-    public IObservable<double> Progress { get; }
 }

@@ -12,10 +12,10 @@ namespace Zafiro.UI.Transfers;
 public class StreamTransferUnit : TransferUnit
 {
     private readonly Func<Task<Stream>> inputFactory;
-    private readonly Func<Stream, Task<ProgressNotifyingStream>> outputFactory;
+    private readonly Func<Stream, Task<ObservableStream>> outputFactory;
     private readonly Subject<double> progressSubject = new();
 
-    public StreamTransferUnit(string name, Func<Task<Stream>> inputFactory, Func<Stream, Task<ProgressNotifyingStream>> outputFactory) : base(name)
+    public StreamTransferUnit(string name, Func<Task<Stream>> inputFactory, Func<Stream, Task<ObservableStream>> outputFactory) : base(name)
     {
         this.inputFactory = inputFactory;
         this.outputFactory = outputFactory;
@@ -34,7 +34,7 @@ public class StreamTransferUnit : TransferUnit
                 .Using(() => outputFactory(input), output =>
                 {
                     return Observable
-                        .Using(() => output.Progress.Subscribe(progressSubject), _ => Observable.FromAsync(ct => Result.Try(() => input.CopyToAsync(output, ct))));
+                        .Using(() => output.Positions.Select(l => (double)l / output.Length).Subscribe(progressSubject), _ => Observable.FromAsync(ct => Result.Try(() => input.CopyToAsync(output, ct))));
                 }));
     }
 }
