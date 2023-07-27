@@ -32,8 +32,8 @@ public class HttpPostTransferUnit : TransferUnit
     {
         async Task<Result> Post()
         {
-            var output = new ProgressNotifyingStream(await inputFactory());
-            using (output.Progress.Subscribe(progressSubject))
+            var output = new ObservableStream(await inputFactory());
+            using (output.Positions.Select(l => (double)l / output.Length).Subscribe(progressSubject))
             {
                 var multipartFormDataContent = new MultipartFormDataContent { new StreamContent(output) };
                 var message = await clientFactory().PostAsync(uri, multipartFormDataContent);

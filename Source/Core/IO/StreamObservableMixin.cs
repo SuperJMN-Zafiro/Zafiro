@@ -2,8 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using Zafiro.Core.Mixins;
 
-namespace Zafiro.Core.Mixins
+namespace Zafiro.Core.IO
 {
     public static class StreamObservableMixin
     {
@@ -11,7 +12,7 @@ namespace Zafiro.Core.Mixins
 
         public static IObservable<byte[]> ReadToEndObservable(this Stream stream, int bufferSize = DefaultBufferSize)
             =>
-                Observable.Defer<byte[]>(() =>
+                Observable.Defer(() =>
                 {
                     var bytesRead = -1;
                     var bytes = new byte[bufferSize];

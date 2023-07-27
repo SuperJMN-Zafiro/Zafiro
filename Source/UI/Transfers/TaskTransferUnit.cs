@@ -41,9 +41,10 @@ public class TaskTransferUnit : TransferUnit
 
             }
 
-            using (var outputStream = new ProgressNotifyingStream(stream))
+            await using var outputStream = new ObservableStream(stream);
             {
-                using (outputStream.Progress.Subscribe(progressSubject))
+                var length = outputStream.Length;
+                using (outputStream.Positions.Select(l => (double)l / length).Subscribe(progressSubject))
                 {
                     return await transferFunc(outputStream, ct);
                 }
