@@ -2,9 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using Zafiro.Core.Mixins;
 
-namespace Zafiro.Core.IO
+namespace Zafiro.Zafiro.IO
 {
     public static class StreamObservableMixin
     {

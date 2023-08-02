@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Core.ProgressReporting
+﻿namespace Zafiro.Zafiro.ProgressReporting
 {
     public abstract class Progress
     {

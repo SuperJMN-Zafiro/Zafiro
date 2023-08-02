@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Core.UI.ObjectEditor
+﻿namespace Zafiro.Zafiro.UI.ObjectEditor
 {
     public class Editor<TTemplate>
     {

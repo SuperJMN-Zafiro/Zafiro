@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Zafiro.Core
+namespace Zafiro.Zafiro
 {
     public class AutoKeyDictionary<TKey, TValue> : IEnumerable<TValue>, IDictionary<TKey, TValue>
     {

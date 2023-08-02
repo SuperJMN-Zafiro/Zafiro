@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Core;
+namespace Zafiro.Zafiro;
 
 public class Username : ValueObject
 {

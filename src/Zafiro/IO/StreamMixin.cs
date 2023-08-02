@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core.IO;
+namespace Zafiro.Zafiro.IO;
 
 public static class Ext
 {

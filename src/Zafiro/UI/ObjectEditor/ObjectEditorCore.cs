@@ -6,10 +6,10 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
 using ReactiveUI;
-using Zafiro.Core.Mixins;
-using Zafiro.Core.UI.ObjectEditor.TemplateMatchers;
+using Zafiro.Zafiro.Mixins;
+using Zafiro.Zafiro.UI.ObjectEditor.TemplateMatchers;
 
-namespace Zafiro.Core.UI.ObjectEditor
+namespace Zafiro.Zafiro.UI.ObjectEditor
 {
     public class ObjectEditorCore<TEditor, TTemplate> : ReactiveObject where TTemplate : class
     {

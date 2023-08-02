@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MoreLinq.Extensions;
 
-namespace Zafiro.Core.Patterns.Either
+namespace Zafiro.Zafiro.Patterns.Either
 {
     public static class CombineExtensions
     {

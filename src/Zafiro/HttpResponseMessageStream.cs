@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core;
+namespace Zafiro.Zafiro;
 
 public class HttpResponseMessageStream : Stream
 {

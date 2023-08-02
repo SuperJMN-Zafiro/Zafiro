@@ -1,6 +1,6 @@
 using System;
 
-namespace Zafiro.Core.Intervals
+namespace Zafiro.Zafiro.Intervals
 {
     public interface IInterval<out T> where T : IComparable
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Zafiro.Core
+namespace Zafiro.Zafiro
 {
     public interface IDictionaryBasedService
     {

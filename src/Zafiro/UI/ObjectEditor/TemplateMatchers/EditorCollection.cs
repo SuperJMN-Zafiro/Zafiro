@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace Zafiro.Core.UI.ObjectEditor.TemplateMatchers
+namespace Zafiro.Zafiro.UI.ObjectEditor.TemplateMatchers
 {
     public class EditorCollection<T> : Collection<Editor<T>>
     {

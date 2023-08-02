@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Zafiro.Core.Mixins
+namespace Zafiro.Zafiro.Mixins
 {
     public static class StringMixin
     {

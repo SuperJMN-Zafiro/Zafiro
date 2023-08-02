@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Zafiro.Core.Mixins
+namespace Zafiro.Zafiro.Mixins
 {
     public static class ReflectionExtensions
     {

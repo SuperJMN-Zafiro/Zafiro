@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Zafiro.Core
+namespace Zafiro.Zafiro
 {
     public static class Guard
     {

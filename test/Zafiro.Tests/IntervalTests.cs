@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using NodaTime;
 using Xunit;
-using Zafiro.Core.Intervals;
+using Zafiro.Zafiro.Intervals;
 
 namespace Core.Tests
 {

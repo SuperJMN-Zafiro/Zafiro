@@ -4,9 +4,11 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
-namespace Zafiro.Core.IO;
+namespace Zafiro.Zafiro.IO;
 
+[PublicAPI]
 public class ObservableStream : Stream
 {
     private readonly Stream inner;

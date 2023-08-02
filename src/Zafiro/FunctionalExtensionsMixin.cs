@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Core;
+namespace Zafiro.Zafiro;
 
 public static class FunctionalExtensionsMixin
 {

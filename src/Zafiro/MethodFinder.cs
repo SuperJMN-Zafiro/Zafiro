@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Zafiro.Core
+namespace Zafiro.Zafiro
 {
     public static class MethodFinder
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Zafiro.Core
+namespace Zafiro.Zafiro
 {
     public static class AsyncUtils
     {

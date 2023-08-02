@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using Xunit;
-using Zafiro.Core.IO;
-using Zafiro.Core.Testing;
+using Zafiro.Zafiro.IO;
+using Zafiro.Zafiro.Testing;
 using static System.TimeSpan;
 
 namespace Core.Tests;

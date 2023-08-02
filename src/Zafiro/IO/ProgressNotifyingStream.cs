@@ -1,10 +1,9 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Zafiro.Core.IO;
+namespace Zafiro.Zafiro.IO;
 
 [Obsolete("Use ObservableStream")]
 public class ProgressNotifyingStream : Stream

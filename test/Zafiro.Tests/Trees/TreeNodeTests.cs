@@ -2,7 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using Xunit;
-using Zafiro.Core.Trees;
+using Zafiro.Zafiro.Trees;
 
 namespace Core.Tests.Trees;
 
