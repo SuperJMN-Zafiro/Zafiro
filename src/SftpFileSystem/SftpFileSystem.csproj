@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Import Project="..\..\Build\Common.props" />
+
+	<ItemGroup>
+		<PackageReference Include="morelinq" Version="3.3.2" />
+		<PackageReference Include="SSH.NET" Version="2020.0.2" />
+		<PackageReference Include="System.IO.Abstractions" Version="16.1.25" />
+		<PackageReference Include="CSharpFunctionalExtensions" Version="2.37.0" />
+	</ItemGroup>
+
+</Project>
