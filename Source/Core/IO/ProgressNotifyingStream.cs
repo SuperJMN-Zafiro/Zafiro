@@ -6,7 +6,8 @@ using System.Reactive.Subjects;
 
 namespace Zafiro.Core.IO;
 
-public class ProgressNotifyingStream : Stream, IPositionable, IHaveProgress
+[Obsolete("Use ObservableStream")]
+public class ProgressNotifyingStream : Stream
 {
     private readonly Stream inner;
     private readonly Func<long>? getLength;

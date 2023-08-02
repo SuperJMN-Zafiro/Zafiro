@@ -6,5 +6,5 @@ namespace Zafiro.UI;
 
 public interface ISaveFilePicker
 {
-    IObservable<Maybe<IStorable>> Pick(string desiredName, string defaultExtension, params FileTypeFilter[] filters);
+    IObservable<Maybe<IZafiroFile>> Pick(string desiredName, string defaultExtension, params FileTypeFilter[] filters);
 }

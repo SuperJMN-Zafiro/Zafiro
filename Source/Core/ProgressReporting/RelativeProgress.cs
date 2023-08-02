@@ -1,5 +1,7 @@
 ﻿using System;
 
+namespace Zafiro.Core.ProgressReporting;
+
 public class RelativeProgress<T>
 {
     public RelativeProgress(T total, T value)

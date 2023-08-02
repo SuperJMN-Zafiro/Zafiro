@@ -1,10 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CSharpFunctionalExtensions;
 using ReactiveUI;
+using Zafiro.Core.Functional;
 using Zafiro.Core.Mixins;
 
 namespace Zafiro.UI.Transfers;
@@ -20,7 +20,7 @@ public abstract class TransferUnit : ITransfer
         Cancel = ReactiveCommand.Create(() => { }, canCancel);
         Start = ReactiveCommand.CreateFromObservable(() => Transfer().TakeUntil(Cancel));
         Start.IsExecuting.Subscribe(canCancel);
-        ErrorMessage = Start.WhereFailure();
+        ErrorMessage = Start.Failures();
         IsTransferring = Start.IsExecuting;
     }
 
