@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
+
+	<Import Project="..\..\Build\Common.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\Reflection\Reflection.csproj" />
+	</ItemGroup>
+
+</Project>
