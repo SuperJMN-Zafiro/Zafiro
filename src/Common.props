@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
-		<AssemblyName>Zafiro.$(MSBuildProjectName)</AssemblyName>
-		<RootNamespace>Zafiro.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 	</PropertyGroup>
 
 	<PropertyGroup>
