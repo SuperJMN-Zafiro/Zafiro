@@ -3,12 +3,14 @@
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<Import Project="..\Common.props" />
 
 	<ItemGroup>
 		<PackageReference Include="CSharpFunctionalExtensions" Version="2.37.0" />
+		<PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
 		<PackageReference Include="morelinq" Version="3.3.2" />
 		<PackageReference Include="NodaTime" Version="3.0.10" />
 		<PackageReference Include="Optional" Version="4.0.0" />
