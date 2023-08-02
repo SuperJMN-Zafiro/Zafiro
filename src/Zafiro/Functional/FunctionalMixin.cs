@@ -5,9 +5,9 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Zafiro.Zafiro.Mixins;
+using Zafiro.Mixins;
 
-namespace Zafiro.Zafiro.Functional;
+namespace Zafiro.Functional;
 
 public static class FunctionalMixin
 {

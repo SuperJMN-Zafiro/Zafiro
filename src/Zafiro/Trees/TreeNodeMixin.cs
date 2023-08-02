@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Zafiro.Zafiro.Mixins;
+using Zafiro.Mixins;
 
-namespace Zafiro.Zafiro.Trees;
+namespace Zafiro.Trees;
 
 public static class TreeNodeMixin
 {

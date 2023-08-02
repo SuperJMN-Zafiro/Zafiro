@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Zafiro.Zafiro.UI.ObjectEditor.TemplateMatchers
+namespace Zafiro.UI.ObjectEditor.TemplateMatchers
 {
     public class TypeTemplateMatcher<T> : TemplateMatcher<T> where T : class
     {

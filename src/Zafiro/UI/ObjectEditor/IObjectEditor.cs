@@ -1,6 +1,6 @@
-﻿using Zafiro.Zafiro.UI.ObjectEditor.TemplateMatchers;
+﻿using Zafiro.UI.ObjectEditor.TemplateMatchers;
 
-namespace Zafiro.Zafiro.UI.ObjectEditor
+namespace Zafiro.UI.ObjectEditor
 {
     public interface IObjectEditor<TEditor, TTemplate>
     {

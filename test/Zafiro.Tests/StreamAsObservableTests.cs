@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using Xunit;
-using Zafiro.Zafiro.IO;
-using Zafiro.Zafiro.Testing;
+using Zafiro.IO;
+using Zafiro.Testing;
 using static System.TimeSpan;
 
-namespace Core.Tests;
+namespace Zafiro.Tests;
 
 public class StreamAsObservableTests
 {

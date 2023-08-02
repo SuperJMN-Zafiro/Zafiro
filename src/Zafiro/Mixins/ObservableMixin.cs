@@ -5,7 +5,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using ReactiveUI;
 
-namespace Zafiro.Zafiro.Mixins;
+namespace Zafiro.Mixins;
 
 public static class ObservableMixin
 {

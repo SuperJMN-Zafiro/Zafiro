@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Zafiro.Zafiro
+namespace Zafiro
 {
     public interface IDependency<out T>
     {

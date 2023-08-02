@@ -1,3 +1,3 @@
-﻿namespace Zafiro.Zafiro;
+﻿namespace Zafiro;
 
 public record MachineUser(Host Host, Username Username);

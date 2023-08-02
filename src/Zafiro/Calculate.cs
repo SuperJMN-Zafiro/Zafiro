@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Zafiro.Zafiro;
+namespace Zafiro;
 
 public static class Calculate
 {

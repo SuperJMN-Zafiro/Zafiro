@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using FluentAssertions;
 using NodaTime;
 using Xunit;
-using Zafiro.Zafiro.Intervals;
+using Zafiro.Intervals;
 
-namespace Core.Tests
+namespace Zafiro.Tests
 {
     public class IntervalTests
     {

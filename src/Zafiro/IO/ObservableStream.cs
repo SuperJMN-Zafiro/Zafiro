@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace Zafiro.Zafiro.IO;
+namespace Zafiro.IO;
 
 [PublicAPI]
 public class ObservableStream : Stream

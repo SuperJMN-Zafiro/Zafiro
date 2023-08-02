@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Zafiro;
+namespace Zafiro;
 
 public class MachineCredentials : ValueObject
 {

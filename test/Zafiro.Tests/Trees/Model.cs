@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.Tests.Trees;
+namespace Zafiro.Tests.Trees;
 
 internal record Model(string Name, IEnumerable<Model> Children);

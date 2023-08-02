@@ -2,7 +2,7 @@
 using System.Reactive;
 using Microsoft.Reactive.Testing;
 
-namespace Zafiro.Zafiro.Testing;
+namespace Zafiro.Testing;
 
 public class Notify
 {

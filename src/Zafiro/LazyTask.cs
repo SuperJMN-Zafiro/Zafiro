@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 
-namespace Zafiro.Zafiro;
+namespace Zafiro;
 
 [AsyncMethodBuilder(typeof(LazyTaskMethodBuilder<>))]
 public class LazyTask<T> : INotifyCompletion

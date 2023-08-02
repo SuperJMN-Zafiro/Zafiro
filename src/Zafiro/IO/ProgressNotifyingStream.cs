@@ -3,7 +3,7 @@ using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace Zafiro.Zafiro.IO;
+namespace Zafiro.IO;
 
 [Obsolete("Use ObservableStream")]
 public class ProgressNotifyingStream : Stream

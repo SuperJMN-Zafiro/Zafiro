@@ -2,9 +2,9 @@
 using System.Linq;
 using FluentAssertions;
 using Xunit;
-using Zafiro.Zafiro.Trees;
+using Zafiro.Trees;
 
-namespace Core.Tests.Trees;
+namespace Zafiro.Tests.Trees;
 
 public class TreeNodeTests
 {

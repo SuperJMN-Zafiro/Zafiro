@@ -4,7 +4,7 @@ using System.Reactive.Concurrency;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Core.Tests;
+namespace Zafiro.Tests;
 
 public class TestStream : Stream
 {

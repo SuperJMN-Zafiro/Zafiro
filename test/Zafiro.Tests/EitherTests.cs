@@ -1,9 +1,9 @@
 using System.Linq;
 using FluentAssertions;
 using Xunit;
-using Zafiro.Zafiro.Patterns.Either;
+using Zafiro.Patterns.Either;
 
-namespace Core.Tests
+namespace Zafiro.Tests
 {
     public class EitherTests
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Zafiro.Zafiro.ProgressReporting;
+namespace Zafiro.ProgressReporting;
 
 public class RelativeProgress<T>
 {

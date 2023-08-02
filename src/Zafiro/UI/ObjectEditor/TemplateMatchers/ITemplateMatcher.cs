@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Zafiro.Zafiro.UI.ObjectEditor.TemplateMatchers
+namespace Zafiro.UI.ObjectEditor.TemplateMatchers
 {
     public interface ITemplateMatcher<T>
     {

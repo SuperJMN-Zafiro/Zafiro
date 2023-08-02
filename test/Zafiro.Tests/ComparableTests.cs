@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
 using Xunit;
-using Zafiro.Zafiro;
 
-namespace Core.Tests
+namespace Zafiro.Tests
 {
     public class ComparableTests
     {

@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Zafiro
+﻿namespace Zafiro
 {
     public interface IChild<TParent>
     {

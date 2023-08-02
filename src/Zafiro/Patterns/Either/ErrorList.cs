@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Zafiro.Zafiro.Patterns.Either
+namespace Zafiro.Patterns.Either
 {
     public class ErrorList : List<string>
     {

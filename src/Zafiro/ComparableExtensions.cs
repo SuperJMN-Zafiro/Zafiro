@@ -1,6 +1,6 @@
 using System;
 
-namespace Zafiro.Zafiro
+namespace Zafiro
 {
     public static class ComparableExtensions 
     {

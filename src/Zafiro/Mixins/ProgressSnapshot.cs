@@ -1,5 +1,5 @@
 ﻿using System;
 
-namespace Zafiro.Zafiro.Mixins;
+namespace Zafiro.Mixins;
 
 public record ProgressSnapshot(DateTimeOffset FinishTime, TimeSpan RemainingTime);

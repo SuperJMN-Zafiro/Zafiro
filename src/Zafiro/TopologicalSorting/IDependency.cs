@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Zafiro.Zafiro.TopologicalSorting
+namespace Zafiro.TopologicalSorting
 {
     public interface IDependency<out T>
     {

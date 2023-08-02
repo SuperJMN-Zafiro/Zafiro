@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Zafiro.Zafiro;
+namespace Zafiro;
 
 public class Hash
 {

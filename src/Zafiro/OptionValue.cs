@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Zafiro
+﻿namespace Zafiro
 {
     public enum OptionValue
     {

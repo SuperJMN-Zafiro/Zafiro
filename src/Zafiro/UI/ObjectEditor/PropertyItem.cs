@@ -6,9 +6,9 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
 using ReactiveUI;
-using Zafiro.Zafiro.Values;
+using Zafiro.Values;
 
-namespace Zafiro.Zafiro.UI.ObjectEditor
+namespace Zafiro.UI.ObjectEditor
 {
     public abstract class PropertyItem<T> : ReactiveObject, IDisposable
     {
