@@ -42,7 +42,7 @@ public static class FunctionalMixin
         return self.Where(s => !string.IsNullOrWhiteSpace(s));
     }
 
-    public static IObservable<Result<TResult>> Combine<T, TResult>(this Func<Task<Result<T>>> one, Func<Task<Result<T>>> another, Func<T, T, TResult> selector)
+    public static IObservable<Result<K>> Combine<T, K>(this Func<Task<Result<T>>> one, Func<Task<Result<T>>> another, Func<T, T, K> selector)
     {
         var observable = from a in Observable.FromAsync(one)
             from b in Observable.FromAsync(another)
