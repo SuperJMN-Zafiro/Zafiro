@@ -45,4 +45,11 @@ public static class ReactiveResultMixin
                 : Observable.Return(Result.Failure(result.Error)))
             .Catch((Exception ex) => Observable.Return(Result.Failure(ex.Message)));
     }
+
+    public static IObservable<Result<R>> SelectMany<T, K, R>(this IObservable<Result<T>> observable, Func<T, IObservable<Result<K>>> collectionSelector, Func<T, K, R> resultSelector)
+    {
+        return observable.SelectMany(result => result.IsSuccess
+            ? collectionSelector(result.Value)
+            : Observable.Empty<Result<K>>(), resultSelector: (result, result1) => result.CombineAndMap(result1, resultSelector));
+    }
 }
