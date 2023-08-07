@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Zafiro.Mixins;
 
-namespace Zafiro.Functional;
+namespace Zafiro.CSharpFunctionalExtensions;
 
 public static class FunctionalMixin
 {
@@ -40,14 +39,5 @@ public static class FunctionalMixin
     public static IEnumerable<string> NotNullOrEmpty(this IEnumerable<string> self)
     {
         return self.Where(s => !string.IsNullOrWhiteSpace(s));
-    }
-
-    public static IObservable<Result<TResult>> Combine<T, TResult>(this Func<Task<Result<T>>> one, Func<Task<Result<T>>> another, Func<T, T, TResult> selector)
-    {
-        var observable = from a in Observable.FromAsync(one)
-            from b in Observable.FromAsync(another)
-            select new { a, b };
-
-        return observable.Select(arg => from n in arg.a from q in arg.b select selector(n, q));
     }
 }
