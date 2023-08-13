@@ -24,6 +24,16 @@ public static class ObservableMixin
         return self.Select(b => !b);
     }
 
+    public static IObservable<bool> Null<T>(this IObservable<T?> self)
+    {
+        return self.Select(b => b is null);
+    }
+
+    public static IObservable<bool> NotNull<T>(this IObservable<T?> self)
+    {
+        return self.Select(b => b is not null);
+    }
+
     public static IObservable<bool> NullOrWhitespace(this IObservable<string> self)
     {
         return self.Select(string.IsNullOrWhiteSpace);
