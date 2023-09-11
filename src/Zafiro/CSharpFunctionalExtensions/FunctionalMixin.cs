@@ -4,10 +4,12 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
+using JetBrains.Annotations;
 using Zafiro.Mixins;
 
 namespace Zafiro.CSharpFunctionalExtensions;
 
+[PublicAPI]
 public static class FunctionalMixin
 {
     public static IObservable<Unit> Successes(this IObservable<Result> self) => self.Where(a => a.IsSuccess).ToSignal();
@@ -40,4 +42,6 @@ public static class FunctionalMixin
     {
         return self.Where(s => !string.IsNullOrWhiteSpace(s));
     }
+
+    public static IObservable<Unit> Empties<T>(this IObservable<Maybe<T>> self) => self.Where(x => !x.HasValue).Select(_ => Unit.Default);
 }

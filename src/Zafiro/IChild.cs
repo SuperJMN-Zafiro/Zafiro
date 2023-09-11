@@ -1,7 +1,6 @@
-﻿namespace Zafiro
+﻿namespace Zafiro;
+
+public interface IChild<TParent>
 {
-    public interface IChild<TParent>
-    {
-        TParent Parent { get; set; }
-    }
+    TParent Parent { get; set; }
 }
