@@ -43,5 +43,18 @@ public static class FunctionalMixin
         return self.Where(s => !string.IsNullOrWhiteSpace(s));
     }
 
+    [Obsolete("You should not need this")]
     public static IObservable<Unit> Empties<T>(this IObservable<Maybe<T>> self) => self.Where(x => !x.HasValue).Select(_ => Unit.Default);
+
+    public static bool AnyEmpty<T>(this IEnumerable<Maybe<T>> self) => self.Any(x => x.HasNoValue);
+
+    public static Maybe<TResult> Combine<T, TResult>(this IList<Maybe<T>> values, Func<IEnumerable<T>, TResult> combinerFunc)
+    {
+        if (values.AnyEmpty())
+        {
+            return Maybe<TResult>.None;
+        }
+
+        return Maybe.From(combinerFunc(values.Select(maybe => maybe.Value)));
+    }
 }

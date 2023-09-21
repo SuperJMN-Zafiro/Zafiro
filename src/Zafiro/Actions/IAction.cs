@@ -5,8 +5,8 @@ using CSharpFunctionalExtensions;
 
 namespace Zafiro.Actions;
 
-public interface IAction
+public interface IAction<T> where T : IProgress
 {
-    IObservable<IProportionProgress> Progress { get; }
+    IObservable<T> Progress { get; }
     Task<Result> Execute(CancellationToken ct);
 }
