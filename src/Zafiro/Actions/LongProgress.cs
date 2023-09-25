@@ -1,8 +1,6 @@
-using CSharpFunctionalExtensions;
-
 namespace Zafiro.Actions;
 
-public class LongProgress : IProgress
+public record LongProgress : IProgress
 {
     public LongProgress(long current, long total)
     {
@@ -14,7 +12,12 @@ public class LongProgress : IProgress
     {
     }
 
-    public Maybe<long> Current { get; }
-    public Maybe<long> Total { get; }
-    public Maybe<double> Value => from n in Current from l in Total select (double)n / l;
+    public long Current { get; }
+    public long Total { get; }
+    public double Value => Total == 0 ? 0 : (double)Current / Total;
+
+    public static LongProgress operator+(LongProgress left, LongProgress right)
+    {
+        return new LongProgress(left.Current + right.Current, left.Total + right.Total);
+    }
 }

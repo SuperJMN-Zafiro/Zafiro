@@ -13,5 +13,5 @@ public class Progress : IProgress
         Value = value;
     }
 
-    public Maybe<double> Value { get; }
+    public double Value { get; }
 }

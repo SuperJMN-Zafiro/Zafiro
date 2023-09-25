@@ -6,42 +6,45 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Zafiro.CSharpFunctionalExtensions;
 
 namespace Zafiro.Actions;
 
 public class CompositeAction : IAction<LongProgress>
 {
-    private readonly IList<IAction<LongProgress>> subActions;
     private readonly BehaviorSubject<LongProgress> progressSubject = new(new LongProgress());
+    private readonly IList<IAction<LongProgress>> actions;
 
-    public CompositeAction(IList<IAction<LongProgress>> subActions)
+    public CompositeAction(IList<IAction<LongProgress>> actions)
     {
-        this.subActions = subActions;
+        this.actions = actions;
     }
+
+    public int MaxConcurrency { get; set; } = 3;
 
     public IObservable<LongProgress> Progress => progressSubject.AsObservable();
 
     public async Task<Result> Execute(CancellationToken ct)
     {
-        var progressObservable = subActions
+        var progressObservable = actions
             .Select(x => x.Progress)
             .CombineLatest(GetProgress)
             .DistinctUntilChanged();
-        
-        progressObservable.Subscribe(progressSubject);
-        var tasks = subActions.Select(x => x.Execute(ct));
-        var results = await Task.WhenAll(tasks).ConfigureAwait(false);
-        return results.Combine();
+
+        using (_ = progressObservable.Subscribe(progressSubject))
+        {
+            var tasks = actions
+                .ToObservable()
+                .Select(action => Observable.FromAsync(() => action.Execute(ct)))
+                .Merge(MaxConcurrency)
+                .ToList();
+
+            var results = await tasks;
+            return results.Combine();
+        }
     }
 
     private static LongProgress GetProgress(IList<LongProgress> list)
     {
-        var total = list.Select(progress => progress.Total).ToList().Combine(longs => longs.Sum());
-        var current = list.Select(progress => progress.Current).ToList().Combine(longs => longs.Sum());
-        var maybeProgress = from c in current
-            from t in total
-            select new LongProgress(c, t);
-        return maybeProgress.GetValueOrDefault(new LongProgress());
+        return new LongProgress(list.Sum(x => x.Current), list.Sum(x => x.Total));
     }
 }
