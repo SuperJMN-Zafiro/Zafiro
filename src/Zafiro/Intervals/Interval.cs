@@ -68,6 +68,6 @@ namespace Zafiro.Intervals
             return Intersection(this, another);
         }
 
-        public bool IsEmpty => this.Equals(Empty);
+        public bool IsEmpty => Equals(Empty);
     }
 }

@@ -14,7 +14,7 @@ namespace Zafiro.Patterns.Either
             var mapSuccess = a
                 .MapLeft(el1 => b
                     .MapLeft(el2 => combineError(el1, el2))
-                    .MapRight(_ => Patterns.Either.Either.Error<TLeft, T1>(el1)))
+                    .MapRight(_ => Either.Error<TLeft, T1>(el1)))
                 .MapRight(x => b
                     .MapRight(y => map(x, y))
                     .MapLeft(el => el));
@@ -28,7 +28,7 @@ namespace Zafiro.Patterns.Either
             Either<TLeft, T3> c,
             Func<T1, T2, T3, Either<TLeft, TResult>> onSuccess, Func<TLeft, TLeft, TLeft> combineError)
         {
-            var r = Combine(a, b, (arg1, arg2) => Patterns.Either.Either.Success<TLeft, (T1, T2)>((arg1, arg2)), combineError);
+            var r = Combine(a, b, (arg1, arg2) => Either.Success<TLeft, (T1, T2)>((arg1, arg2)), combineError);
             return r.Combine(c, (o, arg3) => onSuccess(o.Item1, o.Item2, arg3), combineError);
         }
 
@@ -39,7 +39,7 @@ namespace Zafiro.Patterns.Either
             Either<TLeft, T4> d,
             Func<T1, T2, T3, T4, Either<TLeft, TResult>> onSuccess, Func<TLeft, TLeft, TLeft> combineError)
         {
-            var r = Combine(a, b, c, (x, y, z) => Patterns.Either.Either.Success<TLeft, (T1, T2, T3)>((x, y, z)), combineError);
+            var r = Combine(a, b, c, (x, y, z) => Either.Success<TLeft, (T1, T2, T3)>((x, y, z)), combineError);
             return r.Combine(d, (prev, cur) => onSuccess(prev.Item1, prev.Item2, prev.Item3, cur), combineError);
         }
 
@@ -51,7 +51,7 @@ namespace Zafiro.Patterns.Either
             Either<TLeft, T5> e,
             Func<T1, T2, T3, T4, T5, Either<TLeft, TResult>> onSuccess, Func<TLeft, TLeft, TLeft> combineError)
         {
-            var r = Combine(a, b, c, d, (x1, x2, x3, x4) => Patterns.Either.Either.Success<TLeft, (T1, T2, T3, T4)>((x1, x2, x3, x4)),
+            var r = Combine(a, b, c, d, (x1, x2, x3, x4) => Either.Success<TLeft, (T1, T2, T3, T4)>((x1, x2, x3, x4)),
                 combineError);
             return r.Combine(e, (prev, cur) => onSuccess(prev.Item1, prev.Item2, prev.Item3, prev.Item4, cur),
                 combineError);
@@ -65,7 +65,7 @@ namespace Zafiro.Patterns.Either
             return ea
                 .MapLeft(el1 => eb
                     .MapLeft(el2 => combineError(el1, el2))
-                    .MapRight(_ => Patterns.Either.Either.Error<TLeft, TRight>(el1)))
+                    .MapRight(_ => Either.Error<TLeft, TRight>(el1)))
                 .MapRight(x => eb
                     .MapRight(y => mapSuccess(x, y))
                     .MapLeft(el => el));
@@ -82,11 +82,11 @@ namespace Zafiro.Patterns.Either
                     .SelectMany(e => e.Left.ToEnumerable())
                     .Aggregate(combineError);
 
-                return Patterns.Either.Either.Error<TLeft, IEnumerable<TResult>>(aggregate);
+                return Either.Error<TLeft, IEnumerable<TResult>>(aggregate);
             }
 
             var p = errors.True.SelectMany(e => e.Right.ToEnumerable());
-            return Patterns.Either.Either.Success<TLeft, IEnumerable<TResult>>(p);
+            return Either.Success<TLeft, IEnumerable<TResult>>(p);
         }
     }
 }

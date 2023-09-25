@@ -37,7 +37,7 @@ namespace Zafiro.Mixins
 
         public static IEnumerable<string> ExtractFileNames(string str)
         {
-            return Regex.Matches(str, AbsoluteFilenameRegex).Cast<Match>().Select(x => x.Groups[0].Value);
+            return Regex.Matches(str, AbsoluteFilenameRegex).Select(x => x.Groups[0].Value);
         }
 
         public static string FindDuplicateSubstring(string s, bool allowOverlap = false)

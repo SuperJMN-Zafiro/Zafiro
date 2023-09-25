@@ -50,7 +50,7 @@ public static class EnumerableMixin
         this IEnumerable<TSource> source,
         IEqualityComparer<TSource> comparer = null)
     {
-        return source.DistinctUntilChangedByImpl<TSource, TSource>(Identity, comparer);
+        return source.DistinctUntilChangedByImpl(Identity, comparer);
     }
 
     /// <summary>

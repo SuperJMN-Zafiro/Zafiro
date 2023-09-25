@@ -23,19 +23,19 @@ public class LazyTask<T> : INotifyCompletion
 
     public T GetResult()
     {
-        lock (this._syncObj)
+        lock (_syncObj)
         {
-            if (this._exception != null)
+            if (_exception != null)
             {
-                ExceptionDispatchInfo.Throw(this._exception);
+                ExceptionDispatchInfo.Throw(_exception);
             }
 
-            if (!this.IsCompleted)
+            if (!IsCompleted)
             {
                 throw new Exception("Not Completed");
             }
 
-            return this._result;
+            return _result;
         }
     }
 
@@ -43,28 +43,28 @@ public class LazyTask<T> : INotifyCompletion
 
     public void OnCompleted(Action continuation)
     {
-        lock (this._syncObj)
+        lock (_syncObj)
         {
-            if (this._asyncStateMachine != null)
+            if (_asyncStateMachine != null)
             {
                 try
                 {
-                    this._asyncStateMachine.MoveNext();
+                    _asyncStateMachine.MoveNext();
                 }
                 finally
                 {
-                    this._asyncStateMachine = null;
+                    _asyncStateMachine = null;
                 }
             }
-            if (this._continuation == null)
+            if (_continuation == null)
             {
-                this._continuation = continuation;
+                _continuation = continuation;
             }
             else
             {
-                this._continuation += continuation;
+                _continuation += continuation;
             }
-            this.TryCallContinuation();
+            TryCallContinuation();
         }
     }
 
@@ -72,40 +72,40 @@ public class LazyTask<T> : INotifyCompletion
 
     internal void SetResult(T result)
     {
-        lock (this._syncObj)
+        lock (_syncObj)
         {
-            this._result = result;
-            this.IsCompleted = true;
-            this.TryCallContinuation();
+            _result = result;
+            IsCompleted = true;
+            TryCallContinuation();
         }
     }
 
     internal void SetException(Exception exception)
     {
-        lock (this._syncObj)
+        lock (_syncObj)
         {
-            this._exception = exception;
-            this.IsCompleted = true;
-            this.TryCallContinuation();
+            _exception = exception;
+            IsCompleted = true;
+            TryCallContinuation();
         }
     }
 
     internal void SetStateMachine(IAsyncStateMachine stateMachine)
     {
-        this._asyncStateMachine = stateMachine;
+        _asyncStateMachine = stateMachine;
     }
 
     private void TryCallContinuation()
     {
-        if (this.IsCompleted && this._continuation != null)
+        if (IsCompleted && _continuation != null)
         {
             try
             {
-                this._continuation();
+                _continuation();
             }
             finally
             {
-                this._continuation = null;
+                _continuation = null;
             }
         }
     }

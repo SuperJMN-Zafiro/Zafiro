@@ -31,7 +31,7 @@ public static class Ext
             {
                 return Observable.FromAsync(async ct =>
                 {
-                    await destination.WriteAsync(buffer.ToArray(), ct).AsTask();
+                    await destination.WriteAsync(buffer.ToArray(), ct).AsTask().ConfigureAwait(false);
                     return buffer;
                 });
             })
@@ -42,7 +42,7 @@ public static class Ext
     public static async Task<string> ReadToEnd(this Stream stream, Encoding? encoding = null)
     {
         using var reader = new StreamReader(stream, encoding ?? Encoding.Default);
-        return await reader.ReadToEndAsync();
+        return await reader.ReadToEndAsync().ConfigureAwait(false);
     }
 
     public static async Task<byte[]> ReadBytes(this Stream stream, CancellationToken ct = default)
@@ -51,7 +51,7 @@ public static class Ext
         var buffer = new byte[stream.Length];
         var receivedBytes = 0;
 
-        while ((read = await stream.ReadAsync(buffer, receivedBytes, buffer.Length, ct)) < receivedBytes)
+        while ((read = await stream.ReadAsync(buffer, receivedBytes, buffer.Length, ct).ConfigureAwait(false)) < receivedBytes)
         {
             receivedBytes += read;
         }
@@ -70,7 +70,7 @@ public static class Ext
                 int readBytes;
                 do
                 {
-                    readBytes = await stream.ReadAsync(buffer, ct);
+                    readBytes = await stream.ReadAsync(buffer, ct).ConfigureAwait(false);
                     for (var i = 0; i < readBytes; i++)
                     {
                         s.OnNext(buffer[i]);
@@ -97,7 +97,7 @@ public static class Ext
         var buffer = new byte[bufferSize];
 
         return Observable
-            .FromAsync(async ct => (bytesRead: await stream.ReadAsync(buffer, 0, buffer.Length, ct), buffer))
+            .FromAsync(async ct => (bytesRead: await stream.ReadAsync(buffer, 0, buffer.Length, ct).ConfigureAwait(false), buffer))
             .Repeat()
             .TakeWhile(x => x.bytesRead != 0)
             .Select(x => x.buffer)

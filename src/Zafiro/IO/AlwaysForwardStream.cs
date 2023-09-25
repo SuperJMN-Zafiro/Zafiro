@@ -15,7 +15,7 @@ public class AlwaysForwardStream : Stream
     public AlwaysForwardStream(Stream inner, long length)
     {
         this.inner = inner;
-        this.Length = length;
+        Length = length;
     }
 
     public override bool CanRead => inner.CanRead;
@@ -81,20 +81,20 @@ public class AlwaysForwardStream : Stream
 
     public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        await base.WriteAsync(buffer, offset, count, cancellationToken);
+        await base.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
         position += count;
     }
 
     public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = new())
     {
-        var readAsync = await base.ReadAsync(buffer, cancellationToken);
+        var readAsync = await base.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         position += readAsync;
         return readAsync;
     }
 
     public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = new())
     {
-        await base.WriteAsync(buffer, cancellationToken);
+        await base.WriteAsync(buffer, cancellationToken).ConfigureAwait(false);
         position += buffer.Length;
     }
 }
