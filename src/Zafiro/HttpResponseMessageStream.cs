@@ -32,7 +32,7 @@ public class HttpResponseMessageStream : Stream
 
     public static async Task<HttpResponseMessageStream> Create(HttpResponseMessage response)
     {
-        return new HttpResponseMessageStream(await response.Content.ReadAsStreamAsync(), response);
+        return new HttpResponseMessageStream(await response.Content.ReadAsStreamAsync().ConfigureAwait(false), response);
     }
 
     public override ValueTask DisposeAsync()

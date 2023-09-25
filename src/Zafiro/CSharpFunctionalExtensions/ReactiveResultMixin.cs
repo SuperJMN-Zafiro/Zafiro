@@ -2,7 +2,6 @@
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Zafiro.CSharpFunctionalExtensions;
 
 namespace Zafiro.CSharpFunctionalExtensions;
 

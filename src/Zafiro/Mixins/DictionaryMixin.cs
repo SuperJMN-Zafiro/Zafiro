@@ -25,7 +25,7 @@ namespace Zafiro.Mixins
                 return v;
             }
 
-            var value = await create();
+            var value = await create().ConfigureAwait(false);
             dict.Add(key, value);
             return value;
         }

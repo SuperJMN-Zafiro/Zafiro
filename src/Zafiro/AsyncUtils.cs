@@ -13,7 +13,7 @@ namespace Zafiro
 
             foreach (var item in items)
             {
-                results.Add(await selector(item));
+                results.Add(await selector(item).ConfigureAwait(false));
             }
 
             return results;

@@ -32,10 +32,8 @@ namespace Zafiro
                 {
                     return value;
                 }
-                else
-                {
-                    throw new KeyNotFoundException();
-                }
+
+                throw new KeyNotFoundException();
             }
 
             set
