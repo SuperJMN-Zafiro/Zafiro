@@ -37,6 +37,18 @@ public class AlwaysForwardStream : Stream
         inner.Flush();
     }
 
+    protected override void Dispose(bool disposing)
+    {
+        inner.Dispose();
+        base.Dispose(disposing);
+    }
+
+    public override ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        return inner.DisposeAsync();
+    }
+
     public override int Read(byte[] buffer, int offset, int count)
     {
         var read = inner.Read(buffer, offset, count);

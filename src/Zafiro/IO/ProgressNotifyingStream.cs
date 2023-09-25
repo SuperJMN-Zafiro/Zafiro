@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 
 namespace Zafiro.IO;
 
@@ -29,6 +30,12 @@ public class ProgressNotifyingStream : Stream
     {
         inner.Dispose();
         base.Dispose(disposing);
+    }
+
+    public override ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        return inner.DisposeAsync();
     }
 
     public override int Read(byte[] buffer, int offset, int count)

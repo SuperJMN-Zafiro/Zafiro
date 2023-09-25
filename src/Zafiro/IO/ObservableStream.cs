@@ -91,7 +91,13 @@ public class ObservableStream : Stream
 
     protected override void Dispose(bool disposing)
     {
-        this.inner.Dispose();
+        inner.Dispose();
         base.Dispose(disposing);
+    }
+
+    public override ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        return inner.DisposeAsync();
     }
 }
