@@ -8,5 +8,5 @@ namespace Zafiro.Actions;
 public interface IAction<T> where T : IProgress
 {
     IObservable<T> Progress { get; }
-    Task<Result> Execute(CancellationToken ct);
+    Task<Result> Execute(CancellationToken cancellationToken);
 }

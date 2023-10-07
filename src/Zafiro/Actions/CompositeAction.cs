@@ -23,7 +23,7 @@ public class CompositeAction : IAction<LongProgress>
 
     public IObservable<LongProgress> Progress => progressSubject.AsObservable();
 
-    public async Task<Result> Execute(CancellationToken ct)
+    public async Task<Result> Execute(CancellationToken cancellationToken)
     {
         var progressObservable = actions
             .Select(x => x.Progress)
@@ -34,7 +34,7 @@ public class CompositeAction : IAction<LongProgress>
         {
             var tasks = actions
                 .ToObservable()
-                .Select(action => Observable.FromAsync(() => action.Execute(ct)))
+                .Select(action => Observable.FromAsync(() => action.Execute(cancellationToken)))
                 .Merge(MaxConcurrency)
                 .ToList();
 
