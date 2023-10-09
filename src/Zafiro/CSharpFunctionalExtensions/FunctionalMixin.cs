@@ -132,7 +132,7 @@ public static class FunctionalMixin
         return task.Bind(maybe => maybe.Match(f => selector(f), () => Task.FromResult(Result.Success(Maybe<TResult>.None))));
     }
 
-    public static Result<Maybe<TResult>> Bind<TFirst, TResult>(
+    public static Result<Maybe<TResult>> Bind2<TFirst, TResult>(
         this Result<Maybe<TFirst>> task, 
         Func<TFirst, Result<Maybe<TResult>>> selector)
     {
