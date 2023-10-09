@@ -124,4 +124,18 @@ public static class FunctionalMixin
     {
         return result.Map(arg => (TCast) arg);
     }
+
+    public static Task<Result<Maybe<TResult>>> Bind<TFirst, TResult>(
+        this Task<Result<Maybe<TFirst>>> task, 
+        Func<TFirst, Task<Result<Maybe<TResult>>>> selector)
+    {
+        return task.Bind(maybe => maybe.Match(f => selector(f), () => Task.FromResult(Result.Success(Maybe<TResult>.None))));
+    }
+
+    public static Result<Maybe<TResult>> Bind<TFirst, TResult>(
+        this Result<Maybe<TFirst>> task, 
+        Func<TFirst, Result<Maybe<TResult>>> selector)
+    {
+        return task.Bind(maybe => maybe.Match(f => selector(f), () => Result.Success(Maybe<TResult>.None)));
+    }
 }
