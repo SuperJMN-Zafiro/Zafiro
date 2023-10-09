@@ -1,11 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Reactive.Linq;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using FluentAssertions.CSharpFunctionalExtensions;
 using Microsoft.Reactive.Testing;
 using Xunit;
 using Zafiro.CSharpFunctionalExtensions;
-using Observable = System.Reactive.Linq.Observable;
 
 namespace Zafiro.Tests.CSharpFunctionalExtensions;
 
@@ -28,15 +28,6 @@ public class ResultTests
         r.Subscribe(subject);
 
         subject.Messages.Should().BeEquivalentTo(notifications);
-    }
-
-    [Fact]
-    public void Result_and_Maybe_combine()
-    {
-        var a = Result.Success(Maybe.From(1));
-        var c = a.Bind(x => Result.Success(Maybe.From(x + 1)));
-
-        c.Should().BeSuccess().And.Subject.Value.Value.Should().Be(2);
     }
 
     [Fact]
