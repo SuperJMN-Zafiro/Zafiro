@@ -5,6 +5,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using DynamicData;
 using JetBrains.Annotations;
 using Zafiro.Mixins;
 
@@ -115,14 +116,14 @@ public static class FunctionalMixin
         return (await resultTask).AsMaybe();
     }
 
-    public static Result<TCast> Cast<T, TCast>(this Result<T> result) where T : TCast
+    public static Result<TDestination> Cast<TSource, TDestination>(this Result<TSource> source, Func<TSource, TDestination> conversionFactory)
     {
-        return result.Map(arg => (TCast) arg);
+        return source.Map(conversionFactory);
     }
 
-    public static Task<Result<TCast>> Cast<T, TCast>(this Task<Result<T>> result) where T : TCast
+    public static Task<Result<TDestination>> Cast<TSource, TDestination>(this Task<Result<TSource>> source, Func<TSource, TDestination> conversionFactory)
     {
-        return result.Map(arg => (TCast) arg);
+        return source.Map(conversionFactory);
     }
 
     public static Task<Result<Maybe<TResult>>> Bind<TFirst, TResult>(
