@@ -23,24 +23,30 @@ public class CompositeAction : IAction<LongProgress>
 
     public IObservable<LongProgress> Progress => progressSubject.AsObservable();
 
-    public async Task<Result> Execute(CancellationToken cancellationToken)
+    public Task<Result> Execute(CancellationToken cancellationToken)
     {
+        var tcs = new TaskCompletionSource<Result>();
+
         var progressObservable = actions
             .Select(x => x.Progress)
             .CombineLatest(GetProgress)
             .DistinctUntilChanged();
 
-        using (_ = progressObservable.Subscribe(progressSubject))
-        {
-            var tasks = actions
-                .ToObservable()
-                .Select(action => Observable.FromAsync(() => action.Execute(cancellationToken)))
-                .Merge(MaxConcurrency)
-                .ToList();
+        var subscription = progressObservable.Subscribe(progressSubject);
 
-            var results = await tasks;
-            return results.Combine();
-        }
+        var tasks = actions
+            .ToObservable()
+            .Select(action => Observable.FromAsync(() => action.Execute(cancellationToken)))
+            .Merge(MaxConcurrency)
+            .ToList();
+
+        tasks.Subscribe(result =>
+        {
+            subscription.Dispose();
+            tcs.SetResult(result.Combine());
+        }, cancellationToken);
+
+        return tcs.Task;
     }
 
     private static LongProgress GetProgress(IList<LongProgress> list)
