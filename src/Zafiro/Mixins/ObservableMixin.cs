@@ -49,6 +49,21 @@ public static class ObservableMixin
         return self.Select(s => !s.Any(char.IsWhiteSpace));
     }
 
+    public static IObservable<double> Rate(this IObservable<long> progress)
+    {
+        return progress
+            .Timestamp()
+            .Buffer(2, 1)
+            .Where(tsProgresses => tsProgresses.Count == 2)
+            .Scan((a, b) => a.Take(1).Concat(b).Take(1).Concat(b.Skip(1)).ToList())
+            .Select(x => new
+            {
+                current = x[1].Value,
+                delta = x[1].Timestamp.Subtract(x[0].Timestamp),
+            })
+            .Select(x => x.current / x.delta.TotalSeconds);
+    }
+
     public static IObservable<TimeSpan> EstimatedCompletion(this IObservable<double> progress)
     {
         return progress
