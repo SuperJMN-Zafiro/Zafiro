@@ -36,7 +36,15 @@ public class CompositeAction : IAction<LongProgress>
 
         var tasks = actions
             .ToObservable()
-            .Select(action => Observable.FromAsync(() => action.Execute(cancellationToken)))
+            .Select(action =>
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return Observable.Return(Result.Failure("Cancelled"));
+                }
+
+                return Observable.FromAsync(() => action.Execute(cancellationToken));
+            })
             .Merge(MaxConcurrency)
             .ToList();
 
