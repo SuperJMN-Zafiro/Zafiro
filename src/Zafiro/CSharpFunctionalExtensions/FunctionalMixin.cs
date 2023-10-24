@@ -40,7 +40,12 @@ public static class FunctionalMixin
 
     public static IEnumerable<string> NotNullOrEmpty(this IEnumerable<string> self) => self.Where(s => !string.IsNullOrWhiteSpace(s));
 
-    [Obsolete("You should not need this")]
+    /// <summary>
+    /// Signals when the emitted item doesn't have a value.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="self"></param>
+    /// <returns></returns>
     public static IObservable<Unit> Empties<T>(this IObservable<Maybe<T>> self) => self.Where(x => !x.HasValue).Select(_ => Unit.Default);
 
     public static bool AnyEmpty<T>(this IEnumerable<Maybe<T>> self) => self.Any(x => x.HasNoValue);
