@@ -20,23 +20,8 @@ public static class Ext
         return source
             .Buffer(bufferSize)
             .Select(chunk => Observable.FromAsync(ct => output.WriteAsync(chunk.ToArray(), 0, chunk.Count, ct), scheduler).Timeout(chunkReadTimeout.Value, scheduler))
-            .Concat();
-    }
-
-    public static IObservable<byte> WriteTo(this IObservable<byte> bytes, Stream destination, int bufferSize = 4096)
-    {
-        return bytes
-            .Buffer(bufferSize)
-            .Select(buffer =>
-            {
-                return Observable.FromAsync(async ct =>
-                {
-                    await destination.WriteAsync(buffer.ToArray(), ct).AsTask().ConfigureAwait(false);
-                    return buffer;
-                });
-            })
-            .Merge(1)
-            .SelectMany(list => list);
+            .Concat()
+            .LastAsync();
     }
 
     public static async Task<string> ReadToEnd(this Stream stream, Encoding? encoding = null)
