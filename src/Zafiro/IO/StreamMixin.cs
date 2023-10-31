@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Zafiro.IO;
 
-public static class Ext
+public static class StreamMixin
 {
     public static IObservable<Unit> DumpTo(this IObservable<byte> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, int bufferSize = 4096)
     {
