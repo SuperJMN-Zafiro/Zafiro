@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
@@ -133,5 +134,21 @@ public static class ObservableMixin
         })
         .Retry(retryCount)
         .Dematerialize();
+    }
+
+    public static Stream ToStream(this IObservable<byte> observable, int bufferSize = 4096, int maxConcurrency = 3)
+    {
+        var pipe = new System.IO.Pipelines.Pipe();
+
+        var reader = pipe.Reader;
+        var writer = pipe.Writer;
+
+        observable
+            .Buffer(bufferSize)
+            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray())))
+            .Merge(maxConcurrency)
+            .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); });
+
+        return reader.AsStream();
     }
 }
