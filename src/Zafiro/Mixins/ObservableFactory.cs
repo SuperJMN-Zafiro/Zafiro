@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Zafiro.Mixins;
 
-public static class ObservableEx
+public static class ObservableFactory
 {
-    public static IObservable<TSource> Using<TSource, TResource>(
+    public static IObservable<TSource> UsingAsync<TSource, TResource>(
         Func<Task<TResource>> resourceFactoryAsync,
         Func<TResource, IObservable<TSource>> observableFactory)
         where TResource : IDisposable =>
