@@ -146,7 +146,7 @@ public static class ObservableMixin
         observable
             .Buffer(bufferSize)
             .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray())))
-            .Merge(maxConcurrency)
+            .Concat()
             .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); });
 
         return reader.AsStream();
