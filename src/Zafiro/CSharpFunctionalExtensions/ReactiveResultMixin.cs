@@ -51,4 +51,17 @@ public static class ReactiveResultMixin
             ? collectionSelector(result.Value)
             : Observable.Empty<Result<K>>(), resultSelector: (result, result1) => result.CombineAndMap(result1, resultSelector));
     }
+
+    //public static Task<Result> TapIf(this Task<Result> resultTask, Task<Result<bool>> conditionResult, Func<Task> func)
+    //{
+    //    return conditionResult.Bind(condition => resultTask.TapIf(condition, func));
+    //}
+
+    public static Task<Result> TapIf(this Task<Result> resultTask, Task<Result<bool>> conditionResult, Action action)
+    {
+        return conditionResult.Bind(condition => resultTask.TapIf(condition, action));
+    }
+
+    //public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func) => await condition ? await resultTask.Tap(func) : await resultTask;
+    //public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action) => await condition ? await resultTask.Tap(action) : await resultTask;
 }
