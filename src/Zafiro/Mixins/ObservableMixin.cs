@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI;
 
 namespace Zafiro.Mixins;
@@ -150,5 +155,67 @@ public static class ObservableMixin
             .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); });
 
         return reader.AsStream();
+    }
+
+    /// <summary>
+    /// Thanks to Darrin Cullop.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="TItem"></typeparam>
+    /// <param name="parent"></param>
+    /// <param name="selector"></param>
+    /// <param name="collection"></param>
+    /// <returns></returns>
+    public static IDisposable UpdateCollectionWhenSomeOtherCollectionObservableChanges<T, TItem>(
+        this T parent, 
+        Expression<Func<T, ReadOnlyObservableCollection<TItem>>> selector, out ReadOnlyObservableCollection<TItem> collection) where TItem : notnull where T : ReactiveObject
+    {
+        CompositeDisposable disposable = new();
+        var source = new SourceList<TItem>()
+            .DisposeWith(disposable);
+
+        parent.WhenAnyValue(selector)
+            .Do(r => source.EditDiff(r))
+            .Select(r => r.ToObservableChangeSet())
+            .Switch()
+            .PopulateInto(source)
+            .DisposeWith(disposable);
+
+        source.Connect()
+            .Bind(out collection)
+            .Subscribe()
+            .DisposeWith(disposable);
+
+        return disposable;
+    }
+
+    /// <summary>
+    /// Makes a sequence of observable collection a single observable collection. The most recent observable collection will populate the <paramref name="collection"/> and will follow changes happening to it.
+    /// Thanks to Darrin Cullop.
+    /// </summary>
+    /// <typeparam name="T">Type of the items</typeparam>
+    /// <param name="observableOfCollections">Sequence of observable collections</param>
+    /// <param name="collection">The output collection</param>
+    /// <returns></returns>
+    public static IDisposable Bind<T>(
+        this IObservable<ReadOnlyObservableCollection<T>> observableOfCollections, out ReadOnlyObservableCollection<T> collection)
+    {
+        CompositeDisposable disposable = new();
+        var source = new SourceList<T>()
+            .DisposeWith(disposable);
+
+        observableOfCollections
+            .Do(r => source.EditDiff(r))
+            .Select(obsCollection => obsCollection.ToObservableChangeSet())
+            .Switch()
+            .PopulateInto(source)
+            .DisposeWith(disposable);
+
+        source.Connect()
+            .Bind(out collection)
+            .Subscribe()
+            .DisposeWith(disposable);
+
+        return disposable;
     }
 }
