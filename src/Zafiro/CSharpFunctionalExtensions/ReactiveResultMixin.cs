@@ -52,16 +52,28 @@ public static class ReactiveResultMixin
             : Observable.Empty<Result<K>>(), resultSelector: (result, result1) => result.CombineAndMap(result1, resultSelector));
     }
 
-    //public static Task<Result> TapIf(this Task<Result> resultTask, Task<Result<bool>> conditionResult, Func<Task> func)
-    //{
-    //    return conditionResult.Bind(condition => resultTask.TapIf(condition, func));
-    //}
+    public static Task<Result> TapIf(this Task<Result> resultTask, Task<Result<bool>> conditionResult, Func<Task> func)
+    {
+        return conditionResult.Bind(condition => resultTask.TapIf(condition, func));
+    }
 
     public static Task<Result> TapIf(this Task<Result> resultTask, Task<Result<bool>> conditionResult, Action action)
     {
         return conditionResult.Bind(condition => resultTask.TapIf(condition, action));
     }
 
-    //public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func) => await condition ? await resultTask.Tap(func) : await resultTask;
-    //public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action) => await condition ? await resultTask.Tap(action) : await resultTask;
+    public static Task<Result<bool>> Not(this Task<Result<bool>> result)
+    {
+        return result.Map(b => !b);
+    }
+
+    public static async Task<Result> TapIf(this Result result, Task<Result<bool>> condition, Action action) => result.Map(async () =>
+    {
+        await condition.Tap(action);
+    });
+
+    public static async Task<Result> TapIfB(this Result result, Task<bool> condition, Func<Task> func) => await condition ? await result.Tap(func) : await Task.FromResult(result);
+    public static async Task<Result<T>> TapIf<T>(this Result<T> result, Task<bool> condition, Func<Task<T>> func) => await condition ? await result.Tap(func) : await Task.FromResult(result);
+    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func) => await condition ? await resultTask.Tap(func) : await resultTask;
+    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action) => await condition ? await resultTask.Tap(action) : await resultTask;
 }
