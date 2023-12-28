@@ -10,6 +10,7 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI;
+using Zafiro.Actions;
 
 namespace Zafiro.Mixins;
 
@@ -217,5 +218,21 @@ public static class ObservableMixin
             .DisposeWith(disposable);
 
         return disposable;
+    }
+
+    public static IObservable<byte> ProgressDo(this IObservable<byte> bytes, long length, Action<LongProgress> action, IScheduler? scheduler = null)
+    {
+        long totalBytes = 0;
+
+        return bytes
+            .Buffer(TimeSpan.FromSeconds(1), scheduler: scheduler ?? Scheduler.Default)
+            .Where(list => list.Any())
+            .Do(list =>
+            {
+                totalBytes += list.Count; 
+                var progress = new LongProgress(totalBytes, length);
+                action(progress);
+            })
+            .SelectMany(listOfBytes => listOfBytes);
     }
 }
