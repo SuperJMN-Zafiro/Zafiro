@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Zafiro.Mixins;
+using Zafiro.Reactive;
 
 namespace Zafiro.CSharpFunctionalExtensions;
 
