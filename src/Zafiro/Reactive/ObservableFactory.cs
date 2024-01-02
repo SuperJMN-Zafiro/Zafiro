@@ -2,7 +2,7 @@
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
-namespace Zafiro.Mixins;
+namespace Zafiro.Reactive;
 
 public static class ObservableFactory
 {

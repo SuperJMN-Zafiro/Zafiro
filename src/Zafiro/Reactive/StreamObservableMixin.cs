@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 
-namespace Zafiro.IO
+namespace Zafiro.Reactive
 {
     public static class StreamObservableMixin
     {
