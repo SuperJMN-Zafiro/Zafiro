@@ -7,8 +7,9 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Zafiro;
 
-namespace Zafiro.IO;
+namespace Zafiro.Reactive;
 
 public static class StreamMixin
 {
