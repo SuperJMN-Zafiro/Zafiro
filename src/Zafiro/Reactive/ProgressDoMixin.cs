@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -7,31 +6,28 @@ using Zafiro.Actions;
 
 namespace Zafiro.Reactive;
 
+
+/// Thanks to Darrin Cullop for these methods.
 public static class ProgressDoMixin
 {
-    public static IObservable<byte> ProgressDo(this IObservable<byte> bytes, long length, Action<LongProgress> action, IScheduler? scheduler = null)
+    /// <summary>
+    /// Like Do operator, but provides the total progress of the bytes pushed through <paramref name="bytes"/>. Useful for reporting progress.
+    /// </summary>
+    public static IObservable<byte> ProgressDo(this IObservable<byte> bytes, Action<LongProgress> action, long length, TimeSpan bufferTime, IScheduler? scheduler = null)
     {
-        long totalBytes = 0;
-
-        return bytes
-            .Buffer(TimeSpan.FromSeconds(1), scheduler: scheduler ?? Scheduler.Default)
-            .Where(list => list.Any())
-            .Do(list =>
-            {
-                totalBytes += list.Count; 
-                var progress = new LongProgress(totalBytes, length);
-                action(progress);
-            })
-            .SelectMany(listOfBytes => listOfBytes);
+        return ProgressDo(bytes, current => action(new LongProgress(current, length)), bufferTime, scheduler);
     }
 
-    public static IObservable<byte> ProgressDo(this IObservable<byte> bytes, TimeSpan bufferTime, Action<long> action, IScheduler? scheduler = null) => Observable.Create<byte>(observer =>
+    /// <summary>
+    /// Like Do operator, but provides the number of the bytes pushed through <paramref name="bytes"/>.
+    /// </summary>
+    public static IObservable<byte> ProgressDo(this IObservable<byte> bytes, Action<long> action, TimeSpan bufferTime, IScheduler? scheduler = null) => Observable.Create<byte>(observer =>
     {
         var totalBytes = 0L;
         var shared = bytes.Publish();
         var subscribe = shared.Buffer(bufferTime, scheduler: scheduler ?? Scheduler.Default)
             .Where(list => list.Count > 0)  // Slightly more efficient than Any
-            .Subscribe(list => action(totalBytes += list.Count));
+            .Subscribe(list => action(totalBytes += list.Count), static err => { });
 
         return new CompositeDisposable(shared.SubscribeSafe(observer), subscribe, shared.Connect());
     });
