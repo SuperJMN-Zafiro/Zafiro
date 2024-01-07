@@ -10,10 +10,6 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI;
-using Zafiro;
-using Zafiro.Actions;
-using Zafiro.Mixins;
-using Zafiro.Reactive;
 
 namespace Zafiro.Reactive;
 
