@@ -152,7 +152,7 @@ public static class ObservableMixin
             .Buffer(bufferSize)
             .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray())))
             .Concat()
-            .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); });
+            .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
 
         return reader.AsStream();
     }
