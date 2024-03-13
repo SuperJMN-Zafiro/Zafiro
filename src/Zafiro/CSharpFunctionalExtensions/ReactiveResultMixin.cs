@@ -14,7 +14,7 @@ public static class ReactiveResultMixin
 
     public static IObservable<Result<K>> Map<T, K>(this IObservable<Result<T>> observable, Func<T, Task<K>> function)
     {
-        return observable.SelectMany(t => t.Map(function));
+        return observable.SelectMany(t => AsyncResultExtensionsRightOperand.Map(t, function));
     }
 
     public static IObservable<Result<K>> Bind<T, K>(this IObservable<Result<T>> observable, Func<T, Task<Result<K>>> function)
@@ -67,7 +67,7 @@ public static class ReactiveResultMixin
         return result.Map(b => !b);
     }
 
-    public static async Task<Result> TapIf(this Result result, Task<Result<bool>> condition, Action action) => result.Map(async () =>
+    public static async Task<Result> TapIf(this Result result, Task<Result<bool>> condition, Action action) => ResultExtensions.Map(result, async () =>
     {
         await condition.Tap(action);
     });
@@ -76,4 +76,30 @@ public static class ReactiveResultMixin
     public static async Task<Result<T>> TapIf<T>(this Result<T> result, Task<bool> condition, Func<Task<T>> func) => await condition ? await result.Tap(func) : await Task.FromResult(result);
     public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func) => await condition ? await resultTask.Tap(func) : await resultTask;
     public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action) => await condition ? await resultTask.Tap(action) : await resultTask;
+    public static async Task<Result> Map<T>(this Task<Result<T>> resultTask, Func<T, Task> func)
+    {
+        return await (await resultTask).Map(func);
+    }
+    
+    public static async Task<Result> Map<T>(this Result<T> result, Func<T, Task> func)
+    {
+        if (result.IsFailure)
+        {
+            return Result.Failure(result.Error);
+        }
+
+        await func(result.Value);
+        return Result.Success();
+    }
+    
+    public static async Task<Result> Map(this Result result, Func<Task> func)
+    {
+        if (result.IsFailure)
+        {
+            return Result.Failure(result.Error);
+        }
+
+        await func();
+        return Result.Success();
+    }
 }
