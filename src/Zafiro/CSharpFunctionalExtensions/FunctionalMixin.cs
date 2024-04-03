@@ -91,4 +91,17 @@ public static class FunctionalMixin
     {
         return task.Bind(maybe => maybe.Match(f => selector(f), () => Result.Success(Maybe<TResult>.None)));
     }
+
+    public static async Task<Result<IEnumerable<TResult>>> MapAndCombine<TInput, TResult>(
+        this Result<IEnumerable<Task<Result<TInput>>>> enumerableOfTaskResults,
+        Func<TInput, TResult> selector)
+    {
+        var result = await enumerableOfTaskResults.Map(async taskResults =>
+        {
+            var results = await Task.WhenAll(taskResults).ConfigureAwait(false);
+            return results.Select(x => x.Map(selector)).Combine();
+        }).ConfigureAwait(false);
+
+        return result;
+    }
 }
