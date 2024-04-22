@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 
@@ -34,5 +35,16 @@ public static class ResultFactory
     public static Task<Result<K>> CombineAndBind<T, Q, K>(this Task<Result<T>> one, Task<Result<Q>> another, Func<T, Q, Task<Result<K>>> combineFunction)
     {
         return one.Bind(x => another.Bind(y => combineFunction(x, y)));
+    }
+    
+    public static async Task<Result> Using(this Task<Result<Stream>> streamResult, Func<Stream, Task> useStream)
+    {
+        return await streamResult.Tap(async stream =>
+        {
+            await using (stream)
+            {
+                await useStream(stream);
+            }
+        });
     }
 }
