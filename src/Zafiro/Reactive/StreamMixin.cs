@@ -55,27 +55,29 @@ public static class StreamMixin
     
     public static IObservable<byte[]> ToObservableChunked(this Stream stream, int bufferSize = 4096)
     {
-        return Observable.Create<byte[]>(async (s, ct) =>
+        return Observable.Create<byte[]>(async (observer, cancellationToken) =>
         {
             try
             {
                 var buffer = new byte[bufferSize];
-
-                int readBytes;
+                int bytesRead;
                 do
                 {
-                    readBytes = await stream.ReadAsync(buffer, ct).ConfigureAwait(false);
-                    s.OnNext(buffer);
-                } while (readBytes > 0);
-
-                s.OnCompleted();
+                    bytesRead = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                    if (bytesRead > 0)
+                    {
+                        observer.OnNext(buffer[..bytesRead]);
+                    }
+                } while (bytesRead > 0);
+                observer.OnCompleted();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                s.OnError(e);
+                observer.OnError(exception);
             }
         });
     }
+
 
     public static IObservable<byte> ToObservable(this Stream stream, int bufferSize = 4096)
     {
