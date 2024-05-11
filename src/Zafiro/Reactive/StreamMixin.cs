@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -9,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Zafiro.DataModel;
 
 namespace Zafiro.Reactive;
 
@@ -41,14 +41,13 @@ public static class StreamMixin
         return await reader.ReadToEndAsync().ConfigureAwait(false);
     }
 
-    public static async Task<byte[]> ReadBytes(this Stream stream, CancellationToken ct = default)
+    public static async Task<byte[]> ReadBytes(this Stream stream, int bufferSize = 4096, CancellationToken ct = default)
     {
         if (stream == null)
         {
             throw new ArgumentNullException(nameof(stream));
         }
-        
-        const int bufferSize = 4096; // Tamaño del buffer para la lectura del stream
+
         var buffer = new byte[bufferSize];
         int bytesRead;
         var allBytes = new List<byte>();
@@ -61,105 +60,5 @@ public static class StreamMixin
             }
         } while (bytesRead > 0);
         return allBytes.ToArray();
-    }
-
-    public static IObservable<byte[]> ToObservableChunked(this Func<Task<Stream>> streamTaskFactory, int bufferSize = 4096)
-    {
-        return Observable.Create<byte[]>(async (observer, cancellationToken) =>
-        {
-            try
-            {
-                var stream = await streamTaskFactory();
-                await ProcessStream(observer, cancellationToken, stream, bufferSize);
-            }
-            catch (Exception exception)
-            {
-                observer.OnError(exception);
-            }
-        });
-    }
-    public static IObservable<byte[]> ToObservableChunked(this Func<Stream> streamFactory, int bufferSize = 4096)
-    {
-        return Observable.Create<byte[]>(async (observer, cancellationToken) =>
-        {
-            try
-            {
-                var stream = streamFactory();
-                await ProcessStream(observer, cancellationToken, stream, bufferSize);
-            }
-            catch (Exception exception)
-            {
-                observer.OnError(exception);
-            }
-        });
-    }
-    private static async Task ProcessStream(IObserver<byte[]> observer, CancellationToken cancellationToken, Stream stream, int bufferSize)
-    {
-        var buffer = new byte[bufferSize];
-        int bytesRead;
-        do
-        {
-            bytesRead = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
-            if (bytesRead > 0)
-            {
-                observer.OnNext(buffer[..bytesRead]);
-            }
-        } 
-        while (bytesRead > 0);
-        observer.OnCompleted();
-    }
-
-    
-    public static IObservable<byte[]> ToObservableChunked(this Stream stream, int bufferSize = 4096)
-    {
-        return Observable.Create<byte[]>(async (observer, cancellationToken) =>
-        {
-            try
-            {
-                var buffer = new byte[bufferSize];
-                int bytesRead;
-                do
-                {
-                    bytesRead = await stream.ReadAsync(buffer).ConfigureAwait(false);
-                    if (bytesRead > 0)
-                    {
-                        observer.OnNext(buffer[..bytesRead]);
-                    }
-                } while (bytesRead > 0);
-                observer.OnCompleted();
-            }
-            catch (Exception exception)
-            {
-                Debugger.Launch();
-                observer.OnError(exception);
-            }
-        });
-    }
-    
-    public static IObservable<byte> ToObservable(this Stream stream, int bufferSize = 4096)
-    {
-        return Observable.Create<byte>(async (s, ct) =>
-        {
-            try
-            {
-                var buffer = new byte[bufferSize];
-
-                int readBytes;
-                do
-                {
-                    readBytes = await stream.ReadAsync(buffer, ct).ConfigureAwait(false);
-                    for (var i = 0; i < readBytes; i++)
-                    {
-                        s.OnNext(buffer[i]);
-                    }
-                } while (readBytes > 0);
-
-                s.OnCompleted();
-            }
-            catch (Exception e)
-            {
-                s.OnError(e);
-            }
-        });
     }
 }

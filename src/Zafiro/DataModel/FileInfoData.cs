@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.IO.Abstractions;
 using Zafiro.Reactive;
 
@@ -8,7 +9,7 @@ public class FileInfoData : IData
 {
     public FileInfoData(IFileInfo file)
     {
-        Bytes = StreamMixin.ToObservableChunked(file.OpenRead);
+        Bytes = ((Func<Stream>) file.OpenRead).Chunked(4096);
         Length = file.Length;
     }
 
