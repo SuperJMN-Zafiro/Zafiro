@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -103,5 +104,38 @@ public static class FunctionalMixin
         }).ConfigureAwait(false);
 
         return result;
+    }
+    
+    public static async Task<Result> Using(this Task<Result<Stream>> streamResult, Func<Stream, Task> useStream)
+    {
+        return await streamResult.Tap(async stream =>
+        {
+            await using (stream)
+            {
+                await useStream(stream);
+            }
+        });
+    }
+
+    public static async Task<Maybe<Task>> Tap<T>(this Task<Maybe<T>> maybeTask, Action<T> action)
+    {
+        var maybe = await maybeTask;
+        
+        if (maybe.HasValue)
+        {
+            action(maybe.Value);
+        }
+        
+        return maybeTask;
+    }
+    
+    public static Maybe<T> Tap<T>(this Maybe<T> maybe, Action<T> action)
+    {
+        if (maybe.HasValue)
+        {
+            action(maybe.Value);
+        }
+        
+        return maybe;
     }
 }

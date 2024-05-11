@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -63,7 +64,7 @@ public static class StreamMixin
                 int bytesRead;
                 do
                 {
-                    bytesRead = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+                    bytesRead = await stream.ReadAsync(buffer).ConfigureAwait(false);
                     if (bytesRead > 0)
                     {
                         observer.OnNext(buffer[..bytesRead]);
@@ -73,12 +74,12 @@ public static class StreamMixin
             }
             catch (Exception exception)
             {
+                Debugger.Launch();
                 observer.OnError(exception);
             }
         });
     }
-
-
+    
     public static IObservable<byte> ToObservable(this Stream stream, int bufferSize = 4096)
     {
         return Observable.Create<byte>(async (s, ct) =>
