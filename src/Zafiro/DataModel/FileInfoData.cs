@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO.Abstractions;
-using System.Reactive.Linq;
 using Zafiro.Reactive;
 
 namespace Zafiro.DataModel;
@@ -9,7 +8,7 @@ public class FileInfoData : IData
 {
     public FileInfoData(IFileInfo file)
     {
-        Bytes = Observable.Using(file.OpenRead, stream => stream.ToObservableChunked());
+        Bytes = StreamMixin.ToObservableChunked(file.OpenRead);
         Length = file.Length;
     }
 

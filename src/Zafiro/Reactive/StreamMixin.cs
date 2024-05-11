@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -42,17 +43,72 @@ public static class StreamMixin
 
     public static async Task<byte[]> ReadBytes(this Stream stream, CancellationToken ct = default)
     {
-        int read;
-        var buffer = new byte[stream.Length];
-        var receivedBytes = 0;
-
-        while ((read = await stream.ReadAsync(buffer, receivedBytes, buffer.Length, ct).ConfigureAwait(false)) < receivedBytes)
+        if (stream == null)
         {
-            receivedBytes += read;
+            throw new ArgumentNullException(nameof(stream));
         }
-
-        return buffer;
+        
+        const int bufferSize = 4096; // Tamaño del buffer para la lectura del stream
+        var buffer = new byte[bufferSize];
+        int bytesRead;
+        var allBytes = new List<byte>();
+        do
+        {
+            bytesRead = await stream.ReadAsync(buffer, 0, bufferSize, ct).ConfigureAwait(false);
+            if (bytesRead > 0)
+            {
+                allBytes.AddRange(buffer.Take(bytesRead));
+            }
+        } while (bytesRead > 0);
+        return allBytes.ToArray();
     }
+
+    public static IObservable<byte[]> ToObservableChunked(this Func<Task<Stream>> streamTaskFactory, int bufferSize = 4096)
+    {
+        return Observable.Create<byte[]>(async (observer, cancellationToken) =>
+        {
+            try
+            {
+                var stream = await streamTaskFactory();
+                await ProcessStream(observer, cancellationToken, stream, bufferSize);
+            }
+            catch (Exception exception)
+            {
+                observer.OnError(exception);
+            }
+        });
+    }
+    public static IObservable<byte[]> ToObservableChunked(this Func<Stream> streamFactory, int bufferSize = 4096)
+    {
+        return Observable.Create<byte[]>(async (observer, cancellationToken) =>
+        {
+            try
+            {
+                var stream = streamFactory();
+                await ProcessStream(observer, cancellationToken, stream, bufferSize);
+            }
+            catch (Exception exception)
+            {
+                observer.OnError(exception);
+            }
+        });
+    }
+    private static async Task ProcessStream(IObserver<byte[]> observer, CancellationToken cancellationToken, Stream stream, int bufferSize)
+    {
+        var buffer = new byte[bufferSize];
+        int bytesRead;
+        do
+        {
+            bytesRead = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
+            if (bytesRead > 0)
+            {
+                observer.OnNext(buffer[..bytesRead]);
+            }
+        } 
+        while (bytesRead > 0);
+        observer.OnCompleted();
+    }
+
     
     public static IObservable<byte[]> ToObservableChunked(this Stream stream, int bufferSize = 4096)
     {
