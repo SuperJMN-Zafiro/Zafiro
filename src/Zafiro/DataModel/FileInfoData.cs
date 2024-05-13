@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.IO.Abstractions;
-using Zafiro.Reactive;
 
 namespace Zafiro.DataModel;
 
