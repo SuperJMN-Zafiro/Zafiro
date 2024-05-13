@@ -17,7 +17,7 @@ public static class StringMixin
         return new string(array.ToArray());
     }
 
-    public static string Join(this IEnumerable<string> strings, string separator = "\n")
+    public static string JoinWith(this IEnumerable<string> strings, string separator = "\n")
     {
         return string.Join(separator, strings);
     }
