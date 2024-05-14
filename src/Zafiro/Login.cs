@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
 namespace Zafiro;
@@ -13,7 +14,7 @@ public class Login : ValueObject
 
     public MachineUser User { get; }
     public string Password { get; }
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return User;
         yield return Password;

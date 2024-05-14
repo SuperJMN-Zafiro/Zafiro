@@ -2,7 +2,7 @@
 
 namespace Zafiro;
 
-public class CaseInsensitiveString
+public class CaseInsensitiveString : IComparable
 {
     public CaseInsensitiveString(string value)
     {
@@ -54,5 +54,13 @@ public class CaseInsensitiveString
     public override string ToString()
     {
         return Value;
+    }
+
+    public int CompareTo(object? obj)
+    {
+        if (obj == null) return 1;
+        if (obj is CaseInsensitiveString otherString)
+            return StringComparer.InvariantCultureIgnoreCase.Compare(this.Value, otherString.Value);
+        throw new ArgumentException("Object is not a CaseInsensitiveString");
     }
 }

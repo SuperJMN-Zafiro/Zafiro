@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CSharpFunctionalExtensions;
 
 namespace Zafiro;
@@ -23,7 +24,7 @@ public class Host : ValueObject
         return new Host(username);
     }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return Identifier;
     }

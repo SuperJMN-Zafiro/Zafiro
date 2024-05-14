@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using Zafiro.DataModel;
 
 namespace Zafiro.Reactive;
 
@@ -39,70 +41,24 @@ public static class StreamMixin
         return await reader.ReadToEndAsync().ConfigureAwait(false);
     }
 
-    public static async Task<byte[]> ReadBytes(this Stream stream, CancellationToken ct = default)
+    public static async Task<byte[]> ReadBytes(this Stream stream, int bufferSize = 4096, CancellationToken ct = default)
     {
-        int read;
-        var buffer = new byte[stream.Length];
-        var receivedBytes = 0;
-
-        while ((read = await stream.ReadAsync(buffer, receivedBytes, buffer.Length, ct).ConfigureAwait(false)) < receivedBytes)
+        if (stream == null)
         {
-            receivedBytes += read;
+            throw new ArgumentNullException(nameof(stream));
         }
 
-        return buffer;
-    }
-    
-    public static IObservable<byte[]> ToObservableChunked(this Stream stream, int bufferSize = 4096)
-    {
-        return Observable.Create<byte[]>(async (observer, cancellationToken) =>
+        var buffer = new byte[bufferSize];
+        int bytesRead;
+        var allBytes = new List<byte>();
+        do
         {
-            try
+            bytesRead = await stream.ReadAsync(buffer, 0, bufferSize, ct).ConfigureAwait(false);
+            if (bytesRead > 0)
             {
-                var buffer = new byte[bufferSize];
-                int bytesRead;
-                do
-                {
-                    bytesRead = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
-                    if (bytesRead > 0)
-                    {
-                        observer.OnNext(buffer[..bytesRead]);
-                    }
-                } while (bytesRead > 0);
-                observer.OnCompleted();
+                allBytes.AddRange(buffer.Take(bytesRead));
             }
-            catch (Exception exception)
-            {
-                observer.OnError(exception);
-            }
-        });
-    }
-
-
-    public static IObservable<byte> ToObservable(this Stream stream, int bufferSize = 4096)
-    {
-        return Observable.Create<byte>(async (s, ct) =>
-        {
-            try
-            {
-                var buffer = new byte[bufferSize];
-
-                int readBytes;
-                do
-                {
-                    readBytes = await stream.ReadAsync(buffer, ct).ConfigureAwait(false);
-                    for (var i = 0; i < readBytes; i++)
-                    {
-                        s.OnNext(buffer[i]);
-                    }
-                } while (readBytes > 0);
-
-                s.OnCompleted();
-            }
-            catch (Exception e)
-            {
-                s.OnError(e);
-            }
-        });
+        } while (bytesRead > 0);
+        return allBytes.ToArray();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -236,5 +237,15 @@ public static class ObservableMixin
 
             return new CompositeDisposable(subscription, serialDisposable);
         });
+    }
+    
+    public static IObservable<T> Flatten<T>(this IObservable<IObservable<T>> enumerable)
+    {
+        return enumerable.SelectMany(x => x);
+    }
+    
+    public static IObservable<T> Flatten<T>(this IObservable<IEnumerable<T>> enumerable)
+    {
+        return enumerable.SelectMany(x => x);
     }
 }

@@ -170,4 +170,9 @@ public static class EnumerableMixin
     {
         return self.Select(b => !b);
     }
+    
+    public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> enumerable)
+    {
+        return enumerable.SelectMany(x => x);
+    }
 }
