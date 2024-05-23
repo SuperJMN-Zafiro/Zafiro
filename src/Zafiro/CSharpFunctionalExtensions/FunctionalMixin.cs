@@ -7,6 +7,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
+using Serilog;
+using Serilog.Core;
 using Zafiro.Reactive;
 
 namespace Zafiro.CSharpFunctionalExtensions;
@@ -167,5 +169,17 @@ public static class FunctionalMixin
     public static Task<Result<IEnumerable<TResult>>> BindMany<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, Task<Result<TResult>>> selector)
     {
         return taskResult.Bind(inputs => inputs.Select(selector).Combine());
+    }
+
+    public static void Log(this Result result, ILogger logger, string successString = "Success")
+    {
+        result
+            .Tap(() => logger.Information(successString))
+            .TapError(Serilog.Log.Error);
+    }
+    
+    public static async Task Log(this Task<Result> result, ILogger? logger = default, string successString = "Success")
+    {
+        (await result).Log(logger ?? Serilog.Log.Logger, successString);
     }
 }
