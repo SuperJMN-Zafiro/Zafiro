@@ -157,6 +157,21 @@ public static class ObservableMixin
 
         return reader.AsStream();
     }
+    
+    public static Stream ToStream(this IObservable<byte[]> observable)
+    {
+        var pipe = new System.IO.Pipelines.Pipe();
+
+        var reader = pipe.Reader;
+        var writer = pipe.Writer;
+
+        observable
+            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer)))
+            .Concat()
+            .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
+
+        return reader.AsStream();
+    }
 
     /// <summary>
     /// Thanks to Darrin Cullop.
