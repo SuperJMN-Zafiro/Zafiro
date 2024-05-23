@@ -137,4 +137,35 @@ public static class FunctionalMixin
         
         return maybe;
     }
+    
+    /// <summary>
+    /// Binds a collection of results to a function, and combines the results into a single task.
+    /// </summary>
+    /// <typeparam name="TInput">The type of the input values.</typeparam>
+    /// <typeparam name="TResult">The type of the result values.</typeparam>
+    /// <param name="taskResult">The task containing a collection of results.</param>
+    /// <param name="selector">A function to apply to each result.</param>
+    /// <returns>A task containing a collection of results after applying the selector function.</returns>
+    public static Task<Result<IEnumerable<TResult>>> BindMany<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, Result<TResult>> selector)
+    {
+        return taskResult.Bind(inputs => inputs.Select(selector).Combine());
+    }
+    
+    /// <summary>
+    /// Transforms the results of a task using a provided selector function.
+    /// </summary>
+    /// <typeparam name="TInput">The type of the input values.</typeparam>
+    /// <typeparam name="TResult">The type of the result values.</typeparam>
+    /// <param name="taskResult">The task containing a collection of results.</param>
+    /// <param name="selector">A function to apply to each result.</param>
+    /// <returns>A task containing a collection of results after applying the selector function.</returns>
+    public static Task<Result<IEnumerable<TResult>>> Map<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, TResult> selector)
+    {
+        return taskResult.Map(inputs => inputs.Select(selector));
+    }
+
+    public static Task<Result<IEnumerable<TResult>>> BindMany<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, Task<Result<TResult>>> selector)
+    {
+        return taskResult.Bind(inputs => inputs.Select(selector).Combine());
+    }
 }
