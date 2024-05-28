@@ -105,6 +105,20 @@ public static class ReactiveResultMixin
         return Result.Success();
     }
 
+    public static async Task<Result<IEnumerable<TResult>>> MapEach<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> input, Func<TInput, Task<TResult>> selector)
+    {
+        var mapEach = input
+            .Map(async x =>
+            {
+                var tasks = x.Select(selector);
+                var whenAll = await Task.WhenAll(tasks);
+                return whenAll.Cast<TResult>();
+            });
+
+        var result = await mapEach;
+        return result;
+    }
+
     public static Task<Result<IEnumerable<TResult>>> MapEach<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> input, Func<TInput, TResult> selector)
     {
         return input.Map(x => x.Select(selector));

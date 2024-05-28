@@ -14,7 +14,7 @@ public static class ReactiveData
         {
             try
             {
-                var stream = await streamTaskFactory();
+                await using var stream = await streamTaskFactory();
                 await ProcessStream(observer, cancellationToken, stream, bufferSize);
             }
             catch (Exception exception)
@@ -29,7 +29,7 @@ public static class ReactiveData
         {
             try
             {
-                var stream = streamFactory();
+                await using var stream = streamFactory();
                 await ProcessStream(observer, cancellationToken, stream, bufferSize);
             }
             catch (Exception exception)
