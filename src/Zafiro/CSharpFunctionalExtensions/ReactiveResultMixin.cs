@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -101,5 +103,20 @@ public static class ReactiveResultMixin
 
         await func();
         return Result.Success();
+    }
+
+    public static Task<Result<IEnumerable<TResult>>> MapEach<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> input, Func<TInput, TResult> selector)
+    {
+        return input.Map(x => x.Select(selector));
+    }
+    
+    public static Result<IEnumerable<TResult>> MapEach<TInput, TResult>(this Result<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
+    {
+        return input.Map(x => x.Select(selector));
+    }
+    
+    public static Maybe<IEnumerable<TResult>> MapEach<TInput, TResult>(this Maybe<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
+    {
+        return input.Map(x => x.Select(selector));
     }
 }
