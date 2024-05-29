@@ -107,6 +107,26 @@ public static class FunctionalMixin
         return result;
     }
     
+    /// <summary>
+    /// Binds and combines the results of the selector function applied to each item in the task of results.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input collection.</typeparam>
+    /// <typeparam name="K">The type of items in the result collection.</typeparam>
+    /// <param name="taskOfResults">A task that produces a Result of an IEnumerable of T.</param>
+    /// <param name="selector">A function to apply to each item in the input collection.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result of an IEnumerable of K.</returns>
+    public static Task<Result<IEnumerable<K>>> BindAndCombine<T, K>(
+        this Task<Result<IEnumerable<T>>> taskOfResults,
+        Func<T, Task<Result<K>>> selector)
+    {
+        return taskOfResults.Bind(async inputs =>
+        {
+            var tasksOfResult = inputs.Select(selector);
+            var results = await Task.WhenAll(tasksOfResult);
+            return results.Combine();
+        });
+    }
+    
     public static async Task<Result> Using(this Task<Result<Stream>> streamResult, Func<Stream, Task> useStream)
     {
         return await streamResult.Tap(async stream =>
