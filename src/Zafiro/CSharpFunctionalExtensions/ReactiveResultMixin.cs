@@ -71,16 +71,16 @@ public static class ReactiveResultMixin
 
     public static async Task<Result> TapIf(this Result result, Task<Result<bool>> condition, Action action) => ResultExtensions.Map(result, async () =>
     {
-        await condition.Tap(action);
+        await condition.Tap(action).ConfigureAwait(false);
     });
 
-    public static async Task<Result> TapIfB(this Result result, Task<bool> condition, Func<Task> func) => await condition ? await result.Tap(func) : await Task.FromResult(result);
-    public static async Task<Result<T>> TapIf<T>(this Result<T> result, Task<bool> condition, Func<Task<T>> func) => await condition ? await result.Tap(func) : await Task.FromResult(result);
-    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func) => await condition ? await resultTask.Tap(func) : await resultTask;
-    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action) => await condition ? await resultTask.Tap(action) : await resultTask;
+    public static async Task<Result> TapIfB(this Result result, Task<bool> condition, Func<Task> func) => await condition.ConfigureAwait(false) ? await result.Tap(func).ConfigureAwait(false) : await Task.FromResult(result).ConfigureAwait(false);
+    public static async Task<Result<T>> TapIf<T>(this Result<T> result, Task<bool> condition, Func<Task<T>> func) => await condition.ConfigureAwait(false) ? await result.Tap(func).ConfigureAwait(false) : await Task.FromResult(result).ConfigureAwait(false);
+    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func) => await condition.ConfigureAwait(false) ? await resultTask.Tap(func).ConfigureAwait(false) : await resultTask.ConfigureAwait(false);
+    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action) => await condition.ConfigureAwait(false) ? await resultTask.Tap(action).ConfigureAwait(false) : await resultTask.ConfigureAwait(false);
     public static async Task<Result> Map<T>(this Task<Result<T>> resultTask, Func<T, Task> func)
     {
-        return await (await resultTask).Map(func);
+        return await (await resultTask.ConfigureAwait(false)).Map(func).ConfigureAwait(false);
     }
     
     public static async Task<Result> Map<T>(this Result<T> result, Func<T, Task> func)
@@ -90,7 +90,7 @@ public static class ReactiveResultMixin
             return Result.Failure(result.Error);
         }
 
-        await func(result.Value);
+        await func(result.Value).ConfigureAwait(false);
         return Result.Success();
     }
     
@@ -101,7 +101,7 @@ public static class ReactiveResultMixin
             return Result.Failure(result.Error);
         }
 
-        await func();
+        await func().ConfigureAwait(false);
         return Result.Success();
     }
 
@@ -111,11 +111,11 @@ public static class ReactiveResultMixin
             .Map(async x =>
             {
                 var tasks = x.Select(selector);
-                var whenAll = await Task.WhenAll(tasks);
+                var whenAll = await Task.WhenAll(tasks).ConfigureAwait(false);
                 return whenAll.Cast<TResult>();
             });
 
-        var result = await mapEach;
+        var result = await mapEach.ConfigureAwait(false);
         return result;
     }
 

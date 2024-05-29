@@ -14,8 +14,9 @@ public static class ReactiveData
         {
             try
             {
-                await using var stream = await streamTaskFactory();
-                await ProcessStream(observer, cancellationToken, stream, bufferSize);
+                var stream = await streamTaskFactory().ConfigureAwait(false);
+                await using var stream1 = stream.ConfigureAwait(false);
+                await ProcessStream(observer, cancellationToken, stream, bufferSize).ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -29,8 +30,9 @@ public static class ReactiveData
         {
             try
             {
-                await using var stream = streamFactory();
-                await ProcessStream(observer, cancellationToken, stream, bufferSize);
+                var stream = streamFactory();
+                await using var stream1 = stream.ConfigureAwait(false);
+                await ProcessStream(observer, cancellationToken, stream, bufferSize).ConfigureAwait(false);
             }
             catch (Exception exception)
             {

@@ -73,7 +73,7 @@ public static class FunctionalMixin
         return Maybe.From(result.Value);
     }
 
-    public static async Task<Maybe<T>> AsMaybe<T>(this Task<Result<T>> resultTask) => (await resultTask).AsMaybe();
+    public static async Task<Maybe<T>> AsMaybe<T>(this Task<Result<T>> resultTask) => (await resultTask.ConfigureAwait(false)).AsMaybe();
 
     public static Result<TDestination> Cast<TSource, TDestination>(this Result<TSource> source, Func<TSource, TDestination> conversionFactory) => source.Map(conversionFactory);
 
@@ -122,7 +122,7 @@ public static class FunctionalMixin
         return taskOfResults.Bind(async inputs =>
         {
             var tasksOfResult = inputs.Select(selector);
-            var results = await Task.WhenAll(tasksOfResult);
+            var results = await Task.WhenAll(tasksOfResult).ConfigureAwait(false);
             return results.Combine();
         });
     }
@@ -131,16 +131,16 @@ public static class FunctionalMixin
     {
         return await streamResult.Tap(async stream =>
         {
-            await using (stream)
+            await using (stream.ConfigureAwait(false))
             {
-                await useStream(stream);
+                await useStream(stream).ConfigureAwait(false);
             }
-        });
+        }).ConfigureAwait(false);
     }
 
     public static async Task<Maybe<Task>> Tap<T>(this Task<Maybe<T>> maybeTask, Action<T> action)
     {
-        var maybe = await maybeTask;
+        var maybe = await maybeTask.ConfigureAwait(false);
         
         if (maybe.HasValue)
         {
@@ -200,6 +200,6 @@ public static class FunctionalMixin
     
     public static async Task Log(this Task<Result> result, ILogger? logger = default, string successString = "Success")
     {
-        (await result).Log(logger ?? Serilog.Log.Logger, successString);
+        (await result.ConfigureAwait(false)).Log(logger ?? Serilog.Log.Logger, successString);
     }
 }

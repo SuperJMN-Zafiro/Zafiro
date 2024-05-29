@@ -41,10 +41,10 @@ public static class ResultFactory
     {
         return await streamResult.Tap(async stream =>
         {
-            await using (stream)
+            await using (stream.ConfigureAwait(false))
             {
-                await useStream(stream);
+                await useStream(stream).ConfigureAwait(false);
             }
-        });
+        }).ConfigureAwait(false);
     }
 }

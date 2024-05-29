@@ -151,7 +151,7 @@ public static class ObservableMixin
 
         observable
             .Buffer(bufferSize)
-            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray())))
+            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray()).ConfigureAwait(false)))
             .Concat()
             .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
 
@@ -166,7 +166,7 @@ public static class ObservableMixin
         var writer = pipe.Writer;
 
         observable
-            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer)))
+            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer).ConfigureAwait(false)))
             .Concat()
             .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
 
