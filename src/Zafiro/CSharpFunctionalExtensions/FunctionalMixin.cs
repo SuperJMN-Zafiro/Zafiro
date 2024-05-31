@@ -172,6 +172,17 @@ public static class FunctionalMixin
     {
         return taskResult.Bind(inputs => inputs.Select(selector).Combine());
     }
+
+    public static async Task<Result<IEnumerable<TResult>>> Combine<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults)
+    {
+        var whenAll = await Task.WhenAll(enumerableOfTaskResults);
+        return whenAll.Combine();
+    }
+    
+    public static Task<Result<IEnumerable<TResult>>> Combine<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task)
+    {
+        return task.Bind(async tasks => await Combine(tasks));
+    }
     
     /// <summary>
     /// Transforms the results of a task using a provided selector function.
@@ -188,7 +199,7 @@ public static class FunctionalMixin
 
     public static Task<Result<IEnumerable<TResult>>> BindMany<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, Task<Result<TResult>>> selector)
     {
-        return taskResult.Bind(inputs => inputs.Select(selector).Combine());
+        return taskResult.Bind(inputs => AsyncResultExtensionsLeftOperand.Combine(inputs.Select(selector)));
     }
 
     public static void Log(this Result result, ILogger logger, string successString = "Success")
