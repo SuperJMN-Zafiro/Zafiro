@@ -25,7 +25,17 @@ public static class ObservableMixin
     {
         return observable.Replay(1).RefCount();
     }
-
+    
+    public static IObservable<bool> Trues(this IObservable<bool> self)
+    {
+        return self.Where(b => b);
+    }
+    
+    public static IObservable<bool> Falses(this IObservable<bool> self)
+    {
+        return self.Where(b => !b);
+    }
+    
     public static IObservable<bool> Not(this IObservable<bool> self)
     {
         return self.Select(b => !b);
@@ -39,6 +49,20 @@ public static class ObservableMixin
     public static IObservable<bool> NotNull<T>(this IObservable<T?> self)
     {
         return self.Select(b => b is not null);
+    }
+    
+    public static IObservable<bool> NotNull<T1, T2>(this IObservable<(T1?, T2?)> source)
+        where T1 : class
+        where T2 : class
+    {
+        return source
+            .Select(tuple => tuple.Item1 != null && tuple.Item2 != null);
+    }
+    
+    public static IObservable<bool> And(this IObservable<bool> first, IObservable<bool> second)
+    {
+        return first
+            .CombineLatest(second, (a, b) => a && b);
     }
 
     public static IObservable<bool> NullOrWhitespace(this IObservable<string> self)

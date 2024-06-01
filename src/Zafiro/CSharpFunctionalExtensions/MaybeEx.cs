@@ -2,7 +2,7 @@
 
 namespace Zafiro.CSharpFunctionalExtensions;
 
-public static class ResultEx
+public static class MaybeEx
 {
     public static Maybe<T> FromNullableStruct<T>(T? value) where T : struct
     {
