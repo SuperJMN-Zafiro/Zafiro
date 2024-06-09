@@ -73,7 +73,7 @@ public static class FunctionalMixin
         return Maybe.From(result.Value);
     }
 
-    public static async Task<Maybe<T>> AsMaybe<T>(this Task<Result<T>> resultTask) => (await resultTask).AsMaybe();
+    public static async Task<Maybe<T>> AsMaybe<T>(this Task<Result<T>> resultTask) => (await resultTask.ConfigureAwait(false)).AsMaybe();
 
     public static Result<TDestination> Cast<TSource, TDestination>(this Result<TSource> source, Func<TSource, TDestination> conversionFactory) => source.Map(conversionFactory);
 
@@ -107,20 +107,40 @@ public static class FunctionalMixin
         return result;
     }
     
+    /// <summary>
+    /// Binds and combines the results of the selector function applied to each item in the task of results.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the input collection.</typeparam>
+    /// <typeparam name="K">The type of items in the result collection.</typeparam>
+    /// <param name="taskOfResults">A task that produces a Result of an IEnumerable of T.</param>
+    /// <param name="selector">A function to apply to each item in the input collection.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains a Result of an IEnumerable of K.</returns>
+    public static Task<Result<IEnumerable<K>>> BindAndCombine<T, K>(
+        this Task<Result<IEnumerable<T>>> taskOfResults,
+        Func<T, Task<Result<K>>> selector)
+    {
+        return taskOfResults.Bind(async inputs =>
+        {
+            var tasksOfResult = inputs.Select(selector);
+            var results = await Task.WhenAll(tasksOfResult).ConfigureAwait(false);
+            return results.Combine();
+        });
+    }
+    
     public static async Task<Result> Using(this Task<Result<Stream>> streamResult, Func<Stream, Task> useStream)
     {
         return await streamResult.Tap(async stream =>
         {
-            await using (stream)
+            await using (stream.ConfigureAwait(false))
             {
-                await useStream(stream);
+                await useStream(stream).ConfigureAwait(false);
             }
-        });
+        }).ConfigureAwait(false);
     }
 
     public static async Task<Maybe<Task>> Tap<T>(this Task<Maybe<T>> maybeTask, Action<T> action)
     {
-        var maybe = await maybeTask;
+        var maybe = await maybeTask.ConfigureAwait(false);
         
         if (maybe.HasValue)
         {
@@ -152,6 +172,17 @@ public static class FunctionalMixin
     {
         return taskResult.Bind(inputs => inputs.Select(selector).Combine());
     }
+
+    public static async Task<Result<IEnumerable<TResult>>> Combine<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults)
+    {
+        var whenAll = await Task.WhenAll(enumerableOfTaskResults);
+        return whenAll.Combine();
+    }
+    
+    public static Task<Result<IEnumerable<TResult>>> Combine<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task)
+    {
+        return task.Bind(async tasks => await Combine(tasks));
+    }
     
     /// <summary>
     /// Transforms the results of a task using a provided selector function.
@@ -168,7 +199,7 @@ public static class FunctionalMixin
 
     public static Task<Result<IEnumerable<TResult>>> BindMany<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, Task<Result<TResult>>> selector)
     {
-        return taskResult.Bind(inputs => inputs.Select(selector).Combine());
+        return taskResult.Bind(inputs => AsyncResultExtensionsLeftOperand.Combine(inputs.Select(selector)));
     }
 
     public static void Log(this Result result, ILogger logger, string successString = "Success")
@@ -180,6 +211,6 @@ public static class FunctionalMixin
     
     public static async Task Log(this Task<Result> result, ILogger? logger = default, string successString = "Success")
     {
-        (await result).Log(logger ?? Serilog.Log.Logger, successString);
+        (await result.ConfigureAwait(false)).Log(logger ?? Serilog.Log.Logger, successString);
     }
 }

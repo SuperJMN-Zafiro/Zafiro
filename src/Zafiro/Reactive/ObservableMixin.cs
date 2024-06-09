@@ -25,7 +25,17 @@ public static class ObservableMixin
     {
         return observable.Replay(1).RefCount();
     }
-
+    
+    public static IObservable<bool> Trues(this IObservable<bool> self)
+    {
+        return self.Where(b => b);
+    }
+    
+    public static IObservable<bool> Falses(this IObservable<bool> self)
+    {
+        return self.Where(b => !b);
+    }
+    
     public static IObservable<bool> Not(this IObservable<bool> self)
     {
         return self.Select(b => !b);
@@ -39,6 +49,20 @@ public static class ObservableMixin
     public static IObservable<bool> NotNull<T>(this IObservable<T?> self)
     {
         return self.Select(b => b is not null);
+    }
+    
+    public static IObservable<bool> NotNull<T1, T2>(this IObservable<(T1?, T2?)> source)
+        where T1 : class
+        where T2 : class
+    {
+        return source
+            .Select(tuple => tuple.Item1 != null && tuple.Item2 != null);
+    }
+    
+    public static IObservable<bool> And(this IObservable<bool> first, IObservable<bool> second)
+    {
+        return first
+            .CombineLatest(second, (a, b) => a && b);
     }
 
     public static IObservable<bool> NullOrWhitespace(this IObservable<string> self)
@@ -151,7 +175,7 @@ public static class ObservableMixin
 
         observable
             .Buffer(bufferSize)
-            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray())))
+            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray()).ConfigureAwait(false)))
             .Concat()
             .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
 
@@ -166,7 +190,7 @@ public static class ObservableMixin
         var writer = pipe.Writer;
 
         observable
-            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer)))
+            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer).ConfigureAwait(false)))
             .Concat()
             .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
 
