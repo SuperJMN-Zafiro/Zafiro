@@ -230,15 +230,16 @@ public static class ObservableMixin
     }
 
     /// <summary>
-    /// Makes a sequence of observable collection a single observable collection. The most recent observable collection will populate the <paramref name="collection"/> and will follow changes happening to it.
-    /// Thanks to Darrin Cullop.
+    /// Binds an observable of read-only observable collections to a source list. Updates the source list with the contents of each collection emitted by the observable.
+    /// Credits to Darrin Cullop.
     /// </summary>
-    /// <typeparam name="T">Type of the items</typeparam>
-    /// <param name="observableOfCollections">Sequence of observable collections</param>
-    /// <param name="collection">The output collection</param>
-    /// <returns></returns>
+    /// <typeparam name="T">The type of items in the collections.</typeparam>
+    /// <param name="observableOfCollections">The observable of read-only observable collections.</param>
+    /// <param name="collection">The resulting read-only observable collection.</param>
+    /// <returns>An IDisposable object that can be used to unsubscribe from the binding.</returns>
     public static IDisposable Bind<T>(
-        this IObservable<ReadOnlyObservableCollection<T>> observableOfCollections, out ReadOnlyObservableCollection<T> collection)
+        this IObservable<ReadOnlyObservableCollection<T>> observableOfCollections,
+        out ReadOnlyObservableCollection<T> collection)
     {
         CompositeDisposable disposable = new();
         var source = new SourceList<T>()
@@ -258,7 +259,14 @@ public static class ObservableMixin
 
         return disposable;
     }
-    
+
+    /// <summary>
+    /// Returns an observable sequence that disposes the previous value before emitting a new value.
+    /// Credits to Darrin Cullop.
+    /// </summary>
+    /// <typeparam name="T">Type of the observable sequence.</typeparam>
+    /// <param name="source">The source observable sequence.</param>
+    /// <returns>An observable sequence that disposes the previous value before emitting a new value.</returns>
     public static IObservable<T> DisposePrevious<T>(this IObservable<T> source) where T : IDisposable
     {
         return Observable.Create<T>(observer =>
