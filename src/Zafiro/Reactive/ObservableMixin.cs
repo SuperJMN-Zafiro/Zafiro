@@ -26,14 +26,14 @@ public static class ObservableMixin
         return observable.Replay(1).RefCount();
     }
     
-    public static IObservable<bool> Trues(this IObservable<bool> self)
+    public static IObservable<Unit> Trues(this IObservable<bool> self)
     {
-        return self.Where(b => b);
+        return self.Where(b => b).Select(_ => Unit.Default);
     }
     
-    public static IObservable<bool> Falses(this IObservable<bool> self)
+    public static IObservable<Unit> Falses(this IObservable<bool> self)
     {
-        return self.Where(b => !b);
+        return self.Where(b => !b).Select(_ => Unit.Default);
     }
     
     public static IObservable<bool> Not(this IObservable<bool> self)
