@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -23,8 +24,10 @@ public class CompositeAction : IAction<LongProgress>
 
     public IObservable<LongProgress> Progress => progressSubject.AsObservable();
 
-    public Task<Result> Execute(CancellationToken cancellationToken)
+    public Task<Result> Execute(CancellationToken cancellationToken, IScheduler? scheduler = null)
     {
+        scheduler ??= Scheduler.Default;
+        
         var tcs = new TaskCompletionSource<Result>();
 
         var progressObservable = Actions
@@ -43,7 +46,7 @@ public class CompositeAction : IAction<LongProgress>
                     return Observable.Return(Result.Failure("Cancelled"));
                 }
 
-                return Observable.FromAsync(() => action.Execute(cancellationToken));
+                return Observable.FromAsync(() => action.Execute(cancellationToken, scheduler));
             })
             .Merge(MaxConcurrency)
             .ToList();
