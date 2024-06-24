@@ -118,11 +118,6 @@ public static class ReactiveResultMixin
         var result = await mapEach.ConfigureAwait(false);
         return result;
     }
-
-    public static Task<Result<IEnumerable<TResult>>> ManyMap<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> input, Func<TInput, TResult> selector)
-    {
-        return input.Map(x => x.Select(selector));
-    }
     
     public static Result<IEnumerable<TResult>> ManyMap<TInput, TResult>(this Result<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
     {
