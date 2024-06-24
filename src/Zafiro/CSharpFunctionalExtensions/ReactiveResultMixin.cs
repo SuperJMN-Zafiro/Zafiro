@@ -119,17 +119,17 @@ public static class ReactiveResultMixin
         return result;
     }
 
-    public static Task<Result<IEnumerable<TResult>>> MapEach<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> input, Func<TInput, TResult> selector)
+    public static Task<Result<IEnumerable<TResult>>> ManyMap<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> input, Func<TInput, TResult> selector)
     {
         return input.Map(x => x.Select(selector));
     }
     
-    public static Result<IEnumerable<TResult>> MapEach<TInput, TResult>(this Result<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
+    public static Result<IEnumerable<TResult>> ManyMap<TInput, TResult>(this Result<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
     {
         return input.Map(x => x.Select(selector));
     }
     
-    public static Maybe<IEnumerable<TResult>> MapEach<TInput, TResult>(this Maybe<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
+    public static Maybe<IEnumerable<TResult>> ManyMap<TInput, TResult>(this Maybe<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
     {
         return input.Map(x => x.Select(selector));
     }

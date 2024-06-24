@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Serilog;
-using Serilog.Core;
 using Zafiro.Reactive;
 
 namespace Zafiro.CSharpFunctionalExtensions;
@@ -192,7 +191,7 @@ public static class FunctionalMixin
     /// <param name="taskResult">The task containing a collection of results.</param>
     /// <param name="selector">A function to apply to each result.</param>
     /// <returns>A task containing a collection of results after applying the selector function.</returns>
-    public static Task<Result<IEnumerable<TResult>>> Map<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, TResult> selector)
+    public static Task<Result<IEnumerable<TResult>>> ManyMap<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, TResult> selector)
     {
         return taskResult.Map(inputs => inputs.Select(selector));
     }
