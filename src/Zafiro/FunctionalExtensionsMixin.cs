@@ -17,7 +17,7 @@ public static class FunctionalExtensionsMixin
         });
     }
 
-    public static Task<Result> Using<T, U>(this Result<T> result, Func<T, Task<Result>> d) where T : IDisposable
+    public static Task<Result<TOutput>> Using<TInput, TOutput>(this Result<TInput> result, Func<TInput, Task<Result<TOutput>>> d) where TInput : IDisposable
     {
         return result.Bind(async x =>
         {
