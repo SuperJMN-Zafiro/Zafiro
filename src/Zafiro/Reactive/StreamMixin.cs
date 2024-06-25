@@ -24,10 +24,10 @@ public static class StreamMixin
         return source
             .Buffer(bufferSize)
             .Select(chunk => chunk.ToArray())
-            .DumpTo(output, chunkReadTimeout, scheduler, bufferSize, cancellationToken);
+            .DumpTo(output, chunkReadTimeout, scheduler, cancellationToken);
     }
 
-    public static IObservable<Result> DumpTo(this IObservable<byte[]> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, int bufferSize = 4096, CancellationToken cancellationToken = default)
+    public static IObservable<Result> DumpTo(this IObservable<byte[]> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, CancellationToken cancellationToken = default)
     {
         scheduler ??= Scheduler.Default;
         chunkReadTimeout ??= TimeSpan.FromDays(1);
