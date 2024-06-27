@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
@@ -12,29 +13,31 @@ namespace Zafiro.Actions;
 public class CompositeAction : IAction<LongProgress>
 {
     private readonly BehaviorSubject<LongProgress> progressSubject = new(new LongProgress());
-    private readonly IList<IAction<LongProgress>> actions;
+    public IList<IAction<LongProgress>> Actions { get; }
 
     public CompositeAction(IList<IAction<LongProgress>> actions)
     {
-        this.actions = actions;
+        Actions = actions;
     }
 
     public int MaxConcurrency { get; set; } = 3;
 
     public IObservable<LongProgress> Progress => progressSubject.AsObservable();
 
-    public Task<Result> Execute(CancellationToken cancellationToken)
+    public Task<Result> Execute(CancellationToken cancellationToken, IScheduler? scheduler = null)
     {
+        scheduler ??= Scheduler.Default;
+        
         var tcs = new TaskCompletionSource<Result>();
 
-        var progressObservable = actions
+        var progressObservable = Actions
             .Select(x => x.Progress)
             .CombineLatest(GetProgress)
             .DistinctUntilChanged();
 
         var subscription = progressObservable.Subscribe(progressSubject);
 
-        var tasks = actions
+        var tasks = Actions
             .ToObservable()
             .Select(action =>
             {
@@ -43,7 +46,7 @@ public class CompositeAction : IAction<LongProgress>
                     return Observable.Return(Result.Failure("Cancelled"));
                 }
 
-                return Observable.FromAsync(() => action.Execute(cancellationToken));
+                return Observable.FromAsync(() => action.Execute(cancellationToken, scheduler));
             })
             .Merge(MaxConcurrency)
             .ToList();

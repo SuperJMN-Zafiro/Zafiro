@@ -8,7 +8,7 @@ public class FileInfoData : IData
 {
     public FileInfoData(IFileInfo file)
     {
-        Bytes = ((Func<Stream>) file.OpenRead).Chunked(4096);
+        Bytes = ((Func<Stream>) file.OpenRead).Chunked(4096 * 2);
         Length = file.Length;
     }
 

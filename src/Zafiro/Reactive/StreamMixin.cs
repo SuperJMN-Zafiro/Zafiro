@@ -14,7 +14,9 @@ namespace Zafiro.Reactive;
 
 public static class StreamMixin
 {
-    public static IObservable<Result> DumpTo(this IObservable<byte> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, int bufferSize = 4096)
+    public static IObservable<Result> DumpTo(this IObservable<byte> source, Stream output,
+        CancellationToken cancellationToken = default, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default,
+        int bufferSize = 4096)
     {
         scheduler ??= Scheduler.Default;
         chunkReadTimeout ??= TimeSpan.FromDays(1);
@@ -22,16 +24,16 @@ public static class StreamMixin
         return source
             .Buffer(bufferSize)
             .Select(chunk => chunk.ToArray())
-            .DumpTo(output, chunkReadTimeout, scheduler, bufferSize);
+            .DumpTo(output, chunkReadTimeout, scheduler, cancellationToken);
     }
 
-    public static IObservable<Result> DumpTo(this IObservable<byte[]> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, int bufferSize = 4096)
+    public static IObservable<Result> DumpTo(this IObservable<byte[]> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, CancellationToken cancellationToken = default)
     {
         scheduler ??= Scheduler.Default;
         chunkReadTimeout ??= TimeSpan.FromDays(1);
 
         return source
-            .Select(chunk => Observable.FromAsync(ct => Result.Try(() => output.WriteAsync(chunk.ToArray(), 0, chunk.Length, ct)), scheduler).Timeout(chunkReadTimeout.Value, scheduler))
+            .Select(chunk => Observable.FromAsync(() => Result.Try(() => output.WriteAsync(chunk.ToArray(), 0, chunk.Length, cancellationToken)), scheduler).Timeout(chunkReadTimeout.Value, scheduler))
             .Concat();
     }
 
