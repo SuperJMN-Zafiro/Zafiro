@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
@@ -172,15 +173,34 @@ public static class FunctionalMixin
         return taskResult.Bind(inputs => inputs.Select(selector).Combine());
     }
 
-    public static async Task<Result<IEnumerable<TResult>>> Combine<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults)
+    public static async Task<Result<IEnumerable<TResult>>> Combine<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
-        var whenAll = await Task.WhenAll(enumerableOfTaskResults);
-        return whenAll.Combine();
+        var results = await enumerableOfTaskResults
+            .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
+            .Merge(maxConcurrency)
+            .ToList();
+        
+        return results.Combine();
     }
     
-    public static Task<Result<IEnumerable<TResult>>> Combine<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task)
+    public static Task<Result<IEnumerable<TResult>>> Combine<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
-        return task.Bind(async tasks => await Combine(tasks));
+        return task.Bind(tasks => Combine(tasks, scheduler, maxConcurrency));
+    }
+    
+    public static Task<Result<IEnumerable<TResult>>> CombineInOrder<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
+    {
+        return task.Bind(tasks => CombineInOrder(tasks, scheduler, maxConcurrency));
+    }
+    
+    public static async Task<Result<IEnumerable<TResult>>> CombineInOrder<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
+    {
+        var results = await enumerableOfTaskResults
+            .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
+            .Concat()
+            .ToList();
+        
+        return results.Combine();
     }
     
     /// <summary>
