@@ -13,12 +13,13 @@ namespace Zafiro.Actions;
 public class CompositeAction : IAction<LongProgress>
 {
     private readonly BehaviorSubject<LongProgress> progressSubject = new(new LongProgress());
-    public IList<IAction<LongProgress>> Actions { get; }
 
     public CompositeAction(IList<IAction<LongProgress>> actions)
     {
         Actions = actions;
     }
+
+    public IList<IAction<LongProgress>> Actions { get; }
 
     public int MaxConcurrency { get; set; } = 3;
 
@@ -27,7 +28,7 @@ public class CompositeAction : IAction<LongProgress>
     public Task<Result> Execute(CancellationToken cancellationToken, IScheduler? scheduler = null)
     {
         scheduler ??= Scheduler.Default;
-        
+
         var tcs = new TaskCompletionSource<Result>();
 
         var progressObservable = Actions

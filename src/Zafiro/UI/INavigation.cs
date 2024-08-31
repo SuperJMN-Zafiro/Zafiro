@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Zafiro.UI
+namespace Zafiro.UI;
+
+public interface INavigation
 {
-    public interface INavigation
-    {
-        Task Go(Type viewModelType, object parameter = null);
-        Task GoBack();
-        IObservable<bool> CanGoBack { get; }
-    }
+    IObservable<bool> CanGoBack { get; }
+    Task Go(Type viewModelType, object parameter = null);
+    Task GoBack();
 }

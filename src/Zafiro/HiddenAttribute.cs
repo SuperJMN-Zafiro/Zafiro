@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace Zafiro
+namespace Zafiro;
+
+public class HiddenAttribute : Attribute
 {
-    public class HiddenAttribute : Attribute
-    {
-    }
 }

@@ -2,46 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Zafiro
+namespace Zafiro;
+
+public static class Collection
 {
-    public static class Collection
+    private const string AddMethodName = "Add";
+
+    public static void UniversalAdd(object collection, object item)
     {
-        private const string AddMethodName = "Add";
+        var colType = collection.GetType();
 
-        public static void UniversalAdd(object collection, object item)
+        var addMethod = MethodFinder.GetAddMethod(AddMethodName, colType, item.GetType());
+
+        if (addMethod == null)
         {
-            var colType = collection.GetType();
-
-            var addMethod = MethodFinder.GetAddMethod(AddMethodName, colType, item.GetType());
-
-            if (addMethod == null)
-            {
-                throw new InvalidOperationException($"Cannot find an appropriate method to add the {item} to {collection}.");
-            }
-
-            addMethod.Invoke(collection, new[] { item });
+            throw new InvalidOperationException($"Cannot find an appropriate method to add the {item} to {collection}.");
         }
 
-        public static void UniversalAddToDictionary(object dictionary, object item, object key)
+        addMethod.Invoke(collection, new[] { item });
+    }
+
+    public static void UniversalAddToDictionary(object dictionary, object item, object key)
+    {
+        var dictType = dictionary.GetType();
+
+        var addMethod = MethodFinder.GetAddMethod(AddMethodName, dictType, key.GetType(), item.GetType());
+
+        if (addMethod == null)
         {
-            var dictType = dictionary.GetType();
-
-            var addMethod = MethodFinder.GetAddMethod(AddMethodName, dictType, key.GetType(), item.GetType());
-
-            if (addMethod == null)
-            {
-                throw new InvalidOperationException($"Cannot find an appropriate method to add the {item} to {dictionary}.");
-            }
-
-            addMethod.Invoke(dictionary, new[] { key, item });
+            throw new InvalidOperationException($"Cannot find an appropriate method to add the {item} to {dictionary}.");
         }
 
-        public static bool ContentEquals<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> otherDictionary)
-        {
-            return (otherDictionary ?? new Dictionary<TKey, TValue>())
-                .OrderBy(kvp => kvp.Key)
-                .SequenceEqual((dictionary ?? new Dictionary<TKey, TValue>())
-                                   .OrderBy(kvp => kvp.Key));
-        }
+        addMethod.Invoke(dictionary, new[] { key, item });
+    }
+
+    public static bool ContentEquals<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> otherDictionary)
+    {
+        return (otherDictionary ?? new Dictionary<TKey, TValue>())
+            .OrderBy(kvp => kvp.Key)
+            .SequenceEqual((dictionary ?? new Dictionary<TKey, TValue>())
+                .OrderBy(kvp => kvp.Key));
     }
 }

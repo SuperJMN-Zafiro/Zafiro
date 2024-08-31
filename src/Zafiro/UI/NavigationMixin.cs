@@ -1,12 +1,11 @@
 ﻿using System.Threading.Tasks;
 
-namespace Zafiro.UI
+namespace Zafiro.UI;
+
+public static class NavigationMixin
 {
-    public static class NavigationMixin
+    public static Task Go<T>(this INavigation navigation, object parameter = null)
     {
-        public static Task Go<T>(this INavigation navigation, object parameter = null)
-        {
-            return navigation.Go(typeof(T), parameter);
-        }
+        return navigation.Go(typeof(T), parameter);
     }
 }

@@ -1,12 +1,11 @@
-﻿namespace Zafiro.ProgressReporting
-{
-    public class Percentage : Progress
-    {
-        public double Value { get; }
+﻿namespace Zafiro.ProgressReporting;
 
-        public Percentage(double value)
-        {
-            Value = value;
-        }
+public class Percentage : Progress
+{
+    public Percentage(double value)
+    {
+        Value = value;
     }
+
+    public double Value { get; }
 }

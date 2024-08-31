@@ -11,6 +11,21 @@ public class CaseInsensitiveString : IComparable
 
     public string Value { get; }
 
+    public int CompareTo(object? obj)
+    {
+        if (obj == null)
+        {
+            return 1;
+        }
+
+        if (obj is CaseInsensitiveString otherString)
+        {
+            return StringComparer.InvariantCultureIgnoreCase.Compare(Value, otherString.Value);
+        }
+
+        throw new ArgumentException("Object is not a CaseInsensitiveString");
+    }
+
     public static implicit operator CaseInsensitiveString(string str)
     {
         return new CaseInsensitiveString(str);
@@ -38,7 +53,7 @@ public class CaseInsensitiveString : IComparable
             return false;
         }
 
-        return Equals((CaseInsensitiveString) obj);
+        return Equals((CaseInsensitiveString)obj);
     }
 
     public override int GetHashCode()
@@ -54,13 +69,5 @@ public class CaseInsensitiveString : IComparable
     public override string ToString()
     {
         return Value;
-    }
-
-    public int CompareTo(object? obj)
-    {
-        if (obj == null) return 1;
-        if (obj is CaseInsensitiveString otherString)
-            return StringComparer.InvariantCultureIgnoreCase.Compare(this.Value, otherString.Value);
-        throw new ArgumentException("Object is not a CaseInsensitiveString");
     }
 }

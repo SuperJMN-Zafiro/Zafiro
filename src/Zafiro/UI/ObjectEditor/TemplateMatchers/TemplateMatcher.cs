@@ -1,36 +1,31 @@
 using System.Reflection;
 
-namespace Zafiro.UI.ObjectEditor.TemplateMatchers
+namespace Zafiro.UI.ObjectEditor.TemplateMatchers;
+
+public abstract class TemplateMatcher<T> : ITemplateMatcher<T> where T : class
 {
-    public abstract class TemplateMatcher<T> : ITemplateMatcher<T> where T : class
+    public T Select(EditorCollection<T> editors, PropertyInfo property)
     {
-        protected abstract T SelectOverride(EditorCollection<T> editors, PropertyInfo property);
+        var selected = SelectOverride(editors, property);
 
-        public T Select(EditorCollection<T> editors, PropertyInfo property)
+        if (selected != null)
         {
-            var selected = SelectOverride(editors, property);
-
-            if (selected != null)
-            {
-                return selected;
-            }
-
-            return Next?.Select(editors, property);
+            return selected;
         }
 
-        public ITemplateMatcher<T> Chain(ITemplateMatcher<T> nextlogger)
-        {
-            ITemplateMatcher<T> lastLogger = this;
+        return Next?.Select(editors, property);
+    }
 
-            while (lastLogger.Next != null)
-            {
-                lastLogger = lastLogger.Next;
-            }
+    public ITemplateMatcher<T> Next { get; set; }
+    protected abstract T SelectOverride(EditorCollection<T> editors, PropertyInfo property);
 
-            lastLogger.Next = nextlogger;
-            return this;
-        }
+    public ITemplateMatcher<T> Chain(ITemplateMatcher<T> nextlogger)
+    {
+        ITemplateMatcher<T> lastLogger = this;
 
-        public ITemplateMatcher<T> Next { get; set; }
+        while (lastLogger.Next != null) lastLogger = lastLogger.Next;
+
+        lastLogger.Next = nextlogger;
+        return this;
     }
 }

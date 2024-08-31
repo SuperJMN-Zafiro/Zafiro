@@ -1,10 +1,10 @@
-﻿namespace Zafiro
+﻿namespace Zafiro;
+
+public enum OptionValue
 {
-    public enum OptionValue
-    {
-        None,
-        // ReSharper disable once InconsistentNaming
-        OK,
-        Cancel
-    }
+    None,
+
+    // ReSharper disable once InconsistentNaming
+    OK,
+    Cancel
 }

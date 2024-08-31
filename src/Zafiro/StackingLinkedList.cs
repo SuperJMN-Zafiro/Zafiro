@@ -1,40 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Zafiro
+namespace Zafiro;
+
+public class StackingLinkedList<T>
 {
-    public class StackingLinkedList<T>
+    private readonly LinkedList<T> linkedList = new();
+
+    public LinkedListNode<T> Current => linkedList.Last;
+    public LinkedListNode<T> Previous => Current?.Previous;
+
+    public T CurrentValue
     {
-        private readonly LinkedList<T> linkedList = new LinkedList<T>();
+        get => Current.Value;
+        set => Current.Value = value;
+    }
 
-        public void Push(T item)
-        {
-            linkedList.AddLast(item);
-        }
+    public int Count => linkedList.Count;
 
-        public LinkedListNode<T> Current => linkedList.Last;
-        public LinkedListNode<T> Previous => Current?.Previous;
-        public T CurrentValue
-        {
-            get { return Current.Value; }
-            set { Current.Value = value; }
-        }
+    public T PreviousValue
+    {
+        get => Previous.Value;
+        set => Previous.Value = value;
+    }
 
-        public void Pop()
-        {
-            linkedList.RemoveLast();
-        }
+    public void Push(T item)
+    {
+        linkedList.AddLast(item);
+    }
 
-        public int Count => linkedList.Count;
-        public T PreviousValue
-        {
-            get { return Previous.Value; }
-            set { Previous.Value = value; }
-        }
+    public void Pop()
+    {
+        linkedList.RemoveLast();
+    }
 
-        public IList<T> ToList()
-        {
-            return linkedList.ToList();
-        }
+    public IList<T> ToList()
+    {
+        return linkedList.ToList();
     }
 }

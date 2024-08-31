@@ -1,10 +1,9 @@
 using System.Reflection;
 
-namespace Zafiro.UI.ObjectEditor.TemplateMatchers
+namespace Zafiro.UI.ObjectEditor.TemplateMatchers;
+
+public interface ITemplateMatcher<T>
 {
-    public interface ITemplateMatcher<T>
-    {
-        T Select(EditorCollection<T> editors, PropertyInfo property);
-        ITemplateMatcher<T> Next { get; set; }
-    }
+    ITemplateMatcher<T> Next { get; set; }
+    T Select(EditorCollection<T> editors, PropertyInfo property);
 }

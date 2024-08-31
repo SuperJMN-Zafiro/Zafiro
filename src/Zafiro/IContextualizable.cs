@@ -1,8 +1,7 @@
-﻿namespace Zafiro
+﻿namespace Zafiro;
+
+public interface IContextualizable
 {
-    public interface IContextualizable
-    {
-        void SetContext(object o);
-        object Object { get; }
-    }
+    object Object { get; }
+    void SetContext(object o);
 }

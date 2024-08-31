@@ -14,6 +14,7 @@ public class Login : ValueObject
 
     public MachineUser User { get; }
     public string Password { get; }
+
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return User;

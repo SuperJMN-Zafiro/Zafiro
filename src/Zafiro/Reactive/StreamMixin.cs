@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using Zafiro.DataModel;
 
 namespace Zafiro.Reactive;
 
@@ -61,6 +60,7 @@ public static class StreamMixin
                 allBytes.AddRange(buffer.Take(bytesRead));
             }
         } while (bytesRead > 0);
+
         return allBytes.ToArray();
     }
 }

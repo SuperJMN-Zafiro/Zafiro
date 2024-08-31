@@ -51,7 +51,7 @@ public static class ReactiveResultMixin
     {
         return observable.SelectMany(result => result.IsSuccess
             ? collectionSelector(result.Value)
-            : Observable.Empty<Result<K>>(), resultSelector: (result, result1) => result.CombineAndMap(result1, resultSelector));
+            : Observable.Empty<Result<K>>(), (result, result1) => result.CombineAndMap(result1, resultSelector));
     }
 
     public static Task<Result> TapIf(this Task<Result> resultTask, Task<Result<bool>> conditionResult, Func<Task> func)
@@ -69,20 +69,36 @@ public static class ReactiveResultMixin
         return result.Map(b => !b);
     }
 
-    public static async Task<Result> TapIf(this Result result, Task<Result<bool>> condition, Action action) => ResultExtensions.Map(result, async () =>
+    public static async Task<Result> TapIf(this Result result, Task<Result<bool>> condition, Action action)
     {
-        await condition.Tap(action).ConfigureAwait(false);
-    });
+        return ResultExtensions.Map(result, async () => { await condition.Tap(action).ConfigureAwait(false); });
+    }
 
-    public static async Task<Result> TapIfB(this Result result, Task<bool> condition, Func<Task> func) => await condition.ConfigureAwait(false) ? await result.Tap(func).ConfigureAwait(false) : await Task.FromResult(result).ConfigureAwait(false);
-    public static async Task<Result<T>> TapIf<T>(this Result<T> result, Task<bool> condition, Func<Task<T>> func) => await condition.ConfigureAwait(false) ? await result.Tap(func).ConfigureAwait(false) : await Task.FromResult(result).ConfigureAwait(false);
-    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func) => await condition.ConfigureAwait(false) ? await resultTask.Tap(func).ConfigureAwait(false) : await resultTask.ConfigureAwait(false);
-    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action) => await condition.ConfigureAwait(false) ? await resultTask.Tap(action).ConfigureAwait(false) : await resultTask.ConfigureAwait(false);
+    public static async Task<Result> TapIfB(this Result result, Task<bool> condition, Func<Task> func)
+    {
+        return await condition.ConfigureAwait(false) ? await result.Tap(func).ConfigureAwait(false) : await Task.FromResult(result).ConfigureAwait(false);
+    }
+
+    public static async Task<Result<T>> TapIf<T>(this Result<T> result, Task<bool> condition, Func<Task<T>> func)
+    {
+        return await condition.ConfigureAwait(false) ? await result.Tap(func).ConfigureAwait(false) : await Task.FromResult(result).ConfigureAwait(false);
+    }
+
+    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Func<Task> func)
+    {
+        return await condition.ConfigureAwait(false) ? await resultTask.Tap(func).ConfigureAwait(false) : await resultTask.ConfigureAwait(false);
+    }
+
+    public static async Task<Result> TapIf(this Task<Result> resultTask, Task<bool> condition, Action action)
+    {
+        return await condition.ConfigureAwait(false) ? await resultTask.Tap(action).ConfigureAwait(false) : await resultTask.ConfigureAwait(false);
+    }
+
     public static async Task<Result> Map<T>(this Task<Result<T>> resultTask, Func<T, Task> func)
     {
         return await (await resultTask.ConfigureAwait(false)).Map(func).ConfigureAwait(false);
     }
-    
+
     public static async Task<Result> Map<T>(this Result<T> result, Func<T, Task> func)
     {
         if (result.IsFailure)
@@ -93,7 +109,7 @@ public static class ReactiveResultMixin
         await func(result.Value).ConfigureAwait(false);
         return Result.Success();
     }
-    
+
     public static async Task<Result> Map(this Result result, Func<Task> func)
     {
         if (result.IsFailure)
@@ -118,12 +134,12 @@ public static class ReactiveResultMixin
         var result = await mapEach.ConfigureAwait(false);
         return result;
     }
-    
+
     public static Result<IEnumerable<TResult>> ManyMap<TInput, TResult>(this Result<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
     {
         return input.Map(x => x.Select(selector));
     }
-    
+
     public static Maybe<IEnumerable<TResult>> ManyMap<TInput, TResult>(this Maybe<IEnumerable<TInput>> input, Func<TInput, TResult> selector)
     {
         return input.Map(x => x.Select(selector));

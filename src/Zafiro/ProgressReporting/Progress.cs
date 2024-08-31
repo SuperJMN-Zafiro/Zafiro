@@ -1,6 +1,5 @@
-﻿namespace Zafiro.ProgressReporting
+﻿namespace Zafiro.ProgressReporting;
+
+public abstract class Progress
 {
-    public abstract class Progress
-    {
-    }
 }

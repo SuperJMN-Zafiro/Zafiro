@@ -5,9 +5,17 @@ namespace Zafiro;
 
 public class LazyTaskMethodBuilder<T>
 {
-    public LazyTaskMethodBuilder() => Task = new LazyTask<T>();
+    public LazyTaskMethodBuilder()
+    {
+        Task = new LazyTask<T>();
+    }
 
-    public static LazyTaskMethodBuilder<T> Create() => new LazyTaskMethodBuilder<T>();
+    public LazyTask<T> Task { get; }
+
+    public static LazyTaskMethodBuilder<T> Create()
+    {
+        return new LazyTaskMethodBuilder<T>();
+    }
 
     public void Start<TStateMachine>(ref TStateMachine stateMachine) where TStateMachine : IAsyncStateMachine
     {
@@ -15,24 +23,34 @@ public class LazyTaskMethodBuilder<T>
         Task.SetStateMachine(stateMachine);
     }
 
-    public void SetStateMachine(IAsyncStateMachine stateMachine) { }
+    public void SetStateMachine(IAsyncStateMachine stateMachine)
+    {
+    }
 
-    public void SetException(Exception exception) => Task.SetException(exception);
+    public void SetException(Exception exception)
+    {
+        Task.SetException(exception);
+    }
 
-    public void SetResult(T result) => Task.SetResult(result);
+    public void SetResult(T result)
+    {
+        Task.SetResult(result);
+    }
 
     public void AwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
         where TAwaiter : INotifyCompletion
         where TStateMachine : IAsyncStateMachine
-        =>
-            GenericAwaitOnCompleted(ref awaiter, ref stateMachine);
+    {
+        GenericAwaitOnCompleted(ref awaiter, ref stateMachine);
+    }
 
     public void AwaitUnsafeOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter,
         ref TStateMachine stateMachine)
         where TAwaiter : ICriticalNotifyCompletion
         where TStateMachine : IAsyncStateMachine
-        =>
-            GenericAwaitOnCompleted(ref awaiter, ref stateMachine);
+    {
+        GenericAwaitOnCompleted(ref awaiter, ref stateMachine);
+    }
 
     public void GenericAwaitOnCompleted<TAwaiter, TStateMachine>(ref TAwaiter awaiter, ref TStateMachine stateMachine)
         where TAwaiter : INotifyCompletion
@@ -40,6 +58,4 @@ public class LazyTaskMethodBuilder<T>
     {
         awaiter.OnCompleted(stateMachine.MoveNext);
     }
-
-    public LazyTask<T> Task { get; }
 }

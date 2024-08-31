@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,14 +28,16 @@ public static class EnumerableMixin
 
     private static IEnumerable<T> InternalDropLast<T>(IEnumerable<T> source, int n)
     {
-        Queue<T> buffer = new Queue<T>(n + 1);
+        var buffer = new Queue<T>(n + 1);
 
-        foreach (T x in source)
+        foreach (var x in source)
         {
             buffer.Enqueue(x);
 
             if (buffer.Count == n + 1)
+            {
                 yield return buffer.Dequeue();
+            }
         }
     }
 
@@ -133,7 +134,7 @@ public static class EnumerableMixin
     }
 
     /// <summary>
-    /// Grows a sequence. From a list of items, like {1, 2, 3}, it generates {{1}, {1, 2}, {1, 2, 3}}
+    ///     Grows a sequence. From a list of items, like {1, 2, 3}, it generates {{1}, {1, 2}, {1, 2, 3}}
     /// </summary>
     /// <typeparam name="T">The type of the sequence</typeparam>
     /// <param name="sequence">Sequence to grow</param>
@@ -144,7 +145,7 @@ public static class EnumerableMixin
     }
 
     /// <summary>
-    /// Flattens a tree-like structure
+    ///     Flattens a tree-like structure
     /// </summary>
     /// <typeparam name="T">Type of the nodes</typeparam>
     /// <param name="nodes">Root nodes</param>
@@ -156,7 +157,7 @@ public static class EnumerableMixin
     }
 
     /// <summary>
-    /// Flattens a tree-like structure
+    ///     Flattens a tree-like structure
     /// </summary>
     /// <typeparam name="T">Type of the nodes</typeparam>
     /// <param name="node">Root node</param>
@@ -171,7 +172,7 @@ public static class EnumerableMixin
     {
         return self.Select(b => !b);
     }
-    
+
     public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> enumerable)
     {
         return enumerable.SelectMany(x => x);

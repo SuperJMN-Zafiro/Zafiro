@@ -16,42 +16,87 @@ namespace Zafiro.CSharpFunctionalExtensions;
 [PublicAPI]
 public static class FunctionalMixin
 {
-    public static IObservable<Unit> Successes(this IObservable<Result> self) => self.Where(a => a.IsSuccess).ToSignal();
+    public static IObservable<Unit> Successes(this IObservable<Result> self)
+    {
+        return self.Where(a => a.IsSuccess).ToSignal();
+    }
 
-    public static IObservable<T> Successes<T>(this IObservable<Result<T>> self) => self.Where(a => a.IsSuccess).Select(x => x.Value);
+    public static IObservable<T> Successes<T>(this IObservable<Result<T>> self)
+    {
+        return self.Where(a => a.IsSuccess).Select(x => x.Value);
+    }
 
-    public static IObservable<bool> IsSuccess<T>(this IObservable<Result<T>> self) => self.Select(a => a.IsSuccess);
+    public static IObservable<bool> IsSuccess<T>(this IObservable<Result<T>> self)
+    {
+        return self.Select(a => a.IsSuccess);
+    }
 
-    public static IObservable<bool> IsSuccess(this IObservable<Result> self) => self.Select(a => a.IsSuccess);
+    public static IObservable<bool> IsSuccess(this IObservable<Result> self)
+    {
+        return self.Select(a => a.IsSuccess);
+    }
 
-    public static IObservable<bool> IsFailure(this IObservable<Result> self) => self.Select(a => a.IsFailure);
+    public static IObservable<bool> IsFailure(this IObservable<Result> self)
+    {
+        return self.Select(a => a.IsFailure);
+    }
 
-    public static IObservable<string> Failures(this IObservable<Result> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
+    public static IObservable<string> Failures(this IObservable<Result> self)
+    {
+        return self.Where(a => a.IsFailure).Select(x => x.Error);
+    }
 
-    public static IObservable<string> Failures<T>(this IObservable<Result<T>> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
+    public static IObservable<string> Failures<T>(this IObservable<Result<T>> self)
+    {
+        return self.Where(a => a.IsFailure).Select(x => x.Error);
+    }
 
-    public static IObservable<T> Values<T>(this IObservable<Maybe<T>> self) => self.Where(x => x.HasValue).Select(x => x.Value);
+    public static IObservable<T> Values<T>(this IObservable<Maybe<T>> self)
+    {
+        return self.Where(x => x.HasValue).Select(x => x.Value);
+    }
 
-    public static IEnumerable<T> Values<T>(this IEnumerable<Maybe<T>> self) => self.Where(x => x.HasValue).Select(x => x.Value);
+    public static IEnumerable<T> Values<T>(this IEnumerable<Maybe<T>> self)
+    {
+        return self.Where(x => x.HasValue).Select(x => x.Value);
+    }
 
-    public static IEnumerable<string> Failures(this IEnumerable<Result> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
+    public static IEnumerable<string> Failures(this IEnumerable<Result> self)
+    {
+        return self.Where(a => a.IsFailure).Select(x => x.Error);
+    }
 
-    public static IEnumerable<string> Failures<T>(this IEnumerable<Result<T>> self) => self.Where(a => a.IsFailure).Select(x => x.Error);
+    public static IEnumerable<string> Failures<T>(this IEnumerable<Result<T>> self)
+    {
+        return self.Where(a => a.IsFailure).Select(x => x.Error);
+    }
 
-    public static IEnumerable<T> Successes<T>(this IEnumerable<Result<T>> self) => self.Where(a => a.IsSuccess)
-        .Select(x => x.Value);
+    public static IEnumerable<T> Successes<T>(this IEnumerable<Result<T>> self)
+    {
+        return self.Where(a => a.IsSuccess)
+            .Select(x => x.Value);
+    }
 
-    public static IEnumerable<string> NotNullOrEmpty(this IEnumerable<string> self) => self.Where(s => !string.IsNullOrWhiteSpace(s));
+    public static IEnumerable<string> NotNullOrEmpty(this IEnumerable<string> self)
+    {
+        return self.Where(s => !string.IsNullOrWhiteSpace(s));
+    }
 
     /// <summary>
-    /// Signals when the emitted item doesn't have a value.
+    ///     Signals when the emitted item doesn't have a value.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="self"></param>
     /// <returns></returns>
-    public static IObservable<Unit> Empties<T>(this IObservable<Maybe<T>> self) => self.Where(x => !x.HasValue).Select(_ => Unit.Default);
+    public static IObservable<Unit> Empties<T>(this IObservable<Maybe<T>> self)
+    {
+        return self.Where(x => !x.HasValue).Select(_ => Unit.Default);
+    }
 
-    public static bool AnyEmpty<T>(this IEnumerable<Maybe<T>> self) => self.Any(x => x.HasNoValue);
+    public static bool AnyEmpty<T>(this IEnumerable<Maybe<T>> self)
+    {
+        return self.Any(x => x.HasNoValue);
+    }
 
     public static Maybe<TResult> Combine<T, TResult>(this IList<Maybe<T>> values, Func<IEnumerable<T>, TResult> combinerFunc)
     {
@@ -73,11 +118,20 @@ public static class FunctionalMixin
         return Maybe.From(result.Value);
     }
 
-    public static async Task<Maybe<T>> AsMaybe<T>(this Task<Result<T>> resultTask) => (await resultTask.ConfigureAwait(false)).AsMaybe();
+    public static async Task<Maybe<T>> AsMaybe<T>(this Task<Result<T>> resultTask)
+    {
+        return (await resultTask.ConfigureAwait(false)).AsMaybe();
+    }
 
-    public static Result<TDestination> Cast<TSource, TDestination>(this Result<TSource> source, Func<TSource, TDestination> conversionFactory) => source.Map(conversionFactory);
+    public static Result<TDestination> Cast<TSource, TDestination>(this Result<TSource> source, Func<TSource, TDestination> conversionFactory)
+    {
+        return source.Map(conversionFactory);
+    }
 
-    public static Task<Result<TDestination>> Cast<TSource, TDestination>(this Task<Result<TSource>> source, Func<TSource, TDestination> conversionFactory) => source.Map(conversionFactory);
+    public static Task<Result<TDestination>> Cast<TSource, TDestination>(this Task<Result<TSource>> source, Func<TSource, TDestination> conversionFactory)
+    {
+        return source.Map(conversionFactory);
+    }
 
     public static Task<Result<Maybe<TResult>>> Bind<TFirst, TResult>(
         this Task<Result<Maybe<TFirst>>> task,
@@ -106,9 +160,9 @@ public static class FunctionalMixin
 
         return result;
     }
-    
+
     /// <summary>
-    /// Binds and combines the results of the selector function applied to each item in the task of results.
+    ///     Binds and combines the results of the selector function applied to each item in the task of results.
     /// </summary>
     /// <typeparam name="T">The type of items in the input collection.</typeparam>
     /// <typeparam name="K">The type of items in the result collection.</typeparam>
@@ -126,7 +180,7 @@ public static class FunctionalMixin
             return results.Combine();
         });
     }
-    
+
     public static async Task<Result> Using(this Task<Result<Stream>> streamResult, Func<Stream, Task> useStream)
     {
         return await streamResult.Tap(async stream =>
@@ -141,27 +195,27 @@ public static class FunctionalMixin
     public static async Task<Maybe<Task>> Tap<T>(this Task<Maybe<T>> maybeTask, Action<T> action)
     {
         var maybe = await maybeTask.ConfigureAwait(false);
-        
+
         if (maybe.HasValue)
         {
             action(maybe.Value);
         }
-        
+
         return maybeTask;
     }
-    
+
     public static Maybe<T> Tap<T>(this Maybe<T> maybe, Action<T> action)
     {
         if (maybe.HasValue)
         {
             action(maybe.Value);
         }
-        
+
         return maybe;
     }
-    
+
     /// <summary>
-    /// Binds a collection of results to a function, and combines the results into a single task.
+    ///     Binds a collection of results to a function, and combines the results into a single task.
     /// </summary>
     /// <typeparam name="TInput">The type of the input values.</typeparam>
     /// <typeparam name="TResult">The type of the result values.</typeparam>
@@ -179,32 +233,32 @@ public static class FunctionalMixin
             .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
             .Merge(maxConcurrency)
             .ToList();
-        
+
         return results.Combine();
     }
-    
+
     public static Task<Result<IEnumerable<TResult>>> Combine<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
         return task.Bind(tasks => Combine(tasks, scheduler, maxConcurrency));
     }
-    
+
     public static Task<Result<IEnumerable<TResult>>> CombineInOrder<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
         return task.Bind(tasks => CombineInOrder(tasks, scheduler, maxConcurrency));
     }
-    
+
     public static async Task<Result<IEnumerable<TResult>>> CombineInOrder<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
         var results = await enumerableOfTaskResults
             .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
             .Concat()
             .ToList();
-        
+
         return results.Combine();
     }
-    
+
     /// <summary>
-    /// Transforms the results of a task using a provided selector function.
+    ///     Transforms the results of a task using a provided selector function.
     /// </summary>
     /// <typeparam name="TInput">The type of the input values.</typeparam>
     /// <typeparam name="TResult">The type of the result values.</typeparam>
@@ -227,7 +281,7 @@ public static class FunctionalMixin
             .Tap(() => logger.Information(successString))
             .TapError(Serilog.Log.Error);
     }
-    
+
     public static async Task Log(this Task<Result> result, ILogger? logger = default, string successString = "Success")
     {
         (await result.ConfigureAwait(false)).Log(logger ?? Serilog.Log.Logger, successString);

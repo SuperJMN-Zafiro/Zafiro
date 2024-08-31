@@ -4,12 +4,12 @@ namespace Zafiro;
 
 public class Hash
 {
-    public byte[] Bytes { get; }
-
     public Hash(byte[] bytes)
     {
         Bytes = bytes;
     }
+
+    public byte[] Bytes { get; }
 
     protected bool Equals(Hash other)
     {

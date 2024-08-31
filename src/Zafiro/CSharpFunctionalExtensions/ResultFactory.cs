@@ -36,7 +36,7 @@ public static class ResultFactory
     {
         return one.Bind(x => another.Bind(y => combineFunction(x, y)));
     }
-    
+
     public static async Task<Result> Using(this Task<Result<Stream>> streamResult, Func<Stream, Task> useStream)
     {
         return await streamResult.Tap(async stream =>

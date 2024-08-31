@@ -47,7 +47,6 @@ public static class StringMixin
         {
             var matchCount = 0;
             for (var i = 0; i < s.Length - shift; i++)
-            {
                 if (s[i] == s[i + shift])
                 {
                     matchCount++;
@@ -68,7 +67,6 @@ public static class StringMixin
                 {
                     matchCount = 0;
                 }
-            }
         }
 
         if (maxLength > 0)
@@ -91,10 +89,7 @@ public static class StringMixin
     public static IEnumerable<string> Lines(this string s)
     {
         using var tr = new StringReader(s);
-        while (tr.ReadLine() is { } l)
-        {
-            yield return l;
-        }
+        while (tr.ReadLine() is { } l) yield return l;
     }
 
     public static string JoinWithLines<T>(this IEnumerable<T> items)
@@ -111,7 +106,7 @@ public static class StringMixin
     {
         return string.Join(separator, items.Select(x => x?.ToString()));
     }
-        
+
     public static byte[] ToBytes(this string str, Encoding encoding)
     {
         return encoding.GetBytes(str);

@@ -7,18 +7,49 @@ namespace Zafiro;
 [AsyncMethodBuilder(typeof(LazyTaskMethodBuilder<>))]
 public class LazyTask<T> : INotifyCompletion
 {
-    private readonly object _syncObj = new object();
-
-    private T _result;
-
-    private Exception _exception;
+    private readonly object _syncObj = new();
 
     private IAsyncStateMachine _asyncStateMachine;
 
     private Action _continuation;
 
+    private Exception _exception;
+
+    private T _result;
+
     internal LazyTask()
     {
+    }
+
+    public bool IsCompleted { get; private set; }
+
+    public void OnCompleted(Action continuation)
+    {
+        lock (_syncObj)
+        {
+            if (_asyncStateMachine != null)
+            {
+                try
+                {
+                    _asyncStateMachine.MoveNext();
+                }
+                finally
+                {
+                    _asyncStateMachine = null;
+                }
+            }
+
+            if (_continuation == null)
+            {
+                _continuation = continuation;
+            }
+            else
+            {
+                _continuation += continuation;
+            }
+
+            TryCallContinuation();
+        }
     }
 
     public T GetResult()
@@ -39,36 +70,10 @@ public class LazyTask<T> : INotifyCompletion
         }
     }
 
-    public bool IsCompleted { get; private set; }
-
-    public void OnCompleted(Action continuation)
+    public LazyTask<T> GetAwaiter()
     {
-        lock (_syncObj)
-        {
-            if (_asyncStateMachine != null)
-            {
-                try
-                {
-                    _asyncStateMachine.MoveNext();
-                }
-                finally
-                {
-                    _asyncStateMachine = null;
-                }
-            }
-            if (_continuation == null)
-            {
-                _continuation = continuation;
-            }
-            else
-            {
-                _continuation += continuation;
-            }
-            TryCallContinuation();
-        }
+        return this;
     }
-
-    public LazyTask<T> GetAwaiter() => this;
 
     internal void SetResult(T result)
     {

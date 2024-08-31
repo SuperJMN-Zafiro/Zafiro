@@ -48,7 +48,7 @@ public class TreeNode
                 return p.Path.Concat(new[] { n.Index });
             }
 
-            return new [] { n.Index };
+            return new[] { n.Index };
         });
     }
 }

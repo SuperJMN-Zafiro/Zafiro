@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Zafiro
+namespace Zafiro;
+
+public interface IDictionaryBasedService
 {
-    public interface IDictionaryBasedService
-    {
-        Task<Payload> Request(Payload payload);
-    }
+    Task<Payload> Request(Payload payload);
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
+using Serilog.Events;
 
 namespace Zafiro.Misc;
 
-public class LoggerAdapter : ILogger
+public class SerilogToMicrosoftLoggerAdapter : ILogger
 {
     private readonly Serilog.ILogger logger;
 
-    public LoggerAdapter(Serilog.ILogger logger)
+    public SerilogToMicrosoftLoggerAdapter(Serilog.ILogger logger)
     {
         this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -40,17 +41,17 @@ public class LoggerAdapter : ILogger
         }
     }
 
-    private static Serilog.Events.LogEventLevel ConvertToSerilogLevel(LogLevel logLevel)
+    private static LogEventLevel ConvertToSerilogLevel(LogLevel logLevel)
     {
         return logLevel switch
         {
-            LogLevel.Trace => Serilog.Events.LogEventLevel.Verbose,
-            LogLevel.Debug => Serilog.Events.LogEventLevel.Debug,
-            LogLevel.Information => Serilog.Events.LogEventLevel.Information,
-            LogLevel.Warning => Serilog.Events.LogEventLevel.Warning,
-            LogLevel.Error => Serilog.Events.LogEventLevel.Error,
-            LogLevel.Critical => Serilog.Events.LogEventLevel.Fatal,
-            _ => Serilog.Events.LogEventLevel.Information,
+            LogLevel.Trace => LogEventLevel.Verbose,
+            LogLevel.Debug => LogEventLevel.Debug,
+            LogLevel.Information => LogEventLevel.Information,
+            LogLevel.Warning => LogEventLevel.Warning,
+            LogLevel.Error => LogEventLevel.Error,
+            LogLevel.Critical => LogEventLevel.Fatal,
+            _ => LogEventLevel.Information
         };
     }
 }

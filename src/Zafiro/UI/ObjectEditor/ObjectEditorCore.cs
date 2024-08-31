@@ -13,8 +13,12 @@ namespace Zafiro.UI.ObjectEditor;
 
 public class ObjectEditorCore<TEditor, TTemplate> : ReactiveObject where TTemplate : class
 {
+    private readonly ITemplateMatcher<TTemplate> editorTemplateMatcher;
     private readonly IObjectEditor<TEditor, TTemplate> objectEditor;
     private readonly Func<TTemplate, PropertyInfo, IList<object>, PropertyItem<TEditor>> propertyItemFactory;
+
+    private CompositeDisposable disposables = new();
+    private IList<PropertyItem<TEditor>> propertyItems;
 
     public ObjectEditorCore(IObjectEditor<TEditor, TTemplate> objectEditor,
         Func<TTemplate, PropertyInfo, IList<object>, PropertyItem<TEditor>> propertyItemFactory,
@@ -27,10 +31,6 @@ public class ObjectEditorCore<TEditor, TTemplate> : ReactiveObject where TTempla
                 .Chain(new EnumTemplateMatcher<TTemplate>()
                     .Chain(new ReturnTemplateMatcher<TTemplate>(getTemplate))));
     }
-
-    private CompositeDisposable disposables = new CompositeDisposable();
-    private IList<PropertyItem<TEditor>> propertyItems;
-    private readonly ITemplateMatcher<TTemplate> editorTemplateMatcher;
 
     public IList<PropertyItem<TEditor>> PropertyItems
     {
@@ -66,10 +66,7 @@ public class ObjectEditorCore<TEditor, TTemplate> : ReactiveObject where TTempla
 
         PropertyItems = UpdatePropertyItems(targets);
 
-        foreach (var propertyItem in PropertyItems)
-        {
-            disposables.Add(propertyItem);
-        }
+        foreach (var propertyItem in PropertyItems) disposables.Add(propertyItem);
     }
 
     private List<PropertyItem<TEditor>> UpdatePropertyItems(IList<object> targets)
@@ -126,9 +123,6 @@ public class ObjectEditorCore<TEditor, TTemplate> : ReactiveObject where TTempla
             return;
         }
 
-        foreach (var i in disposables)
-        {
-            i.Dispose();
-        }
+        foreach (var i in disposables) i.Dispose();
     }
 }

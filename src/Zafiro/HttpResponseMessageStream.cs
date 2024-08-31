@@ -6,9 +6,8 @@ namespace Zafiro;
 
 public class HttpResponseMessageStream : Stream
 {
-    private readonly HttpResponseMessage response;
-
     private readonly Stream inner;
+    private readonly HttpResponseMessage response;
 
     private HttpResponseMessageStream(Stream stream, HttpResponseMessage response)
     {

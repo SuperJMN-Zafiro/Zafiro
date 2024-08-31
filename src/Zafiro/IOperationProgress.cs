@@ -1,11 +1,10 @@
 ﻿using System;
 using Zafiro.ProgressReporting;
 
-namespace Zafiro
+namespace Zafiro;
+
+public interface IOperationProgress
 {
-    public interface IOperationProgress
-    {
-        IObservable<Progress> Progress { get; }
-        void Send(Progress current);
-    }
+    IObservable<Progress> Progress { get; }
+    void Send(Progress current);
 }

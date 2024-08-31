@@ -1,7 +1,6 @@
-﻿namespace Zafiro
+﻿namespace Zafiro;
+
+public interface IAdd<in T>
 {
-    public interface IAdd<in T>
-    {
-        void Add(T item);
-    }
+    void Add(T item);
 }

@@ -1,8 +1,7 @@
 ﻿using Zafiro.ProgressReporting;
 
-namespace Zafiro
+namespace Zafiro;
+
+public class Done : Progress
 {
-    public class Done : Progress
-    {
-    }
 }

@@ -4,43 +4,42 @@ using System.Linq;
 using System.Reflection;
 using Serilog;
 
-namespace Zafiro.Values
+namespace Zafiro.Values;
+
+public class GroupGetter
 {
-    public class GroupGetter
+    private readonly PropertyInfo property;
+
+    public GroupGetter(PropertyInfo property)
     {
-        private readonly PropertyInfo property;
+        this.property = property;
+    }
 
-        public GroupGetter(PropertyInfo property)
+    public object GetValue(IEnumerable<object> targets)
+    {
+        var query = from target in targets
+            from prop in target.GetType().GetRuntimeProperties().Where(x => string.Equals(x.Name, property.Name))
+            select new { target, prop };
+
+        var values = query.Select(x =>
         {
-            this.property = property;
-        }
-
-        public object GetValue(IEnumerable<object> targets)
-        {
-            var query = from target in targets
-                from prop in target.GetType().GetRuntimeProperties().Where(x => string.Equals(x.Name, property.Name))
-                select new { target, prop };
-
-            var values = query.Select(x =>
+            try
             {
-                try
-                {
-                    var value = x.prop.GetValue(x.target);
-                    return value;
-                }
-                catch (Exception e)
-                {
-                    Log.Warning(e, "Could not get values of property {Property}", x);
-                    return null;
-                }
-            }).ToList();
-
-            if (values.Distinct().Count() == 1)
-            {
-                return values.First();
+                var value = x.prop.GetValue(x.target);
+                return value;
             }
+            catch (Exception e)
+            {
+                Log.Warning(e, "Could not get values of property {Property}", x);
+                return null;
+            }
+        }).ToList();
 
-            return property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
+        if (values.Distinct().Count() == 1)
+        {
+            return values.First();
         }
+
+        return property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
     }
 }

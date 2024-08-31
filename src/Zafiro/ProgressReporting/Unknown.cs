@@ -1,6 +1,5 @@
-﻿namespace Zafiro.ProgressReporting
+﻿namespace Zafiro.ProgressReporting;
+
+public class Unknown : Progress
 {
-    public class Unknown : Progress
-    {
-    }
 }

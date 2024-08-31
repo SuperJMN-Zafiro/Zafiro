@@ -12,11 +12,16 @@ namespace Zafiro.Reactive;
 public class ObservableStream : Stream
 {
     private readonly Stream inner;
-    public override bool CanTimeout => inner.CanTimeout;
     private readonly Subject<long> positionSubject = new();
     private long? lastKnownLength;
 
-    public ObservableStream(Stream inner) => this.inner = inner;
+    public ObservableStream(Stream inner)
+    {
+        this.inner = inner;
+    }
+
+    public override bool CanTimeout => inner.CanTimeout;
+
     public override int ReadTimeout
     {
         get => inner.ReadTimeout;
@@ -40,6 +45,7 @@ public class ObservableStream : Stream
             catch
             {
             }
+
             return lastKnownLength ?? long.MaxValue;
         }
     }
@@ -56,18 +62,27 @@ public class ObservableStream : Stream
 
     public IObservable<long> Positions => positionSubject.AsObservable();
 
-    public override void Flush() => inner.Flush();
+    public override void Flush()
+    {
+        inner.Flush();
+    }
 
     public override int Read(byte[] buffer, int offset, int count)
     {
-        int num = inner.Read(buffer, offset, count);
+        var num = inner.Read(buffer, offset, count);
         positionSubject.OnNext(Position);
         return num;
     }
 
-    public override long Seek(long offset, SeekOrigin origin) => inner.Seek(offset, origin);
+    public override long Seek(long offset, SeekOrigin origin)
+    {
+        return inner.Seek(offset, origin);
+    }
 
-    public override void SetLength(long value) => inner.SetLength(value);
+    public override void SetLength(long value)
+    {
+        inner.SetLength(value);
+    }
 
     public override void Write(byte[] buffer, int offset, int count)
     {
@@ -82,7 +97,7 @@ public class ObservableStream : Stream
         return readAsync;
     }
 
-    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = new CancellationToken())
+    public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = new())
     {
         var readAsync = await base.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
         positionSubject.OnNext(Position);
