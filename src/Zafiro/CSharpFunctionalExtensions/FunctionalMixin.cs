@@ -279,7 +279,7 @@ public static class FunctionalMixin
     {
         result
             .Tap(() => logger.Information(successString))
-            .TapError(Serilog.Log.Error);
+            .TapError(logger.Error);
     }
 
     public static async Task Log(this Task<Result> result, ILogger? logger = default, string successString = "Success")
