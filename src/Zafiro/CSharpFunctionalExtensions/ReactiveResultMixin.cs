@@ -144,4 +144,14 @@ public static class ReactiveResultMixin
     {
         return input.Map(x => x.Select(selector));
     }
+
+    public static Task<Result> UnrollBind(this Result<Task<Result>> result)
+    {
+        return result.Bind(task => task);
+    }
+
+    public static Task UnrollMap(this Result<Task<Result>> result)
+    {
+        return result.Map(task => task);
+    }
 }

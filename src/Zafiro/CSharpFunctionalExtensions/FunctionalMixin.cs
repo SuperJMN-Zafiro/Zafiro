@@ -237,17 +237,32 @@ public static class FunctionalMixin
         return results.Combine();
     }
 
-    public static Task<Result<IEnumerable<TResult>>> Combine<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
+    public static Task<Result<IEnumerable<TResult>>> CombineConcurrently<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
         return task.Bind(tasks => Combine(tasks, scheduler, maxConcurrency));
     }
 
-    public static Task<Result<IEnumerable<TResult>>> CombineInOrder<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
+    public static Task<Result<IEnumerable<TResult>>> CombineSequentially<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
-        return task.Bind(tasks => CombineInOrder(tasks, scheduler, maxConcurrency));
+        return task.Bind(tasks => CombineSequentially(tasks, scheduler, maxConcurrency));
+    }
+    
+    public static Task<Result> CombineSequentially<TResult>(this Task<Result<IEnumerable<Task<Result>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
+    {
+        return task.Bind(tasks => CombineSequentially(tasks, scheduler));
     }
 
-    public static async Task<Result<IEnumerable<TResult>>> CombineInOrder<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
+    public static async Task<Result> CombineSequentially(this IEnumerable<Task<Result>> enumerableOfTaskResults, IScheduler? scheduler = default)
+    {
+        var results = await enumerableOfTaskResults
+            .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
+            .Concat()
+            .ToList();
+
+        return results.Combine();
+    }
+
+    public static async Task<Result<IEnumerable<TResult>>> CombineSequentially<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
         var results = await enumerableOfTaskResults
             .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
@@ -275,8 +290,10 @@ public static class FunctionalMixin
         return taskResult.Bind(inputs => AsyncResultExtensionsLeftOperand.Combine(inputs.Select(selector)));
     }
 
-    public static void Log(this Result result, ILogger logger, string successString = "Success")
+    public static void Log(this Result result, ILogger? logger = default, string successString = "Success")
     {
+        logger ??= Serilog.Log.Logger;
+        
         result
             .Tap(() => logger.Information(successString))
             .TapError(logger.Error);
