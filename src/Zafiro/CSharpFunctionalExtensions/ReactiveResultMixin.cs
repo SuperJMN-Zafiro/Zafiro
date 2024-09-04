@@ -145,9 +145,13 @@ public static class ReactiveResultMixin
         return input.Map(x => x.Select(selector));
     }
 
-    public static Task<Result> UnrollBind(this Result<Task<Result>> result)
+    public static Task<Result> UnrollBind(this Result<Task<Result>> result, Action? prepend = null)
     {
-        return result.Bind(task => task);
+        return result.Bind(async task =>
+        {
+            prepend?.Invoke();
+            return await task.ConfigureAwait(false);
+        });
     }
 
     public static Task UnrollMap(this Result<Task<Result>> result)

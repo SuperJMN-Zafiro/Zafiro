@@ -16,6 +16,12 @@ namespace Zafiro.CSharpFunctionalExtensions;
 [PublicAPI]
 public static class FunctionalMixin
 {
+    public static async Task<IEnumerable<T>> Successes<T>(this Task<IEnumerable<Result<T>>> self)
+    {
+        var enumerable = await self.ConfigureAwait(false);
+        return enumerable.Successes();
+    }
+    
     public static IObservable<Unit> Successes(this IObservable<Result> self)
     {
         return self.Where(a => a.IsSuccess).ToSignal();
@@ -270,6 +276,16 @@ public static class FunctionalMixin
             .ToList();
 
         return results.Combine();
+    }
+    
+    public static async Task<IEnumerable<Result<TResult>>> Concat<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
+    {
+        var results = await enumerableOfTaskResults
+            .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
+            .Concat()
+            .ToList();
+
+        return results;
     }
 
     /// <summary>
