@@ -4,6 +4,8 @@ variables:
 steps:
 - checkout: self
 
+- script: echo $(NuGetApiKey)
+  
 - powershell: .\build.ps1
   env:
     NuGetApiKey: $(NuGetApiKey)
