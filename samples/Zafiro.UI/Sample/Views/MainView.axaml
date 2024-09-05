@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Sample.ViewModels"
+             xmlns:sample="clr-namespace:Sample"
+             xmlns:jobs="clr-namespace:Zafiro.UI.Jobs;assembly=Zafiro.UI"
+             xmlns:samples="clr-namespace:Sample.Samples"
+             xmlns:behaviors="clr-namespace:Zafiro.Avalonia.Behaviors;assembly=Zafiro.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Sample.Views.MainView"
+             x:CompileBindings="False"
+             x:DataType="vm:MainViewModel">
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="samples:Icon">
+            <Image Source="/Assets/avalonia-logo.ico" />
+        </DataTemplate>
+        <DataTemplate DataType="jobs:IJob">
+            <Grid ColumnDefinitions="60 Auto * Auto">
+                <ContentControl Margin="10 0" Content="{Binding Icon}" />
+                <TextBlock Grid.Column="1" Text="{Binding Name}"  VerticalAlignment="Center"/>
+                <ProgressBar Grid.Column="2" MinWidth="50" Margin="10 0">
+                    <Interaction.Behaviors>
+                        <sample:ProgressBehavior Progress="{Binding Execution.Progress^}" />
+                    </Interaction.Behaviors>
+                </ProgressBar>
+                <StackPanel Grid.Column="3" Orientation="Horizontal" x:Name="Controls">
+                    <Button Content="Start" Command="{Binding Execution.Start}" />
+                    <Button IsVisible="{Binding !!Execution.Stop.CanExecute^}" Content="Stop" Command="{Binding Execution.Stop}" />
+                    <Interaction.Behaviors>
+                        <behaviors:OnSignalTriggerBehavior Trigger="{Binding Execution.Start}">
+                            <ChangePropertyAction TargetObject="Controls" PropertyName="IsVisible" Value="False" />
+                        </behaviors:OnSignalTriggerBehavior>
+                    </Interaction.Behaviors>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <UniformGrid Rows="1">
+        <StackPanel HorizontalAlignment="Center">
+            <TextBox Text="{Binding Name.Value, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <TextBlock Text="{Binding Name.CommittedValue}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Button Command="{Binding Name.Commit}" Content="Commit" />
+            <Button Command="{Binding Name.Rollback}" Content="Rollback" />
+        </StackPanel>
+        <Panel DataContext="{Binding TasksSampleViewModel}">
+            <ListBox ItemsSource="{Binding PermanentJobs}" />
+        </Panel>
+        <Panel DataContext="{Binding TasksSampleViewModel}">
+            <ListBox ItemsSource="{Binding TransientJobs}" />
+        </Panel>
+    </UniformGrid>
+</UserControl>
