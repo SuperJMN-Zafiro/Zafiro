@@ -27,7 +27,7 @@
                 <TextBlock Grid.Column="1" Text="{Binding Name}"  VerticalAlignment="Center"/>
                 <ProgressBar Grid.Column="2" MinWidth="50" Margin="10 0">
                     <Interaction.Behaviors>
-                        <sample:ProgressBehavior Progress="{Binding Execution.Progress^}" />
+                        <behaviors:ProgressBarExecutionBehavior Execution="{Binding Execution}" />
                     </Interaction.Behaviors>
                 </ProgressBar>
                 <StackPanel Grid.Column="3" Orientation="Horizontal" x:Name="Controls">
