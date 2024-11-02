@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Zafiro.Mixins;
 
-namespace Zafiro.Clustering;
+namespace Zafiro.Tables;
 
 public class Table
 {
@@ -61,20 +63,20 @@ public class Table
     }
 }
 
-public class Table<TLabel, TCell> : LabeledTable<TLabel, TLabel, TCell>
+public class Table<TLabel, TCell> : Table<TLabel, TLabel, TCell>
 {
     public Table(TCell[,] matrix, IList<TLabel> labels) : base(matrix, labels, labels)
     {
     }
 }
 
-public class LabeledTable<TRow, TColumn, TCell>
+public class Table<TRow, TColumn, TCell>
 {
     public TCell[,] Matrix { get; }
     public IList<TRow> RowLabels { get; }
     public IList<TColumn> ColumnLabels { get; }
 
-    public LabeledTable(TCell[,] matrix, IList<TRow> rowLabels, IList<TColumn> columnLabels)
+    public Table(TCell[,] matrix, IList<TRow> rowLabels, IList<TColumn> columnLabels)
     {
         var rowCount = matrix.GetLength(0);
         if (rowCount != rowLabels.Count)
@@ -96,5 +98,28 @@ public class LabeledTable<TRow, TColumn, TCell>
     public TCell Get(TRow row, TColumn column)
     {
         return Matrix[RowLabels.IndexOf(row), ColumnLabels.IndexOf(column)];
+    }
+
+    public override string ToString()
+    {
+        var stringBuilder = new StringBuilder();
+
+        stringBuilder.Append("\t");
+        stringBuilder.AppendLine(RowLabels.Join("\t"));
+
+        for (int r = 0; r < this.RowLabels.Count; r++)
+        {
+            stringBuilder.Append(RowLabels[r]);
+
+            for (int c = 0; c < this.ColumnLabels.Count; c++)
+            {
+                stringBuilder.Append(this.Matrix[r, c]);
+                stringBuilder.Append("\t");
+            }
+
+            stringBuilder.AppendLine();
+        }
+
+        return stringBuilder.ToString();
     }
 }

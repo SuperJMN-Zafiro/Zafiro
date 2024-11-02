@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Zafiro.Mixins;
 
-namespace Zafiro.Clustering;
+namespace Zafiro.Tables;
 
 public class TaggedEnumerable<T, TTag>(TTag tag, IEnumerable<T> enumerable) : IEnumerable<T>
 {

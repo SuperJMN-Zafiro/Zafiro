@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoreLinq;
+using Zafiro.Tables;
 
 namespace Zafiro.Clustering;
 
@@ -71,7 +72,7 @@ public class SingleLinkageClustering<T, TValue> where TValue : IComparable<TValu
     }
 
 
-    private static (ClusterNode<T> A, ClusterNode<T> B, double Distance) ClosestPair(IEnumerable<ClusterNode<T>> clusters, LabeledTable<ClusterNode<T>, ClusterNode<T>, double> distances)
+    private static (ClusterNode<T> A, ClusterNode<T> B, double Distance) ClosestPair(IEnumerable<ClusterNode<T>> clusters, Table<ClusterNode<T>, ClusterNode<T>, double> distances)
     {
         var combinations = clusters.Subsets(2);
         var tuples = from n in combinations
