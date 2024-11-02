@@ -1,16 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Zafiro.Clustering.Untyped;
+﻿namespace Zafiro.Clustering.Untyped;
 
 public class LeafNodeViewModel : ClusterNodeViewModel
 {
-    public override object Content { get; }
-    public override double? MergeDistance => null;
-    public override IEnumerable<ClusterNodeViewModel> Children => Enumerable.Empty<ClusterNodeViewModel>();
+    public object Content { get; set; }
 
-    public LeafNodeViewModel(LeafNode<object> node, ClusterNodeViewModel parent = null)
-        : base(parent)
+    public LeafNodeViewModel(LeafNode<object> node, ClusterNodeViewModel? parent)
+        : base(parent!)
     {
         Content = node.Item;
     }
