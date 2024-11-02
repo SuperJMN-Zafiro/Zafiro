@@ -8,7 +8,7 @@ public class ClusterNode
     public ClusterNode Left { get; init; }
     public ClusterNode Right { get; init; }
     public double MergeDistance { get; init; }
-    public object Content { get; init; }
+    public object? Content { get; init; }
 
     public IEnumerable<ClusterNode> Children
     {
