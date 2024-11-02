@@ -64,8 +64,11 @@ public static class Extensions
     {
         return table.ApplyRowPairOperation((a, b) =>
         {
-            var sum = a.Zip(b, (x, y) => Math.Pow(x - y, 2)).Sum();
-            var sqrt = Math.Sqrt(sum);
+            var diffs = a.Zip(b, (x, y) => x - y);
+            var diffsSquared = diffs.Select(i => Math.Pow(i, 2));
+            var sumOfDiffsSquared = diffsSquared.Sum();
+
+            var sqrt = Math.Sqrt(sumOfDiffsSquared);
             return sqrt;
         });
     }

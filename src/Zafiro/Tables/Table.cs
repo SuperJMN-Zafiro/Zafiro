@@ -103,23 +103,51 @@ public class Table<TRow, TColumn, TCell>
     public override string ToString()
     {
         var stringBuilder = new StringBuilder();
+        int colCount = this.ColumnLabels.Count;
+        int rowCount = this.RowLabels.Count;
 
-        stringBuilder.Append("\t");
-        stringBuilder.AppendLine(RowLabels.Join("\t"));
+        // Arreglo para almacenar el ancho máximo de cada columna (incluyendo la columna de etiquetas de fila)
+        int[] maxWidths = new int[colCount + 1];
 
-        for (int r = 0; r < this.RowLabels.Count; r++)
+        // Calcular el ancho máximo para la columna de etiquetas de fila
+        maxWidths[0] = this.RowLabels.Max(label => label?.ToString().Length ?? 0);
+
+        // Calcular el ancho máximo para cada columna
+        for (int c = 0; c < colCount; c++)
         {
-            stringBuilder.Append(RowLabels[r]);
-
-            for (int c = 0; c < this.ColumnLabels.Count; c++)
+            int max = this.ColumnLabels[c]?.ToString().Length ?? 0;
+            for (int r = 0; r < rowCount; r++)
             {
-                stringBuilder.Append(this.Matrix[r, c]);
-                stringBuilder.Append("\t");
+                int cellLength = this.Matrix[r, c]?.ToString().Length ?? 0;
+                if (cellLength > max)
+                {
+                    max = cellLength;
+                }
             }
+            maxWidths[c + 1] = max;
+        }
 
+        // Construir la cabecera de la tabla
+        stringBuilder.Append("".PadRight(maxWidths[0] + 2)); // Espacio para la esquina superior izquierda
+        for (int c = 0; c < colCount; c++)
+        {
+            stringBuilder.Append(this.ColumnLabels[c]?.ToString().PadRight(maxWidths[c + 1] + 2));
+        }
+        stringBuilder.AppendLine();
+
+        // Construir las filas de la tabla
+        for (int r = 0; r < rowCount; r++)
+        {
+            stringBuilder.Append(this.RowLabels[r]?.ToString().PadRight(maxWidths[0] + 2));
+            for (int c = 0; c < colCount; c++)
+            {
+                string cellValue = this.Matrix[r, c]?.ToString() ?? "";
+                stringBuilder.Append(cellValue.PadRight(maxWidths[c + 1] + 2));
+            }
             stringBuilder.AppendLine();
         }
 
         return stringBuilder.ToString();
     }
+
 }
