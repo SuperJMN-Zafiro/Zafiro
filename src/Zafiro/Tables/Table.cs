@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Zafiro.Mixins;
 
 namespace Zafiro.Tables;
 
@@ -150,5 +149,4 @@ public class Table<TRow, TColumn, TCell>
 
         return stringBuilder.ToString();
     }
-
 }

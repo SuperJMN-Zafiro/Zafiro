@@ -6,7 +6,7 @@ using Zafiro.Tables;
 
 namespace Zafiro.DataAnalysis.Clustering;
 
-public class SingleLinkageClustering<T> : ISingleLinkageClustering<T>
+public class SingleLinkageClusteringStrategy<T> : IClusteringStrategy<T>
 {
     public ClusterNode<T> Clusterize(Table<ClusterNode<T>, double> table)
     {

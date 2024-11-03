@@ -2,7 +2,7 @@
 
 namespace Zafiro.DataAnalysis.Clustering;
 
-public interface ISingleLinkageClustering<T>
+public interface IClusteringStrategy<T>
 {
     ClusterNode<T> Clusterize(Table<ClusterNode<T>, double> table);
 }
