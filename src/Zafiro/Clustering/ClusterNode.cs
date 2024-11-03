@@ -12,6 +12,11 @@ public class LeafNode<T> : ClusterNode<T>
     {
         Item = item;
     }
+
+    public override string ToString()
+    {
+        return Item.ToString();
+    }
 }
 
 public class InternalNode<T> : ClusterNode<T>
