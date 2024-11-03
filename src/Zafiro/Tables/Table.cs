@@ -8,7 +8,7 @@ namespace Zafiro.Tables;
 
 public class Table
 {
-    public static Table<TItem, TValue> FromSubsets<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries)
+    public static Table<TItem, TValue> FromSubsets<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries) where TItem : notnull
     {
         // Recopilar todas las etiquetas únicas
         var labels = distanceEntries
@@ -63,12 +63,7 @@ public class Table
     }
 }
 
-public class Table<TLabel, TCell> : Table<TLabel, TLabel, TCell>
-{
-    public Table(TCell[,] matrix, IList<TLabel> labels) : base(matrix, labels, labels)
-    {
-    }
-}
+public class Table<TLabel, TCell>(TCell[,] matrix, IList<TLabel> labels) : Table<TLabel, TLabel, TCell>(matrix, labels, labels);
 
 public class Table<TRow, TColumn, TCell>
 {
@@ -93,12 +88,18 @@ public class Table<TRow, TColumn, TCell>
         Matrix = matrix;
         RowLabels = rowLabels;
         ColumnLabels = columnLabels;
+        Width = ColumnLabels.Count;
+        Height = RowLabels.Count;
     }
 
     public TCell Get(TRow row, TColumn column)
     {
         return Matrix[RowLabels.IndexOf(row), ColumnLabels.IndexOf(column)];
     }
+
+    public int Width { get; }
+
+    public int Height { get; }
 
     public override string ToString()
     {

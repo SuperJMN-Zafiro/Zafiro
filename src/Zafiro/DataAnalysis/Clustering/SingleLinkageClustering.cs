@@ -4,9 +4,9 @@ using System.Linq;
 using MoreLinq;
 using Zafiro.Tables;
 
-namespace Zafiro.Clustering;
+namespace Zafiro.DataAnalysis.Clustering;
 
-public class SingleLinkageClustering<T, TValue> where TValue : IComparable<TValue>
+public class SingleLinkageClustering<T> : ISingleLinkageClustering<T>
 {
     public ClusterNode<T> Clusterize(Table<ClusterNode<T>, double> table)
     {
@@ -30,7 +30,7 @@ public class SingleLinkageClustering<T, TValue> where TValue : IComparable<TValu
         return Clusterize(clusters, distances);
     }
 
-    private Table<ClusterNode<T>, double> DistancesFor(Table<ClusterNode<T>, double> previousTable,
+    private static Table<ClusterNode<T>, double> DistancesFor(Table<ClusterNode<T>, double> previousTable,
         IList<ClusterNode<T>> actual, ClusterNode<T> added)
     {
         if (!actual.Any())

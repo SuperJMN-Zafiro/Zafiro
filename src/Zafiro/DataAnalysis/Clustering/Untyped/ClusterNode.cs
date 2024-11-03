@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Zafiro.Clustering;
+using Zafiro.DataAnalysis.Clustering;
+
+namespace Zafiro.DataAnalysis.Clustering.Untyped;
 
 public class ClusterNode
 {
-    public ClusterNode Parent { get; init; }
-    public ClusterNode Left { get; init; }
-    public ClusterNode Right { get; init; }
+    public ClusterNode? Parent { get; init; }
+    public ClusterNode? Left { get; init; }
+    public ClusterNode? Right { get; init; }
     public double MergeDistance { get; init; }
     public object? Content { get; init; }
 
@@ -20,7 +22,7 @@ public class ClusterNode
     }
 
     // Constructor para nodos hoja
-    private ClusterNode(object content, ClusterNode parent = null)
+    private ClusterNode(object? content, ClusterNode? parent = null)
     {
         Content = content;
         Parent = parent;
@@ -30,7 +32,7 @@ public class ClusterNode
     }
 
     // Constructor para nodos internos
-    private ClusterNode(ClusterNode left, ClusterNode right, double mergeDistance, ClusterNode parent = null)
+    private ClusterNode(ClusterNode left, ClusterNode right, double mergeDistance, ClusterNode? parent = null)
     {
         Left = left;
         Right = right;
@@ -60,7 +62,7 @@ public class ClusterNode
         }
     }
 
-    public static ClusterNode Create<T>(ClusterNode<T> node, ClusterNode parent = null)
+    public static ClusterNode Create<T>(ClusterNode<T> node, ClusterNode parent = null) where T : class
     {
         if (node is LeafNode<T> leafNode)
         {

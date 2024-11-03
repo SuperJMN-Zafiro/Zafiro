@@ -1,10 +1,8 @@
-﻿namespace Zafiro.Clustering;
+﻿namespace Zafiro.DataAnalysis.Clustering;
 
-public abstract class ClusterNode<T>
-{
-}
+public abstract class ClusterNode<T>;
 
-public class LeafNode<T> : ClusterNode<T>
+public class LeafNode<T> : ClusterNode<T> where T : class
 {
     public T Item { get; }
 
@@ -13,7 +11,7 @@ public class LeafNode<T> : ClusterNode<T>
         Item = item;
     }
 
-    public override string ToString()
+    public override string? ToString()
     {
         return Item.ToString();
     }
@@ -23,7 +21,7 @@ public class InternalNode<T> : ClusterNode<T>
 {
     public ClusterNode<T> Left { get; }
     public ClusterNode<T> Right { get; }
-    public double MergeDistance { get; } // Solo en nodos internos
+    public double MergeDistance { get; }
 
     public InternalNode(ClusterNode<T> left, ClusterNode<T> right, double mergeDistance)
     {

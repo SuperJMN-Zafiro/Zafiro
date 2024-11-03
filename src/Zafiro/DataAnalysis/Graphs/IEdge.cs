@@ -1,4 +1,4 @@
-﻿namespace Zafiro.Graphs;
+﻿namespace Zafiro.DataAnalysis.Graphs;
 
 public interface IEdge<out T>
 {
