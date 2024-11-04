@@ -1,13 +1,15 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MoreLinq.Extensions;
 
 namespace Zafiro.Tables;
 
 public class Table
 {
-    public static Table<TItem, TValue> FromSubsets<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries) where TItem : notnull
+    public static Table<TItem, TValue> FromSubsets<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries) where TItem : notnull where TValue : notnull
     {
         // Recopilar todas las etiquetas únicas
         var labels = distanceEntries
@@ -62,11 +64,29 @@ public class Table
     }
 }
 
-public class Table<TLabel, TCell>(TCell[,] matrix, IList<TLabel> labels) : Table<TLabel, TLabel, TCell>(matrix, labels, labels);
+public class Table<TLabel, TCell>(TCell[,] matrix, IList<TLabel> labels) : Table<TLabel, TLabel, TCell>(matrix, labels, labels) where TCell : notnull;
 
-public class Table<TRow, TColumn, TCell>
+public class Table<TRow, TColumn, TCell> : ITable where TCell: notnull
 {
     public TCell[,] Matrix { get; }
+    object[,] ITable.Matrix => GetObjectMatrix();
+
+    IEnumerable ITable.ColumnLabels => ColumnLabels;
+    IEnumerable ITable.RowLabels => RowLabels;
+
+    private object[,] GetObjectMatrix()
+    {
+        var objectMatrix = new object[Rows, Columns];
+        for (int i = 0; i < Rows; i++)
+        {
+            for (int j = 0; j < Columns; j++)
+            {
+                objectMatrix[i, j] = Matrix[i, j];
+            }
+        }
+        return objectMatrix;
+    }
+
     public IList<TRow> RowLabels { get; }
     public IList<TColumn> ColumnLabels { get; }
 
@@ -97,6 +117,15 @@ public class Table<TRow, TColumn, TCell>
     }
 
     public int Columns { get; }
+
+    public IEnumerable<ICell> Cells => this.GetRows().Select((row, i) => (row, i)).Cartesian(
+        this.GetColumns().Select((column, i) => (column, i)),
+        (row, column) =>
+        {
+            var rowTag = row.row.Tag;
+            var columnTag = column.column.Tag;
+            return new Cell<TRow, TColumn, TCell>(row.i, column.i, rowTag, columnTag, Get(rowTag, columnTag));
+        });
 
     public int Rows { get; }
 
@@ -149,4 +178,13 @@ public class Table<TRow, TColumn, TCell>
 
         return stringBuilder.ToString();
     }
+}
+
+public interface ICell
+{
+    public object Item { get; }
+    public object Row { get; }
+    public object Column { get; }
+    public int RowIndex { get; }
+    public int ColumnIndex { get; }
 }

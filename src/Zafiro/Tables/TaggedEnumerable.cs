@@ -4,7 +4,7 @@ using Zafiro.Mixins;
 
 namespace Zafiro.Tables;
 
-public class TaggedEnumerable<T, TTag>(TTag tag, IEnumerable<T> enumerable) : IEnumerable<T>
+public class TaggedEnumerable<T, TTag>(TTag tag, IEnumerable<T> enumerable) : IEnumerable<T> where TTag : notnull where T : notnull
 {
     public TTag Tag { get; } = tag;
 

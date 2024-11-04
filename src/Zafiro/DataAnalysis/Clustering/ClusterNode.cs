@@ -1,6 +1,14 @@
 ﻿namespace Zafiro.DataAnalysis.Clustering;
 
-public abstract class ClusterNode<T>;
+public interface ICluster
+{
+    public object Item { get; }
+}
+
+public abstract class ClusterNode<T> : ICluster
+{
+    public object Item { get; }
+}
 
 public class LeafNode<T> : ClusterNode<T> where T : class
 {

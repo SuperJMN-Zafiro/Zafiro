@@ -5,19 +5,30 @@ using Zafiro.Tables;
 
 namespace Zafiro.DataAnalysis;
 
-public class Heatmap<TRow, TColumn, TCell>(
+public class HeatmapWithDendrograms<TRow, TColumn, TCell>(
     ClusterNode<TRow> rowsCluster,
     ClusterNode<TColumn> columnsCluster,
-    Table<TRow, TColumn, TCell> table)
+    Table<TRow, TColumn, TCell> table) : IHeatmapWithDendrograms
 {
     public ClusterNode<TRow> RowsCluster { get; } = rowsCluster;
     public ClusterNode<TColumn> ColumnsCluster { get; } = columnsCluster;
     public Table<TRow, TColumn, TCell> Table { get; } = table;
+
+    ITable IHeatmapWithDendrograms.Table => table;
+    ICluster IHeatmapWithDendrograms.RowsCluster => rowsCluster;
+    ICluster IHeatmapWithDendrograms.ColumnsCluster => columnsCluster;
 }
 
-public static class Heatmap
+public interface IHeatmapWithDendrograms
 {
-    public static Heatmap<TRow, TColumn, double> Create<TRow, TColumn>(Table<TRow, TColumn, double> table, IClusteringStrategy<TRow> rowClusteringStrategy, IClusteringStrategy<TColumn> columnClusteringStrategy) where TRow : class where TColumn : class
+    public ITable Table { get; }
+    public ICluster RowsCluster { get; }
+    public ICluster ColumnsCluster { get; }
+}
+
+public static class HeatmapWithDendrograms
+{
+    public static HeatmapWithDendrograms<TRow, TColumn, double> Create<TRow, TColumn>(Table<TRow, TColumn, double> table, IClusteringStrategy<TRow> rowClusteringStrategy, IClusteringStrategy<TColumn> columnClusteringStrategy) where TRow : class where TColumn : class
     {
         var columnDistances = table.ToColumnDistances();
         var clusterTableColumns = columnDistances.ToClusterTable();
@@ -41,6 +52,6 @@ public static class Heatmap
             .ReorderColumns(columnOrder)
             .ReorderRows(rowOrder);
 
-        return new Heatmap<TRow, TColumn, double>(rowsCluster, columnsCluster, reorderedTable);
+        return new HeatmapWithDendrograms<TRow, TColumn, double>(rowsCluster, columnsCluster, reorderedTable);
     }
 }
