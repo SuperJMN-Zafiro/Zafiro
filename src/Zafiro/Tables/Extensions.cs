@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 
 namespace Zafiro.Tables;
@@ -110,11 +111,11 @@ public static class Extensions
         this Table<TRow, TColumn, TCell> table,
         IList<TRow> newRowOrder)
     {
-        var matrix = new TCell[table.Height, table.Width];
+        var matrix = new TCell[table.Rows, table.Columns];
 
-        for (var r = 0; r < table.Height; r++)
+        for (var r = 0; r < table.Rows; r++)
         {
-            for (var c = 0; c < table.Width; c++)
+            for (var c = 0; c < table.Columns; c++)
             {
                 matrix[r, c] = table.Get(newRowOrder[r], table.ColumnLabels[c]);
             }
@@ -127,16 +128,27 @@ public static class Extensions
         this Table<TRow, TColumn, TCell> table,
         IList<TColumn> newColumnOrder)
     {
-        var matrix = new TCell[table.Height, table.Width];
+        var matrix = new TCell[table.Rows, table.Columns];
 
-        for (var r = 0; r < table.Height; r++)
+        for (var r = 0; r < table.Rows; r++)
         {
-            for (var c = 0; c < table.Width; c++)
+            for (var c = 0; c < table.Columns; c++)
             {
                 matrix[r, c] = table.Get(table.RowLabels[r], newColumnOrder[c]);
             }
         }
 
         return new Table<TRow, TColumn, TCell>(matrix, table.RowLabels, newColumnOrder);
+    }
+
+    public static IEnumerable<TCell> Items<TRow, TColumn, TCell>(this Table<TRow, TColumn, TCell> table)
+    {
+        for (var i = 0; i < table.Rows; i++)
+        {
+            for (var c = 0; c < table.Columns; c++)
+            {
+                yield return table.Matrix[i, c];
+            }    
+        }
     }
 }

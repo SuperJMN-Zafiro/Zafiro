@@ -17,8 +17,8 @@ public class Heatmap<TRow, TColumn, TCell>(
 
 public static class Heatmap
 {
-  public static Heatmap<TRow, TColumn, double> Create<TRow, TColumn>(Table<TRow, TColumn, double> table, IClusteringStrategy<TRow> rowClusteringStrategy, IClusteringStrategy<TColumn> columnClusteringStrategy) where TRow : class where TColumn : class
-  {
+    public static Heatmap<TRow, TColumn, double> Create<TRow, TColumn>(Table<TRow, TColumn, double> table, IClusteringStrategy<TRow> rowClusteringStrategy, IClusteringStrategy<TColumn> columnClusteringStrategy) where TRow : class where TColumn : class
+    {
         var columnDistances = table.ToColumnDistances();
         var clusterTableColumns = columnDistances.ToClusterTable();
         var columnsCluster = columnClusteringStrategy.Clusterize(clusterTableColumns);

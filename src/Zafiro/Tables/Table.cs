@@ -87,8 +87,8 @@ public class Table<TRow, TColumn, TCell>
         Matrix = matrix;
         RowLabels = rowLabels;
         ColumnLabels = columnLabels;
-        Width = ColumnLabels.Count;
-        Height = RowLabels.Count;
+        Columns = ColumnLabels.Count;
+        Rows = RowLabels.Count;
     }
 
     public TCell Get(TRow row, TColumn column)
@@ -96,9 +96,9 @@ public class Table<TRow, TColumn, TCell>
         return Matrix[RowLabels.IndexOf(row), ColumnLabels.IndexOf(column)];
     }
 
-    public int Width { get; }
+    public int Columns { get; }
 
-    public int Height { get; }
+    public int Rows { get; }
 
     public override string ToString()
     {
