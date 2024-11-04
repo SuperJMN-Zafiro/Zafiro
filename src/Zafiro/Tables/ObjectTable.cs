@@ -24,7 +24,7 @@ public class ObjectTable
     }
 
     public IEnumerable<object> ColumnLabels { get; }
-    public IEnumerable<Cell> Cells { get; }
+    public virtual IEnumerable<Cell> Cells { get; }
     public IEnumerable<object> RowLabels { get; }
     public int Columns { get; }
     public int Rows { get; }
