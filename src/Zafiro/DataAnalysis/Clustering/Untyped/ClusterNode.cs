@@ -1,16 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using Zafiro.DataAnalysis.Clustering;
+using System.Linq;
 
 namespace Zafiro.DataAnalysis.Clustering.Untyped;
 
-public class ClusterNode
+public interface ICluster
+{
+    public object? Item { get; }
+    public ICluster? Parent { get;}
+    public ICluster? Left { get; }
+    public ICluster? Right { get; }
+    public double MergeDistance { get; }
+    public IEnumerable<ICluster> Children { get; }
+}
+
+public class ClusterNode : ICluster
 {
     public ClusterNode? Parent { get; init; }
     public ClusterNode? Left { get; init; }
     public ClusterNode? Right { get; init; }
+
+    ICluster? ICluster.Parent => Parent;
+    ICluster? ICluster.Left => Left;
+    ICluster? ICluster.Right => Right;
+    IEnumerable<ICluster> ICluster.Children => Children;
+
     public double MergeDistance { get; init; }
-    public object? Content { get; init; }
+    public object? Item { get; init; }
 
     public IEnumerable<ClusterNode> Children
     {
@@ -22,9 +38,9 @@ public class ClusterNode
     }
 
     // Constructor para nodos hoja
-    private ClusterNode(object? content, ClusterNode? parent = null)
+    private ClusterNode(object? item, ClusterNode? parent = null)
     {
-        Content = content;
+        Item = item;
         Parent = parent;
         MergeDistance = 0;
         Left = null;
@@ -38,12 +54,12 @@ public class ClusterNode
         Right = right;
         MergeDistance = mergeDistance;
         Parent = parent;
-        Content = null;
+        Item = null;
 
         // Establecer el padre en los nodos hijos si aún no lo tienen
         if (Left != null && Left.Parent == null)
         {
-            Left = new ClusterNode(Left.Content, this)
+            Left = new ClusterNode(Left.Item, this)
             {
                 Left = Left.Left,
                 Right = Left.Right,
@@ -53,7 +69,7 @@ public class ClusterNode
 
         if (Right != null && Right.Parent == null)
         {
-            Right = new ClusterNode(Right.Content, this)
+            Right = new ClusterNode(Right.Item, this)
             {
                 Left = Right.Left,
                 Right = Right.Right,
