@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace Zafiro.DataAnalysis.Clustering.Untyped;
+namespace Zafiro.DataAnalysis.Clustering;
 
 public class ClusterNode : ICluster
 {
@@ -68,14 +67,14 @@ public class ClusterNode : ICluster
         }
     }
 
-    public static ClusterNode Create<T>(ClusterNode<T> node, ClusterNode parent = null) where T : class
+    public static ClusterNode Create<T>(Cluster<T> node, ClusterNode parent = null) where T : class
     {
-        if (node is LeafNode<T> leafNode)
+        if (node is Leaf<T> leafNode)
         {
             // Crear un nodo hoja del ViewModel
             return new ClusterNode(leafNode.Item, parent);
         }
-        else if (node is InternalNode<T> internalNode)
+        else if (node is Internal<T> internalNode)
         {
             // Construir recursivamente los nodos hijo
             var leftViewModel = Create(internalNode.Left);

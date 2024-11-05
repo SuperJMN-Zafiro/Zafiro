@@ -8,12 +8,12 @@ namespace Zafiro.DataAnalysis.Clustering;
 
 public class SingleLinkageClusteringStrategy<T> : IClusteringStrategy<T>
 {
-    public ClusterNode<T> Clusterize(Table<ClusterNode<T>, double> table)
+    public Cluster<T> Clusterize(Table<Cluster<T>, double> table)
     {
         return Clusterize(table.ColumnLabels, table);
     }
 
-    public ClusterNode<T> Clusterize(IList<ClusterNode<T>> currentClusters, Table<ClusterNode<T>, double> currentClustersDistances)
+    public Cluster<T> Clusterize(IList<Cluster<T>> currentClusters, Table<Cluster<T>, double> currentClustersDistances)
     {
         if (currentClusters.Count == 1)
         {
@@ -21,24 +21,24 @@ public class SingleLinkageClusteringStrategy<T> : IClusteringStrategy<T>
         }
 
         var closestPair = ClosestPair(currentClusters, currentClustersDistances);
-        var newCluster = new InternalNode<T>(closestPair.A, closestPair.B, closestPair.Distance);
+        var newCluster = new Internal<T>(closestPair.A, closestPair.B, closestPair.Distance);
         var withPairExcluded = currentClusters.Except([closestPair.A, closestPair.B]).ToList();
 
-        var clusters = new List<ClusterNode<T>> { newCluster }.Concat(withPairExcluded).ToList();
+        var clusters = new List<Cluster<T>> { newCluster }.Concat(withPairExcluded).ToList();
         var distances = DistancesFor(currentClustersDistances, withPairExcluded, newCluster);
 
         return Clusterize(clusters, distances);
     }
 
-    private static Table<ClusterNode<T>, double> DistancesFor(Table<ClusterNode<T>, double> previousTable,
-        IList<ClusterNode<T>> actual, ClusterNode<T> added)
+    private static Table<Cluster<T>, double> DistancesFor(Table<Cluster<T>, double> previousTable,
+        IList<Cluster<T>> actual, Cluster<T> added)
     {
         if (!actual.Any())
         {
             return previousTable;
         }
 
-        var all = new List<ClusterNode<T>> { added }.Concat(actual);
+        var all = new List<Cluster<T>> { added }.Concat(actual);
 
         var subsets = all.Subsets(2).Select(x =>
         {
@@ -47,12 +47,12 @@ public class SingleLinkageClusteringStrategy<T> : IClusteringStrategy<T>
 
             double distance;
 
-            if (Equals(a, added) && a is InternalNode<T> addedInternalA)
+            if (Equals(a, added) && a is Internal<T> addedInternalA)
             {
                 // Si `a` es el nodo añadido y es un InternalNode
                 distance = Math.Min(previousTable.Get(b, addedInternalA.Left), previousTable.Get(b, addedInternalA.Right));
             }
-            else if (Equals(b, added) && b is InternalNode<T> addedInternalB)
+            else if (Equals(b, added) && b is Internal<T> addedInternalB)
             {
                 // Si `b` es el nodo añadido y es un InternalNode
                 distance = Math.Min(previousTable.Get(a, addedInternalB.Left), previousTable.Get(a, addedInternalB.Right));
@@ -72,7 +72,7 @@ public class SingleLinkageClusteringStrategy<T> : IClusteringStrategy<T>
     }
 
 
-    private static (ClusterNode<T> A, ClusterNode<T> B, double Distance) ClosestPair(IEnumerable<ClusterNode<T>> clusters, Table<ClusterNode<T>, ClusterNode<T>, double> distances)
+    private static (Cluster<T> A, Cluster<T> B, double Distance) ClosestPair(IEnumerable<Cluster<T>> clusters, Table<Cluster<T>, Cluster<T>, double> distances)
     {
         var combinations = clusters.Subsets(2);
         var tuples = from n in combinations

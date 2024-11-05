@@ -5,9 +5,9 @@ namespace Zafiro.DataAnalysis.Clustering;
 
 public static class Extensions
 {
-    public static Table<ClusterNode<TLabel>, double> ToClusterTable<TLabel>(this Table<TLabel, double> table) where TLabel : class
+    public static Table<Cluster<TLabel>, double> ToClusterTable<TLabel>(this Table<TLabel, double> table) where TLabel : class
     {
-        var clusters = table.RowLabels.Select(s => new LeafNode<TLabel>(s)).Cast<ClusterNode<TLabel>>();
-        return new Table<ClusterNode<TLabel>, double>(table.Matrix, clusters.ToList());
+        var clusters = table.RowLabels.Select(s => new Leaf<TLabel>(s)).Cast<Cluster<TLabel>>();
+        return new Table<Cluster<TLabel>, double>(table.Matrix, clusters.ToList());
     }
 }

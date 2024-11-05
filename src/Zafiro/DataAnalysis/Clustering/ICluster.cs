@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Zafiro.DataAnalysis.Clustering.Untyped;
+namespace Zafiro.DataAnalysis.Clustering;
 
 public interface ICluster
 {

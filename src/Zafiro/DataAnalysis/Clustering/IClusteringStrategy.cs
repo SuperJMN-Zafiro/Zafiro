@@ -4,5 +4,5 @@ namespace Zafiro.DataAnalysis.Clustering;
 
 public interface IClusteringStrategy<T>
 {
-    ClusterNode<T> Clusterize(Table<ClusterNode<T>, double> table);
+    Cluster<T> Clusterize(Table<Cluster<T>, double> table);
 }
