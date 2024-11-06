@@ -1,10 +1,8 @@
 ﻿using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using FluentAssertions;
 using FluentAssertions.CSharpFunctionalExtensions;
 using Microsoft.Reactive.Testing;
-using Xunit;
 using Zafiro.CSharpFunctionalExtensions;
 
 namespace Zafiro.Tests.CSharpFunctionalExtensions;

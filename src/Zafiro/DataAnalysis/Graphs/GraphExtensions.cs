@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Zafiro;
 
-namespace Zafiro.Graphs;
+namespace Zafiro.DataAnalysis.Graphs;
 
 public static class GraphExtensions
 {
@@ -25,17 +26,17 @@ public static class GraphExtensions
             return result;
         }
     }
-    
+
     public static double RelativeDegreeCentrality<TNode, TEdge>(this IGraph<TNode, TEdge> graph, TNode node) where TEdge : IWeightedEdge<TNode>
     {
-        return (double) ObjectCache.GetOrCalculate(graph, (nameof(RelativeDegreeCentrality), node), () => RelativeDegreeCentralityCore(graph, node));
+        return (double)ObjectCache.GetOrCalculate(graph, (nameof(RelativeDegreeCentrality), node), () => graph.RelativeDegreeCentralityCore(node));
     }
 
     private static double RelativeDegreeCentralityCore<TNode, TEdge>(this IGraph<TNode, TEdge> graph, TNode node)
         where TEdge : IWeightedEdge<TNode>
     {
-        var nodeImportance = DegreeCentrality(graph, node);
-        var maxImportance = MaxDegreeCentrality(graph);
+        var nodeImportance = graph.DegreeCentrality(node);
+        var maxImportance = graph.MaxDegreeCentrality();
 
         return maxImportance > 0 ? nodeImportance / maxImportance : 0;
     }
@@ -44,7 +45,7 @@ public static class GraphExtensions
     public static double MaxDegreeCentrality<TNode, TEdge>(this IGraph<TNode, TEdge> graph)
         where TEdge : IWeightedEdge<TNode>
     {
-        return (double) ObjectCache.GetOrCalculate(graph, nameof(MaxDegreeCentrality), () => MaxDegreeCentralityCore(graph));
+        return (double)ObjectCache.GetOrCalculate(graph, nameof(MaxDegreeCentrality), () => graph.MaxDegreeCentralityCore());
     }
 
     private static double MaxDegreeCentralityCore<TNode, TEdge>(this IGraph<TNode, TEdge> graph)
@@ -52,13 +53,13 @@ public static class GraphExtensions
     {
         if (!graph.Nodes.Any()) return 0;
 
-        return graph.Nodes.Max(node => DegreeCentrality(graph, node));
+        return graph.Nodes.Max(node => graph.DegreeCentrality(node));
     }
 
     public static double DegreeCentrality<TNode, TEdge>(this IGraph<TNode, TEdge> graph, TNode node)
         where TEdge : IWeightedEdge<TNode>
     {
-        return (double) ObjectCache.GetOrCalculate(graph, (nameof(DegreeCentrality), node), () => DegreeCentralityCore(graph, node));
+        return (double)ObjectCache.GetOrCalculate(graph, (nameof(DegreeCentrality), node), () => graph.DegreeCentralityCore(node));
     }
 
     private static double DegreeCentralityCore<TNode, TEdge>(this IGraph<TNode, TEdge> graph, TNode node)
@@ -72,7 +73,7 @@ public static class GraphExtensions
     public static IEnumerable<TEdge> AdjacentEdges<TNode, TEdge>(this IGraph<TNode, TEdge> graph, TNode node)
         where TEdge : IWeightedEdge<TNode>
     {
-        return (IEnumerable<TEdge>) ObjectCache.GetOrCalculate(graph, (nameof(AdjacentEdges), node), () => AdjacentEdgesCore(graph, node));
+        return (IEnumerable<TEdge>)ObjectCache.GetOrCalculate(graph, (nameof(AdjacentEdges), node), () => graph.AdjacentEdgesCore(node));
     }
 
     private static List<TEdge> AdjacentEdgesCore<TNode, TEdge>(this IGraph<TNode, TEdge> graph, TNode node)

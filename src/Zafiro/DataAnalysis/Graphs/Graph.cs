@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Zafiro.Graphs;
+namespace Zafiro.DataAnalysis.Graphs;
 
 public class Graph<TNode, TEdge>(IEnumerable<TNode> nodes, IEnumerable<TEdge> edges) where TEdge : IEdge<TNode>
 {

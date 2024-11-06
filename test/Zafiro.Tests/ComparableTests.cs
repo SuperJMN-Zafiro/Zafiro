@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using Xunit;
-
-namespace Zafiro.Tests
+﻿namespace Zafiro.Tests
 {
     public class ComparableTests
     {

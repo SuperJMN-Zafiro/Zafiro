@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FluentAssertions;
 using NodaTime;
-using Xunit;
 using Zafiro.Intervals;
 
 namespace Zafiro.Tests
