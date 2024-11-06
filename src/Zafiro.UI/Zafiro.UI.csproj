@@ -6,8 +6,7 @@
     </PropertyGroup>
     <Import Project="..\Common.props" />
     <ItemGroup>
-        <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
-        <PackageReference Include="ReactiveUI.Validation" Version="4.0.9" />
+        <PackageReference Include="ReactiveUI.Validation" Version="4.1.1" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj" />

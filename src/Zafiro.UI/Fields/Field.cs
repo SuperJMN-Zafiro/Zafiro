@@ -1,6 +1,5 @@
 ﻿using System.Reactive;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using ReactiveUI.Validation.Helpers;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -9,6 +8,9 @@ namespace Zafiro.UI.Fields;
 
 public class Field<T> : ReactiveValidationObject, IField
 {
+    private T committedValue;
+    private T? value;
+
     public Field(T initialValue)
     {
         this.WhenAnyValue(x => x.CommittedValue).BindTo(this, x => x.Value);
@@ -23,8 +25,18 @@ public class Field<T> : ReactiveValidationObject, IField
         CommittedValue = initialValue;
     }
 
-    [Reactive] public T CommittedValue { get; private set; }
-    [Reactive] public T Value { get; set; }
+    public T Value
+    {
+        get => value;
+        set => this.RaiseAndSetIfChanged(ref value, value);
+    }
+
+    public T CommittedValue
+    {
+        get => value;
+        set => this.RaiseAndSetIfChanged(ref committedValue, value);
+    }
+
     public ReactiveCommandBase<Unit, Unit> Rollback { get; }
     public ReactiveCommandBase<Unit, Unit> Commit { get; }
     public IObservable<bool> IsValid => ValidationContext.Valid;
