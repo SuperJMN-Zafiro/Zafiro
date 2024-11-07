@@ -11,13 +11,13 @@ public class Table
 {
     public static Table<TItem, TValue> FromSubsets<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries) where TItem : notnull where TValue : notnull
     {
-        // Recopilar todas las etiquetas únicas
+        // Recopilar todas las etiquetas ï¿½nicas
         var labels = distanceEntries
             .SelectMany(entry => new[] { entry.a, entry.b })
             .Distinct()
             .ToList();
 
-        // Crear un diccionario para mapear etiquetas a índices
+        // Crear un diccionario para mapear etiquetas a ï¿½ndices
         var labelIndices = labels
             .Select((label, index) => new { label, index })
             .ToDictionary(x => x.label, x => x.index);
@@ -25,13 +25,13 @@ public class Table
         int size = labels.Count;
         var matrix = new TValue[size, size];
 
-        // Crear un diccionario para acceso rápido a los valores
+        // Crear un diccionario para acceso rï¿½pido a los valores
         var valueDictionary = new Dictionary<(TItem, TItem), TValue>();
 
         foreach (var entry in distanceEntries)
         {
             valueDictionary[(entry.a, entry.b)] = entry.value;
-            valueDictionary[(entry.b, entry.a)] = entry.value; // Añadir ambos órdenes si es simétrico
+            valueDictionary[(entry.b, entry.a)] = entry.value; // Aï¿½adir ambos ï¿½rdenes si es simï¿½trico
         }
 
         // Rellenar la matriz
@@ -54,7 +54,7 @@ public class Table
                 }
                 else
                 {
-                    // Manejar valores faltantes según sea necesario
+                    // Manejar valores faltantes segï¿½n sea necesario
                     matrix[i, j] = default;
                 }
             }
@@ -135,13 +135,13 @@ public class Table<TRow, TColumn, TCell> : ITable where TCell: notnull
         int colCount = this.ColumnLabels.Count;
         int rowCount = this.RowLabels.Count;
 
-        // Arreglo para almacenar el ancho máximo de cada columna (incluyendo la columna de etiquetas de fila)
+        // Arreglo para almacenar el ancho mï¿½ximo de cada columna (incluyendo la columna de etiquetas de fila)
         int[] maxWidths = new int[colCount + 1];
 
-        // Calcular el ancho máximo para la columna de etiquetas de fila
+        // Calcular el ancho mï¿½ximo para la columna de etiquetas de fila
         maxWidths[0] = this.RowLabels.Max(label => label?.ToString().Length ?? 0);
 
-        // Calcular el ancho máximo para cada columna
+        // Calcular el ancho mï¿½ximo para cada columna
         for (int c = 0; c < colCount; c++)
         {
             int max = this.ColumnLabels[c]?.ToString().Length ?? 0;
@@ -178,13 +178,4 @@ public class Table<TRow, TColumn, TCell> : ITable where TCell: notnull
 
         return stringBuilder.ToString();
     }
-}
-
-public interface ICell
-{
-    public object Item { get; }
-    public object Row { get; }
-    public object Column { get; }
-    public int RowIndex { get; }
-    public int ColumnIndex { get; }
 }
