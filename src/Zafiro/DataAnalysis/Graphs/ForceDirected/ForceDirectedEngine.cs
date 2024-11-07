@@ -7,7 +7,7 @@ namespace Zafiro.DataAnalysis.Graphs.ForceDirected;
 
 public class ForceDirectedEngine(IMutableGraph mutableGraph) : IEngine
 {
-    public List<IWeightedEdge<IMutableNode>> Edges { get; } = mutableGraph.Edges.ToList();
+    public List<IMutableEdge> Edges { get; } = mutableGraph.Edges.ToList();
 
     public List<IMutableNode> Nodes { get; } = mutableGraph.Nodes.ToList();
 
