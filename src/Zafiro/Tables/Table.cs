@@ -7,17 +7,23 @@ using MoreLinq.Extensions;
 
 namespace Zafiro.Tables;
 
-public class Table
+public static class Table
 {
-    public static Table<TItem, TValue> FromSubsets<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries) where TItem : notnull where TValue : notnull
+    public static Table<TItem, TValue> ToTable<TItem, TValue>(this IEnumerable<(TItem a, TItem b, TValue value)> distanceEntries)
+        where TItem : notnull where TValue : notnull
     {
-        // Recopilar todas las etiquetas �nicas
+        return ToTable(distanceEntries.ToArray());
+    }
+
+    public static Table<TItem, TValue> ToTable<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries) where TItem : notnull where TValue : notnull
+    {
+        // Recopilar todas las etiquetas únicas
         var labels = distanceEntries
             .SelectMany(entry => new[] { entry.a, entry.b })
             .Distinct()
             .ToList();
 
-        // Crear un diccionario para mapear etiquetas a �ndices
+        // Crear un diccionario para mapear etiquetas a índices
         var labelIndices = labels
             .Select((label, index) => new { label, index })
             .ToDictionary(x => x.label, x => x.index);
@@ -25,13 +31,13 @@ public class Table
         int size = labels.Count;
         var matrix = new TValue[size, size];
 
-        // Crear un diccionario para acceso r�pido a los valores
+        // Crear un diccionario para acceso rápido a los valores
         var valueDictionary = new Dictionary<(TItem, TItem), TValue>();
 
         foreach (var entry in distanceEntries)
         {
             valueDictionary[(entry.a, entry.b)] = entry.value;
-            valueDictionary[(entry.b, entry.a)] = entry.value; // A�adir ambos �rdenes si es sim�trico
+            valueDictionary[(entry.b, entry.a)] = entry.value; // Añadir ambos órdenes si es simétrico
         }
 
         // Rellenar la matriz
@@ -54,7 +60,7 @@ public class Table
                 }
                 else
                 {
-                    // Manejar valores faltantes seg�n sea necesario
+                    // Manejar valores faltantes según sea necesario
                     matrix[i, j] = default;
                 }
             }

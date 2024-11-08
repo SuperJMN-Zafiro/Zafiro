@@ -1,6 +1,7 @@
 using System;
 using HeatmapPoC;
 using Zafiro.Tables;
+using Zafiro.Tests.DataAnalysis;
 
 namespace Zafiro.Tests.Tables;
 

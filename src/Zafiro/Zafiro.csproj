@@ -9,6 +9,10 @@
     <Import Project="..\Common.props" />
 
     <ItemGroup>
+      <Compile Include="F:\Repos\SuperJMN-Zafiro\Zafiro\src\Zafiro\Tables\Table.cs" Link="Table.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.0" />
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />

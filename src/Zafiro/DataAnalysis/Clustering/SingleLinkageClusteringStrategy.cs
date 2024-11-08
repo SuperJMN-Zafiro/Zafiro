@@ -66,7 +66,7 @@ public class SingleLinkageClusteringStrategy<T> : IClusteringStrategy<T>
             return (a, b, distance);
         }).ToList();
 
-        var table = Table.FromSubsets(subsets.ToArray());
+        var table = Table.ToTable(subsets.ToArray());
 
         return table;
     }
