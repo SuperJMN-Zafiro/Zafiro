@@ -47,15 +47,4 @@ public class SingleLinkageTests
         var actualStr = TestingHelpers.ClusterToString(actual);
         actualStr.Should().Be(expected);
     }
-
-    [Fact]
-    public void People_cluster()
-    {
-        var table = Data.GetPeopleTable();
-        var sut = new SingleLinkageClusteringStrategy<Data.Person>();
-        Table<Cluster<Data.Person>, double> currentClusters = table.ToClusterTable();
-        var cluster = sut.Clusterize(currentClusters);
-        var toString = TestingHelpers.ClusterToString(cluster);
-
-    }
 }

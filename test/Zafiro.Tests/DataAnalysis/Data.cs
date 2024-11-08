@@ -25,27 +25,27 @@ namespace Zafiro.Tests.DataAnalysis
 
         public static Table<Person, double> GetPeopleTable()
         {
-            Person robert = new("Robert McGraw");
-            Person robertSon = new("robert mcgraw");
-            Person maryTeresa = new("Mary Teresa Wenck");
-            Person wanda = new("Wanda Warthen");
-            Person denise = new("Denise Warthen");
+            Person robert = new("Robert");
+            Person robertSon = new("John");
+            Person mary = new("Mary");
+            Person wanda = new("Wanda");
+            Person denise = new("Denise");
 
             List<(Person, Person, double)> edges =
             [
-                (robert, maryTeresa, 1),
+                (robert, mary, 1),
                 (robert, robertSon, 1),
                 (robert, denise, 9),
                 (robert, wanda, 4),
-                (maryTeresa, robertSon, 1),
-                (maryTeresa, denise, 9),
-                (maryTeresa, wanda, 9),
+                (mary, robertSon, 1),
+                (mary, denise, 9),
+                (mary, wanda, 9),
                 (robertSon, denise, 9),
                 (robertSon, wanda, 9),
                 (denise, wanda, 1),
             ];
 
-            return Table.FromSubsets(edges.ToArray());
+            return edges.ToTable();
         }
 
 
