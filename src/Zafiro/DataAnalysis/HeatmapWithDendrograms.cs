@@ -5,13 +5,6 @@ using Zafiro.Tables;
 
 namespace Zafiro.DataAnalysis;
 
-public interface IHeatmapWithDendrograms
-{
-    public ITable Table { get; }
-    public ICluster RowsCluster { get; }
-    public ICluster ColumnsCluster { get; }
-}
-
 public class HeatmapWithDendrograms(ICluster rowsCluster, ICluster columnsCluster, ITable table) : IHeatmapWithDendrograms
 {
     public ICluster RowsCluster { get; } = rowsCluster;

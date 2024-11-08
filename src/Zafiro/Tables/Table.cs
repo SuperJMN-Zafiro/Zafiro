@@ -7,63 +7,6 @@ using MoreLinq.Extensions;
 
 namespace Zafiro.Tables;
 
-public class Table
-{
-    public static Table<TItem, TValue> FromSubsets<TItem, TValue>(params (TItem a, TItem b, TValue value)[] distanceEntries) where TItem : notnull where TValue : notnull
-    {
-        // Recopilar todas las etiquetas únicas
-        var labels = distanceEntries
-            .SelectMany(entry => new[] { entry.a, entry.b })
-            .Distinct()
-            .ToList();
-
-        // Crear un diccionario para mapear etiquetas a índices
-        var labelIndices = labels
-            .Select((label, index) => new { label, index })
-            .ToDictionary(x => x.label, x => x.index);
-
-        int size = labels.Count;
-        var matrix = new TValue[size, size];
-
-        // Crear un diccionario para acceso rápido a los valores
-        var valueDictionary = new Dictionary<(TItem, TItem), TValue>();
-
-        foreach (var entry in distanceEntries)
-        {
-            valueDictionary[(entry.a, entry.b)] = entry.value;
-            valueDictionary[(entry.b, entry.a)] = entry.value; // Añadir ambos órdenes si es simétrico
-        }
-
-        // Rellenar la matriz
-        for (int i = 0; i < size; i++)
-        {
-            var labelI = labels[i];
-
-            for (int j = 0; j < size; j++)
-            {
-                var labelJ = labels[j];
-
-                if (labelI.Equals(labelJ))
-                {
-                    // Asignar el valor por defecto en la diagonal
-                    matrix[i, j] = default;
-                }
-                else if (valueDictionary.TryGetValue((labelI, labelJ), out TValue value))
-                {
-                    matrix[i, j] = value;
-                }
-                else
-                {
-                    // Manejar valores faltantes según sea necesario
-                    matrix[i, j] = default;
-                }
-            }
-        }
-
-        return new Table<TItem, TValue>(matrix, labels);
-    }
-}
-
 public class Table<TLabel, TCell>(TCell[,] matrix, IList<TLabel> labels) : Table<TLabel, TLabel, TCell>(matrix, labels, labels) where TCell : notnull;
 
 public class Table<TRow, TColumn, TCell> : ITable where TCell: notnull
@@ -135,13 +78,13 @@ public class Table<TRow, TColumn, TCell> : ITable where TCell: notnull
         int colCount = this.ColumnLabels.Count;
         int rowCount = this.RowLabels.Count;
 
-        // Arreglo para almacenar el ancho máximo de cada columna (incluyendo la columna de etiquetas de fila)
+        // Arreglo para almacenar el ancho mï¿½ximo de cada columna (incluyendo la columna de etiquetas de fila)
         int[] maxWidths = new int[colCount + 1];
 
-        // Calcular el ancho máximo para la columna de etiquetas de fila
+        // Calcular el ancho mï¿½ximo para la columna de etiquetas de fila
         maxWidths[0] = this.RowLabels.Max(label => label?.ToString().Length ?? 0);
 
-        // Calcular el ancho máximo para cada columna
+        // Calcular el ancho mï¿½ximo para cada columna
         for (int c = 0; c < colCount; c++)
         {
             int max = this.ColumnLabels[c]?.ToString().Length ?? 0;
@@ -178,13 +121,4 @@ public class Table<TRow, TColumn, TCell> : ITable where TCell: notnull
 
         return stringBuilder.ToString();
     }
-}
-
-public interface ICell
-{
-    public object Item { get; }
-    public object Row { get; }
-    public object Column { get; }
-    public int RowIndex { get; }
-    public int ColumnIndex { get; }
 }

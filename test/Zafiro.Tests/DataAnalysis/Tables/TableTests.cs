@@ -1,6 +1,7 @@
 using System;
 using HeatmapPoC;
 using Zafiro.Tables;
+using Zafiro.Tests.DataAnalysis;
 
 namespace Zafiro.Tests.Tables;
 
@@ -10,7 +11,7 @@ public class TableTests
     public void Test1()
     {
         var bidim = Data.GetTable();
-        var val = bidim.Get("Caf� Americano", "12-14");
+        var val = bidim.Get("Café Americano", "12-14");
         val.Should().Be(20);
     }
     

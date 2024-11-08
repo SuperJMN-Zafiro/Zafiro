@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using HeatmapPoC;
 using Zafiro.DataAnalysis.Clustering;
 using Zafiro.Tables;
 
-namespace HeatmapPoC;
+namespace Zafiro.Tests.DataAnalysis.Clustering;
 
 public class SingleLinkageTests
 {
