@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>True</IsPackable>
+    </PropertyGroup>
+
+    <Import Project="..\Common.props"/>
+
+    <ItemGroup>
+        <PackageReference Include="DotnetPackaging.AppImage" Version="2.0.9"/>
+        <PackageReference Include="DotnetPackaging.Deb" Version="2.0.9"/>
+        <PackageReference Include="Octokit" Version="5.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services\NuGet\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Zafiro.FileSystem.Local\Zafiro.FileSystem.Local.csproj" />
+      <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj" />
+      <ProjectReference Include="..\Zafiro\Zafiro.csproj" />
+    </ItemGroup>
+
+</Project>
