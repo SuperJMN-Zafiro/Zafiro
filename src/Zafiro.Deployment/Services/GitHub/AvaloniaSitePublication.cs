@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CSharpFunctionalExtensions;
 using MoreLinq;
 using Octokit;
@@ -5,14 +6,14 @@ using Zafiro.FileSystem.Core;
 
 namespace Zafiro.Deployment.Services.GitHub;
 
-public class GitHub(GitHubClient client, string repositoryName, string repositoryOwner, string branchName = "master")
+public class AvaloniaSitePublication(GitHubClient client, AvaloniaSite avaloniaSite, string repositoryName, string repositoryOwner, string branchName = "master")
 {
     public string RepositoryOwner { get; } = repositoryOwner;
     public string BranchName { get; } = branchName;
     public string RepositoryName { get; } = repositoryName;
     public GitHubClient Client { get; } = client;
 
-    public Task<Result> Publish(AvaloniaSite avaloniaSite)
+    public Task<Result> Publish()
     {
         var result = GetTree(avaloniaSite.Files)
             .Bind(PushTree);

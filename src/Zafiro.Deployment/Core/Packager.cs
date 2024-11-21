@@ -39,4 +39,10 @@ public class Packager
     {
         return dotnet.Pack(projectPath, version);
     }
+
+    public Task<Result<AvaloniaSite>> CreateAvaloniaSite(string projectPath)
+    {
+        return dotnet.Publish(projectPath)
+            .Bind(AvaloniaSite.Create);
+    }
 }

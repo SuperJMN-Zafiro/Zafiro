@@ -15,7 +15,15 @@ public class Dotnet : IDotnet
         return Result.Try(() => filesystem.Directory.CreateTempSubdirectory())
             .Map(async outputDir =>
             {
-                await Command.Execute("dotnet", string.Join(" ", "publish", projectPath, arguments));
+                IEnumerable<string[]> options =
+                [
+                    ["output", outputDir.FullName],
+                ];
+
+                var implicitArguments = ArgumentsParser.Parse(options, []);
+
+                var finalArguments = string.Join(" ", "publish", projectPath, arguments, implicitArguments);
+                await Command.Execute("dotnet", finalArguments);
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.ToDirectory());
