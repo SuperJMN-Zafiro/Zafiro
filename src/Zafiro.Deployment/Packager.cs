@@ -1,18 +1,18 @@
 using CSharpFunctionalExtensions;
 using DotnetPackaging;
 using Serilog;
+using Zafiro.Deployment.Core;
 using Zafiro.Deployment.Platforms;
 using Zafiro.FileSystem.Readonly;
-using Zafiro.Nuke;
 
 namespace Zafiro.Deployment;
 
-public class Deployer
+public class Packager
 {
     private readonly Maybe<ILogger> logger;
     private readonly Dotnet dotnet;
 
-    public Deployer(Dotnet dotnet, Maybe<ILogger> logger)
+    public Packager(Dotnet dotnet, Maybe<ILogger> logger)
     {
         this.dotnet = dotnet;
         this.logger = logger;
@@ -33,5 +33,10 @@ public class Deployer
         return new AndroidDeployment(dotnet, projectPath, deploymentOptions).Create();
     }
 
-    public static Deployer Instance { get; set; } = new Deployer(new Dotnet(), Maybe<ILogger>.None);
+    public static Packager Instance { get; set; } = new Packager(new Dotnet(), Maybe<ILogger>.None);
+
+    public Task<Result<IFile>> CreateForNuGet(string projectPath, string version)
+    {
+        return dotnet.Pack(projectPath, version);
+    }
 }

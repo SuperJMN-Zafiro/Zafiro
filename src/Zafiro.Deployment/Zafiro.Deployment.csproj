@@ -13,8 +13,16 @@
         <PackageReference Include="DotnetPackaging.AppImage" Version="2.0.9"/>
         <PackageReference Include="DotnetPackaging.Deb" Version="2.0.9"/>
         <PackageReference Include="Octokit" Version="5.1.0" />
-        <PackageReference Include="Zafiro" Version="12.0.1"/>
-        <PackageReference Include="Zafiro.FileSystem.Local" Version="12.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Services\NuGet\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Zafiro.FileSystem.Local\Zafiro.FileSystem.Local.csproj" />
+      <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj" />
+      <ProjectReference Include="..\Zafiro\Zafiro.csproj" />
     </ItemGroup>
 
 </Project>
