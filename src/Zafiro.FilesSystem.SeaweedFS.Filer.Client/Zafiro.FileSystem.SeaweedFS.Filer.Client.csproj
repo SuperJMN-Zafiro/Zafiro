@@ -7,7 +7,7 @@
     <Import Project="..\Common.props" />
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-        <PackageReference Include="Refit" Version="7.0.0" />
+        <PackageReference Include="Refit" Version="7.2.22" />
         <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.0" />
         <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
         <PackageReference Include="System.Text.Json" Version="8.0.5" />
