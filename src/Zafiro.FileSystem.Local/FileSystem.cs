@@ -39,6 +39,12 @@ public class FileSystem : IMutableFileSystem
         throw new NotSupportedException("Only supported OSes are Windows and Linux for now");
     }
 
+    public async Task<Result<IMutableDirectory>> GetTemporaryDirectory(ZafiroPath path)
+    {
+        return Result.Try(() => Inner.Directory.CreateTempSubdirectory())
+            .Map(info => (IMutableDirectory)new Directory(info));
+    }
+
     public ZafiroPath InitialPath
     {
         get

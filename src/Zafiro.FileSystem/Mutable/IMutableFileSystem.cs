@@ -7,4 +7,5 @@ public interface IMutableFileSystem
 {
     ZafiroPath InitialPath { get; }
     Task<Result<IMutableDirectory>> GetDirectory(ZafiroPath path);
+    Task<Result<IMutableDirectory>> GetTemporaryDirectory(ZafiroPath path);
 }

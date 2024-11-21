@@ -19,5 +19,10 @@ public class FileSystem : IMutableFileSystem
         return Directory.From(path, SeaweedFS).Map(IMutableDirectory (s) => s);
     }
 
+    public Task<Result<IMutableDirectory>> GetTemporaryDirectory(ZafiroPath path)
+    {
+        throw new NotImplementedException();
+    }
+
     public ZafiroPath InitialPath => ZafiroPath.Empty;
 }
