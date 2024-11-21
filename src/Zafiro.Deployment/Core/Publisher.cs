@@ -1,13 +1,16 @@
 using CSharpFunctionalExtensions;
-using Zafiro.Deployment.Core;
+using Octokit;
+using Zafiro.Deployment.Services.GitHub;
 using Zafiro.FileSystem.Core;
 using Zafiro.FileSystem.Readonly;
 
-namespace Zafiro.Deployment;
+namespace Zafiro.Deployment.Core;
 
 public class Publisher(IDotnet dotnet)
 {
-    public Task<Result> ToNuGet(IFile file, string authToken)
+    public static Publisher Instance { get; } = new(new Dotnet());
+
+    public Task<Result>  ToNuGet(IFile file, string authToken)
     {
         var fs = new System.IO.Abstractions.FileSystem();
         return Result.Try(() => fs.Path.GetTempFileName() + "_" + file.Name)
@@ -15,5 +18,13 @@ public class Publisher(IDotnet dotnet)
             .Bind(path => dotnet.Push(path, authToken));
     }
 
-    public static Publisher Instance { get; } = new Publisher(new Dotnet());
+    public Task<Result> PublishToGitHubPages(AvaloniaSite site, string ownerName, string repositoryName, string apiKey)
+    {
+        var gitHubClient = new GitHubClient(new ProductHeaderValue("Zafiro"))
+        {
+            Credentials = new Credentials(apiKey)
+        };
+        var pages = new AvaloniaSitePublication(gitHubClient, site, repositoryName, ownerName);
+        return pages.Publish();
+    }
 }

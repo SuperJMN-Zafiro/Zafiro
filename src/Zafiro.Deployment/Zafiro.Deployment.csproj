@@ -16,10 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\NuGet\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Zafiro.FileSystem.Local\Zafiro.FileSystem.Local.csproj" />
       <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj" />
       <ProjectReference Include="..\Zafiro\Zafiro.csproj" />
