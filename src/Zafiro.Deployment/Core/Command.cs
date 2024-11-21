@@ -6,13 +6,12 @@ namespace Zafiro.Deployment.Core;
 
 public static class Command
 {
-    public static Task<Result> Execute(string command, string arguments, string workingDirectory)
+    public static Task<Result> Execute(string command, string arguments)
     {
         var processStartInfo = new ProcessStartInfo
         {
             FileName = command,
             Arguments = arguments,
-            WorkingDirectory = workingDirectory,
             RedirectStandardError = true,
             RedirectStandardOutput = true,
         };

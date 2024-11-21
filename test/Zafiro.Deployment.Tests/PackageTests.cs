@@ -3,7 +3,7 @@ using Zafiro.Deployment.Platforms;
 
 namespace Zafiro.Deployment.Tests;
 
-public class DeploymentTests
+public class PackageTests
 {
     [Fact]
     public async Task CreateForWindows()

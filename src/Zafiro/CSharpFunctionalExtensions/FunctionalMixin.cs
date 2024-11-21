@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -14,6 +15,7 @@ using Zafiro.Reactive;
 namespace Zafiro.CSharpFunctionalExtensions;
 
 [PublicAPI]
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static class FunctionalMixin
 {
     public static async Task<IEnumerable<T>> Successes<T>(this Task<IEnumerable<Result<T>>> self)
@@ -243,17 +245,17 @@ public static class FunctionalMixin
         return results.Combine();
     }
 
-    public static Task<Result<IEnumerable<TResult>>> CombineConcurrently<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
+    public static Task<Result<IEnumerable<TResult>>> Combine<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
         return task.Bind(tasks => Combine(tasks, scheduler, maxConcurrency));
     }
 
     public static Task<Result<IEnumerable<TResult>>> CombineSequentially<TResult>(this Task<Result<IEnumerable<Task<Result<TResult>>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
-        return task.Bind(tasks => CombineSequentially(tasks, scheduler, maxConcurrency));
+        return task.Bind(tasks => CombineSequentially(tasks, scheduler));
     }
     
-    public static Task<Result> CombineSequentially<TResult>(this Task<Result<IEnumerable<Task<Result>>>> task, IScheduler? scheduler = default, int maxConcurrency = 1)
+    public static Task<Result> CombineSequentially(this Task<Result<IEnumerable<Task<Result>>>> task, IScheduler? scheduler = default)
     {
         return task.Bind(tasks => CombineSequentially(tasks, scheduler));
     }
@@ -268,7 +270,7 @@ public static class FunctionalMixin
         return results.Combine();
     }
 
-    public static async Task<Result<IEnumerable<TResult>>> CombineSequentially<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
+    public static async Task<Result<IEnumerable<TResult>>> CombineSequentially<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default)
     {
         var results = await enumerableOfTaskResults
             .Select(task => Observable.FromAsync(() => task, scheduler ?? Scheduler.Default))
@@ -296,7 +298,7 @@ public static class FunctionalMixin
     /// <param name="taskResult">The task containing a collection of results.</param>
     /// <param name="selector">A function to apply to each result.</param>
     /// <returns>A task containing a collection of results after applying the selector function.</returns>
-    public static Task<Result<IEnumerable<TResult>>> ManyMap<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, TResult> selector)
+    public static Task<Result<IEnumerable<TResult>>> MapEach<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> taskResult, Func<TInput, TResult> selector)
     {
         return taskResult.Map(inputs => inputs.Select(selector));
     }

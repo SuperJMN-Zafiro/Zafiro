@@ -15,10 +15,21 @@ public class Dotnet : IDotnet
         return Result.Try(() => filesystem.Directory.CreateTempSubdirectory())
             .Map(async outputDir =>
             {
-                await Command.Execute("dotnet", $"publish {projectPath} --output {outputDir.FullName}", arguments);
+                await Command.Execute("dotnet", string.Join(" ", "publish", projectPath, arguments));
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.ToDirectory());
+    }
+
+    public Task<Result> Push(string packagePath, string apiKey)
+    {
+        IEnumerable<string[]> options =
+            [
+                ["source", "https://api.nuget.org/v3/index.json"],
+                ["api-key", apiKey],
+            ];
+        
+        return Command.Execute("dotnet", string.Join(" ", "nuget push", packagePath, ArgumentsParser.Parse(options, [])));
     }
 
     public Task<Result<IFile>> Pack(string projectPath, string version)
@@ -26,8 +37,10 @@ public class Dotnet : IDotnet
         return Result.Try(() => filesystem.Directory.CreateTempSubdirectory())
             .Map(async outputDir =>
             {
-                var arguments = ArgumentsParser.Parse([["output", outputDir.FullName]], [["version", version]]);
-                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments), outputDir.FullName);
+                var arguments = ArgumentsParser.Parse([
+                    ["output", outputDir.FullName],
+                ], [["version", version]]);
+                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments));
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.Files()
