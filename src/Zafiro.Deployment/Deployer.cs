@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using Octokit;
+using Serilog;
 using Zafiro.CSharpFunctionalExtensions;
 using Zafiro.Deployment.Core;
 using Zafiro.Deployment.Services.GitHub;
@@ -7,22 +8,33 @@ using Zafiro.Misc;
 
 namespace Zafiro.Deployment;
 
-public class Deployer
+public class Deployer(Packager packager, Publisher publisher, Maybe<ILogger> logger)
 {
     public Task<Result> PublishPackages(IEnumerable<string> projectToPublish, string version, string nuGetApiKey)
     {
         return projectToPublish
-            .Select(project => Packager.Instance.CreateForNuGet(project, version).LogInfo($"Packing {project}"))
+            .Select(project => packager.CreateForNuGet(project, version).LogInfo($"Packing {project}"))
             .CombineSequentially()
-            .MapEach(file => Publisher.Instance.ToNuGet(file, nuGetApiKey).LogInfo($"Pushing package {file}"))
+            .MapEach(file => publisher.ToNuGet(file, nuGetApiKey).LogInfo($"Pushing package {file}"))
             .CombineSequentially();
     }
     
     public Task<Result> PublishAvaloniaAppToGitHubPages(string projectToPublish, string ownerName, string repositoryName, string apiKey)
     {
-        return Packager.Instance.CreateAvaloniaSite(projectToPublish)
-            .Bind(site => Publisher.Instance.PublishToGitHubPages(site, ownerName, repositoryName, apiKey));
+        logger.Execute(l => l.Information("Publishing Avalonia WASM application in {Project} to GitHub Pages with owner {Owner}, repository {Repository} ", projectToPublish, ownerName, repositoryName));
+        return Packager.Instance.CreateAvaloniaSite(projectToPublish).LogInfo("Avalonia Site has been packaged")
+            .Bind(site => publisher.PublishToGitHubPages(site, ownerName, repositoryName, apiKey));
     }
 
-    public static Deployer Instance { get; } = new();
+    public static Deployer Instance
+    {
+        get
+        {
+            var dotnet = new Dotnet();
+            var logger = Maybe<ILogger>.From(Log.Logger);
+            var packager = new Packager(dotnet, logger);
+            var publisher = new Publisher(dotnet, logger);
+            return new(packager, publisher, logger);
+        }
+    }
 }
