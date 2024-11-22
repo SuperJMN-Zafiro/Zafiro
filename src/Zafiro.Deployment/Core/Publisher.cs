@@ -9,8 +9,6 @@ namespace Zafiro.Deployment.Core;
 
 public class Publisher(IDotnet dotnet, Maybe<ILogger> logger)
 {
-    public static Publisher Instance { get; } = new(new Dotnet(), Maybe<ILogger>.None);
-
     public Task<Result>  ToNuGet(IFile file, string authToken)
     {
         var fs = new System.IO.Abstractions.FileSystem();

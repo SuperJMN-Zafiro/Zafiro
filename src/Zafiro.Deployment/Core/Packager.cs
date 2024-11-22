@@ -33,8 +33,6 @@ public class Packager
         return new AndroidDeployment(dotnet, projectPath, deploymentOptions).Create();
     }
 
-    public static Packager Instance { get; set; } = new Packager(new Dotnet(), Maybe<ILogger>.None);
-
     public Task<Result<IFile>> CreateForNuGet(string projectPath, string version)
     {
         return dotnet.Pack(projectPath, version);

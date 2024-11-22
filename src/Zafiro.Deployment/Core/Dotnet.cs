@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Serilog;
 using Zafiro.FileSystem.Core;
 using Zafiro.FileSystem.Mutable;
 using Zafiro.FileSystem.Readonly;
@@ -8,8 +9,14 @@ namespace Zafiro.Deployment.Core;
 
 public class Dotnet : IDotnet
 {
+    private readonly Maybe<ILogger> logger;
     private readonly System.IO.Abstractions.FileSystem filesystem = new();
 
+    public Dotnet(Maybe<ILogger> logger)
+    {
+        this.logger = logger;
+    }
+    
     public Task<Result<IDirectory>> Publish(string projectPath, string arguments = "")
     {
         return Result.Try(() => filesystem.Directory.CreateTempSubdirectory())
@@ -23,7 +30,8 @@ public class Dotnet : IDotnet
                 var implicitArguments = ArgumentsParser.Parse(options, []);
 
                 var finalArguments = string.Join(" ", "publish", projectPath, arguments, implicitArguments);
-                await Command.Execute("dotnet", finalArguments);
+
+                await Command.Execute("dotnet", finalArguments, logger);
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.ToDirectory());
@@ -37,7 +45,7 @@ public class Dotnet : IDotnet
                 ["api-key", apiKey],
             ];
         
-        return Command.Execute("dotnet", string.Join(" ", "nuget push", packagePath, ArgumentsParser.Parse(options, [])));
+        return Command.Execute("dotnet", string.Join(" ", "nuget push", packagePath, ArgumentsParser.Parse(options, [])), logger);
     }
 
     public Task<Result<IFile>> Pack(string projectPath, string version)
@@ -48,7 +56,7 @@ public class Dotnet : IDotnet
                 var arguments = ArgumentsParser.Parse([
                     ["output", outputDir.FullName],
                 ], [["version", version]]);
-                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments));
+                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments), logger);
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.Files()

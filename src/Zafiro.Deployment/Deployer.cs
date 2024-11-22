@@ -22,7 +22,7 @@ public class Deployer(Packager packager, Publisher publisher, Maybe<ILogger> log
     public Task<Result> PublishAvaloniaAppToGitHubPages(string projectToPublish, string ownerName, string repositoryName, string apiKey)
     {
         logger.Execute(l => l.Information("Publishing Avalonia WASM application in {Project} to GitHub Pages with owner {Owner}, repository {Repository} ", projectToPublish, ownerName, repositoryName));
-        return Packager.Instance.CreateAvaloniaSite(projectToPublish).LogInfo("Avalonia Site has been packaged")
+        return packager.CreateAvaloniaSite(projectToPublish).LogInfo("Avalonia Site has been packaged")
             .Bind(site => publisher.PublishToGitHubPages(site, ownerName, repositoryName, apiKey));
     }
 
@@ -30,8 +30,8 @@ public class Deployer(Packager packager, Publisher publisher, Maybe<ILogger> log
     {
         get
         {
-            var dotnet = new Dotnet();
             var logger = Maybe<ILogger>.From(Log.Logger);
+            var dotnet = new Dotnet(logger);
             var packager = new Packager(dotnet, logger);
             var publisher = new Publisher(dotnet, logger);
             return new(packager, publisher, logger);
