@@ -2,6 +2,7 @@ using System.Diagnostics;
 using CSharpFunctionalExtensions;
 using MoreLinq;
 using Octokit;
+using Zafiro.Deployment.Core;
 using Zafiro.FileSystem.Core;
 
 namespace Zafiro.Deployment.Services.GitHub;

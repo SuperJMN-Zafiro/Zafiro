@@ -5,7 +5,7 @@ using Zafiro.FileSystem.Readonly;
 using File = Zafiro.FileSystem.Readonly.File;
 using IDirectory = Zafiro.FileSystem.Readonly.IDirectory;
 
-namespace Zafiro.Deployment;
+namespace Zafiro.Deployment.Core;
 
 public class AvaloniaSite
 {
@@ -37,6 +37,10 @@ public class AvaloniaSite
 
     private static bool ShouldUpload(IRootedFile x)
     {
+        return true;
+        
+        
+        // This is a filter to not upload compressed versions of the files. We upload everything for now.
         var excludedExtensions = new[] { ".br", ".gz", ".js.map" };
 
         var hasExcludedExt = excludedExtensions.Any(s => x.FullPath().ToString().EndsWith(s, StringComparison.OrdinalIgnoreCase));

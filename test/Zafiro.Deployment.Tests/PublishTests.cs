@@ -43,7 +43,7 @@ public class DeploymentTests
     public async Task PushSite()
     {
         var projectPath = "/mnt/fast/Repos/SuperJMN-Zafiro/Zafiro.Avalonia/samples/TestApp/TestApp.Browser/TestApp.Browser.csproj";
-        var result = await Deployer.Instance.PublishAvaloniaAppToGitHubPages(projectPath, "SuperJMN-Zafiro", "SuperJMN-Zafiro.github.io", "asdf");
+        var result = await Deployer.Instance.PublishAvaloniaAppToGitHubPages(projectPath, "SuperJMN-Zafiro", "SuperJMN-Zafiro.github.io", "faf");
         
         result.Should().Succeed();
     }
