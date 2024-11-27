@@ -27,7 +27,7 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
         return Result.Try(() => fileSystem.Directory.CreateTempSubdirectory($"{RepositoryOwner}_{RepositoryName}"))
             .Bind(repoDir =>
             {
-                var remoteUrl = $"https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git";
+                var remoteUrl = $"https://www.github.com/{RepositoryOwner}/{RepositoryName}.git";
                 return Command.Execute("git", $"clone --branch {BranchName} --single-branch --depth 1 {remoteUrl} .", repoDir.FullName, logger)
                     .Map(() => repoDir);
             });
@@ -60,14 +60,6 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
         }
 
         // Realiza el push
-        return await Command.Execute("git", $"push origin {BranchName}", repoDir.FullName, logger);
-    }
-
-    private Task<Result<IDirectoryInfo>> ConfigureRemoteUrl(IDirectoryInfo repoDir)
-    {
-        // Configura la URL remota usando el API Key
-        var remoteUrl = $"https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git";
-
-        return Command.Execute("git", $"remote set-url origin {remoteUrl}", repoDir.FullName, logger).Map(() => repoDir);
+        return await Command.Execute("git", $"push https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git", repoDir.FullName, logger);
     }
 }
