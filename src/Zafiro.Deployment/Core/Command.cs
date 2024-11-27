@@ -8,7 +8,7 @@ namespace Zafiro.Deployment.Core;
 
 public static class Command
 {
-    public static async Task<Result> Execute(string command, string arguments, Maybe<ILogger> logger)
+    public static async Task<Result> Execute(string command, string arguments, Maybe<string> workingDirectory, Maybe<ILogger> logger)
     {
         var processStartInfo = new ProcessStartInfo
         {

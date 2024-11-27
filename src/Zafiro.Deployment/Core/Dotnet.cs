@@ -31,7 +31,7 @@ public class Dotnet : IDotnet
 
                 var finalArguments = string.Join(" ", "publish", projectPath, arguments, implicitArguments);
 
-                await Command.Execute("dotnet", finalArguments, logger);
+                await Command.Execute("dotnet", finalArguments, Maybe<string>.None, logger);
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.ToDirectory());
@@ -45,7 +45,7 @@ public class Dotnet : IDotnet
                 ["api-key", apiKey],
             ];
         
-        return Command.Execute("dotnet", string.Join(" ", "nuget push", packagePath, ArgumentsParser.Parse(options, [])), logger);
+        return Command.Execute("dotnet", string.Join(" ", "nuget push", packagePath, ArgumentsParser.Parse(options, [])), Maybe<string>.None, logger);
     }
 
     public Task<Result<IFile>> Pack(string projectPath, string version)
@@ -56,7 +56,7 @@ public class Dotnet : IDotnet
                 var arguments = ArgumentsParser.Parse([
                     ["output", outputDir.FullName],
                 ], [["version", version]]);
-                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments), logger);
+                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments), Maybe<string>.None, logger);
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.Files()
