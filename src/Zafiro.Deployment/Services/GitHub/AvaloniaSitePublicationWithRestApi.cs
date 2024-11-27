@@ -7,7 +7,7 @@ using Zafiro.FileSystem.Core;
 
 namespace Zafiro.Deployment.Services.GitHub;
 
-public class AvaloniaSitePublication(GitHubClient client, AvaloniaSite avaloniaSite, string repositoryName, string repositoryOwner, string branchName = "master")
+public class AvaloniaSitePublicationWithRestApi(GitHubClient client, AvaloniaSite avaloniaSite, string repositoryName, string repositoryOwner, string branchName = "master")
 {
     public string RepositoryOwner { get; } = repositoryOwner;
     public string BranchName { get; } = branchName;

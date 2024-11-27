@@ -23,7 +23,7 @@ public class Deployer(Packager packager, Publisher publisher, Maybe<ILogger> log
     {
         logger.Execute(l => l.Information("Publishing Avalonia WASM application in {Project} to GitHub Pages with owner {Owner}, repository {Repository} ", projectToPublish, ownerName, repositoryName));
         return packager.CreateAvaloniaSite(projectToPublish).LogInfo("Avalonia Site has been packaged")
-            .Bind(site => publisher.PublishToGitHubPages(site, ownerName, repositoryName, apiKey));
+            .Bind(site => publisher.PublishToGitHubPagesWithGit(site, ownerName, repositoryName, apiKey));
     }
 
     public static Deployer Instance
