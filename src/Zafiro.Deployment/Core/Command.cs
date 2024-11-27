@@ -8,7 +8,7 @@ namespace Zafiro.Deployment.Core;
 
 public static class Command
 {
-    public static async Task<Result> Execute(string command, string arguments, Maybe<string> workingDirectory, Maybe<ILogger> logger)
+    public static Task<Result> Execute(string command, string arguments, Maybe<string> workingDirectory, Maybe<ILogger> logger)
     {
         var processStartInfo = new ProcessStartInfo
         {
@@ -18,23 +18,24 @@ public static class Command
             RedirectStandardOutput = true,
             UseShellExecute = false,
             CreateNoWindow = true,
+            WorkingDirectory = workingDirectory.GetValueOrDefault(""),
         };
-
-        return await Result.Try(async () =>
+        
+        return Result.Try(async () =>
             {
                 var process = new Process
                 {
                     StartInfo = processStartInfo,
                 };
 
-                logger.Execute(l => l.Information("Executing '{Command}' with arguments {Arguments}", command, arguments));
+                logger.Execute(l => l.Information("Executing '{Command}'. Arguments: {Arguments}. Working directory: {WorkingDirectory}", command, arguments, workingDirectory));
                 process.Start();
 
                 // Leer salida y error de manera concurrente
                 var outputTask = ReadStreamAsync(process.StandardOutput);
                 var errorTask = ReadStreamAsync(process.StandardError);
 
-                logger.Execute(l => l.Information("Waiting for '{Command}' to exit", command));
+                logger.Execute(l => l.Information("Waiting for '{Command}' to execute...", command));
                 await process.WaitForExitAsync();
 
                 var output = await outputTask;

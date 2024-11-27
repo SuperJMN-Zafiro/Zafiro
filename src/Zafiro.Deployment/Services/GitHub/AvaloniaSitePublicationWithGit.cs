@@ -17,18 +17,19 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
 
     public Task<Result> Publish()
     {
-        return CreateRepository()
+        return CloneRepository()
             .Bind(repoDir => AddFilesToRepository(repoDir, avaloniaSite.Files))
             .Bind(repoDir => CommitAndPushChanges(repoDir));
     }
 
-    private Task<Result<IDirectoryInfo>> CreateRepository()
+    private Task<Result<IDirectoryInfo>> CloneRepository()
     {
         return Result.Try(() => fileSystem.Directory.CreateTempSubdirectory($"{RepositoryOwner}_{RepositoryName}"))
-            .Bind(ConfigureRemoteUrl)
             .Bind(repoDir =>
             {
-                return Command.Execute("git", $"pull origin {BranchName}", repoDir.FullName, logger).Map(() => repoDir);
+                var remoteUrl = $"https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git";
+                return Command.Execute("git", $"clone --branch {BranchName} --single-branch --depth 1 {remoteUrl} .", repoDir.FullName, logger)
+                    .Map(() => repoDir);
             });
     }
 

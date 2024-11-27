@@ -17,13 +17,13 @@ public class Publisher(IDotnet dotnet, Maybe<ILogger> logger)
             .Bind(path => dotnet.Push(path, authToken));
     }
 
-    public Task<Result> PublishToGitHubPages(AvaloniaSite site, string ownerName, string repositoryName, string apiKey)
+    public Task<Result> PublishToGitHubPagesWithRestApi(AvaloniaSite site, string ownerName, string repositoryName, string apiKey)
     {
         var gitHubClient = new GitHubClient(new ProductHeaderValue("Zafiro"))
         {
             Credentials = new Credentials(apiKey)
         };
-        var pages = new AvaloniaSitePublication(gitHubClient, site, repositoryName, ownerName);
+        var pages = new AvaloniaSitePublicationWithRestApi(gitHubClient, site, repositoryName, ownerName);
         
         logger.Execute(x => x.Information("Publishing site to pages"));
         return pages.Publish();
