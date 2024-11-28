@@ -20,24 +20,26 @@ public static class Command
             CreateNoWindow = true,
             WorkingDirectory = workingDirectory.GetValueOrDefault(""),
         };
-        
+
         return Result.Try(async () =>
             {
-                var process = new Process
+                using var process = new Process
                 {
                     StartInfo = processStartInfo,
+                    EnableRaisingEvents = true,
                 };
 
                 logger.Execute(l => l.Information("Executing '{Command}'. Arguments: {Arguments}. Working directory: {WorkingDirectory}", command, arguments, workingDirectory));
                 process.Start();
 
                 // Leer salida y error de manera concurrente
-                var outputTask = ReadStreamAsync(process.StandardOutput);
-                var errorTask = ReadStreamAsync(process.StandardError);
+                var outputTask = ReadStreamAsync(process.StandardOutput, s => logger.Execute(l => l.Information(s)));
+                var errorTask = ReadStreamAsync(process.StandardError, s => logger.Execute(l => l.Information(s)));
 
                 logger.Execute(l => l.Information("Waiting for '{Command}' to execute...", command));
                 await process.WaitForExitAsync();
 
+                // Asegurarse de que todas las salidas han sido leídas
                 var output = await outputTask;
                 var error = await errorTask;
 
@@ -61,16 +63,13 @@ public static class Command
             });
     }
 
-    private static async Task<string> ReadStreamAsync(StreamReader reader)
+    private static async Task<string> ReadStreamAsync(StreamReader reader, Action<string> onNewLine)
     {
         var builder = new StringBuilder();
-        while (!reader.EndOfStream)
+        while (await reader.ReadLineAsync() is { } line)
         {
-            var line = await reader.ReadLineAsync();
-            if (line != null)
-            {
-                builder.AppendLine(line);
-            }
+            builder.AppendLine(line);
+            onNewLine(line);
         }
         return builder.ToString();
     }

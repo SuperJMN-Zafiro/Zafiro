@@ -13,13 +13,13 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
     public string BranchName { get; } = branchName;
     public string ApiKey { get; } = apiKey;
     
-    private System.IO.Abstractions.FileSystem fileSystem = new();
+    private readonly System.IO.Abstractions.FileSystem fileSystem = new();
 
     public Task<Result> Publish()
     {
         return CloneRepository()
             .Bind(repoDir => AddFilesToRepository(repoDir, avaloniaSite.Files))
-            .Bind(repoDir => CommitAndPushChanges(repoDir));
+            .Bind(CommitAndPushChanges);
     }
 
     private Task<Result<IDirectoryInfo>> CloneRepository()
@@ -27,7 +27,7 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
         return Result.Try(() => fileSystem.Directory.CreateTempSubdirectory($"{RepositoryOwner}_{RepositoryName}"))
             .Bind(repoDir =>
             {
-                var remoteUrl = $"https://www.github.com/{RepositoryOwner}/{RepositoryName}.git";
+                var remoteUrl = $"https://github.com/{RepositoryOwner}/{RepositoryName}.git";
                 return Command.Execute("git", $"clone --branch {BranchName} --single-branch --depth 1 {remoteUrl} .", repoDir.FullName, logger)
                     .Map(() => repoDir);
             });

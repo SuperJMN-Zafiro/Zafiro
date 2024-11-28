@@ -31,10 +31,6 @@ public class Publisher(IDotnet dotnet, Maybe<ILogger> logger)
     
     public Task<Result> PublishToGitHubPagesWithGit(AvaloniaSite site, string ownerName, string repositoryName, string apiKey)
     {
-        var gitHubClient = new GitHubClient(new ProductHeaderValue("Zafiro"))
-        {
-            Credentials = new Credentials(apiKey)
-        };
         var pages = new AvaloniaSitePublicationWithGit(site, ownerName, repositoryName, apiKey, logger);
         
         logger.Execute(x => x.Information("Publishing site to pages"));
