@@ -52,10 +52,25 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
 
     private async Task<Result> CommitAndPushChanges(IDirectoryInfo repoDir)
     {
+        // Configura las variables de entorno para autor y committer
+        var environmentVariables = new Dictionary<string, string>
+        {
+            { "GIT_AUTHOR_NAME", AuthorName },
+            { "GIT_AUTHOR_EMAIL", AuthorEmail },
+            { "GIT_COMMITTER_NAME", AuthorName },
+            { "GIT_COMMITTER_EMAIL", AuthorEmail }
+        };
+
         // Crea un commit
         var commitCommand = $"commit --author=\"{AuthorName} <{AuthorEmail}>\" " +
                             $"-m \"Site update: {DateTime.UtcNow}\"";
-        var commitResult = await Command.Execute("git", commitCommand, repoDir.FullName, logger);
+        var commitResult = await Command.Execute(
+            "git", 
+            commitCommand, 
+            repoDir.FullName, 
+            logger,
+            environmentVariables
+        );
 
         // Si no hay cambios, ignora el push
         if (commitResult.IsFailure && commitResult.Error.Contains("nothing to commit"))
@@ -64,6 +79,12 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
         }
 
         // Realiza el push
-        return await Command.Execute("git", $"push https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git", repoDir.FullName, logger);
+        return await Command.Execute(
+            "git", 
+            $"push https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git", 
+            repoDir.FullName, 
+            logger
+        );
     }
+
 }

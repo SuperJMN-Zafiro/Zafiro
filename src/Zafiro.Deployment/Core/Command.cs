@@ -8,60 +8,45 @@ namespace Zafiro.Deployment.Core;
 
 public static class Command
 {
-    public static Task<Result> Execute(string command, string arguments, Maybe<string> workingDirectory, Maybe<ILogger> logger)
+    public static async Task<Result> Execute(string command, string arguments, Maybe<string> workingDirectory, Maybe<ILogger> logger, Dictionary<string, string>? environmentVariables = null)
     {
         var processStartInfo = new ProcessStartInfo
         {
             FileName = command,
             Arguments = arguments,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true,
             WorkingDirectory = workingDirectory.GetValueOrDefault(""),
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false
         };
 
-        return Result.Try(async () =>
+        // Configura las variables de entorno
+        if (environmentVariables != null)
+        {
+            foreach (var (key, value) in environmentVariables)
             {
-                using var process = new Process
-                {
-                    StartInfo = processStartInfo,
-                    EnableRaisingEvents = true,
-                };
+                processStartInfo.Environment[key] = value;
+            }
+        }
 
-                logger.Execute(l => l.Information("Executing '{Command}'. Arguments: {Arguments}. Working directory: {WorkingDirectory}", command, arguments, workingDirectory));
-                process.Start();
+        using var process = new Process { StartInfo = processStartInfo };
+        process.Start();
 
-                // Leer salida y error de manera concurrente
-                var outputTask = ReadStreamAsync(process.StandardOutput, s => logger.Execute(l => l.Information(s)));
-                var errorTask = ReadStreamAsync(process.StandardError, s => logger.Execute(l => l.Information(s)));
+        // Leer salida y error de manera concurrente
+        var output = await ReadStreamAsync(process.StandardOutput, s => logger.Execute(l => l.Information(s)));
+        var error = await ReadStreamAsync(process.StandardError, s => logger.Execute(l => l.Information(s)));
 
-                logger.Execute(l => l.Information("Waiting for '{Command}' to execute...", command));
-                await process.WaitForExitAsync();
+        await process.WaitForExitAsync();
 
-                // Asegurarse de que todas las salidas han sido leídas
-                var output = await outputTask;
-                var error = await errorTask;
+        logger.Execute(l => l.Information(output));
+        if (!string.IsNullOrWhiteSpace(error))
+        {
+            logger.Execute(l => l.Error(output));
+        }
 
-                return (process.ExitCode, output, error);
-            })
-            .Bind(result =>
-            {
-                var (exitCode, output, error) = result;
-                if (exitCode != 0)
-                {
-                    return Result.Failure(new[]
-                    {
-                        $"Execution of {command} failed.",
-                        $"Error: {error}",
-                        $"Output: {output}",
-                        $"Arguments: {arguments}"
-                    }.JoinWithLines());
-                }
-
-                return Result.Success();
-            });
+        return process.ExitCode == 0 ? Result.Success() : Result.Failure(error);
     }
+
 
     private static async Task<string> ReadStreamAsync(StreamReader reader, Action<string> onNewLine)
     {
@@ -71,6 +56,7 @@ public static class Command
             builder.AppendLine(line);
             onNewLine(line);
         }
+
         return builder.ToString();
     }
 }
