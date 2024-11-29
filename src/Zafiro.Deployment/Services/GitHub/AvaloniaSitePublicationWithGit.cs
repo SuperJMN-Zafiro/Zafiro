@@ -6,13 +6,15 @@ using Zafiro.FileSystem.Core;
 
 namespace Zafiro.Deployment.Services.GitHub;
 
-public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string repositoryOwner, string repositoryName, string apiKey, Maybe<ILogger> logger, string branchName = "master")
+public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string repositoryOwner, string repositoryName, string apiKey, Maybe<ILogger> logger, string authorName, string authorEmail, string branchName = "master")
 {
     public string RepositoryOwner { get; } = repositoryOwner;
     public string RepositoryName { get; } = repositoryName;
     public string BranchName { get; } = branchName;
     public string ApiKey { get; } = apiKey;
-    
+    public string AuthorName { get; } = authorName;
+    public string AuthorEmail { get; } = authorEmail;
+
     private readonly System.IO.Abstractions.FileSystem fileSystem = new();
 
     public Task<Result> Publish()
@@ -51,7 +53,9 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
     private async Task<Result> CommitAndPushChanges(IDirectoryInfo repoDir)
     {
         // Crea un commit
-        var commitResult = await Command.Execute("git", $"commit -m \"Site update: {DateTime.UtcNow}\"", repoDir.FullName, logger);
+        var commitCommand = $"commit --author=\"{AuthorName} <{AuthorEmail}>\" " +
+                            $"-m \"Site update: {DateTime.UtcNow}\"";
+        var commitResult = await Command.Execute("git", commitCommand, repoDir.FullName, logger);
 
         // Si no hay cambios, ignora el push
         if (commitResult.IsFailure && commitResult.Error.Contains("nothing to commit"))

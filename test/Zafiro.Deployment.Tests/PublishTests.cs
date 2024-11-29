@@ -1,10 +1,12 @@
 using CSharpFunctionalExtensions;
+using DotnetPackaging.AppImage.Core;
 using FluentAssertions;
 using Serilog;
 using Xunit.Abstractions;
 using Zafiro.Deployment.Core;
 using Zafiro.FileSystem.Mutable;
 using File = Zafiro.FileSystem.Local.File;
+using ILogger = Serilog.ILogger;
 
 namespace Zafiro.Deployment.Tests;
 
@@ -21,7 +23,7 @@ public class PublishTests
         {
             var logger = new Maybe<ILogger>();
             var dotnet = new Dotnet(logger);
-            var publisher = new Publisher(dotnet, logger);
+            var publisher = new Publisher(dotnet, logger, new DefaultHttpClientFactory());
             return publisher.ToNuGet(file, "ble");
         });
 

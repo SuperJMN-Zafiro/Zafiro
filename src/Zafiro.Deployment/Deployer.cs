@@ -8,7 +8,7 @@ using Zafiro.Misc;
 
 namespace Zafiro.Deployment;
 
-public class Deployer(Packager packager, Publisher publisher, Maybe<ILogger> logger)
+public class Deployer(Packager packager, Publisher publisher, IHttpClientFactory httpClientFactory, Maybe<ILogger> logger)
 {
     public Task<Result> PublishPackages(IEnumerable<string> projectToPublish, string version, string nuGetApiKey)
     {
@@ -33,8 +33,9 @@ public class Deployer(Packager packager, Publisher publisher, Maybe<ILogger> log
             var logger = Maybe<ILogger>.From(Log.Logger);
             var dotnet = new Dotnet(logger);
             var packager = new Packager(dotnet, logger);
-            var publisher = new Publisher(dotnet, logger);
-            return new(packager, publisher, logger);
+            var defaultHttpClientFactory = new DefaultHttpClientFactory();
+            var publisher = new Publisher(dotnet, logger, defaultHttpClientFactory);
+            return new(packager, publisher, defaultHttpClientFactory, logger);
         }
     }
 }
