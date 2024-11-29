@@ -8,8 +8,10 @@ using Zafiro.Misc;
 
 namespace Zafiro.Deployment;
 
-public class Deployer(Packager packager, Publisher publisher, IHttpClientFactory httpClientFactory, Maybe<ILogger> logger)
+public class Deployer(Context context, Packager packager, Publisher publisher)
 {
+    public Context Context { get; } = context;
+
     public Task<Result> PublishPackages(IEnumerable<string> projectToPublish, string version, string nuGetApiKey)
     {
         return projectToPublish
@@ -21,7 +23,7 @@ public class Deployer(Packager packager, Publisher publisher, IHttpClientFactory
     
     public Task<Result> PublishAvaloniaAppToGitHubPages(string projectToPublish, string ownerName, string repositoryName, string apiKey)
     {
-        logger.Execute(l => l.Information("Publishing Avalonia WASM application in {Project} to GitHub Pages with owner {Owner}, repository {Repository} ", projectToPublish, ownerName, repositoryName));
+        Context.Logger.Execute(l => l.Information("Publishing Avalonia WASM application in {Project} to GitHub Pages with owner {Owner}, repository {Repository} ", projectToPublish, ownerName, repositoryName));
         return packager.CreateAvaloniaSite(projectToPublish).LogInfo("Avalonia Site has been packaged")
             .Bind(site => publisher.PublishToGitHubPagesWithGit(site, ownerName, repositoryName, apiKey));
     }
@@ -31,11 +33,13 @@ public class Deployer(Packager packager, Publisher publisher, IHttpClientFactory
         get
         {
             var logger = Maybe<ILogger>.From(Log.Logger);
-            var dotnet = new Dotnet(logger);
+            var command = new Command(logger);
+            var dotnet = new Dotnet(command, logger);
             var packager = new Packager(dotnet, logger);
             var defaultHttpClientFactory = new DefaultHttpClientFactory();
-            var publisher = new Publisher(dotnet, logger, defaultHttpClientFactory);
-            return new(packager, publisher, defaultHttpClientFactory, logger);
+            var context = new Context(dotnet, command, logger, defaultHttpClientFactory);
+            var publisher = new Publisher(context);
+            return new(context, packager, publisher);
         }
     }
 }

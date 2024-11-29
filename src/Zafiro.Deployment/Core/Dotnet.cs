@@ -9,11 +9,13 @@ namespace Zafiro.Deployment.Core;
 
 public class Dotnet : IDotnet
 {
+    public ICommand Command { get; }
     private readonly Maybe<ILogger> logger;
     private readonly System.IO.Abstractions.FileSystem filesystem = new();
 
-    public Dotnet(Maybe<ILogger> logger)
+    public Dotnet(ICommand command, Maybe<ILogger> logger)
     {
+        Command = command;
         this.logger = logger;
     }
     
@@ -31,7 +33,7 @@ public class Dotnet : IDotnet
 
                 var finalArguments = string.Join(" ", "publish", projectPath, arguments, implicitArguments);
 
-                await Command.Execute("dotnet", finalArguments, Maybe<string>.None, logger);
+                await Command.Execute("dotnet", finalArguments);
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.ToDirectory());
@@ -45,7 +47,7 @@ public class Dotnet : IDotnet
                 ["api-key", apiKey],
             ];
         
-        return Command.Execute("dotnet", string.Join(" ", "nuget push", packagePath, ArgumentsParser.Parse(options, [])), Maybe<string>.None, logger);
+        return Command.Execute("dotnet", string.Join(" ", "nuget push", packagePath, ArgumentsParser.Parse(options, [])));
     }
 
     public Task<Result<IFile>> Pack(string projectPath, string version)
@@ -56,7 +58,7 @@ public class Dotnet : IDotnet
                 var arguments = ArgumentsParser.Parse([
                     ["output", outputDir.FullName],
                 ], [["version", version]]);
-                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments), Maybe<string>.None, logger);
+                await Command.Execute("dotnet", string.Join(" ", "pack", projectPath, arguments));
                 return new Directory(outputDir);
             })
             .Bind(directory => directory.Files()

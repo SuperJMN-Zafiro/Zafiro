@@ -2,25 +2,28 @@ using System.Diagnostics;
 using System.Text;
 using CSharpFunctionalExtensions;
 using Serilog;
-using Zafiro.Mixins;
 
 namespace Zafiro.Deployment.Core;
 
-public static class Command
+public class Command(Maybe<ILogger> logger) : ICommand
 {
-    public static async Task<Result> Execute(string command, string arguments, Maybe<string> workingDirectory, Maybe<ILogger> logger, Dictionary<string, string>? environmentVariables = null)
+    public Maybe<ILogger> Logger { get; } = logger;
+
+    public async Task<Result> Execute(string command,
+        string arguments,
+        string workingDirectory = "",
+        Dictionary<string, string>? environmentVariables = null)
     {
         var processStartInfo = new ProcessStartInfo
         {
             FileName = command,
             Arguments = arguments,
-            WorkingDirectory = workingDirectory.GetValueOrDefault(""),
+            WorkingDirectory = workingDirectory,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false
         };
 
-        // Configura las variables de entorno
         if (environmentVariables != null)
         {
             foreach (var (key, value) in environmentVariables)
@@ -32,31 +35,59 @@ public static class Command
         using var process = new Process { StartInfo = processStartInfo };
         process.Start();
 
-        // Leer salida y error de manera concurrente
-        var output = await ReadStreamAsync(process.StandardOutput, s => logger.Execute(l => l.Information(s)));
-        var error = await ReadStreamAsync(process.StandardError, s => logger.Execute(l => l.Information(s)));
+        // Leer salida estándar y error de manera concurrente
+        var outputTask = ReadStreamAsync(process.StandardOutput);
+        var errorTask = ReadStreamAsync(process.StandardError);
 
+        await Task.WhenAll(outputTask, errorTask);
         await process.WaitForExitAsync();
 
-        logger.Execute(l => l.Information(output));
-        if (!string.IsNullOrWhiteSpace(error))
-        {
-            logger.Execute(l => l.Error(output));
-        }
+        var output = outputTask.Result;
+        var error = errorTask.Result;
 
-        return process.ExitCode == 0 ? Result.Success() : Result.Failure(error);
+        // Combina salida y error en un solo mensaje
+        var combinedOutput = BuildCombinedLogMessage(output, error);
+
+        // Loguear de acuerdo al código de salida
+        if (process.ExitCode == 0)
+        {
+            Logger.Execute(l => l.Information($"Command succeeded:\n{combinedOutput}"));
+            return Result.Success();
+        }
+        else
+        {
+            Logger.Execute(l => l.Error($"Command failed with exit code {process.ExitCode}:\n{combinedOutput}"));
+            return Result.Failure($"Process failed with exit code {process.ExitCode}");
+        }
     }
 
-
-    private static async Task<string> ReadStreamAsync(StreamReader reader, Action<string> onNewLine)
+    private static async Task<string> ReadStreamAsync(StreamReader reader)
     {
         var builder = new StringBuilder();
         while (await reader.ReadLineAsync() is { } line)
         {
             builder.AppendLine(line);
-            onNewLine(line);
         }
 
         return builder.ToString();
+    }
+
+    private static string BuildCombinedLogMessage(string output, string error)
+    {
+        var builder = new StringBuilder();
+
+        if (!string.IsNullOrWhiteSpace(output))
+        {
+            builder.AppendLine("Standard Output:");
+            builder.AppendLine(output);
+        }
+
+        if (!string.IsNullOrWhiteSpace(error))
+        {
+            builder.AppendLine("Standard Error:");
+            builder.AppendLine(error);
+        }
+
+        return builder.ToString().TrimEnd();
     }
 }

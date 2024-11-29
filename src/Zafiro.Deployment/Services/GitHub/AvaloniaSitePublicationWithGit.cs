@@ -6,8 +6,9 @@ using Zafiro.FileSystem.Core;
 
 namespace Zafiro.Deployment.Services.GitHub;
 
-public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string repositoryOwner, string repositoryName, string apiKey, Maybe<ILogger> logger, string authorName, string authorEmail, string branchName = "master")
+public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, Context context, string repositoryOwner, string repositoryName, string apiKey, string authorName, string authorEmail, string branchName = "master")
 {
+    public Context Context { get; } = context;
     public string RepositoryOwner { get; } = repositoryOwner;
     public string RepositoryName { get; } = repositoryName;
     public string BranchName { get; } = branchName;
@@ -30,7 +31,7 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
             .Bind(repoDir =>
             {
                 var remoteUrl = $"https://github.com/{RepositoryOwner}/{RepositoryName}.git";
-                return Command.Execute("git", $"clone --branch {BranchName} --single-branch --depth 1 {remoteUrl} .", repoDir.FullName, logger)
+                return Context.Command.Execute("git", $"clone --branch {BranchName} --single-branch --depth 1 {remoteUrl} .", repoDir.FullName)
                     .Map(() => repoDir);
             });
     }
@@ -46,7 +47,7 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
         }
 
         // Añade los cambios al índice
-        var execute = await Command.Execute("git", "add .", repoDir.FullName, logger);
+        var execute = await Context.Command.Execute("git", "add .", repoDir.FullName);
         return execute.Map(() => repoDir);
     }
 
@@ -64,13 +65,12 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
         // Crea un commit
         var commitCommand = $"commit --author=\"{AuthorName} <{AuthorEmail}>\" " +
                             $"-m \"Site update: {DateTime.UtcNow}\"";
-        var commitResult = await Command.Execute(
-            "git", 
-            commitCommand, 
+        
+        var commitResult = await Context.Command.Execute(
+            "git",
+            commitCommand,
             repoDir.FullName, 
-            logger,
-            environmentVariables
-        );
+            environmentVariables);
 
         // Si no hay cambios, ignora el push
         if (commitResult.IsFailure && commitResult.Error.Contains("nothing to commit"))
@@ -79,12 +79,9 @@ public class AvaloniaSitePublicationWithGit(AvaloniaSite avaloniaSite, string re
         }
 
         // Realiza el push
-        return await Command.Execute(
+        return await Context.Command.Execute(
             "git", 
-            $"push https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git", 
-            repoDir.FullName, 
-            logger
-        );
+            $"push https://{ApiKey}@github.com/{RepositoryOwner}/{RepositoryName}.git", repoDir.FullName);
     }
 
 }

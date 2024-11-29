@@ -30,6 +30,9 @@ public class PackageTests
 
     private static Packager CreateSut()
     {
-        return new Packager(new Dotnet(new Maybe<ILogger>()), Maybe<ILogger>.None);
+        var logger = new Maybe<ILogger>();
+        var command = new Command(logger);
+        var dotnet = new Dotnet(command, logger);
+        return new Packager(dotnet, Maybe<ILogger>.None);
     }
 }

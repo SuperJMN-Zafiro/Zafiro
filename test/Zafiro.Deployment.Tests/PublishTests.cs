@@ -22,8 +22,10 @@ public class PublishTests
         var result = await package.AsReadOnly().Bind(file =>
         {
             var logger = new Maybe<ILogger>();
-            var dotnet = new Dotnet(logger);
-            var publisher = new Publisher(dotnet, logger, new DefaultHttpClientFactory());
+            var command = new Command(logger);
+            var dotnet = new Dotnet(command, logger);
+            var context = new Context(dotnet, command, logger, new DefaultHttpClientFactory());
+            var publisher = new Publisher(context );
             return publisher.ToNuGet(file, "ble");
         });
 
