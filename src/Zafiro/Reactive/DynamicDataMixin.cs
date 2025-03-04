@@ -25,7 +25,7 @@ public static class DynamicDataMixin
                     m.Name == "ToObservableChangeSet" &&
                     m.IsGenericMethod &&
                     m.GetGenericArguments().Length == 2 &&
-                    m.GetParameters().Length == 1); // ¡Filtro clave!
+                    m.GetParameters().Length == 1);
 
             if (method == null)
                 throw new InvalidOperationException("Method not found");
