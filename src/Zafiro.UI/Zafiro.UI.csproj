@@ -6,14 +6,17 @@
     </PropertyGroup>
     <Import Project="..\Common.props" />
     <ItemGroup>
+        <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.8">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="ReactiveUI.SourceGenerators.Analyzers.CodeFixes" Version="2.1.8">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="ReactiveUI.Validation" Version="4.1.1" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj" />
     </ItemGroup>
-    <!--    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">-->
-    <!--        <PackageReference Include="Xamarin.AndroidX.Core">-->
-    <!--            <Version>1.12.*</Version>-->
-    <!--        </PackageReference>-->
-    <!--    </ItemGroup>-->
 </Project>
