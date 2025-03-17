@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using Zafiro.Mixins;
+using Zafiro.Reactive;
 
 namespace Zafiro.DataModel;
 

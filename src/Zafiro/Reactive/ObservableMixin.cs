@@ -167,35 +167,24 @@ public static class ObservableMixin
             .Dematerialize();
     }
 
-    public static Stream ToStream(this IObservable<byte> observable, int bufferSize = 4096, int maxConcurrency = 3)
+    public static Stream ToStream(this IObservable<byte> observable, int bufferSize = 4096)
     {
-        var pipe = new Pipe();
-
-        var reader = pipe.Reader;
-        var writer = pipe.Writer;
-
-        observable
-            .Buffer(bufferSize)
-            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer.ToArray()).ConfigureAwait(false)))
-            .Concat()
-            .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
-
-        return reader.AsStream();
+        return ToStream(observable.Buffer(bufferSize).Select(list => list.ToArray()));
     }
 
     public static Stream ToStream(this IObservable<byte[]> observable)
     {
         var pipe = new Pipe();
-
-        var reader = pipe.Reader;
-        var writer = pipe.Writer;
-
         observable
-            .Select(buffer => Observable.FromAsync(async () => await writer.WriteAsync(buffer).ConfigureAwait(false)))
+            .Select(data =>
+                Observable.FromAsync(functionAsync: async () => await pipe.Writer.WriteAsync(source: data).ConfigureAwait(continueOnCapturedContext: false)))
             .Concat()
-            .Subscribe(_ => { }, onCompleted: () => { writer.Complete(); }, onError: exception => writer.Complete(exception));
+            .Subscribe(
+                onNext: _ => { },
+                onCompleted: () => pipe.Writer.Complete(),
+                onError: exception => pipe.Writer.Complete(exception: exception));
 
-        return reader.AsStream();
+        return pipe.Reader.AsStream();
     }
 
     /// <summary>

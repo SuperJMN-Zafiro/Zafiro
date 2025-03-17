@@ -42,7 +42,7 @@ public static class StreamMixin
         return await reader.ReadToEndAsync().ConfigureAwait(false);
     }
 
-    public static async Task<byte[]> ReadBytes(this Stream stream, int bufferSize = 4096, CancellationToken ct = default)
+    public static async Task<byte[]> ReadBytesToEnd(this Stream stream, int bufferSize = 4096, CancellationToken ct = default)
     {
         if (stream == null)
         {
