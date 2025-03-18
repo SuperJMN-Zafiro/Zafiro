@@ -33,7 +33,8 @@ public static class StreamMixin
 
         return source
             .Select(chunk => Observable.FromAsync(() => Result.Try(() => output.WriteAsync(chunk.ToArray(), 0, chunk.Length, cancellationToken)), scheduler).Timeout(chunkReadTimeout.Value, scheduler))
-            .Concat();
+            .Concat()
+            .DefaultIfEmpty(Result.Success());
     }
 
     public static async Task<string> ReadToEnd(this Stream stream, Encoding? encoding = null)
