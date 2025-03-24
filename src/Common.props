@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
 		<RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+		<IsPackable>True</IsPackable>
 	</PropertyGroup>
 
 	<PropertyGroup>
