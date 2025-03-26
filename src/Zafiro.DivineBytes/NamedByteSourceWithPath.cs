@@ -2,11 +2,6 @@ using CSharpFunctionalExtensions;
 
 namespace Zafiro.DivineBytes;
 
-public interface INamedByteSourceWithPath : INamedWithPath, IByteSource
-{
-    
-}
-
 public record NamedByteSourceWithPath(Path Path, INamedByteSource NamedByteSource) : INamedByteSourceWithPath
 {
     public string Name => NamedByteSource.Name;
