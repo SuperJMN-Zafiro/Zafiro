@@ -5,6 +5,6 @@ namespace Zafiro.DivineBytes;
 
 public static class DataMixin
 {
-    public static Stream ToStream(this IData data) => data.Bytes.ToStream();
-    public static IObservable<Result> DumpTo(this IData data, Stream destination) => data.Bytes.DumpTo(destination);
+    public static Stream ToStream(this IByteSource byteSource) => byteSource.Bytes.ToStream();
+    public static IObservable<Result> DumpTo(this IByteSource byteSource, Stream destination) => byteSource.Bytes.DumpTo(destination);
 }

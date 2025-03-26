@@ -1,6 +1,6 @@
 namespace Zafiro.DivineBytes;
 
-public interface IDirectory : INode
+public interface IDirectory : INamed
 {
-    public IEnumerable<INode> Children { get; }
+    public IEnumerable<INamedByteSource> Children { get; }
 }

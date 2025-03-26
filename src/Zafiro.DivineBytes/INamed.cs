@@ -1,6 +1,6 @@
 namespace Zafiro.DivineBytes;
 
-public interface INode
+public interface INamed
 {
     public string Name { get; }
 }

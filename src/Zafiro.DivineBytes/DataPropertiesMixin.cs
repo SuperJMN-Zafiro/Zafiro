@@ -32,19 +32,19 @@ public static class DataPropertiesMixin
             .Select(acc => acc.GetHash());
     }
 
-    public static IObservable<uint> Crc32(this IData data)
+    public static IObservable<uint> Crc32(this IByteSource byteSource)
     {
-        return data.Bytes.Crc32();
+        return byteSource.Bytes.Crc32();
     }
 
-    public static IObservable<long> GetSize(this IData data)
+    public static IObservable<long> GetSize(this IByteSource byteSource)
     {
-        return data.Bytes.GetSize();
+        return byteSource.Bytes.GetSize();
     }
     
-    public static IObservable<byte[]> Sha256(this IData data)
+    public static IObservable<byte[]> Sha256(this IByteSource byteSource)
     {
-        return data.Bytes.Sha256();
+        return byteSource.Bytes.Sha256();
     }
 
     public class Sha256Accumulator
