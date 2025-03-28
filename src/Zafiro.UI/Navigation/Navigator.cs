@@ -1,4 +1,5 @@
 using System.Reactive.Linq;
+using CSharpFunctionalExtensions;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using Zafiro.UI.Commands;
@@ -7,15 +8,22 @@ namespace Zafiro.UI.Navigation;
 
 public partial class Navigator : ReactiveObject, INavigator
 {
+    private readonly Maybe<ITypeResolver> resolver;
     private readonly ObservableStack<Func<INavigator, Task<object>>> stack = new();
     
-    public Navigator()
+    public Navigator(Maybe<ITypeResolver> resolver)
     {
+        this.resolver = resolver;
         Back = EnhancedCommand.Create(ReactiveCommand.CreateFromTask(async () => await GoBack(), stack.Count.Select(b => b > 1)));
     }
 
     private async Task GoBack()
     {
+        if (stack.Count.Value <= 1)
+        {
+            return;
+        }
+
         stack.Pop();
         var previous = stack.Top.Value;
         Content = await previous(this);
@@ -35,17 +43,21 @@ public partial class Navigator : ReactiveObject, INavigator
         Content = await target();
     }
 
-    // Métodos síncronos que llaman a los asíncronos
-    public void Go(Func<INavigator, object> target)
+    public Task Go(Func<INavigator, object> target)
     {
-        _ = Go(nav => Task.FromResult(target(nav)));
+        return Go(nav => Task.FromResult(target(nav)));
     }
-    
-    public void Go(Func<object> target)
+
+    public Task Go<T>()
     {
-        _ = Go(() => Task.FromResult(target()));
+        return resolver.Execute(r => Go(() => r.Resolve<T>()));
+    }
+
+    public Task Go(Func<object> target)
+    {
+        return Go(() => Task.FromResult(target()));
     }
 
     [Reactive]
-    private object content;
+    private object? content;
 }
