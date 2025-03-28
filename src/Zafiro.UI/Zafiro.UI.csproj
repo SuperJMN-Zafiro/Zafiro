@@ -6,11 +6,11 @@
     </PropertyGroup>
     <Import Project="..\Common.props" />
     <ItemGroup>
-        <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.8">
+        <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.27">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="ReactiveUI.SourceGenerators.Analyzers.CodeFixes" Version="2.1.8">
+        <PackageReference Include="ReactiveUI.SourceGenerators.Analyzers.CodeFixes" Version="2.1.27">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
