@@ -1,6 +1,6 @@
 namespace Zafiro.UI.Navigation;
 
-public interface INavigationHost : IDisposable
+public interface ISectionScope : IDisposable
 {
     INavigator Navigator { get; }
 }

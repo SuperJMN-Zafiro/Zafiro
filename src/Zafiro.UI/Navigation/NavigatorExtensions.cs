@@ -1,4 +1,3 @@
-using System.Reactive;
 using CSharpFunctionalExtensions;
 
 namespace Zafiro.UI.Navigation

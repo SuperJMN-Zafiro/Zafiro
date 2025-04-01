@@ -1,27 +1,25 @@
-using System.Reactive;
 using System.Reactive.Subjects;
 using CSharpFunctionalExtensions;
-using ReactiveUI;
+using Microsoft.Extensions.DependencyInjection;
+using Zafiro.Mixins;
 using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Navigation
 {
     public class Navigator : INavigator
     {
-        private readonly ITypeResolver typeResolver;
+        private readonly IServiceProvider serviceProvider;
+        private readonly Maybe<ILogger> logger;
         private readonly Stack<object> navigationStack = new();
         private readonly BehaviorSubject<object?> contentSubject = new(null);
         private readonly IEnhancedCommand<Unit, Result<Unit>> back;
         private readonly BehaviorSubject<bool> canGoBackSubject = new(false);
 
-        public Navigator(ITypeResolver typeResolver)
+        public Navigator(IServiceProvider serviceProvider, Maybe<ILogger> logger)
         {
-            this.typeResolver = typeResolver;
-            
-            var reactiveCommand = ReactiveCommand.CreateFromTask<Unit, Result<Unit>>(
-                _ => GoBack(),
-                canGoBackSubject);
-            
+            this.serviceProvider = serviceProvider;
+            this.logger = logger;
+            var reactiveCommand = ReactiveCommand.CreateFromTask<Unit, Result<Unit>>(_ => GoBack(), canGoBackSubject);
             back = EnhancedCommand.Create(reactiveCommand);
         }
 
@@ -42,49 +40,26 @@ namespace Zafiro.UI.Navigation
             }
             catch (Exception e)
             {
+                logger.Error(e.Message);
                 return Result.Failure<Unit>(e.ToString());
             }
         }
         
         public Task<Result<Unit>> Go(Type type)
         {
-            return Go(type, null);
+            return Go(type, Maybe<object>.None);
         }
         
-        public Task<Result<Unit>> Go(Type type, object? parameter)
+        public Task<Result<Unit>> Go(Type type, Maybe<object> parameter)
         {
-            try
+            if (parameter.HasValue)
             {
-                // Create instance using type resolver
-                object instance;
-                
-                if (parameter == null)
-                {
-                    // Simple resolve without parameter
-                    instance = typeResolver.Resolve(type);
-                }
-                else 
-                {
-                    // Resolve with parameter if supported
-                    if (typeResolver is ITypeWithParametersResolver parameterResolver)
-                    {
-                        instance = parameterResolver.Resolve(type, parameter);
-                    }
-                    else
-                    {
-                        return Task.FromResult(Result.Failure<Unit>(
-                            $"The current type resolver doesn't support parameterized resolution. " +
-                            $"Use a resolver that implements ITypeWithParametersResolver."));
-                    }
-                }
-                
-                // Navigate to the created instance
-                return Go(() => instance);
+                throw new NotSupportedException();
             }
-            catch (Exception ex)
-            {
-                return Task.FromResult(Result.Failure<Unit>(ex.ToString()));
-            }
+            
+            return Result.Try(() => serviceProvider.GetRequiredService(type))
+                .Map(instance => Go(() => instance))
+                .TapError(e => logger.Error(e) );
         }
 
         public Task<Result<Unit>> GoBack()

@@ -1,5 +1,4 @@
-﻿using System.Reactive;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Zafiro.CSharpFunctionalExtensions;

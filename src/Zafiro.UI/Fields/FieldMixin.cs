@@ -1,5 +1,4 @@
 ﻿using System.Reactive.Linq;
-using ReactiveUI;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;

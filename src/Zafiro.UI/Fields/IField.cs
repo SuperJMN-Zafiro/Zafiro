@@ -1,7 +1,4 @@
-﻿using System.Reactive;
-using ReactiveUI;
-
-namespace Zafiro.UI.Fields;
+﻿namespace Zafiro.UI.Fields;
 
 public interface IField : IValidatable
 {

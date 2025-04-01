@@ -1,5 +1,4 @@
 using System.Windows.Input;
-using ReactiveUI;
 
 namespace Zafiro.UI.Commands;
 

@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using System.Reactive;
 using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Navigation
@@ -41,7 +40,7 @@ namespace Zafiro.UI.Navigation
         /// <param name="type">Type to navigate to</param>
         /// <param name="parameter">Navigation parameter (can be null)</param>
         /// <returns>Operation result</returns>
-        Task<Result<Unit>> Go(Type type, object? parameter);
+        Task<Result<Unit>> Go(Type type, Maybe<object> parameter);
 
         /// <summary>
         /// Navigate backwards
