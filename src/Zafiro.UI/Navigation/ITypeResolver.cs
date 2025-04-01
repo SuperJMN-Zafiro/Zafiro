@@ -1,9 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
 
-namespace Zafiro.UI.Navigation;
-
-public interface ITypeResolver
+namespace Zafiro.UI.Navigation
 {
-    [return: NotNull]
-    T Resolve<T>();
+    /// <summary>
+    /// Interface for resolving types
+    /// </summary>
+    public interface ITypeResolver
+    {
+        /// <summary>
+        /// Resolves a type
+        /// </summary>
+        /// <param name="type">Type to resolve</param>
+        /// <returns>Resolved instance</returns>
+        object Resolve(Type type);
+    }
 }

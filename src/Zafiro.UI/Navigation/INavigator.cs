@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using System.Reactive;
 using Zafiro.UI.Commands;
@@ -25,22 +27,21 @@ namespace Zafiro.UI.Navigation
         /// <param name="factory">Function that creates the content</param>
         /// <returns>Operation result</returns>
         Task<Result<Unit>> Go(Func<object> factory);
-
+        
         /// <summary>
         /// Navigate to a specific type
         /// </summary>
-        /// <typeparam name="T">Type to navigate to</typeparam>
+        /// <param name="type">Type to navigate to</param>
         /// <returns>Operation result</returns>
-        Task<Result<Unit>> Go<T>() where T : notnull;
-
+        Task<Result<Unit>> Go(Type type);
+        
         /// <summary>
-        /// Navigate to a specific type with parameters
+        /// Navigate to a specific type with a parameter
         /// </summary>
-        /// <typeparam name="T">Type to navigate to</typeparam>
-        /// <typeparam name="TParam">Parameter type</typeparam>
-        /// <param name="parameter">Navigation parameter</param>
+        /// <param name="type">Type to navigate to</param>
+        /// <param name="parameter">Navigation parameter (can be null)</param>
         /// <returns>Operation result</returns>
-        Task<Result<Unit>> Go<T, TParam>(TParam parameter) where T : notnull;
+        Task<Result<Unit>> Go(Type type, object? parameter);
 
         /// <summary>
         /// Navigate backwards
