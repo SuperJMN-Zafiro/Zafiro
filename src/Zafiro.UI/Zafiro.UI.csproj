@@ -19,7 +19,4 @@
     <ItemGroup>
       <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj" />
     </ItemGroup>
-    <ItemGroup>
-      <Compile Remove="Navigation\Sections\SectionBase.cs" />
-    </ItemGroup>
 </Project>
