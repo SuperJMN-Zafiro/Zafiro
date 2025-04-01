@@ -1,7 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using Zafiro.UI.Navigation.Sections;
-using static Zafiro.UI.Navigation.Sections.Section;
 
 namespace Zafiro.UI.Navigation;
 
@@ -17,26 +16,5 @@ public static class AddNavigation
             configure(sectionsBuilder);
             return sectionsBuilder.Build();
         });
-    }
-}
-
-public class SectionsBuilder(IServiceProvider provider)
-{
-    private readonly List<SectionBase> sections = new();
-    
-    private static SectionBase CreateSection<T>(string name, IServiceProvider provider) where T : notnull
-    {
-        return Create(name, () => new SectionScope(provider, typeof(T)));
-    }
-    
-    public SectionsBuilder Add<T>(string name)
-    {
-        sections.Add(CreateSection<T>(name, provider));
-        return this;
-    }
-
-    public IEnumerable<SectionBase> Build()
-    {
-        return sections;
     }
 }

@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using CSharpFunctionalExtensions;
 
 namespace Zafiro.UI.Navigation.Sections;
 
@@ -16,7 +17,7 @@ public class Section<T>(string name, Func<T> getViewModel, object? icon = null) 
 
 public static class Section
 {
-    public static Section<T> Create<T>(string name, Func<T> getViewModel, object? icon = null, bool isPrimary = true)
+    public static Section<T> Create<T>(string name, Func<T> getViewModel, Maybe<object> icon, bool isPrimary = true)
     {
         return new Section<T>(name, getViewModel, icon)
         {
@@ -24,7 +25,7 @@ public static class Section
         };
     }
     
-    public static CommandSection Command(string name, ICommand command, object? icon = null, bool isPrimary = true)
+    public static CommandSection Command(string name, ICommand command, Maybe<object> icon, bool isPrimary = true)
     {
         return new CommandSection(name, command, icon)
         {
