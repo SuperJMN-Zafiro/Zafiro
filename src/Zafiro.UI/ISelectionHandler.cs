@@ -1,7 +1,4 @@
-﻿using System.Reactive;
-using ReactiveUI;
-
-namespace Zafiro.UI;
+﻿namespace Zafiro.UI;
 
 public interface ISelectionHandler
 {

@@ -1,5 +1,3 @@
-using System.Reactive;
-using ReactiveUI;
 using Zafiro.Progress;
 
 namespace Zafiro.UI.Jobs.Execution;

@@ -1,6 +1,4 @@
-﻿using System.Reactive;
-
-namespace Zafiro.UI;
+﻿namespace Zafiro.UI;
 
 public interface IView : IContextualizable
 {

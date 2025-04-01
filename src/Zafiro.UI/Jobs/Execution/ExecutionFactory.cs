@@ -1,7 +1,5 @@
-using System.Reactive;
 using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
-using ReactiveUI;
 using Zafiro.Progress;
 using Zafiro.Reactive;
 
