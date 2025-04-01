@@ -15,7 +15,7 @@ public sealed class SectionScope : ISectionScope
         LoadInitial.Execute().Subscribe();
     }
 
-    public ReactiveCommand<Unit,Result<Unit>> LoadInitial { get; set; }
+    public ReactiveCommand<Unit,Result<Unit>> LoadInitial { get; }
 
     public void Dispose()
     {

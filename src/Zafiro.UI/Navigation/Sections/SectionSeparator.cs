@@ -1,3 +1,3 @@
 namespace Zafiro.UI.Navigation.Sections;
 
-public class SectionSeparator : SectionBase;
+public class SectionSeparator : Section;

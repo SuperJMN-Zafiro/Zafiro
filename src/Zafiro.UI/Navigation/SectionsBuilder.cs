@@ -1,25 +1,23 @@
 using System.Windows.Input;
-using CSharpFunctionalExtensions;
-using Zafiro.UI.Navigation.Sections;
 
 namespace Zafiro.UI.Navigation;
 
 public class SectionsBuilder(IServiceProvider provider)
 {
-    private readonly List<SectionBase> sections = new();
-    
-    private static SectionBase CreateSection<T>(string name, Maybe<object> icon, IServiceProvider provider, bool isPrimary) where T : notnull
+    private readonly List<Sections.Section> sections = new();
+
+    private static Sections.Section CreateSection<T>(string name, object? icon, IServiceProvider provider, bool isPrimary) where T : notnull
     {
-        return Sections.Section.Create(name, () => new SectionScope(provider, typeof(T)), icon, isPrimary);
+        return Sections.Section.Content(name, () => new SectionScope(provider, typeof(T)), icon, isPrimary);
     }
     
-    public SectionsBuilder Add<T>(string name, Maybe<object> icon, bool isPrimary = true) where T : notnull
+    public SectionsBuilder Add<T>(string name, object? icon, bool isPrimary = true) where T : notnull
     {
         sections.Add(CreateSection<T>(name, icon, provider, isPrimary));
         return this;
     }
 
-    public IEnumerable<SectionBase> Build()
+    public IEnumerable<Sections.Section> Build()
     {
         return sections;
     }
@@ -30,7 +28,7 @@ public class SectionsBuilder(IServiceProvider provider)
         return this;
     }
     
-    public SectionsBuilder Command(string name, ICommand command, Maybe<object> icon, bool isPrimary = true)
+    public SectionsBuilder Command(string name, ICommand command, object? icon, bool isPrimary = true)
     {
         sections.Add(Sections.Section.Command(name, command, icon, isPrimary));
         return this;

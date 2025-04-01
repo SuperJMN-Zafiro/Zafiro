@@ -4,7 +4,7 @@ namespace Zafiro.UI;
 
 public class Section : ISection
 {
-    public Section(string title, object content, Maybe<object> icon)
+    public Section(string title, object content, object? icon)
     {
         Title = title;
         Content = content;

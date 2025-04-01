@@ -9,12 +9,14 @@ public static class AddNavigation
     public static IServiceCollection RegisterSections(this IServiceCollection serviceCollection, Action<SectionsBuilder> configure)
     {
         serviceCollection.AddScoped<INavigator>(provider => new Navigator(provider, Maybe<ILogger>.None));
-            
-        return serviceCollection.AddSingleton<IEnumerable<SectionBase>>(provider =>
+
+        serviceCollection.AddSingleton<IEnumerable<Sections.Section>>(provider =>
         {
             var sectionsBuilder = new SectionsBuilder(provider);
             configure(sectionsBuilder);
             return sectionsBuilder.Build();
         });
+        
+        return serviceCollection;
     }
 }
