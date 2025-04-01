@@ -9,10 +9,9 @@ namespace Zafiro.UI.Navigation
     /// <summary>
     /// Hosts a navigation context with its own scope
     /// </summary>
-    public sealed class NavigationHost : INavigationHost, IDisposable
+    public sealed class NavigationHost : INavigationHost
     {
         private readonly IDisposable scope;
-        private readonly ITypeResolver typeResolver;
 
         /// <summary>
         /// Navigator associated with this host
@@ -31,36 +30,38 @@ namespace Zafiro.UI.Navigation
         /// <param name="initialContentFactory">Factory to create the initial content</param>
         public NavigationHost(Func<ITypeResolver> typeResolverFactory, Func<ITypeResolver, object> initialContentFactory)
         {
-            // Create the resolver for this scope
-            typeResolver = typeResolverFactory();
-            
+            var typeResolver1 =
+                // Create the resolver for this scope
+                typeResolverFactory();
+
             // If the resolver is also a scope, keep track of it for disposal
-            if (typeResolver is IDisposable disposableResolver)
+            if (typeResolver1 is IDisposable disposableResolver)
             {
                 scope = disposableResolver;
             }
             
             // Try to get the navigator from the scoped resolver
-            if (typeResolver is ScopedTypeResolver scopedResolver)
+            if (typeResolver1 is ScopedTypeResolver scopedResolver)
             {
                 var existingNavigator = scopedResolver.ServiceProvider.GetService(typeof(INavigator)) as INavigator;
-                Navigator = existingNavigator ?? new Navigator(typeResolver);
+                Navigator = existingNavigator ?? new Navigator(typeResolver1);
             }
             else
             {
                 // Fallback: create a new navigator
-                Navigator = new Navigator(typeResolver);
+                Navigator = new Navigator(typeResolver1);
             }
 
             // Set up initial navigation
             Create = ReactiveCommand.CreateFromTask(() =>
-                Navigator.Go(() => initialContentFactory(typeResolver))
-            );
+            {
+                return Navigator.Go(() => initialContentFactory(typeResolver1));
+            });
 
             // Execute initial navigation
             Create.Execute().Subscribe();
         }
-
+        
         /// <summary>
         /// Disposes the navigation host and its associated scope
         /// </summary>

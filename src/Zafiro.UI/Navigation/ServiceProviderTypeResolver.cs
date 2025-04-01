@@ -8,7 +8,7 @@ namespace Zafiro.UI.Navigation
     /// Implementation of ITypeResolver and ITypeWithParametersResolver 
     /// that uses an IServiceProvider to resolve types
     /// </summary>
-    public class ServiceProviderTypeResolver : ITypeResolver, ITypeWithParametersResolver
+    public class ServiceProviderTypeResolver : ITypeWithParametersResolver
     {
         private readonly IServiceProvider serviceProvider;
         private readonly Dictionary<Type, Dictionary<Type, Delegate>> parameterizedFactories = new();
