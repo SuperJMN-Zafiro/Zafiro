@@ -26,19 +26,11 @@ namespace Zafiro.UI.Navigation
         Task<Result<Unit>> Go(Func<object> factory);
         
         /// <summary>
-        /// Navigate to a specific type
+        /// Navigate to a specific type with a parameter
         /// </summary>
         /// <param name="type">Type to navigate to</param>
         /// <returns>Operation result</returns>
         Task<Result<Unit>> Go(Type type);
-        
-        /// <summary>
-        /// Navigate to a specific type with a parameter
-        /// </summary>
-        /// <param name="type">Type to navigate to</param>
-        /// <param name="parameter">Navigation parameter (can be null)</param>
-        /// <returns>Operation result</returns>
-        Task<Result<Unit>> Go(Type type, Maybe<object> parameter);
 
         /// <summary>
         /// Navigate backwards
