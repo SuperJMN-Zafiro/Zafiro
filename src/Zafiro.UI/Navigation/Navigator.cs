@@ -35,7 +35,7 @@ namespace Zafiro.UI.Navigation
                 navigationStack.Push(instance);
                 contentSubject.OnNext(instance);
                 canGoBackSubject.OnNext(navigationStack.Count > 1);
-                
+
                 return Result.Success(Unit.Default);
             }
             catch (Exception e)
@@ -47,19 +47,9 @@ namespace Zafiro.UI.Navigation
         
         public Task<Result<Unit>> Go(Type type)
         {
-            return Go(type, Maybe<object>.None);
-        }
-        
-        public Task<Result<Unit>> Go(Type type, Maybe<object> parameter)
-        {
-            if (parameter.HasValue)
-            {
-                throw new NotSupportedException();
-            }
-            
             return Result.Try(() => serviceProvider.GetRequiredService(type))
                 .Map(instance => Go(() => instance))
-                .TapError(e => logger.Error(e) );
+                .TapError(e => logger.Error(e));
         }
 
         public Task<Result<Unit>> GoBack()
@@ -80,9 +70,9 @@ namespace Zafiro.UI.Navigation
             {
                 contentSubject.OnNext(null);
             }
-            
+
             canGoBackSubject.OnNext(navigationStack.Count > 1);
-            
+
             return Task.FromResult(Result.Success(Unit.Default));
         }
     }
