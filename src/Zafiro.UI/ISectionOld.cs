@@ -1,6 +1,6 @@
 ﻿namespace Zafiro.UI;
 
-public interface ISection
+public interface ISectionOld
 {
     public string Title { get; }
     public object Icon { get; }

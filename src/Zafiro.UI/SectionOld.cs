@@ -2,9 +2,9 @@
 
 namespace Zafiro.UI;
 
-public class Section : ISection
+public class SectionOld : ISectionOld
 {
-    public Section(string title, object content, object? icon)
+    public SectionOld(string title, object content, object? icon)
     {
         Title = title;
         Content = content;

@@ -6,7 +6,7 @@ public class Section
 {
     public bool IsPrimary { get; init; } = true;
     
-    public static ContentSection<T> Content<T>(string name, Func<T> getViewModel, object? icon, bool isPrimary = true)
+    public static IContentSection Content<T>(string name, Func<T> getViewModel, object? icon, bool isPrimary = true)
     {
         return new ContentSection<T>(name, getViewModel, icon)
         {
@@ -14,7 +14,7 @@ public class Section
         };
     }
     
-    public static CommandSection Command(string name, ICommand command, object? icon, bool isPrimary = true)
+    public static ICommandSection Command(string name, ICommand command, object? icon, bool isPrimary = true)
     {
         return new CommandSection(name, command, icon)
         {
@@ -22,7 +22,7 @@ public class Section
         };
     }
     
-    public static SectionSeparator Separator(bool isPrimary = true)
+    public static ISectionSeparator Separator(bool isPrimary = true)
     {
         return new SectionSeparator
         {

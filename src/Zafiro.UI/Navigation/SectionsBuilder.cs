@@ -1,14 +1,16 @@
 using System.Windows.Input;
+using Zafiro.UI.Navigation.Sections;
 
 namespace Zafiro.UI.Navigation;
 
 public class SectionsBuilder(IServiceProvider provider)
 {
-    private readonly List<Sections.Section> sections = new();
+    private readonly List<ISection> sections = new();
 
-    private static Sections.Section CreateSection<T>(string name, IServiceProvider provider, object? icon = null, bool isPrimary = true) where T : notnull
+    private static ISection CreateSection<T>(string name, IServiceProvider provider, object? icon = null, bool isPrimary = true) where T : notnull
     {
-        return Sections.Section.Content(name, () => new SectionScope(provider, typeof(T)), icon, isPrimary);
+        IContentSection contentSection = Section.Content(name, () => new SectionScope(provider, typeof(T)), icon, isPrimary);
+        return contentSection;
     }
     
     public SectionsBuilder Add<T>(string name, object? icon = null, bool isPrimary = true) where T : notnull
@@ -17,20 +19,20 @@ public class SectionsBuilder(IServiceProvider provider)
         return this;
     }
 
-    public IEnumerable<Sections.Section> Build()
+    public IEnumerable<ISection> Build()
     {
         return sections;
     }
 
     public SectionsBuilder Separator(bool isPrimary = true)
     {
-        sections.Add(Sections.Section.Separator(isPrimary));
+        sections.Add(Section.Separator(isPrimary));
         return this;
     }
     
     public SectionsBuilder Command(string name, ICommand command, object? icon, bool isPrimary = true)
     {
-        sections.Add(Sections.Section.Command(name, command, icon, isPrimary));
+        sections.Add(Section.Command(name, command, icon, isPrimary));
         return this;
     }
 }

@@ -10,7 +10,7 @@ public static class AddNavigation
     {
         serviceCollection.AddScoped<INavigator>(provider => new Navigator(provider, Maybe<ILogger>.None));
 
-        serviceCollection.AddSingleton<IEnumerable<Sections.Section>>(provider =>
+        serviceCollection.AddSingleton<IEnumerable<ISection>>(provider =>
         {
             var sectionsBuilder = new SectionsBuilder(provider);
             configure(sectionsBuilder);

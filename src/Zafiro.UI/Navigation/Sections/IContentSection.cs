@@ -1,9 +1,7 @@
 namespace Zafiro.UI.Navigation.Sections;
 
-public interface IContentSection
+public interface IContentSection : INamedSection
 {
-    string Name { get; }
     Func<object?> GetViewModel { get; }
-    object? Icon { get; }
     object? Content { get; }
 }
