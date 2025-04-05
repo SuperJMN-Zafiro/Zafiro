@@ -6,14 +6,14 @@ public class SectionsBuilder(IServiceProvider provider)
 {
     private readonly List<Sections.Section> sections = new();
 
-    private static Sections.Section CreateSection<T>(string name, object? icon, IServiceProvider provider, bool isPrimary) where T : notnull
+    private static Sections.Section CreateSection<T>(string name, IServiceProvider provider, object? icon = null, bool isPrimary = true) where T : notnull
     {
         return Sections.Section.Content(name, () => new SectionScope(provider, typeof(T)), icon, isPrimary);
     }
     
-    public SectionsBuilder Add<T>(string name, object? icon, bool isPrimary = true) where T : notnull
+    public SectionsBuilder Add<T>(string name, object? icon = null, bool isPrimary = true) where T : notnull
     {
-        sections.Add(CreateSection<T>(name, icon, provider, isPrimary));
+        sections.Add(CreateSection<T>(name, provider, icon, isPrimary));
         return this;
     }
 
