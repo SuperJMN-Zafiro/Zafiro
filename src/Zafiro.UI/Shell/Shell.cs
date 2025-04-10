@@ -8,7 +8,7 @@ public partial class Shell : ReactiveObject, IShell
 {
     [Reactive] private IContentSection? selectedSection;
 
-    public Shell(IEnumerable<Navigation.Sections.Section> sections)
+    public Shell(IEnumerable<ISection> sections)
     {
         Sections = sections;
         CurrentContent = this.WhenAnyValue(x => x.SelectedSection)
@@ -17,7 +17,7 @@ public partial class Shell : ReactiveObject, IShell
         SelectedSection = Sections.OfType<IContentSection>().FirstOrDefault();
     }
 
-    public IEnumerable<Navigation.Sections.Section> Sections { get; }
+    public IEnumerable<ISection> Sections { get; }
     public IObservable<object?> CurrentContent { get; }
 
     public void GoToSection(string sectionName)

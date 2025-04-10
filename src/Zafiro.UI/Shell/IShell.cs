@@ -4,7 +4,7 @@ namespace Zafiro.UI.Shell;
 
 public interface IShell
 {
-    IEnumerable<Navigation.Sections.Section> Sections { get; }
+    IEnumerable<ISection> Sections { get; }
     IContentSection SelectedSection { get; set; }
     void GoToSection(string sectionName);
 }
