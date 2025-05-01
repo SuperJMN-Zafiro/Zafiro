@@ -1,15 +1,9 @@
 using CSharpFunctionalExtensions;
 
-public class WizardStep
-{
-    public Func<object?, object> PageFactory { get; }
-    public Func<object, Result<object>> OnNext { get; }
+namespace Zafiro.UI.Wizard;
 
-    public WizardStep(
-        Func<object?, object> pageFactory,
-        Func<object, Result<object>> onNext)
-    {
-        PageFactory = pageFactory;
-        OnNext = onNext;
-    }
-}
+public record WizardStep(
+    Func<object?, object> PageFactory,
+    Func<object, Result<object>> OnNext,
+    Func<object, IObservable<bool>> CanGoNext
+);

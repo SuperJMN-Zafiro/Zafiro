@@ -10,7 +10,7 @@ namespace Zafiro.Tests.UI;
 public class WizardTests
 {
     // Helper to create a WizardStep given factories
-    private WizardStep CreateStep(Func<object?, object> pageFactory, Func<object, Result<object>> onNext) => new(pageFactory, onNext);
+    private WizardStep CreateStep(Func<object?, object> pageFactory, Func<object, Result<object>> onNext) => new(pageFactory, onNext, _ => Observable.Return(true));
 
     [Fact]
     public void Should_load_first_page_on_initialization()

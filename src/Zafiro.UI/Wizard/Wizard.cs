@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CSharpFunctionalExtensions;
 
@@ -10,7 +11,7 @@ public class Wizard : ReactiveObject
     private int currentIndex;
 
     private object currentPage = default!;
-    public  object  CurrentPage
+    public object CurrentPage
     {
         get => currentPage;
         private set => this.RaiseAndSetIfChanged(ref currentPage, value);
@@ -19,7 +20,9 @@ public class Wizard : ReactiveObject
     public ReactiveCommand<Unit, Unit> BackCommand { get; }
     public ReactiveCommand<Unit, Unit> NextCommand { get; }
     private readonly Subject<object> completedSubject = new();
-    public  IObservable<object>      WizardCompleted  => completedSubject;
+    public IObservable<object> WizardCompleted => completedSubject;
+
+    private readonly BehaviorSubject<IObservable<bool>> canGoNextSubject = new(Observable.Return(true));
 
     public Wizard(IEnumerable<WizardStep> steps)
     {
@@ -31,12 +34,14 @@ public class Wizard : ReactiveObject
         var canGoBack = this.WhenAnyValue(vm => vm.currentIndex, idx => idx > 0);
 
         BackCommand = ReactiveCommand.Create(OnBack, canGoBack);
-        NextCommand = ReactiveCommand.Create(OnNext);
+        NextCommand = ReactiveCommand.Create(OnNext, canGoNextSubject.Switch());
     }
 
     private void LoadPage(int index, object? prev)
     {
         CurrentPage = steps[index].PageFactory(prev);
+        var canGoNextObservable = steps[index].CanGoNext(CurrentPage);
+        canGoNextSubject.OnNext(canGoNextObservable);
     }
 
     private void OnBack()
@@ -47,9 +52,8 @@ public class Wizard : ReactiveObject
 
     private void OnNext()
     {
-        var step   = steps[currentIndex];
+        var step = steps[currentIndex];
 
-        // 1) Validamos el paso actual
         step.OnNext(CurrentPage)
             .Tap(nextValue =>
             {
