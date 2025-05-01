@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Zafiro.UI\Zafiro.UI.csproj" />
     <ProjectReference Include="..\..\src\Zafiro\Zafiro.csproj" />
   </ItemGroup>
 
