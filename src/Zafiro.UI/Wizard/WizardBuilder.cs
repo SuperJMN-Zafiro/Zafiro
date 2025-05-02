@@ -1,8 +1,6 @@
 // **1. El contenedor estático que arranca el builder**
 
-using System.Reactive;
-using Zafiro.Mixins;
-using Zafiro.UI.Wizard;
+namespace Zafiro.UI.Wizard;
 
 public static class WizardBuilder
 {
@@ -30,7 +28,7 @@ public class SlimWizardBuilder<TPage, TResult>
         {
             // la primera factoría no tiene input previo, así que ignoramos el object
             new WizardStep(
-                _ => pageFactory(), 
+                _ => pageFactory(),
                 page => resultFactory((TPage)page),
                 page => canGoNext((TPage)page)
             )
@@ -43,18 +41,32 @@ public class SlimWizardBuilder<TPage, TResult>
         steps = existingSteps;
     }
 
-    // **3. AddStep: encadenas otro paso a partir del resultado anterior**
-    public SlimWizardBuilder<TNextPage, TNextResult> AddStep<TNextPage, TNextResult>(
+    // **3. Then: encadenas otro paso a partir del resultado anterior**
+    public SlimWizardBuilder<TNextPage, TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
-        Func<TNextPage, TNextResult> resultFactory, 
+        Func<TNextPage, TNextResult> resultFactory,
         Func<TNextPage, IObservable<bool>> canGoNext)
     {
         steps.Add(new WizardStep(
             prevResult => pageFactory((TResult)prevResult),
-            page   => resultFactory((TNextPage)page),
+            page => resultFactory((TNextPage)page),
             page => canGoNext((TNextPage)page)
         ));
 
         return new SlimWizardBuilder<TNextPage, TNextResult>(steps);
+    }
+
+    public Wizard<TNextResult> FinishWith<TNextPage, TNextResult>(
+        Func<TResult, TNextPage> pageFactory,
+        Func<TNextPage, TNextResult> resultFactory,
+        Func<TNextPage, IObservable<bool>> canGoNext)
+    {
+        steps.Add(new WizardStep(
+            prevResult => pageFactory((TResult)prevResult),
+            page => resultFactory((TNextPage)page),
+            page => canGoNext((TNextPage)page)
+        ));
+
+        return new Wizard<TNextResult>(steps);
     }
 }
