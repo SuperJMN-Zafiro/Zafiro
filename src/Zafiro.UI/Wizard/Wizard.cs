@@ -8,25 +8,34 @@ namespace Zafiro.UI.Wizard;
 public partial class Wizard<T> : ReactiveObject, IWizard
 {
     private readonly BehaviorSubject<IObservable<bool>> canGoNextSubject = new(Observable.Return(true));
-    private readonly Subject<T> completedSubject = new();
+    private readonly ReplaySubject<T> completedSubject = new();
     private readonly List<object?> history = new();
     private readonly IReadOnlyList<WizardStep> steps;
     [Reactive] private int currentIndex;
-
     [Reactive] private object currentPage = null!;
+    [ObservableAsProperty] private MaybeViewModel<string> currentTitle = new(Maybe<string>.None);
 
     public Wizard(IEnumerable<WizardStep> steps)
     {
         this.steps = steps.ToList();
-        history.Add(null);
-
-        LoadPage(0, null);
 
         var hasFinished = Finished.Any().StartWith(false);
         var canGoBack = this.WhenAnyValue(vm => vm.CurrentIndex, idx => idx > 0).CombineLatest(hasFinished, (canGoBack, hasFinished) => canGoBack && !hasFinished);
 
+        currentTitleHelper = this.WhenAnyValue(x => x.CurrentPage)
+            .WhereNotNull()
+            .Select(o => o switch
+            {
+                ITitled title => new MaybeViewModel<string>(title.Title.AsMaybe()),
+                _ => new MaybeViewModel<string>(Maybe<string>.None)
+            })
+            .ToProperty(this, x => x.CurrentTitle);
+
         BackCommand = ReactiveCommand.Create(OnBack, canGoBack);
         NextCommand = ReactiveCommand.Create(OnNext, canGoNextSubject.Switch());
+
+        history.Add(null);
+        LoadPage(0, null);
     }
 
     public IObservable<T> Finished => completedSubject;
