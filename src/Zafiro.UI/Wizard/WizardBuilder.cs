@@ -7,9 +7,10 @@ public static class WizardBuilder
     public static SlimWizardBuilder<TPage, TResult> StartWith<TPage, TResult>(
         Func<TPage> pageFactory,
         Func<TPage, TResult> resultFactory,
-        Func<TPage, IObservable<bool>> canGoNext)
+        Func<TPage, IObservable<bool>> canGoNext,
+        string? nextText = "Next")
     {
-        return new SlimWizardBuilder<TPage, TResult>(pageFactory, resultFactory, canGoNext);
+        return new SlimWizardBuilder<TPage, TResult>(pageFactory, resultFactory, canGoNext, nextText);
     }
 }
 
@@ -19,18 +20,19 @@ public class SlimWizardBuilder<TPage, TResult>
     private readonly List<WizardStep> steps;
 
     // constructor inicial: mete el primer paso
-    internal SlimWizardBuilder(
-        Func<TPage> pageFactory,
+    internal SlimWizardBuilder(Func<TPage> pageFactory,
         Func<TPage, TResult> resultFactory,
-        Func<TPage, IObservable<bool>> canGoNext)
+        Func<TPage, IObservable<bool>> canGoNext,
+        string nextText)
     {
         steps = new List<WizardStep>
         {
             // la primera factoría no tiene input previo, así que ignoramos el object
-            new WizardStep(
+            new(
                 _ => pageFactory(),
                 page => resultFactory((TPage)page),
-                page => canGoNext((TPage)page)
+                page => canGoNext((TPage)page),
+                nextText
             )
         };
     }
@@ -45,27 +47,34 @@ public class SlimWizardBuilder<TPage, TResult>
     public SlimWizardBuilder<TNextPage, TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, TNextResult> resultFactory,
-        Func<TNextPage, IObservable<bool>> canGoNext)
+        Func<TNextPage, IObservable<bool>> canGoNext,
+        string nextText = "Next")
     {
         steps.Add(new WizardStep(
             prevResult => pageFactory((TResult)prevResult),
             page => resultFactory((TNextPage)page),
             page => canGoNext((TNextPage)page)
-        ));
+        )
+        {
+            NextText = nextText
+        });
 
         return new SlimWizardBuilder<TNextPage, TNextResult>(steps);
     }
 
-    public Wizard<TNextResult> FinishWith<TNextPage, TNextResult>(
-        Func<TResult, TNextPage> pageFactory,
+    public Wizard<TNextResult> FinishWith<TNextPage, TNextResult>(Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, TNextResult> resultFactory,
-        Func<TNextPage, IObservable<bool>> canGoNext)
+        Func<TNextPage, IObservable<bool>> canGoNext,
+        string? nextText = "Next")
     {
         steps.Add(new WizardStep(
             prevResult => pageFactory((TResult)prevResult),
             page => resultFactory((TNextPage)page),
             page => canGoNext((TNextPage)page)
-        ));
+        )
+        {
+            NextText = nextText
+        });
 
         return new Wizard<TNextResult>(steps);
     }

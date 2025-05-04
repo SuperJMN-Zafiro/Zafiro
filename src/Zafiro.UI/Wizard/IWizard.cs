@@ -4,7 +4,8 @@ namespace Zafiro.UI.Wizard;
 
 public interface IWizard
 {
-    int CurrentIndex { get; }
+    int CurrentPageIndex { get; }
+    int TotalPages { get; }
 
     object CurrentPage { get; }
 
@@ -12,6 +13,7 @@ public interface IWizard
 
     ReactiveCommand<Unit, Unit> BackCommand { get; }
     ReactiveCommand<Unit, Unit> NextCommand { get; }
+    public string NextText { get; }
 }
 
 public class MaybeViewModel<T>(Maybe<T> maybe)

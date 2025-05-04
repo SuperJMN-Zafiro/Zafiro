@@ -11,16 +11,17 @@ public partial class Wizard<T> : ReactiveObject, IWizard
     private readonly ReplaySubject<T> completedSubject = new();
     private readonly List<object?> history = new();
     private readonly IReadOnlyList<WizardStep> steps;
-    [Reactive] private int currentIndex;
     [Reactive] private object currentPage = null!;
+    [Reactive] private int currentPageIndex;
     [ObservableAsProperty] private MaybeViewModel<string> currentTitle = new(Maybe<string>.None);
+    [ObservableAsProperty] private string nextText;
 
     public Wizard(IEnumerable<WizardStep> steps)
     {
         this.steps = steps.ToList();
 
         var hasFinished = Finished.Any().StartWith(false);
-        var canGoBack = this.WhenAnyValue(vm => vm.CurrentIndex, idx => idx > 0).CombineLatest(hasFinished, (canGoBack, hasFinished) => canGoBack && !hasFinished);
+        var canGoBack = this.WhenAnyValue(vm => vm.CurrentPageIndex, idx => idx > 0).CombineLatest(hasFinished, (canGoBack, hasFinished) => canGoBack && !hasFinished);
 
         currentTitleHelper = this.WhenAnyValue(x => x.CurrentPage)
             .WhereNotNull()
@@ -31,6 +32,11 @@ public partial class Wizard<T> : ReactiveObject, IWizard
             })
             .ToProperty(this, x => x.CurrentTitle);
 
+        nextTextHelper = this.WhenAnyValue(x => x.CurrentPageIndex)
+            .WhereNotNull()
+            .Select(i => this.steps[i].NextText)
+            .ToProperty(this, x => x.NextText);
+
         BackCommand = ReactiveCommand.Create(OnBack, canGoBack);
         NextCommand = ReactiveCommand.Create(OnNext, canGoNextSubject.Switch());
 
@@ -40,38 +46,32 @@ public partial class Wizard<T> : ReactiveObject, IWizard
 
     public IObservable<T> Finished => completedSubject;
 
+    public int TotalPages => steps.Count;
     public ReactiveCommand<Unit, Unit> BackCommand { get; }
     public ReactiveCommand<Unit, Unit> NextCommand { get; }
 
-    private void LoadPage(int index, object? prev)
-    {
-        CurrentPage = steps[index].PageFactory(prev);
-        var canGoNextObservable = steps[index].CanGoNext(CurrentPage);
-        canGoNextSubject.OnNext(canGoNextObservable);
-    }
-
     private void OnBack()
     {
-        CurrentIndex--;
-        LoadPage(CurrentIndex, history[CurrentIndex]);
+        CurrentPageIndex--;
+        LoadPage(CurrentPageIndex, history[CurrentPageIndex]);
     }
 
     private void OnNext()
     {
-        var step = steps[CurrentIndex];
+        var step = steps[CurrentPageIndex];
 
         step.OnNext(CurrentPage)
             .Tap(nextValue =>
             {
-                if (history.Count > CurrentIndex + 1)
-                    history[CurrentIndex + 1] = nextValue;
+                if (history.Count > CurrentPageIndex + 1)
+                    history[CurrentPageIndex + 1] = nextValue;
                 else
                     history.Add(nextValue);
 
-                if (CurrentIndex + 1 < steps.Count)
+                if (CurrentPageIndex + 1 < steps.Count)
                 {
-                    CurrentIndex++;
-                    LoadPage(CurrentIndex, nextValue);
+                    CurrentPageIndex++;
+                    LoadPage(CurrentPageIndex, nextValue);
                 }
                 else
                 {
@@ -80,5 +80,12 @@ public partial class Wizard<T> : ReactiveObject, IWizard
                     completedSubject.OnCompleted();
                 }
             });
+    }
+
+    private void LoadPage(int index, object? prev)
+    {
+        CurrentPage = steps[index].PageFactory(prev);
+        var canGoNextObservable = steps[index].CanGoNext(CurrentPage);
+        canGoNextSubject.OnNext(canGoNextObservable);
     }
 }
