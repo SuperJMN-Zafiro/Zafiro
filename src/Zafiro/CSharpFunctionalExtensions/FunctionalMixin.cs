@@ -307,6 +307,11 @@ public static class FunctionalMixin
     {
         return taskResult.Bind(inputs => AsyncResultExtensionsLeftOperand.Combine(inputs.Select(selector)));
     }
+    
+    public static Task<Result<IEnumerable<TResult>>> Traverse<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> result, Func<TInput, Task<Result<TResult>>> transform)
+    {
+        return result.MapEach(transform).Combine();
+    }
 
     public static void Log(this Result result, ILogger? logger = default, string successString = "Success")
     {
