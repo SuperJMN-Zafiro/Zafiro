@@ -1,12 +1,14 @@
 // **1. El contenedor estático que arranca el builder**
 
+using CSharpFunctionalExtensions;
+
 namespace Zafiro.UI.Wizard;
 
 public static class WizardBuilder
 {
     public static SlimWizardBuilder<TPage, TResult> StartWith<TPage, TResult>(
         Func<TPage> pageFactory,
-        Func<TPage, TResult> resultFactory,
+        Func<TPage, Task<Result<TResult>>> resultFactory,
         Func<TPage, IObservable<bool>> canGoNext,
         string? nextText = "Next")
     {
@@ -21,7 +23,7 @@ public class SlimWizardBuilder<TPage, TResult>
 
     // constructor inicial: mete el primer paso
     internal SlimWizardBuilder(Func<TPage> pageFactory,
-        Func<TPage, TResult> resultFactory,
+        Func<TPage, Task<Result<TResult>>> resultFactory,
         Func<TPage, IObservable<bool>> canGoNext,
         string nextText)
     {
@@ -30,7 +32,7 @@ public class SlimWizardBuilder<TPage, TResult>
             // la primera factoría no tiene input previo, así que ignoramos el object
             new(
                 _ => pageFactory(),
-                page => resultFactory((TPage)page),
+                page => resultFactory((TPage)page).Map(result => (object)result),
                 page => canGoNext((TPage)page),
                 nextText
             )
@@ -46,13 +48,13 @@ public class SlimWizardBuilder<TPage, TResult>
     // **3. Then: encadenas otro paso a partir del resultado anterior**
     public SlimWizardBuilder<TNextPage, TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
-        Func<TNextPage, TNextResult> resultFactory,
+        Func<TNextPage, Task<Result<TNextResult>>> resultFactory,
         Func<TNextPage, IObservable<bool>> canGoNext,
         string nextText = "Next")
     {
         steps.Add(new WizardStep(
             prevResult => pageFactory((TResult)prevResult),
-            page => resultFactory((TNextPage)page),
+            page => resultFactory((TNextPage)page).Map(result => (object)result),
             page => canGoNext((TNextPage)page)
         )
         {
@@ -63,13 +65,13 @@ public class SlimWizardBuilder<TPage, TResult>
     }
 
     public Wizard<TNextResult> FinishWith<TNextPage, TNextResult>(Func<TResult, TNextPage> pageFactory,
-        Func<TNextPage, TNextResult> resultFactory,
+        Func<TNextPage, Task<Result<TNextResult>>> resultFactory,
         Func<TNextPage, IObservable<bool>> canGoNext,
         string? nextText = "Next")
     {
         steps.Add(new WizardStep(
             prevResult => pageFactory((TResult)prevResult),
-            page => resultFactory((TNextPage)page),
+            page => resultFactory((TNextPage)page).Map(result => (object)result),
             page => canGoNext((TNextPage)page)
         )
         {

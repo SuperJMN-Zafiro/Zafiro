@@ -5,7 +5,7 @@ using ReactiveUI.SourceGenerators;
 
 namespace Zafiro.UI.Wizard;
 
-public partial class Wizard<T> : ReactiveObject, IWizard
+public partial class Wizard<T> : ReactiveObject, IWizard<T>
 {
     private readonly BehaviorSubject<IObservable<bool>> canGoNextSubject = new(Observable.Return(true));
     private readonly ReplaySubject<T> completedSubject = new();
@@ -14,13 +14,13 @@ public partial class Wizard<T> : ReactiveObject, IWizard
     [Reactive] private object currentPage = null!;
     [Reactive] private int currentPageIndex;
     [ObservableAsProperty] private MaybeViewModel<string> currentTitle = new(Maybe<string>.None);
-    [ObservableAsProperty] private string nextText;
+    [ObservableAsProperty] private string? nextText;
 
     public Wizard(IEnumerable<WizardStep> steps)
     {
         this.steps = steps.ToList();
 
-        var hasFinished = Finished.Any().StartWith(false);
+        var hasFinished = FinishedOfT.Any().StartWith(false);
         var canGoBack = this.WhenAnyValue(vm => vm.CurrentPageIndex, idx => idx > 0).CombineLatest(hasFinished, (canGoBack, hasFinished) => canGoBack && !hasFinished);
 
         currentTitleHelper = this.WhenAnyValue(x => x.CurrentPage)
@@ -38,17 +38,20 @@ public partial class Wizard<T> : ReactiveObject, IWizard
             .ToProperty(this, x => x.NextText);
 
         BackCommand = ReactiveCommand.Create(OnBack, canGoBack);
-        NextCommand = ReactiveCommand.Create(OnNext, canGoNextSubject.Switch());
+        NextCommand = ReactiveCommand.CreateFromTask(OnNext, canGoNextSubject.Switch());
 
         history.Add(null);
         LoadPage(0, null);
     }
 
-    public IObservable<T> Finished => completedSubject;
+    public IObservable<T> FinishedOfT => completedSubject;
 
     public int TotalPages => steps.Count;
     public ReactiveCommand<Unit, Unit> BackCommand { get; }
     public ReactiveCommand<Unit, Unit> NextCommand { get; }
+    public IObservable<object> Finished => Finished.Cast<object>();
+
+    public T CurrentPageOfT => (T)CurrentPage;
 
     private void OnBack()
     {
@@ -56,17 +59,21 @@ public partial class Wizard<T> : ReactiveObject, IWizard
         LoadPage(CurrentPageIndex, history[CurrentPageIndex]);
     }
 
-    private void OnNext()
+    private async Task OnNext()
     {
         var step = steps[CurrentPageIndex];
 
-        step.OnNext(CurrentPage)
+        await step.OnNext(CurrentPage)
             .Tap(nextValue =>
             {
                 if (history.Count > CurrentPageIndex + 1)
+                {
                     history[CurrentPageIndex + 1] = nextValue;
+                }
                 else
+                {
                     history.Add(nextValue);
+                }
 
                 if (CurrentPageIndex + 1 < steps.Count)
                 {
