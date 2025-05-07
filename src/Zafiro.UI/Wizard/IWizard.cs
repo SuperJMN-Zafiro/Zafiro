@@ -11,13 +11,13 @@ public interface IWizard
     ReactiveCommand<Unit, Unit> BackCommand { get; }
     ReactiveCommand<Unit, Unit> NextCommand { get; }
     public string NextText { get; }
-    IObservable<object> Finished { get; }
+    IObservable<object?> Finished { get; }
 }
 
-public interface IWizard<T> : IWizard
+public interface IWizard<out T> : IWizard
 {
-    T CurrentPageOfT { get; }
-    IObservable<T> FinishedOfT { get; }
+    new T CurrentPage { get; }
+    new IObservable<T> Finished { get; }
 }
 
 public class MaybeViewModel<T>(Maybe<T> maybe)

@@ -20,7 +20,7 @@ public partial class Wizard<T> : ReactiveObject, IWizard<T>
     {
         this.steps = steps.ToList();
 
-        var hasFinished = FinishedOfT.Any().StartWith(false);
+        var hasFinished = Finished.Any().StartWith(false);
         var canGoBack = this.WhenAnyValue(vm => vm.CurrentPageIndex, idx => idx > 0).CombineLatest(hasFinished, (canGoBack, hasFinished) => canGoBack && !hasFinished);
 
         currentTitleHelper = this.WhenAnyValue(x => x.CurrentPage)
@@ -44,14 +44,17 @@ public partial class Wizard<T> : ReactiveObject, IWizard<T>
         LoadPage(0, null);
     }
 
-    public IObservable<T> FinishedOfT => completedSubject;
+    public T CurrentPageOfT => (T)CurrentPage;
+
+    T IWizard<T>.CurrentPage => (T)CurrentPage;
+
+    public IObservable<T> Finished => completedSubject;
 
     public int TotalPages => steps.Count;
     public ReactiveCommand<Unit, Unit> BackCommand { get; }
     public ReactiveCommand<Unit, Unit> NextCommand { get; }
-    public IObservable<object> Finished => Finished.Cast<object>();
 
-    public T CurrentPageOfT => (T)CurrentPage;
+    IObservable<object?> IWizard.Finished => Finished.Select(arg => (object?)arg);
 
     private void OnBack()
     {
