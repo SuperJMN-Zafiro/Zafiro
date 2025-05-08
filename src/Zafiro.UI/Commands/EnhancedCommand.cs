@@ -4,9 +4,33 @@ namespace Zafiro.UI.Commands;
 
 public static class EnhancedCommand
 {
-    public static EnhancedCommand<T, Q> Create<T, Q>(ReactiveCommandBase<T, Q> reactiveCommand)
+    public static IEnhancedCommand<T, Q> Create<T, Q>(ReactiveCommandBase<T, Q> reactiveCommand)
     {
         return new EnhancedCommand<T, Q>(reactiveCommand);
+    }
+
+    public static EnhancedCommand<T> Create<T>(ReactiveCommandBase<Unit, T> reactiveCommand)
+    {
+        return new EnhancedCommand<T>(reactiveCommand);
+    }
+
+    public static IEnhancedUnitCommand Create(ReactiveCommandBase<Unit, Unit> reactiveCommand)
+    {
+        return new EnhancedUnitCommand(reactiveCommand);
+    }
+}
+
+public class EnhancedUnitCommand : EnhancedCommand<Unit, Unit>, IEnhancedCommand<Unit>, IEnhancedUnitCommand
+{
+    public EnhancedUnitCommand(ReactiveCommandBase<Unit, Unit> reactiveCommandBase) : base(reactiveCommandBase)
+    {
+    }
+}
+
+public class EnhancedCommand<T> : EnhancedCommand<Unit, T>, IEnhancedCommand<T>
+{
+    public EnhancedCommand(ReactiveCommandBase<Unit, T> reactiveCommandBase) : base(reactiveCommandBase)
+    {
     }
 }
 
@@ -35,7 +59,7 @@ public class EnhancedCommand<TParam, TResult> : IEnhancedCommand<TParam, TResult
 
     public IObservable<bool> IsExecuting => reactiveCommand.IsExecuting;
 
-    public IObservable<bool> CanExecute => ((IReactiveCommand) command).CanExecute;
+    public IObservable<bool> CanExecute => ((IReactiveCommand)command).CanExecute;
 
     public IDisposable Subscribe(IObserver<TResult> observer) => reactiveCommand.Subscribe(observer);
 

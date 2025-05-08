@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizard;
 
@@ -8,8 +9,8 @@ public interface IWizard
     int TotalPages { get; }
     object CurrentPage { get; }
     public MaybeViewModel<string> CurrentTitle { get; }
-    ReactiveCommand<Unit, Unit> BackCommand { get; }
-    ReactiveCommand<Unit, Unit> NextCommand { get; }
+    IEnhancedUnitCommand BackCommand { get; }
+    IEnhancedCommand<Result<object>> NextCommand { get; }
     public string NextText { get; }
     IObservable<object?> Finished { get; }
 }

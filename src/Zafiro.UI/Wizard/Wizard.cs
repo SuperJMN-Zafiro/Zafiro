@@ -2,19 +2,22 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CSharpFunctionalExtensions;
 using ReactiveUI.SourceGenerators;
+using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizard;
 
 public partial class Wizard<T> : ReactiveObject, IWizard<T>
 {
-    private readonly BehaviorSubject<IObservable<bool>> canGoNextSubject = new(Observable.Return(true));
     private readonly ReplaySubject<T> completedSubject = new();
     private readonly List<object?> history = new();
     private readonly IReadOnlyList<WizardStep> steps;
     [Reactive] private object currentPage = null!;
     [Reactive] private int currentPageIndex;
+    [ObservableAsProperty] private WizardStep currentStep;
     [ObservableAsProperty] private MaybeViewModel<string> currentTitle = new(Maybe<string>.None);
+    [ObservableAsProperty] private IEnhancedCommand<Result<object>> nextCommand;
     [ObservableAsProperty] private string? nextText;
+
 
     public Wizard(IEnumerable<WizardStep> steps)
     {
@@ -37,22 +40,22 @@ public partial class Wizard<T> : ReactiveObject, IWizard<T>
             .Select(i => this.steps[i].NextText)
             .ToProperty(this, x => x.NextText);
 
-        BackCommand = ReactiveCommand.Create(OnBack, canGoBack);
-        NextCommand = ReactiveCommand.CreateFromTask(OnNext, canGoNextSubject.Switch());
+
+        BackCommand = EnhancedCommand.Create(ReactiveCommand.Create(OnBack, canGoBack));
+        var whenAnyObservable = this.WhenAnyValue(wizard => wizard.CurrentStep.NextCommand).WhereNotNull();
+
+        nextCommandHelper = whenAnyObservable.ToProperty(this, wizard => wizard.NextCommand);
 
         history.Add(null);
         LoadPage(0, null);
     }
-
-    public T CurrentPageOfT => (T)CurrentPage;
 
     T IWizard<T>.CurrentPage => (T)CurrentPage;
 
     public IObservable<T> Finished => completedSubject;
 
     public int TotalPages => steps.Count;
-    public ReactiveCommand<Unit, Unit> BackCommand { get; }
-    public ReactiveCommand<Unit, Unit> NextCommand { get; }
+    public IEnhancedUnitCommand BackCommand { get; }
 
     IObservable<object?> IWizard.Finished => Finished.Select(arg => (object?)arg);
 
@@ -62,40 +65,38 @@ public partial class Wizard<T> : ReactiveObject, IWizard<T>
         LoadPage(CurrentPageIndex, history[CurrentPageIndex]);
     }
 
-    private async Task OnNext()
-    {
-        var step = steps[CurrentPageIndex];
-
-        await step.OnNext(CurrentPage)
-            .Tap(nextValue =>
-            {
-                if (history.Count > CurrentPageIndex + 1)
-                {
-                    history[CurrentPageIndex + 1] = nextValue;
-                }
-                else
-                {
-                    history.Add(nextValue);
-                }
-
-                if (CurrentPageIndex + 1 < steps.Count)
-                {
-                    CurrentPageIndex++;
-                    LoadPage(CurrentPageIndex, nextValue);
-                }
-                else
-                {
-                    completedSubject.OnNext((T)nextValue);
-                    canGoNextSubject.OnNext(Observable.Return(false));
-                    completedSubject.OnCompleted();
-                }
-            });
-    }
+    // private async Task OnNext()
+    // {
+    //     var step = steps[CurrentPageIndex];
+    //
+    //     step.NextCommand.Successes()
+    //         .Do(nextValue =>
+    //         {
+    //             if (history.Count > CurrentPageIndex + 1)
+    //             {
+    //                 history[CurrentPageIndex + 1] = nextValue;
+    //             }
+    //             else
+    //             {
+    //                 history.Add(nextValue);
+    //             }
+    //
+    //             if (CurrentPageIndex + 1 < steps.Count)
+    //             {
+    //                 CurrentPageIndex++;
+    //                 LoadPage(CurrentPageIndex, nextValue);
+    //             }
+    //             else
+    //             {
+    //                 completedSubject.OnNext((T)nextValue);
+    //                 completedSubject.OnCompleted();
+    //             }
+    //         })
+    //         .Subscribe();
+    // }
 
     private void LoadPage(int index, object? prev)
     {
         CurrentPage = steps[index].PageFactory(prev);
-        var canGoNextObservable = steps[index].CanGoNext(CurrentPage);
-        canGoNextSubject.OnNext(canGoNextObservable);
     }
 }

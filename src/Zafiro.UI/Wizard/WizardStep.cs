@@ -1,10 +1,10 @@
 using CSharpFunctionalExtensions;
+using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizard;
 
 public record WizardStep(
     Func<object?, object> PageFactory,
-    Func<object, Task<Result<object>>> OnNext,
-    Func<object, IObservable<bool>> CanGoNext,
+    Func<object?, IEnhancedCommand<Result<object>>>? NextCommand = null,
     string? NextText = "Next"
 );
