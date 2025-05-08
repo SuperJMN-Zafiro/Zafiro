@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
 using ReactiveUI;
-using ReactiveUI.SourceGenerators;
-using Zafiro.CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 using Zafiro.UI.Wizards;
 
@@ -20,77 +15,65 @@ public class WizardTests
     }
 
     [Fact]
-    public void Page_is_set()
+    public void Page_is_set_after_build()
     {
-        var steps = WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething)
-            .BuildSteps();
-        var zardo = new Wizard(steps.ToList());
+        var wizard = WizardBuilder
+            .StartWith(() => new MyPage(), page => page.DoSomething)
+            .Build();
 
-        Assert.NotNull(zardo.CurrentPage);
-        Assert.NotNull(zardo.CurrentPage.NextCommand);
-        Assert.NotNull(zardo.CurrentPage.Title);
-        Assert.IsType<MyPage>(zardo.CurrentPage.Content);
+        Assert.NotNull(wizard.CurrentPage);
+        Assert.NotNull(wizard.CurrentPage.NextCommand);
+        Assert.NotNull(wizard.CurrentPage.Title);
+        Assert.IsType<MyPage>(wizard.CurrentPage.Content);
     }
 
     [Fact]
     public void Page_go_next()
     {
-        var steps = WizardBuilder
+        var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething)
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
-            .BuildSteps();
+            .Build();
 
-        var zardo = new Wizard(steps.ToList());
+        wizard.NextCommand.Execute().Subscribe();
 
-        zardo.NextCommand.Execute().Subscribe();
-
-        Assert.NotNull(zardo.CurrentPage);
-        Assert.NotNull(zardo.CurrentPage.NextCommand);
-        Assert.NotNull(zardo.CurrentPage.Title);
-        Assert.IsType<MyIntPage>(zardo.CurrentPage.Content);
-    }
-}
-
-public class MyIntPage
-{
-    public MyIntPage(int number)
-    {
-        Number = number;
+        Assert.NotNull(wizard.CurrentPage);
+        Assert.NotNull(wizard.CurrentPage.NextCommand);
+        Assert.NotNull(wizard.CurrentPage.Title);
+        Assert.IsType<MyIntPage>(wizard.CurrentPage.Content);
     }
 
-    public int Number { get; }
-}
-
-public partial class Wizard : ReactiveObject
-{
-    [ObservableAsProperty] private Page currentPage;
-    [ObservableAsProperty] private IWizardStep currentStep;
-    [Reactive] private int currentStepIndex;
-    [ObservableAsProperty] private IEnhancedCommand<Result<object>> nextCommand;
-    private Stack<object> previousValues = new();
-
-    public Wizard(IList<IWizardStep> steps)
+    [Fact]
+    public void Page_failure_cannot_go_next()
     {
-        currentStepHelper = this.WhenAnyValue(wizardo => wizardo.CurrentStepIndex)
-            .Select(index => steps[index])
-            .ToProperty(this, wizardo => wizardo.CurrentStep);
+        var wizard = WizardBuilder
+            .StartWith(() => new MyPage(), _ => ReactiveCommand.Create(() => Result.Failure<int>("Error")).Enhance())
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Failure<string>("Error")).Enhance())
+            .Build();
 
-        currentPageHelper = this.WhenAnyValue(wizardo => wizardo.CurrentStep)
-            .Select(step =>
-            {
-                var param = previousValues.TryPeek(out var p) ? p : null;
-                var page = step.CreatePage(param);
-                var value = new Page(page, step.GetNextCommand(page), "Title");
-                return value;
-            })
-            .ToProperty(this, wizardo => wizardo.CurrentPage);
+        wizard.NextCommand.Execute().Subscribe();
 
-        nextCommandHelper = this.WhenAnyValue(wizard => wizard.CurrentPage.NextCommand!).ToProperty(this, x => x.NextCommand);
+        Assert.NotNull(wizard.CurrentPage);
+        Assert.NotNull(wizard.CurrentPage.NextCommand);
+        Assert.NotNull(wizard.CurrentPage.Title);
+        Assert.Equal(wizard.CurrentStepIndex, 0);
+        Assert.IsType<MyPage>(wizard.CurrentPage.Content);
+    }
 
-        NextCommand.Successes().Subscribe(value =>
-        {
-            previousValues.Push(value);
-            CurrentStepIndex++;
-        });
+    [Fact]
+    public void Page_go_next_and_back()
+    {
+        var wizard = WizardBuilder
+            .StartWith(() => new MyPage(), page => page.DoSomething)
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
+            .Build();
+
+        wizard.NextCommand.Execute().Subscribe();
+        wizard.BackCommand.Execute().Subscribe();
+
+        Assert.NotNull(wizard.CurrentPage);
+        Assert.NotNull(wizard.CurrentPage.NextCommand);
+        Assert.NotNull(wizard.CurrentPage.Title);
+        Assert.IsType<MyPage>(wizard.CurrentPage.Content);
     }
 }

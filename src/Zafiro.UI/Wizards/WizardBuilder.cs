@@ -42,6 +42,11 @@ public class WizardBuilder<TPage, TResult>
         return new WizardBuilder<TNextPage, TNextResult>(newSteps);
     }
 
+    public Wizard<TResult> Build()
+    {
+        return new Wizard<TResult>(steps.ToList());
+    }
+
     public IReadOnlyList<IWizardStep> BuildSteps()
     {
         return steps;
