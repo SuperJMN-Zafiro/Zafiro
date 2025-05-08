@@ -5,6 +5,6 @@ namespace Zafiro.UI.Wizard;
 
 public record WizardStep(
     Func<object?, object> PageFactory,
-    Func<object?, IEnhancedCommand<Result<object>>>? NextCommand = null,
+    Func<object?, IEnhancedCommand<Result<object>>>? NextCommand,
     string? NextText = "Next"
 );

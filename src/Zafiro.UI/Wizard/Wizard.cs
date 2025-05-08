@@ -35,18 +35,30 @@ public partial class Wizard<T> : ReactiveObject, IWizard<T>
             })
             .ToProperty(this, x => x.CurrentTitle);
 
-        nextTextHelper = this.WhenAnyValue(x => x.CurrentPageIndex)
+        nextTextHelper = this.WhenAnyValue(x => x.CurrentStep)
             .WhereNotNull()
-            .Select(i => this.steps[i].NextText)
+            .Select(x => x.NextText)
             .ToProperty(this, x => x.NextText);
 
+        currentStepHelper = this.WhenAnyValue(x => x.CurrentPageIndex)
+            .WhereNotNull()
+            .Select(i => this.steps[i])
+            .ToProperty(this, x => x.CurrentStep);
+
+        history.Add(null);
 
         BackCommand = EnhancedCommand.Create(ReactiveCommand.Create(OnBack, canGoBack));
-        var whenAnyObservable = this.WhenAnyValue(wizard => wizard.CurrentStep.NextCommand).WhereNotNull();
+        var whenAnyObservable =
+            this.WhenAnyValue(
+                w => w.CurrentStep.NextCommand,
+                w => w.CurrentPageIndex,
+                (func, idx) => func?.Invoke(history[idx])
+            );
 
         nextCommandHelper = whenAnyObservable.ToProperty(this, wizard => wizard.NextCommand);
 
-        history.Add(null);
+        this.WhenAnyValue(wizard => wizard.NextCommand).Subscribe(command => { });
+
         LoadPage(0, null);
     }
 
