@@ -14,28 +14,30 @@ public class WizardTests
     [Fact]
     public void Build_steps()
     {
-        var steps = WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething)
-            .BuildSteps();
-        //var zardo = new Wizardo(steps.ToList());
+        WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething).BuildSteps();
     }
 
     [Fact]
-    public void Wizard_page_is_set_initially()
+    public void Page_is_set()
     {
         var steps = WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething)
             .BuildSteps();
-        var zardo = new Wizardo(steps.ToList());
-        Assert.IsType<MyPage>(zardo.CurrentPage);
+        var zardo = new Wizard(steps.ToList());
+
+        Assert.NotNull(zardo.CurrentPage);
+        Assert.NotNull(zardo.CurrentPage.NextCommand);
+        Assert.NotNull(zardo.CurrentPage.Title);
+        Assert.IsType<MyPage>(zardo.CurrentPage.Content);
     }
 }
 
-public partial class Wizardo : ReactiveObject
+public partial class Wizard : ReactiveObject
 {
-    [ObservableAsProperty] private object currentPage;
+    [ObservableAsProperty] private Page currentPage;
     [ObservableAsProperty] private IWizardStep currentStep;
     [Reactive] private int currentStepIndex;
 
-    public Wizardo(IList<IWizardStep> steps)
+    public Wizard(IList<IWizardStep> steps)
     {
         currentStepHelper = this.WhenAnyValue(wizardo => wizardo.CurrentStepIndex)
             .Select(index => steps[index])
@@ -44,12 +46,15 @@ public partial class Wizardo : ReactiveObject
         currentPageHelper = this.WhenAnyValue(wizardo => wizardo.CurrentStep)
             .Select(step =>
             {
-                var value = step.CreatePage(null);
+                var page = step.CreatePage(null);
+                var value = new Page(page, step.GetNextCommand(page), "Title");
                 return value;
             })
             .ToProperty(this, wizardo => wizardo.CurrentPage);
     }
 }
+
+public record Page(object Content, IEnhancedCommand<Result<object>>? NextCommand, string Title);
 
 public class MyPage : ReactiveObject
 {
