@@ -2,7 +2,7 @@ using System.Reactive.Linq;
 using System.Windows.Input;
 using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizard;
+namespace Zafiro.UI.Wizards;
 
 public class CommandAdapter<TSource, TTarget> : IEnhancedCommand<TTarget>
 {

@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizard;
+namespace Zafiro.UI.Wizards;
 
 public interface IWizard
 {

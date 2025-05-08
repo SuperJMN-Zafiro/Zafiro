@@ -1,4 +1,4 @@
-namespace Zafiro.UI.Wizard;
+namespace Zafiro.UI.Wizards;
 
 public interface ITitled
 {
