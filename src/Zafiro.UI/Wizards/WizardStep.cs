@@ -32,7 +32,7 @@ public class WizardStep<TPage, TResult> : IWizardStep
 
         var typedPage = (TPage)page;
         var typedCommand = nextCommandFactory(typedPage);
-        return new CommandAdapter<Result<TResult>, Result<object>>(typedCommand, result => (object)result);
+        return new CommandAdapter<Result<TResult>, Result<object>>(typedCommand, result => result.Map(x => (object)x));
     }
 }
 

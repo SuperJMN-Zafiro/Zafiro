@@ -13,7 +13,6 @@ public class CommandAdapter<TSource, TTarget> : IEnhancedCommand<TTarget>
     {
         this.originalCommand = originalCommand;
         this.converter = converter;
-        this.CanExecuteChanged += (sender, args) => { };
     }
 
     public void Dispose()
@@ -45,7 +44,7 @@ public class CommandAdapter<TSource, TTarget> : IEnhancedCommand<TTarget>
 
     public IDisposable Subscribe(IObserver<TTarget> observer)
     {
-        return Execute().Subscribe(observer);
+        return originalCommand.Select(source => converter(source)).Subscribe(observer);
     }
 
     public IObservable<TTarget> Execute(Unit parameter)

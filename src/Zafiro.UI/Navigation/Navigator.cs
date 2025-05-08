@@ -8,19 +8,19 @@ namespace Zafiro.UI.Navigation
 {
     public class Navigator : INavigator
     {
-        private readonly IServiceProvider serviceProvider;
-        private readonly Maybe<ILogger> logger;
-        private readonly Stack<object> navigationStack = new();
-        private readonly BehaviorSubject<object?> contentSubject = new(null);
         private readonly IEnhancedCommand<Unit, Result<Unit>> back;
         private readonly BehaviorSubject<bool> canGoBackSubject = new(false);
+        private readonly BehaviorSubject<object?> contentSubject = new(null);
+        private readonly Maybe<ILogger> logger;
+        private readonly Stack<object> navigationStack = new();
+        private readonly IServiceProvider serviceProvider;
 
         public Navigator(IServiceProvider serviceProvider, Maybe<ILogger> logger)
         {
             this.serviceProvider = serviceProvider;
             this.logger = logger;
             var reactiveCommand = ReactiveCommand.CreateFromTask<Unit, Result<Unit>>(_ => GoBack(), canGoBackSubject);
-            back = EnhancedCommand.Create(reactiveCommand);
+            back = EnhancedCommand.Enhance(reactiveCommand);
         }
 
         public IObservable<object?> Content => contentSubject;
@@ -44,7 +44,7 @@ namespace Zafiro.UI.Navigation
                 return Result.Failure<Unit>(e.ToString());
             }
         }
-        
+
         public Task<Result<Unit>> Go(Type type)
         {
             return Result.Try(() => serviceProvider.GetRequiredService(type))

@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using Zafiro.CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 using Zafiro.UI.Wizards;
 
@@ -29,6 +31,34 @@ public class WizardTests
         Assert.NotNull(zardo.CurrentPage.Title);
         Assert.IsType<MyPage>(zardo.CurrentPage.Content);
     }
+
+    [Fact]
+    public void Page_go_next()
+    {
+        var steps = WizardBuilder
+            .StartWith(() => new MyPage(), page => page.DoSomething)
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
+            .BuildSteps();
+
+        var zardo = new Wizard(steps.ToList());
+
+        zardo.NextCommand.Execute().Subscribe();
+
+        Assert.NotNull(zardo.CurrentPage);
+        Assert.NotNull(zardo.CurrentPage.NextCommand);
+        Assert.NotNull(zardo.CurrentPage.Title);
+        Assert.IsType<MyIntPage>(zardo.CurrentPage.Content);
+    }
+}
+
+public class MyIntPage
+{
+    public MyIntPage(int number)
+    {
+        Number = number;
+    }
+
+    public int Number { get; }
 }
 
 public partial class Wizard : ReactiveObject
@@ -36,6 +66,8 @@ public partial class Wizard : ReactiveObject
     [ObservableAsProperty] private Page currentPage;
     [ObservableAsProperty] private IWizardStep currentStep;
     [Reactive] private int currentStepIndex;
+    [ObservableAsProperty] private IEnhancedCommand<Result<object>> nextCommand;
+    private Stack<object> previousValues = new();
 
     public Wizard(IList<IWizardStep> steps)
     {
@@ -46,22 +78,19 @@ public partial class Wizard : ReactiveObject
         currentPageHelper = this.WhenAnyValue(wizardo => wizardo.CurrentStep)
             .Select(step =>
             {
-                var page = step.CreatePage(null);
+                var param = previousValues.TryPeek(out var p) ? p : null;
+                var page = step.CreatePage(param);
                 var value = new Page(page, step.GetNextCommand(page), "Title");
                 return value;
             })
             .ToProperty(this, wizardo => wizardo.CurrentPage);
+
+        nextCommandHelper = this.WhenAnyValue(wizard => wizard.CurrentPage.NextCommand!).ToProperty(this, x => x.NextCommand);
+
+        NextCommand.Successes().Subscribe(value =>
+        {
+            previousValues.Push(value);
+            CurrentStepIndex++;
+        });
     }
-}
-
-public record Page(object Content, IEnhancedCommand<Result<object>>? NextCommand, string Title);
-
-public class MyPage : ReactiveObject
-{
-    public MyPage()
-    {
-        DoSomething = EnhancedCommand.Create(ReactiveCommand.Create(() => Result.Success(1234)));
-    }
-
-    public EnhancedCommand<Result<int>> DoSomething { get; }
 }

@@ -4,17 +4,17 @@ namespace Zafiro.UI.Commands;
 
 public static class EnhancedCommand
 {
-    public static IEnhancedCommand<T, Q> Create<T, Q>(this ReactiveCommandBase<T, Q> reactiveCommand)
+    public static IEnhancedCommand<T, Q> Enhance<T, Q>(this ReactiveCommandBase<T, Q> reactiveCommand)
     {
         return new EnhancedCommand<T, Q>(reactiveCommand);
     }
 
-    public static EnhancedCommand<T> Create<T>(this ReactiveCommandBase<Unit, T> reactiveCommand)
+    public static EnhancedCommand<T> Enhance<T>(this ReactiveCommandBase<Unit, T> reactiveCommand)
     {
         return new EnhancedCommand<T>(reactiveCommand);
     }
 
-    public static IEnhancedUnitCommand Create(this ReactiveCommandBase<Unit, Unit> reactiveCommand)
+    public static IEnhancedUnitCommand Enhance(this ReactiveCommandBase<Unit, Unit> reactiveCommand)
     {
         return new EnhancedUnitCommand(reactiveCommand);
     }
