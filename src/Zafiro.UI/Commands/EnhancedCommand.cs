@@ -4,45 +4,52 @@ namespace Zafiro.UI.Commands;
 
 public static class EnhancedCommand
 {
-    public static IEnhancedCommand<T, Q> Enhance<T, Q>(this ReactiveCommandBase<T, Q> reactiveCommand)
+    public static EnhancedCommand<T> Enhance<T>(this IEnhancedCommand<T> enhancedCommand, string? text = null, string? name = null, IObservable<bool>? canExecute = null)
     {
-        return new EnhancedCommand<T, Q>(reactiveCommand);
+        return new EnhancedCommand<T>(ReactiveCommand.CreateFromObservable(enhancedCommand.Execute, canExecute ?? ((IReactiveCommand)enhancedCommand).CanExecute), text ?? enhancedCommand.Text, name ?? enhancedCommand.Name);
     }
 
-    public static EnhancedCommand<T> Enhance<T>(this ReactiveCommandBase<Unit, T> reactiveCommand)
+    public static IEnhancedCommand<T, Q> Enhance<T, Q>(this ReactiveCommandBase<T, Q> reactiveCommand, string? text = null, string? name = null)
     {
-        return new EnhancedCommand<T>(reactiveCommand);
+        return new EnhancedCommand<T, Q>(reactiveCommand, text, name);
     }
 
-    public static IEnhancedUnitCommand Enhance(this ReactiveCommandBase<Unit, Unit> reactiveCommand)
+    public static EnhancedCommand<T> Enhance<T>(this ReactiveCommandBase<Unit, T> reactiveCommand, string? text = null, string? name = null)
     {
-        return new EnhancedUnitCommand(reactiveCommand);
+        return new EnhancedCommand<T>(reactiveCommand, text, name);
+    }
+
+    public static IEnhancedUnitCommand Enhance(this ReactiveCommandBase<Unit, Unit> reactiveCommand, string? text = null, string? name = null)
+    {
+        return new EnhancedUnitCommand(reactiveCommand, text, name);
     }
 }
 
 public class EnhancedUnitCommand : EnhancedCommand<Unit, Unit>, IEnhancedCommand<Unit>, IEnhancedUnitCommand
 {
-    public EnhancedUnitCommand(ReactiveCommandBase<Unit, Unit> reactiveCommandBase) : base(reactiveCommandBase)
+    public EnhancedUnitCommand(ReactiveCommandBase<Unit, Unit> reactiveCommandBase, string? text = null, string? name = null) : base(reactiveCommandBase)
     {
     }
 }
 
 public class EnhancedCommand<T> : EnhancedCommand<Unit, T>, IEnhancedCommand<T>
 {
-    public EnhancedCommand(ReactiveCommandBase<Unit, T> reactiveCommandBase) : base(reactiveCommandBase)
+    public EnhancedCommand(ReactiveCommandBase<Unit, T> reactiveCommandBase, string? text = null, string? name = null) : base(reactiveCommandBase, text, name)
     {
     }
 }
 
-public class EnhancedCommand<TParam, TResult> : IEnhancedCommand<TParam, TResult>
+public class EnhancedCommand<TParam, TResult> : ReactiveObject, IEnhancedCommand<TParam, TResult>
 {
     private readonly ICommand command;
     private readonly ReactiveCommandBase<TParam, TResult> reactiveCommand;
 
-    public EnhancedCommand(ReactiveCommandBase<TParam, TResult> reactiveCommandBase)
+    public EnhancedCommand(ReactiveCommandBase<TParam, TResult> reactiveCommandBase, string? text = null, string? name = null)
     {
         command = reactiveCommandBase;
         reactiveCommand = reactiveCommandBase;
+        Name = name;
+        Text = text;
     }
 
     bool ICommand.CanExecute(object? parameter) => command.CanExecute(parameter);
@@ -71,4 +78,7 @@ public class EnhancedCommand<TParam, TResult> : IEnhancedCommand<TParam, TResult
     {
         reactiveCommand.Dispose();
     }
+
+    public string? Name { get; }
+    public string? Text { get; }
 }

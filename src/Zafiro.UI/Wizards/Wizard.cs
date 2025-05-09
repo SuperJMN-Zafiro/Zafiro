@@ -10,7 +10,7 @@ namespace Zafiro.UI.Wizards;
 
 public partial class Wizard<TResult> : ReactiveObject, INewWizard<TResult>
 {
-    private readonly Subject<TResult> finished = new();
+    private readonly ReplaySubject<TResult> finished = new();
     private readonly Stack<object> previousValues = new();
     [ObservableAsProperty] private IPage currentPage;
     [ObservableAsProperty] private (int, IWizardStep) currentStep;
@@ -34,13 +34,18 @@ public partial class Wizard<TResult> : ReactiveObject, INewWizard<TResult>
             {
                 var param = previousValues.TryPeek(out var p) ? p : null;
                 var page = step.Item2.CreatePage(param);
-                var finalNext = ReactiveCommand.CreateFromObservable(() => step.Item2.GetNextCommand(page)!.Execute(), canGoNext).Enhance();
+
+                var command = step.Item2.GetNextCommand(page);
+                var canExecute = canGoNext.CombineLatest(((IReactiveCommand)command).CanExecute, (a, b) => a && b);
+                var finalCommand = command.Enhance(canExecute: canExecute);
+                var finalNext = finalCommand;
                 var value = new Page(step.Item1, page, finalNext, "Title");
                 return value;
             })
             .ToProperty(this, w => w.CurrentTypedPage);
 
         typedNextHelper = this.WhenAnyValue(wizard => wizard.CurrentTypedPage.NextCommand!)
+            .Select(command => command)
             .ToProperty(this, x => x.TypedNext);
 
         this.WhenAnyValue(wizard => wizard.TypedNext)
@@ -66,10 +71,12 @@ public partial class Wizard<TResult> : ReactiveObject, INewWizard<TResult>
             }, this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0))
             .Enhance();
 
+        this.WhenAnyValue(wizard => wizard.Next).Subscribe(command => { });
+
         nextHelper = this.WhenAnyValue(x => x.TypedNext, command => new CommandAdapter<Result<object>, Unit>(command, _ => Unit.Default))
             .ToProperty(this, x => x.Next);
 
-        currentPageHelper = this.WhenAnyValue<Wizard<TResult>, IPage, Page>(x => x.CurrentTypedPage, page => page).ToProperty(this, wizard => wizard.CurrentTypedPage);
+        currentPageHelper = this.WhenAnyValue<Wizard<TResult>, IPage, Page>(x => x.CurrentTypedPage, page => page).ToProperty(this, wizard => wizard.CurrentPage);
     }
 
     public IObservable<TResult> Finished => finished.AsObservable();

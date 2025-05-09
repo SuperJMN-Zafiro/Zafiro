@@ -3,8 +3,13 @@ using System.Windows.Input;
 namespace Zafiro.UI.Commands;
 
 public interface IEnhancedCommand :
+    IReactiveObject,
     ICommand,
-    IReactiveCommand;
+    IReactiveCommand
+{
+    public string? Name { get; }
+    public string? Text { get; }
+}
 
 public interface IEnhancedUnitCommand : IReactiveCommand<Unit, Unit>, IEnhancedCommand;
 

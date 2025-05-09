@@ -4,15 +4,16 @@ using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards;
 
-public class CommandAdapter<TSource, TTarget> : IEnhancedCommand<TTarget>
+public class CommandAdapter<TSource, TTarget> : ReactiveObject, IEnhancedCommand<TTarget>
 {
     private readonly Func<TSource, TTarget> converter;
     private readonly IEnhancedCommand<TSource> originalCommand;
 
-    public CommandAdapter(IEnhancedCommand<TSource> originalCommand, Func<TSource, TTarget> converter)
+    public CommandAdapter(IEnhancedCommand<TSource> originalCommand, Func<TSource, TTarget> converter, string? name = "")
     {
         this.originalCommand = originalCommand;
         this.converter = converter;
+        Name = originalCommand.Name == "" ? name : originalCommand.Name;
     }
 
     public void Dispose()
@@ -56,4 +57,7 @@ public class CommandAdapter<TSource, TTarget> : IEnhancedCommand<TTarget>
     {
         return originalCommand.Execute().Select(converter);
     }
+
+    public string? Name { get; }
+    public string? Text => originalCommand.Text;
 }
