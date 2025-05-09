@@ -3,7 +3,6 @@ using System.Reactive.Subjects;
 using CSharpFunctionalExtensions;
 using ReactiveUI.SourceGenerators;
 using Zafiro.CSharpFunctionalExtensions;
-using Zafiro.Reactive;
 using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards;
@@ -27,7 +26,7 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             .Select(index => (index, steps[index]))
             .ToProperty(this, w => w.CurrentStep);
 
-        var hasFinished = finishedSubject.Any().Not().StartWith(true);
+        var hasFinished = finishedSubject.Any().StartWith(false);
 
         currentTypedPageHelper = this.WhenAnyValue<SlimWizard<TResult>, (int, IWizardStep)>(w => w.CurrentStep)
             .Select(step =>
@@ -68,8 +67,6 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             }, canGoBack)
             .Enhance();
 
-        this.WhenAnyValue(wizard => wizard.Next).Subscribe(command => { });
-
         nextHelper = this.WhenAnyValue(x => x.TypedNext, command => new CommandAdapter<Result<object>, Unit>(command, _ => Unit.Default))
             .ToProperty(this, x => x.Next);
 
@@ -80,10 +77,10 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
     public IEnhancedCommand Back { get; }
     public int TotalPages { get; }
 
-    private static EnhancedCommand<Result<object>> CreateNextCommand((int, IWizardStep) step, object page, IObservable<bool> canGoNext)
+    private static EnhancedCommand<Result<object>> CreateNextCommand((int, IWizardStep) step, object page, IObservable<bool> hasFinished)
     {
         var command = step.Item2.GetNextCommand(page);
-        var canExecute = canGoNext.CombineLatest(((IReactiveCommand)command).CanExecute, (a, b) => a && b);
+        var canExecute = hasFinished.CombineLatest(((IReactiveCommand)command).CanExecute, (finished, canExecute) => !finished && canExecute);
         var finalCommand = command.Enhance(canExecute: canExecute);
         var finalNext = finalCommand;
         return finalNext;

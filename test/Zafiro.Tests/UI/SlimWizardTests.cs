@@ -13,14 +13,14 @@ public class SlimWizardTests
     [Fact]
     public void Build_steps()
     {
-        WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething).BuildSteps();
+        WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething, "").BuildSteps();
     }
 
     [Fact]
     public void Page_is_set_after_build()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), page => page.DoSomething)
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Build();
 
         Assert.NotNull(wizard.CurrentPage);
@@ -32,8 +32,8 @@ public class SlimWizardTests
     public void Go_next_sets_correct_page()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), page => page.DoSomething)
-            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
             .Build();
 
         wizard.Next.TryExecute();
@@ -47,8 +47,8 @@ public class SlimWizardTests
     public void Finished_wizard_should_stay_on_final_page_on_multiple_next()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), page => page.DoSomething)
-            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
             .Build();
 
         // Tries to go next, but nothing should happen
@@ -64,8 +64,8 @@ public class SlimWizardTests
     public void Finished_wizard_should_notify_result()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), page => page.DoSomething)
-            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("Finished!")).Enhance())
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("Finished!")).Enhance(), "")
             .Build();
 
         var result = "";
@@ -80,8 +80,8 @@ public class SlimWizardTests
     public void Finished_wizard_cannot_go_next()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), page => page.DoSomething)
-            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
             .Build();
 
         wizard.Next.TryExecute();
@@ -94,8 +94,8 @@ public class SlimWizardTests
     public void Initial_page_cannot_go_back()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), page => page.DoSomething)
-            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
             .Build();
 
         Observable.Return(Unit.Default).InvokeCommand(wizard.Back);
@@ -107,8 +107,8 @@ public class SlimWizardTests
     public void Page_failure_cannot_go_next()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), _ => ReactiveCommand.Create(() => Result.Failure<int>("Error")).Enhance())
-            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Failure<string>("Error")).Enhance())
+            .StartWith(() => new MyPage(), _ => ReactiveCommand.Create(() => Result.Failure<int>("Error")).Enhance(), "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Failure<string>("Error")).Enhance(), "")
             .Build();
 
         wizard.Next.TryExecute();
@@ -123,8 +123,8 @@ public class SlimWizardTests
     public void Page_go_next_and_back()
     {
         var wizard = WizardBuilder
-            .StartWith(() => new MyPage(), page => page.DoSomething)
-            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
             .Build();
 
         wizard.Next.TryExecute();
