@@ -11,14 +11,17 @@ public class WizardStep<TPage, TResult> : IWizardStep
     public WizardStep(
         Func<object?, TPage> pageFactory,
         Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommandFactory,
+        string title,
         string nextText)
     {
         this.pageFactory = pageFactory;
         this.nextCommandFactory = nextCommandFactory;
+        Title = title;
         NextText = nextText;
     }
 
     public string NextText { get; }
+    public string Title { get; }
 
     public object CreatePage(object? previousResult)
     {
@@ -39,6 +42,7 @@ public class WizardStep<TPage, TResult> : IWizardStep
 public interface IWizardStep
 {
     string NextText { get; }
+    string Title { get; }
     object CreatePage(object? previousResult);
     IEnhancedCommand<Result<object>>? GetNextCommand(object page);
 }

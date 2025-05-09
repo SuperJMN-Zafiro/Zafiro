@@ -8,7 +8,7 @@ using Zafiro.UI.Wizards;
 
 namespace Zafiro.Tests.UI;
 
-public class WizardTests
+public class SlimWizardTests
 {
     [Fact]
     public void Build_steps()

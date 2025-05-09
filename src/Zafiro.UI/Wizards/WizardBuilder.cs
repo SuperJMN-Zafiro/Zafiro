@@ -7,12 +7,14 @@ public static class WizardBuilder
 {
     public static WizardBuilder<TPage, TResult> StartWith<TPage, TResult>(
         Func<TPage> pageFactory,
-        Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommand = null,
+        Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommand,
+        string title,
         string nextText = "Next")
     {
         var step = new WizardStep<TPage, TResult>(
             _ => pageFactory(),
             nextCommand,
+            title,
             nextText);
 
         return new WizardBuilder<TPage, TResult>(new[] { step });
@@ -30,21 +32,23 @@ public class WizardBuilder<TPage, TResult>
 
     public WizardBuilder<TNextPage, TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
-        Func<TNextPage, IEnhancedCommand<Result<TNextResult>>>? nextCommand = null,
+        Func<TNextPage, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
+        string title,
         string nextText = "Next")
     {
         var step = new WizardStep<TNextPage, TNextResult>(
             prev => pageFactory((TResult)prev!),
             nextCommand,
+            title,
             nextText);
 
-        var newSteps = steps.Concat(new[] { step });
+        var newSteps = steps.Append(step);
         return new WizardBuilder<TNextPage, TNextResult>(newSteps);
     }
 
-    public Wizard<TResult> Build()
+    public SlimWizard<TResult> Build()
     {
-        return new Wizard<TResult>(steps.ToList());
+        return new SlimWizard<TResult>(steps.ToList());
     }
 
     public IReadOnlyList<IWizardStep> BuildSteps()

@@ -2,7 +2,7 @@ using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards;
 
-public interface INewWizard
+public interface ISlimWizard
 {
     IEnhancedCommand Next { get; }
     IEnhancedCommand Back { get; }
@@ -10,7 +10,7 @@ public interface INewWizard
     int TotalPages { get; }
 }
 
-public interface INewWizard<out T> : INewWizard
+public interface ISlimWizard<out T> : ISlimWizard
 {
     IObservable<T> Finished { get; }
 }
