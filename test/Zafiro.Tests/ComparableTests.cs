@@ -8,7 +8,7 @@
         [InlineData(-2, -5, -2)]
         public void Max(int a, int b, int expected)
         {
-            ComparableExtensions.Max(a, b).Should().Be(expected);
+            a.Max(b).Should().Be(expected);
         }
 
         [Theory]
@@ -17,7 +17,7 @@
         [InlineData(-2, -5, -5)]
         public void Min(int a, int b, int expected)
         {
-            ComparableExtensions.Min(a, b).Should().Be(expected);
+            a.Min(b).Should().Be(expected);
         }
 
         [Theory]
@@ -27,7 +27,7 @@
         [InlineData(6, 4, false)]
         public void LessThan(int a, int b, bool expected)
         {
-            ComparableExtensions.LessThan(a, b).Should().Be(expected);
+            a.LessThan(b).Should().Be(expected);
         }
 
         [Theory]
@@ -37,7 +37,7 @@
         [InlineData(6, 4, false)]
         public void LessThanOrEqual(int a, int b, bool expected)
         {
-            ComparableExtensions.LessThanOrEqual(a, b).Should().Be(expected);
+            a.LessThanOrEqual(b).Should().Be(expected);
         }
 
         [Theory]
@@ -47,7 +47,7 @@
         [InlineData(6, 4, true)]
         public void GreaterThan(int a, int b, bool expected)
         {
-            ComparableExtensions.GreaterThan(a, b).Should().Be(expected);
+            a.GreaterThan(b).Should().Be(expected);
         }
 
         [Theory]
@@ -57,7 +57,7 @@
         [InlineData(6, 4, true)]
         public void GreaterThanOrEqual(int a, int b, bool expected)
         {
-            ComparableExtensions.GreaterThanOrEqual(a, b).Should().Be(expected);
+            a.GreaterThanOrEqual(b).Should().Be(expected);
         }
     }
 }

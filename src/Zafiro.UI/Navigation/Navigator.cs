@@ -20,7 +20,7 @@ namespace Zafiro.UI.Navigation
             this.serviceProvider = serviceProvider;
             this.logger = logger;
             var reactiveCommand = ReactiveCommand.CreateFromTask<Unit, Result<Unit>>(_ => GoBack(), canGoBackSubject);
-            back = EnhancedCommand.Enhance(reactiveCommand);
+            back = reactiveCommand.Enhance();
         }
 
         public IObservable<object?> Content => contentSubject;
