@@ -8,39 +8,42 @@ using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards;
 
-public partial class Wizard<TResult> : ReactiveObject
+public partial class Wizard<TResult> : ReactiveObject, INewWizard<TResult>
 {
     private readonly Subject<TResult> finished = new();
     private readonly Stack<object> previousValues = new();
-    [ObservableAsProperty] private Page currentPage;
-    [ObservableAsProperty] private IWizardStep currentStep;
+    [ObservableAsProperty] private IPage currentPage;
+    [ObservableAsProperty] private (int, IWizardStep) currentStep;
     [Reactive] private int currentStepIndex;
-    [ObservableAsProperty] private IEnhancedCommand<Result<object>> nextCommand;
+    [ObservableAsProperty] private Page currentTypedPage;
+    [ObservableAsProperty] private IEnhancedCommand next;
+    [ObservableAsProperty] private IEnhancedCommand<Result<object>> typedNext;
 
     public Wizard(IList<IWizardStep> steps)
     {
+        TotalPages = steps.Count;
+
         currentStepHelper = this.WhenAnyValue(w => w.CurrentStepIndex)
-            .Select(index => steps[index])
+            .Select(index => (index, steps[index]))
             .ToProperty(this, w => w.CurrentStep);
 
         var canGoNext = finished.Any().Not().StartWith(true);
 
-        currentPageHelper = this.WhenAnyValue<Wizard<TResult>, IWizardStep>(w => w.CurrentStep)
+        currentTypedPageHelper = this.WhenAnyValue<Wizard<TResult>, (int, IWizardStep)>(w => w.CurrentStep)
             .Select(step =>
             {
                 var param = previousValues.TryPeek(out var p) ? p : null;
-                var page = step.CreatePage(param);
-                var finalNext = ReactiveCommand.CreateFromObservable(() => step.GetNextCommand(page)!.Execute(), canGoNext).Enhance();
-                var value = new Page(page, finalNext, "Title");
+                var page = step.Item2.CreatePage(param);
+                var finalNext = ReactiveCommand.CreateFromObservable(() => step.Item2.GetNextCommand(page)!.Execute(), canGoNext).Enhance();
+                var value = new Page(step.Item1, page, finalNext, "Title");
                 return value;
             })
-            .ToProperty(this, w => w.CurrentPage);
+            .ToProperty(this, w => w.CurrentTypedPage);
 
-        nextCommandHelper = this.WhenAnyValue(wizard => wizard.CurrentPage.NextCommand!).ToProperty(this, x => x.NextCommand);
+        typedNextHelper = this.WhenAnyValue(wizard => wizard.CurrentTypedPage.NextCommand!)
+            .ToProperty(this, x => x.TypedNext);
 
-        NextCommand.Subscribe(result => { });
-
-        this.WhenAnyValue(wizard => wizard.NextCommand)
+        this.WhenAnyValue(wizard => wizard.TypedNext)
             .Switch()
             .Successes()
             .Subscribe(value =>
@@ -56,12 +59,20 @@ public partial class Wizard<TResult> : ReactiveObject
                 }
             });
 
-        BackCommand = ReactiveCommand.Create(() =>
-        {
-            previousValues.Pop();
-            return CurrentStepIndex--;
-        }, this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0));
+        Back = ReactiveCommand.Create(() =>
+            {
+                previousValues.Pop();
+                CurrentStepIndex--;
+            }, this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0))
+            .Enhance();
+
+        nextHelper = this.WhenAnyValue(x => x.TypedNext, command => new CommandAdapter<Result<object>, Unit>(command, _ => Unit.Default))
+            .ToProperty(this, x => x.Next);
+
+        currentPageHelper = this.WhenAnyValue<Wizard<TResult>, IPage, Page>(x => x.CurrentTypedPage, page => page).ToProperty(this, wizard => wizard.CurrentTypedPage);
     }
 
-    public ReactiveCommand<Unit, int> BackCommand { get; set; }
+    public IObservable<TResult> Finished => finished.AsObservable();
+    public IEnhancedCommand Back { get; }
+    public int TotalPages { get; }
 }

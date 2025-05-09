@@ -24,7 +24,6 @@ public class WizardTests
             .Build();
 
         Assert.NotNull(wizard.CurrentPage);
-        Assert.NotNull(wizard.CurrentPage.NextCommand);
         Assert.NotNull(wizard.CurrentPage.Title);
         Assert.IsType<MyPage>(wizard.CurrentPage.Content);
     }
@@ -37,10 +36,9 @@ public class WizardTests
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
             .Build();
 
-        wizard.NextCommand.TryExecute().Subscribe();
+        wizard.Next.TryExecute();
 
         Assert.NotNull(wizard.CurrentPage);
-        Assert.NotNull(wizard.CurrentPage.NextCommand);
         Assert.NotNull(wizard.CurrentPage.Title);
         Assert.IsType<MyIntPage>(wizard.CurrentPage.Content);
     }
@@ -53,13 +51,29 @@ public class WizardTests
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
             .Build();
 
-        // Tries to go next, but nothing changes
-        wizard.NextCommand.TryExecute().Subscribe();
-        wizard.NextCommand.TryExecute().Subscribe();
-        wizard.NextCommand.TryExecute().Subscribe();
-        wizard.NextCommand.TryExecute().Subscribe();
+        // Tries to go next, but nothing should happen
+        wizard.Next.TryExecute();
+        wizard.Next.TryExecute();
+        wizard.Next.TryExecute();
+        wizard.Next.TryExecute();
 
         Assert.Equal(wizard.CurrentStepIndex, 1);
+    }
+
+    [Fact]
+    public void Finished_wizard_should_notify_result()
+    {
+        var wizard = WizardBuilder
+            .StartWith(() => new MyPage(), page => page.DoSomething)
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("Finished!")).Enhance())
+            .Build();
+
+        var result = "";
+        wizard.Finished.Subscribe(value => result = value);
+        wizard.Next.TryExecute();
+        wizard.Next.TryExecute();
+
+        Assert.Equal("Finished!", result);
     }
 
     [Fact]
@@ -70,8 +84,8 @@ public class WizardTests
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
             .Build();
 
-        wizard.NextCommand.TryExecute().Subscribe();
-        wizard.NextCommand.TryExecute().Subscribe();
+        wizard.Next.TryExecute();
+        wizard.Next.TryExecute();
 
         Assert.Equal(1, wizard.CurrentStepIndex);
     }
@@ -84,7 +98,7 @@ public class WizardTests
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
             .Build();
 
-        Observable.Return(Unit.Default).InvokeCommand(wizard.BackCommand);
+        Observable.Return(Unit.Default).InvokeCommand(wizard.Back);
 
         Assert.Equal(wizard.CurrentStepIndex, 0);
     }
@@ -97,10 +111,9 @@ public class WizardTests
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Failure<string>("Error")).Enhance())
             .Build();
 
-        wizard.NextCommand.TryExecute().Subscribe();
+        wizard.Next.TryExecute();
 
         Assert.NotNull(wizard.CurrentPage);
-        Assert.NotNull(wizard.CurrentPage.NextCommand);
         Assert.NotNull(wizard.CurrentPage.Title);
         Assert.Equal(wizard.CurrentStepIndex, 0);
         Assert.IsType<MyPage>(wizard.CurrentPage.Content);
@@ -114,11 +127,10 @@ public class WizardTests
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance())
             .Build();
 
-        wizard.NextCommand.TryExecute().Subscribe();
-        wizard.BackCommand.TryExecute().Subscribe();
+        wizard.Next.TryExecute();
+        wizard.Back.TryExecute();
 
         Assert.NotNull(wizard.CurrentPage);
-        Assert.NotNull(wizard.CurrentPage.NextCommand);
         Assert.NotNull(wizard.CurrentPage.Title);
         Assert.IsType<MyPage>(wizard.CurrentPage.Content);
     }
@@ -126,18 +138,8 @@ public class WizardTests
 
 public static class ReactiveCommandExtensions
 {
-    public static IObservable<TResult> TryExecute<TParam, TResult>(
-        this IReactiveCommand<TParam, TResult> command,
-        TParam parameter = default)
-    {
-        return command
-            .CanExecute // observable de habilitación
-            .Take(1) // sólo el primer valor
-            .Where(isEnabled => isEnabled)
-            .SelectMany(_ => command.Execute(parameter));
-    }
-
-    public static IDisposable TryExecute2(this IEnhancedCommand command)
+    public static IDisposable TryExecute(
+        this IEnhancedCommand command)
     {
         return Observable.Return(Unit.Default).InvokeCommand(command);
     }
