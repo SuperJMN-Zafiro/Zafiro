@@ -22,19 +22,19 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
     {
         TotalPages = steps.Count;
 
-        currentStepHelper = this.WhenAnyValue<SlimWizard<TResult>, int>(w => w.CurrentStepIndex)
+        currentStepHelper = this.WhenAnyValue(w => w.CurrentStepIndex)
             .Select(index => (index, steps[index]))
             .ToProperty(this, w => w.CurrentStep);
 
         var hasFinished = finishedSubject.Any().StartWith(false);
 
-        currentTypedPageHelper = this.WhenAnyValue<SlimWizard<TResult>, (int, IWizardStep)>(w => w.CurrentStep)
+        currentTypedPageHelper = this.WhenAnyValue<SlimWizard<TResult>, (int Id, IWizardStep Step)>(w => w.CurrentStep)
             .Select(step =>
             {
                 var param = previousValues.TryPeek(out var p) ? p : null;
-                var page = step.Item2.CreatePage(param);
+                var page = step.Step.CreatePage(param);
                 var finalNext = CreateNextCommand(step, page, hasFinished);
-                var value = new Page(step.Item1, page, finalNext, step.Item2.NextText);
+                var value = new Page(step.Id, page, finalNext, step.Step.Title);
                 return value;
             })
             .ToProperty(this, w => w.CurrentTypedPage);
@@ -48,7 +48,7 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             .Successes()
             .Subscribe(value =>
             {
-                if (CurrentStepIndex == steps.Count - 1)
+                if (CurrentStepIndex == TotalPages - 1)
                 {
                     finishedSubject.OnNext((TResult)value);
                 }
@@ -59,7 +59,7 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
                 }
             });
 
-        var canGoBack = this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0).CombineLatest<bool, bool, bool>(hasFinished, (validIndex, finished) => validIndex && !finished);
+        var canGoBack = this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0).CombineLatest(hasFinished, (validIndex, finished) => validIndex && !finished);
         Back = ReactiveCommand.Create(() =>
             {
                 previousValues.Pop();
