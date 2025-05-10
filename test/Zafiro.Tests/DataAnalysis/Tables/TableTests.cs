@@ -1,9 +1,7 @@
 using System;
-using HeatmapPoC;
 using Zafiro.Tables;
-using Zafiro.Tests.DataAnalysis;
 
-namespace Zafiro.Tests.Tables;
+namespace Zafiro.Tests.DataAnalysis.Tables;
 
 public class TableTests
 {
@@ -14,7 +12,7 @@ public class TableTests
         var val = bidim.Get("Café Americano", "12-14");
         val.Should().Be(20);
     }
-    
+
     [Fact]
     public void Get_row_distances()
     {

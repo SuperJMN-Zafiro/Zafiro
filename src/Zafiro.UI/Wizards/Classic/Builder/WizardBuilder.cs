@@ -1,4 +1,4 @@
-namespace Zafiro.UI.Wizards;
+namespace Zafiro.UI.Wizards.Classic.Builder;
 
 public static class WizardBuilder
 {
@@ -36,7 +36,7 @@ public class WizardBuilder<TCurrent> where TCurrent : IStep
     public IWizard<TResult> FinishWith<TResult>(Func<TCurrent, TResult> resultFactory)
     {
         return new Wizard<TResult>(
-            steps, 
+            steps,
             last => resultFactory((TCurrent)last)
         );
     }

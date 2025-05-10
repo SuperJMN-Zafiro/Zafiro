@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.UI.Wizards;
+namespace Zafiro.UI.Wizards.Classic.Builder;
 
 public interface IStep : IValidatable, IBusy
 {

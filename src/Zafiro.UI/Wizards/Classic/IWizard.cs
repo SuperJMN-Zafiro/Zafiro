@@ -1,6 +1,7 @@
 using Zafiro.UI.Commands;
+using Zafiro.UI.Wizards.Classic.Builder;
 
-namespace Zafiro.UI.Wizards;
+namespace Zafiro.UI.Wizards.Classic;
 
 public interface IWizard
 {
