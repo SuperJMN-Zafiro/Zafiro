@@ -1,8 +1,7 @@
 using System.Reactive.Linq;
 using System.Windows.Input;
-using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizards;
+namespace Zafiro.UI.Commands;
 
 public class CommandAdapter<TSource, TTarget> : ReactiveObject, IEnhancedCommand<TTarget>
 {

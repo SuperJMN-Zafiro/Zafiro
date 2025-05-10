@@ -5,7 +5,7 @@ using ReactiveUI.SourceGenerators;
 using Zafiro.CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizards;
+namespace Zafiro.UI.Wizards.Slim;
 
 public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
 {
@@ -22,7 +22,7 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
     {
         TotalPages = steps.Count;
 
-        currentStepHelper = this.WhenAnyValue(w => w.CurrentStepIndex)
+        currentStepHelper = this.WhenAnyValue<SlimWizard<TResult>, int>(w => w.CurrentStepIndex)
             .Select(index => (index, steps[index]))
             .ToProperty(this, w => w.CurrentStep);
 
@@ -39,11 +39,11 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             })
             .ToProperty(this, w => w.CurrentTypedPage);
 
-        typedNextHelper = this.WhenAnyValue(wizard => wizard.CurrentTypedPage.NextCommand!)
+        typedNextHelper = this.WhenAnyValue<SlimWizard<TResult>, IEnhancedCommand<Result<object>>>(wizard => wizard.CurrentTypedPage.NextCommand!)
             .Select(command => command)
             .ToProperty(this, x => x.TypedNext);
 
-        this.WhenAnyValue(wizard => wizard.TypedNext)
+        this.WhenAnyValue<SlimWizard<TResult>, IEnhancedCommand<Result<object>>>(wizard => wizard.TypedNext)
             .Switch()
             .Successes()
             .Subscribe(value =>
@@ -59,7 +59,7 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
                 }
             });
 
-        var canGoBack = this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0).CombineLatest(hasFinished, (validIndex, finished) => validIndex && !finished);
+        var canGoBack = this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0).CombineLatest<bool, bool, bool>(hasFinished, (validIndex, finished) => validIndex && !finished);
         Back = ReactiveCommand.Create(() =>
             {
                 previousValues.Pop();
@@ -67,8 +67,8 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             }, canGoBack)
             .Enhance();
 
-        nextHelper = this.WhenAnyValue(x => x.TypedNext, command => new CommandAdapter<Result<object>, Unit>(command, _ => Unit.Default))
-            .ToProperty(this, x => x.Next);
+        nextHelper = this.WhenAnyValue<SlimWizard<TResult>, CommandAdapter<Result<object>, Unit>, IEnhancedCommand<Result<object>>>(x => x.TypedNext, command => new CommandAdapter<Result<object>, Unit>(command, _ => Unit.Default))
+            .ToProperty<SlimWizard<TResult>, IEnhancedCommand>(this, x => x.Next);
 
         currentPageHelper = this.WhenAnyValue<SlimWizard<TResult>, IPage, Page>(x => x.CurrentTypedPage, page => page).ToProperty(this, wizard => wizard.CurrentPage);
     }

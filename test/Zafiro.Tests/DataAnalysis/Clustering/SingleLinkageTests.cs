@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using HeatmapPoC;
 using Zafiro.DataAnalysis.Clustering;
 using Zafiro.Tables;
 
@@ -11,17 +10,18 @@ public class SingleLinkageTests
     public void Test()
     {
         var sut = new SingleLinkageClusteringStrategy<string>();
-        IList<Cluster<string>> myClusters = [
-            new Leaf<string>("A"), 
+        IList<Cluster<string>> myClusters =
+        [
+            new Leaf<string>("A"),
             new Leaf<string>("B"),
             new Leaf<string>("C")
         ];
 
         var doubles = new double[,]
         {
-            {0, 3, 5},
-            {3, 0, 2},
-            {5, 2, 0},
+            { 0, 3, 5 },
+            { 3, 0, 2 },
+            { 5, 2, 0 },
         };
 
         var actual = sut.Clusterize(myClusters, new Table<Cluster<string>, double>(doubles, myClusters));

@@ -1,7 +1,7 @@
 using System.Text;
 using Zafiro.DataAnalysis.Clustering;
 
-namespace HeatmapPoC;
+namespace Zafiro.Tests.DataAnalysis.Clustering;
 
 public static class TestingHelpers
 {

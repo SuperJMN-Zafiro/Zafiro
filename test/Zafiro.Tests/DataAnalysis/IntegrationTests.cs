@@ -1,8 +1,7 @@
 using Zafiro.DataAnalysis;
 using Zafiro.DataAnalysis.Clustering;
-using Zafiro.Tests.DataAnalysis;
 
-namespace Zafiro.Tests.Tables;
+namespace Zafiro.Tests.DataAnalysis;
 
 public class IntegrationTests
 {

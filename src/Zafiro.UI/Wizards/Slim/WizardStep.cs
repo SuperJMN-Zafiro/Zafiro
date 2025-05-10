@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizards;
+namespace Zafiro.UI.Wizards.Slim;
 
 public class WizardStep<TPage, TResult> : IWizardStep
 {
@@ -37,12 +37,4 @@ public class WizardStep<TPage, TResult> : IWizardStep
         var typedCommand = nextCommandFactory(typedPage);
         return new CommandAdapter<Result<TResult>, Result<object>>(typedCommand, result => result.Map(x => (object)x));
     }
-}
-
-public interface IWizardStep
-{
-    string NextText { get; }
-    string Title { get; }
-    object CreatePage(object? previousResult);
-    IEnhancedCommand<Result<object>>? GetNextCommand(object page);
 }

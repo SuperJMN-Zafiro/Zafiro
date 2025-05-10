@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
 using ReactiveUI;
 using Zafiro.UI.Commands;
-using Zafiro.UI.Wizards;
+using Zafiro.UI.Wizards.Slim;
 
 namespace Zafiro.Tests.UI;
 

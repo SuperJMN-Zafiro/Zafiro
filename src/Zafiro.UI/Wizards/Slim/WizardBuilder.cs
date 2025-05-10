@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizards;
+namespace Zafiro.UI.Wizards.Slim;
 
 public static class WizardBuilder
 {
