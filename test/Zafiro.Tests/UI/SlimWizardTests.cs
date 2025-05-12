@@ -16,7 +16,7 @@ public class SlimWizardTests
     {
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
-            .Commit();
+            .WithCommitFinalStep();
 
         Assert.NotNull(wizard.CurrentPage);
         Assert.NotNull(wizard.CurrentPage.Title);
@@ -29,7 +29,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Commit();
+            .WithCommitFinalStep();
 
         wizard.Next.TryExecute();
 
@@ -44,7 +44,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Commit();
+            .WithCommitFinalStep();
 
         // Tries to go next, but nothing should happen
         wizard.Next.TryExecute();
@@ -61,7 +61,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("Finished!")).Enhance(), "")
-            .Commit();
+            .WithCommitFinalStep();
 
         var result = "";
         wizard.Finished.Subscribe(value => result = value);
@@ -77,7 +77,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Commit();
+            .WithCommitFinalStep();
 
         wizard.Next.TryExecute();
         wizard.Next.TryExecute();
@@ -91,7 +91,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Commit();
+            .WithCommitFinalStep();
 
         Observable.Return(Unit.Default).InvokeCommand(wizard.Back);
 
@@ -104,7 +104,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), _ => ReactiveCommand.Create(() => Result.Failure<int>("Error")).Enhance(), "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Failure<string>("Error")).Enhance(), "")
-            .Commit();
+            .WithCommitFinalStep();
 
         wizard.Next.TryExecute();
 
@@ -120,7 +120,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Commit();
+            .WithCommitFinalStep();
 
         wizard.Next.TryExecute();
         wizard.Back.TryExecute();
@@ -136,7 +136,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Completion();
+            .WithCompletionFinalStep();
 
         wizard.Next.TryExecute();
         wizard.Back.TryExecute();
