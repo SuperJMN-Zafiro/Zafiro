@@ -1,14 +1,13 @@
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizards.Slim;
+namespace Zafiro.UI.Wizards.Slim.Builder;
 
-public class WizardStep<TPage, TResult>(
-    StepKind kind,
+public class WizardStepDef<TPage, TResult>(
     Func<object?, TPage> pageFactory,
     Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommandFactory,
     string title)
-    : IWizardStep
+    : IWizardStepDef
 {
     public string Title { get; } = title;
 
@@ -26,6 +25,4 @@ public class WizardStep<TPage, TResult>(
         var typedCommand = nextCommandFactory(typedPage);
         return new CommandAdapter<Result<TResult>, Result<object>>(typedCommand, result => result.Map(x => (object)x));
     }
-
-    public StepKind Kind { get; } = kind;
 }

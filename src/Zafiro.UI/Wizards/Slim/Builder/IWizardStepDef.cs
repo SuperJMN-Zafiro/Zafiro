@@ -1,19 +1,11 @@
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
-namespace Zafiro.UI.Wizards.Slim;
+namespace Zafiro.UI.Wizards.Slim.Builder;
 
-public interface IWizardStep
+public interface IWizardStepDef
 {
     string Title { get; }
     object CreatePage(object? previousResult);
     IEnhancedCommand<Result<object>>? GetNextCommand(object page);
-    StepKind Kind { get; }
-}
-
-public enum StepKind
-{
-    Normal,
-    Commit,
-    Completion,
 }
