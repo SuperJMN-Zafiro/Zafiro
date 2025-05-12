@@ -11,12 +11,6 @@ namespace Zafiro.Tests.UI;
 public class SlimWizardTests
 {
     [Fact]
-    public void Build_steps()
-    {
-        WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething, "").BuildSteps();
-    }
-
-    [Fact]
     public void Page_is_set_after_build()
     {
         var wizard = WizardBuilder

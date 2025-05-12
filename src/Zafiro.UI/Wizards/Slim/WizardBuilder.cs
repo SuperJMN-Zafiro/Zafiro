@@ -5,23 +5,21 @@ namespace Zafiro.UI.Wizards.Slim;
 
 public static class WizardBuilder
 {
-    public static WizardBuilder<TPage, TResult> StartWith<TPage, TResult>(
+    public static WizardBuilder<TResult> StartWith<TPage, TResult>(
         Func<TPage> pageFactory,
         Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommand,
-        string title,
-        string nextText = "Next")
+        string title)
     {
         var step = new WizardStep<TPage, TResult>(
             _ => pageFactory(),
             nextCommand,
-            title,
-            nextText);
+            title);
 
-        return new WizardBuilder<TPage, TResult>(new[] { step });
+        return new WizardBuilder<TResult>(new[] { step });
     }
 }
 
-public class WizardBuilder<TPage, TResult>
+public class WizardBuilder<TResult>
 {
     private readonly IReadOnlyList<IWizardStep> steps;
 
@@ -30,29 +28,22 @@ public class WizardBuilder<TPage, TResult>
         this.steps = steps.ToList();
     }
 
-    public WizardBuilder<TNextPage, TNextResult> Then<TNextPage, TNextResult>(
+    public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
-        string title,
-        string nextText = "Next")
+        string title)
     {
         var step = new WizardStep<TNextPage, TNextResult>(
             prev => pageFactory((TResult)prev!),
             nextCommand,
-            title,
-            nextText);
+            title);
 
         var newSteps = steps.Append(step);
-        return new WizardBuilder<TNextPage, TNextResult>(newSteps);
+        return new WizardBuilder<TNextResult>(newSteps);
     }
 
     public SlimWizard<TResult> Build()
     {
         return new SlimWizard<TResult>(steps.ToList());
-    }
-
-    public IReadOnlyList<IWizardStep> BuildSteps()
-    {
-        return steps;
     }
 }

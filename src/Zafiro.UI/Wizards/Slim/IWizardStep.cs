@@ -5,7 +5,6 @@ namespace Zafiro.UI.Wizards.Slim;
 
 public interface IWizardStep
 {
-    string NextText { get; }
     string Title { get; }
     object CreatePage(object? previousResult);
     IEnhancedCommand<Result<object>>? GetNextCommand(object page);

@@ -3,25 +3,13 @@ using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards.Slim;
 
-public class WizardStep<TPage, TResult> : IWizardStep
+public class WizardStep<TPage, TResult>(
+    Func<object?, TPage> pageFactory,
+    Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommandFactory,
+    string title)
+    : IWizardStep
 {
-    private readonly Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommandFactory;
-    private readonly Func<object?, TPage> pageFactory;
-
-    public WizardStep(
-        Func<object?, TPage> pageFactory,
-        Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommandFactory,
-        string title,
-        string nextText)
-    {
-        this.pageFactory = pageFactory;
-        this.nextCommandFactory = nextCommandFactory;
-        Title = title;
-        NextText = nextText;
-    }
-
-    public string NextText { get; }
-    public string Title { get; }
+    public string Title { get; } = title;
 
     public object CreatePage(object? previousResult)
     {
