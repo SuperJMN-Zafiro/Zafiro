@@ -5,23 +5,18 @@ using CSharpFunctionalExtensions;
 using ReactiveUI;
 using Zafiro.UI.Commands;
 using Zafiro.UI.Wizards.Slim;
+using Zafiro.UI.Wizards.Slim.Builder;
 
 namespace Zafiro.Tests.UI;
 
 public class SlimWizardTests
 {
     [Fact]
-    public void Build_steps()
-    {
-        WizardBuilder.StartWith(() => new MyPage(), page => page.DoSomething, "").BuildSteps();
-    }
-
-    [Fact]
     public void Page_is_set_after_build()
     {
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
-            .Build();
+            .Commit();
 
         Assert.NotNull(wizard.CurrentPage);
         Assert.NotNull(wizard.CurrentPage.Title);
@@ -34,7 +29,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Build();
+            .Commit();
 
         wizard.Next.TryExecute();
 
@@ -49,7 +44,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Build();
+            .Commit();
 
         // Tries to go next, but nothing should happen
         wizard.Next.TryExecute();
@@ -66,7 +61,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("Finished!")).Enhance(), "")
-            .Build();
+            .Commit();
 
         var result = "";
         wizard.Finished.Subscribe(value => result = value);
@@ -82,7 +77,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Build();
+            .Commit();
 
         wizard.Next.TryExecute();
         wizard.Next.TryExecute();
@@ -96,7 +91,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Build();
+            .Commit();
 
         Observable.Return(Unit.Default).InvokeCommand(wizard.Back);
 
@@ -109,7 +104,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), _ => ReactiveCommand.Create(() => Result.Failure<int>("Error")).Enhance(), "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Failure<string>("Error")).Enhance(), "")
-            .Build();
+            .Commit();
 
         wizard.Next.TryExecute();
 
@@ -125,7 +120,7 @@ public class SlimWizardTests
         var wizard = WizardBuilder
             .StartWith(() => new MyPage(), page => page.DoSomething, "")
             .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
-            .Build();
+            .Commit();
 
         wizard.Next.TryExecute();
         wizard.Back.TryExecute();
@@ -133,6 +128,22 @@ public class SlimWizardTests
         Assert.NotNull(wizard.CurrentPage);
         Assert.NotNull(wizard.CurrentPage.Title);
         Assert.IsType<MyPage>(wizard.CurrentPage.Content);
+    }
+    
+    [Fact]
+    public void Page_completion_cannot_go_back()
+    {
+        var wizard = WizardBuilder
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
+            .Completion();
+
+        wizard.Next.TryExecute();
+        wizard.Back.TryExecute();
+
+        Assert.NotNull(wizard.CurrentPage);
+        Assert.NotNull(wizard.CurrentPage.Title);
+        Assert.IsType<MyIntPage>(wizard.CurrentPage.Content);
     }
 }
 
