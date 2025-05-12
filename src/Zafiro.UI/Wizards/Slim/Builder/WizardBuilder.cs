@@ -37,23 +37,25 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
         return new WizardBuilder<TNextResult>(newSteps);
     }
 
-    public SlimWizard<TResult> Commit()
+    public SlimWizard<TResult> WithCommitFinalStep()
+    {
+        return BuildWizard(StepKind.Commit);
+    }
+
+    public SlimWizard<TResult> WithCompletionFinalStep()
+    {
+        return BuildWizard(StepKind.Completion);
+    }
+
+    private SlimWizard<TResult> BuildWizard(StepKind lastStepKind)
     {
         List<IStepDefinition> normal = steps[..^1];
         IStepDefinition lastStep = steps[^1];
-        
-        var normalSteps = normal.Select(IWizardStep (def) => new CustomWizardStep(StepKind.Normal, def.Title, def.CreatePage, def.GetNextCommand));
-        var allSteps = normalSteps.Append(new CustomWizardStep(StepKind.Commit, lastStep.Title, lastStep.CreatePage, lastStep.GetNextCommand));
-        return new SlimWizard<TResult>(allSteps.ToList());
-    }
     
-    public SlimWizard<TResult> Completion()
-    {
-        List<IStepDefinition> normal = steps[..^1];
-        IStepDefinition lastStep = steps[^1];
-        
-        var normalSteps = normal.Select(IWizardStep (def) => new CustomWizardStep(StepKind.Normal, def.Title, def.CreatePage, def.GetNextCommand));
-        var allSteps = normalSteps.Append(new CustomWizardStep(StepKind.Completion, lastStep.Title, lastStep.CreatePage, lastStep.GetNextCommand));
-        return new SlimWizard<TResult>(allSteps.ToList());
+        var normalSteps = normal.Select(def => new WizardStep(StepKind.Normal, def.Title, def.CreatePage, def.GetNextCommand));
+        var allSteps = normalSteps.Append(new WizardStep(lastStepKind, lastStep.Title, lastStep.CreatePage, lastStep.GetNextCommand));
+    
+        return new SlimWizard<TResult>(allSteps.Cast<IWizardStep>().ToList());
     }
+
 }

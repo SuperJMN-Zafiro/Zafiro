@@ -10,10 +10,3 @@ public interface IWizardStep
     IEnhancedCommand<Result<object>>? GetNextCommand(object page);
     StepKind Kind { get; }
 }
-
-public enum StepKind
-{
-    Normal,
-    Commit,
-    Completion,
-}
