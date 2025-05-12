@@ -12,7 +12,7 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
     private readonly ReplaySubject<TResult> finishedSubject = new();
     private readonly Stack<object> previousValues = new();
     [ObservableAsProperty] private IPage currentPage;
-    [ObservableAsProperty] private (int, IWizardStep) currentStep;
+    [ObservableAsProperty] private (int Index, IWizardStep Step) currentStep;
     [Reactive] private int currentStepIndex;
     [ObservableAsProperty] private Page currentTypedPage;
     [ObservableAsProperty] private IEnhancedCommand next;
@@ -59,7 +59,17 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
                 }
             });
 
-        var canGoBack = this.WhenAnyValue(wizard => wizard.CurrentStepIndex, i => i > 0).CombineLatest(hasFinished, (validIndex, finished) => validIndex && !finished);
+        var canGoBack = this.WhenAnyValue(wizard => wizard.CurrentStep, s =>
+            {
+                if (s.Index == TotalPages - 1)
+                {
+                    return s.Step.Kind != StepKind.Completion; 
+                }
+
+                return s.Index > 0;
+            })
+            .CombineLatest(hasFinished, (validIndex, finished) => validIndex && !finished);
+        
         Back = ReactiveCommand.Create(() =>
             {
                 previousValues.Pop();

@@ -129,6 +129,22 @@ public class SlimWizardTests
         Assert.NotNull(wizard.CurrentPage.Title);
         Assert.IsType<MyPage>(wizard.CurrentPage.Content);
     }
+    
+    [Fact]
+    public void Page_completion_cannot_go_back()
+    {
+        var wizard = WizardBuilder
+            .StartWith(() => new MyPage(), page => page.DoSomething, "")
+            .Then(i => new MyIntPage(i), _ => ReactiveCommand.Create(() => Result.Success("")).Enhance(), "")
+            .Completion();
+
+        wizard.Next.TryExecute();
+        wizard.Back.TryExecute();
+
+        Assert.NotNull(wizard.CurrentPage);
+        Assert.NotNull(wizard.CurrentPage.Title);
+        Assert.IsType<MyIntPage>(wizard.CurrentPage.Content);
+    }
 }
 
 public static class ReactiveCommandExtensions
