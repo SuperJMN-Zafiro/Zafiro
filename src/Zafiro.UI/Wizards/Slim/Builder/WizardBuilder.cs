@@ -10,7 +10,7 @@ public static class WizardBuilder
         Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommand,
         string title)
     {
-        var step = new WizardStepDef<TPage, TResult>(
+        var step = new StepDefinition<TPage, TResult>(
             _ => pageFactory(),
             nextCommand,
             title);
@@ -19,21 +19,16 @@ public static class WizardBuilder
     }
 }
 
-public class WizardBuilder<TResult>
+public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
 {
-    private readonly List<IWizardStepDef> steps;
-
-    public WizardBuilder(IEnumerable<IWizardStepDef> steps)
-    {
-        this.steps = steps.ToList();
-    }
+    private readonly List<IStepDefinition> steps = steps.ToList();
 
     public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
         string title)
     {
-        var step = new WizardStepDef<TNextPage, TNextResult>(
+        var step = new StepDefinition<TNextPage, TNextResult>(
             prev => pageFactory((TResult)prev!),
             nextCommand,
             title);
@@ -44,8 +39,8 @@ public class WizardBuilder<TResult>
 
     public SlimWizard<TResult> Commit()
     {
-        List<IWizardStepDef> normal = steps[..^1];
-        IWizardStepDef lastStep = steps[^1];
+        List<IStepDefinition> normal = steps[..^1];
+        IStepDefinition lastStep = steps[^1];
         
         var normalSteps = normal.Select(IWizardStep (def) => new CustomWizardStep(StepKind.Normal, def.Title, def.CreatePage, def.GetNextCommand));
         var allSteps = normalSteps.Append(new CustomWizardStep(StepKind.Commit, lastStep.Title, lastStep.CreatePage, lastStep.GetNextCommand));
@@ -54,8 +49,8 @@ public class WizardBuilder<TResult>
     
     public SlimWizard<TResult> Completion()
     {
-        List<IWizardStepDef> normal = steps[..^1];
-        IWizardStepDef lastStep = steps[^1];
+        List<IStepDefinition> normal = steps[..^1];
+        IStepDefinition lastStep = steps[^1];
         
         var normalSteps = normal.Select(IWizardStep (def) => new CustomWizardStep(StepKind.Normal, def.Title, def.CreatePage, def.GetNextCommand));
         var allSteps = normalSteps.Append(new CustomWizardStep(StepKind.Completion, lastStep.Title, lastStep.CreatePage, lastStep.GetNextCommand));

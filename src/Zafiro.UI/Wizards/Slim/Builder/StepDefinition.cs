@@ -3,11 +3,11 @@ using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards.Slim.Builder;
 
-public class WizardStepDef<TPage, TResult>(
+public class StepDefinition<TPage, TResult>(
     Func<object?, TPage> pageFactory,
     Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommandFactory,
     string title)
-    : IWizardStepDef
+    : IStepDefinition
 {
     public string Title { get; } = title;
 
