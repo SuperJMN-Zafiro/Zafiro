@@ -326,4 +326,33 @@ public static class FunctionalMixin
     {
         (await result.ConfigureAwait(false)).Log(logger ?? Serilog.Log.Logger, successString);
     }
+    
+    /// <summary>
+    /// Returns the result of the task or, if the specified time elapses without completion,
+    /// a failed Result indicating timeout.
+    /// </summary>
+    /// <typeparam name="T">Type of value wrapped in Result.</typeparam>
+    /// <param name="task">Task that produces a Result&lt;T&gt;.</param>
+    /// <param name="timeout">
+    /// Maximum wait time. If null, no limit is applied.
+    /// </param>
+    /// <param name="message">
+    /// Custom error message used when timeout occurs. Defaults to "Operation timed out".
+    /// </param>
+    public static async Task<Result<T>> WithTimeout<T>(
+        this Task<Result<T>> task,
+        TimeSpan timeout, string? message = "Operation timed out")
+    {
+        // Start parallel delay
+        var delay = Task.Delay(timeout);
+
+        // Wait for the first one to finish
+        var finished = await Task.WhenAny(task, delay).ConfigureAwait(false);
+
+        if (finished == task)
+            return await task.ConfigureAwait(false);
+
+        // Timeout was reached
+        return Result.Failure<T>(message);
+    }
 }
