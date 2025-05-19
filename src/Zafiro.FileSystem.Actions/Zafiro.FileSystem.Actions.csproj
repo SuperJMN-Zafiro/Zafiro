@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -7,7 +7,7 @@
     </PropertyGroup>
     <Import Project="..\Common.props" />
     <ItemGroup>
-        <PackageReference Include="CSharpFunctionalExtensions.FluentAssertions" Version="2.0.0" />
+        <PackageReference Include="CSharpFunctionalExtensions.FluentAssertions" />
     </ItemGroup>
 
     <ItemGroup>

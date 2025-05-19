@@ -4,7 +4,7 @@ using CSharpFunctionalExtensions;
 
 namespace Zafiro;
 
-public class Username : ValueObject
+public class Username : ValueObject, IComparable
 {
     public Username(CaseInsensitiveString identifier)
     {
@@ -27,5 +27,10 @@ public class Username : ValueObject
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return Identifier;
+    }
+
+    public int CompareTo(object? obj)
+    {
+        return Identifier.CompareTo(obj);   
     }
 }
