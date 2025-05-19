@@ -1,17 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-    <Import Project="..\Common.props"/>
+    <Import Project="..\Common.props" />
     <ItemGroup>
-        <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.0"/>
-        <PackageReference Include="Refit" Version="7.2.22"/>
-        <PackageReference Include="System.Reactive" Version="6.0.0"/>
+        <PackageReference Include="CSharpFunctionalExtensions" />
+        <PackageReference Include="Refit" />
+        <PackageReference Include="System.Reactive" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\Zafiro.FilesSystem.SeaweedFS.Filer.Client\Zafiro.FileSystem.SeaweedFS.Filer.Client.csproj"/>
-        <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj"/>
+        <ProjectReference Include="..\Zafiro.FilesSystem.SeaweedFS.Filer.Client\Zafiro.FileSystem.SeaweedFS.Filer.Client.csproj" />
+        <ProjectReference Include="..\Zafiro.FileSystem\Zafiro.FileSystem.csproj" />
     </ItemGroup>
 </Project>
