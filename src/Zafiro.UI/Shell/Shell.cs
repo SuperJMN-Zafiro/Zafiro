@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using ReactiveUI.SourceGenerators;
+﻿using ReactiveUI.SourceGenerators;
 using Zafiro.UI.Navigation.Sections;
 
 namespace Zafiro.UI.Shell;
@@ -11,14 +10,13 @@ public partial class Shell : ReactiveObject, IShell
     public Shell(IEnumerable<ISection> sections)
     {
         Sections = sections;
-        CurrentContent = this.WhenAnyValue(x => x.SelectedSection)
-            .WhereNotNull()
-            .Select(section => section.GetViewModel());
+        CurrentContent = this.WhenAnyObservable(x => x.SelectedSection.Content);
         SelectedSection = Sections.OfType<IContentSection>().FirstOrDefault();
     }
 
-    public IEnumerable<ISection> Sections { get; }
     public IObservable<object?> CurrentContent { get; }
+
+    public IEnumerable<ISection> Sections { get; }
 
     public void GoToSection(string sectionName)
     {
