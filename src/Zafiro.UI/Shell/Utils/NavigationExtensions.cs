@@ -1,6 +1,5 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Zafiro.Avalonia;
 using Zafiro.UI.Navigation;
 
 namespace Zafiro.UI.Shell.Utils;

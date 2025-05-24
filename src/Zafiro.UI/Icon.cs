@@ -1,6 +1,6 @@
 using ReactiveUI.SourceGenerators;
 
-namespace Zafiro.Avalonia;
+namespace Zafiro.UI;
 
 public partial class Icon : ReactiveObject
 {
