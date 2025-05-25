@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using System.Windows.Input;
 using Zafiro.UI.Navigation.Sections;
 
@@ -9,10 +10,10 @@ public class SectionsBuilder(IServiceProvider provider)
 
     private static ISection CreateSection<T>(string name, IServiceProvider provider, object? icon = null, bool isPrimary = true) where T : notnull
     {
-        IContentSection contentSection = Section.Content(name, () => new SectionScope(provider, typeof(T)), icon, isPrimary);
+        var contentSection = Section.Content(name, Observable.Defer(() => Observable.Return(new SectionScope(provider, typeof(T)))), icon, isPrimary);
         return contentSection;
     }
-    
+
     public SectionsBuilder Add<T>(string name, object? icon = null, bool isPrimary = true) where T : notnull
     {
         sections.Add(CreateSection<T>(name, provider, icon, isPrimary));
@@ -29,7 +30,7 @@ public class SectionsBuilder(IServiceProvider provider)
         sections.Add(Section.Separator(isPrimary));
         return this;
     }
-    
+
     public SectionsBuilder Command(string name, ICommand command, object? icon, bool isPrimary = true)
     {
         sections.Add(Section.Command(name, command, icon, isPrimary));
