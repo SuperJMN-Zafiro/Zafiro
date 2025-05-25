@@ -10,7 +10,7 @@ public partial class Shell : ReactiveObject, IShell
     public Shell(IEnumerable<ISection> sections)
     {
         Sections = sections;
-        CurrentContent = this.WhenAnyObservable(x => x.SelectedSection.Content);
+        CurrentContent = this.WhenAnyObservable(x => x.SelectedSection!.Content);
         SelectedSection = Sections.OfType<IContentSection>().FirstOrDefault();
     }
 
