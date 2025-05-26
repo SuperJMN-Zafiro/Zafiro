@@ -36,4 +36,10 @@ public class SectionsBuilder(IServiceProvider provider)
         sections.Add(Section.Command(name, command, icon, isPrimary));
         return this;
     }
+    
+    public SectionsBuilder Command(string name, Func<IServiceProvider, ICommand> createCommand, object? icon, bool isPrimary = true)
+    {
+        sections.Add(Section.Command(name, createCommand(provider), icon, isPrimary));
+        return this;
+    }
 }

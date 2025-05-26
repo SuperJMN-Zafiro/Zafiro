@@ -22,7 +22,7 @@ public static class NavigationExtensions
                 string sectionName = type.Name.Replace("ViewModel", "");
                 string formattedName = string.Concat(sectionName.Select(x => char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
                 var method = typeof(SectionsBuilder).GetMethod("Add")?.MakeGenericMethod(type);
-                method?.Invoke(builder, new object[] { formattedName, new Icon { IconId = icon ?? "fa-window-maximize" }, true });
+                method?.Invoke(builder, new object[] { formattedName, new Icon { Source = icon ?? "fa-window-maximize" }, true });
             }
         });
 
