@@ -1,11 +1,22 @@
+using System.Reactive.Linq;
+using System.Reflection;
+using Zafiro.UI.Navigation;
+using Zafiro.UI.Shell.Utils;
+
 namespace Zafiro.UI.Shell;
 
-public class ShellProperties
+public class ShellProperties(object header, Func<object, IObservable<object?>>? getContentHeader = null)
 {
-    public ShellProperties(object header)
-    {
-        Header = header;
-    }
+    public object Header { get; } = header;
+    public Func<object, IObservable<object?>> GetHeader { get; } = getContentHeader ?? DefaultGetContentHeader;
 
-    public object Header { get; }
+    private static IObservable<object?> DefaultGetContentHeader(object content)
+    {
+        if (content is SectionScope sectionScope)
+        {
+            return sectionScope.Navigator.Content.Select(o => o.GetType().GetCustomAttribute<SectionAttribute>().Name);
+        }
+
+        return Observable.Return<object?>(null);
+    }
 }
