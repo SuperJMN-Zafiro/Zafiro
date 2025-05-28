@@ -21,6 +21,9 @@ public static class NavigationExtensions
 
                 string sectionName = type.Name.Replace("ViewModel", "");
                 string formattedName = string.Concat(sectionName.Select(x => char.IsUpper(x) ? " " + x : x.ToString())).TrimStart(' ');
+
+                var name = viewModelType.sectionAttribute.Name ?? sectionName;
+
                 var method = typeof(SectionsBuilder).GetMethod("Add")?.MakeGenericMethod(type);
                 method?.Invoke(builder, new object[] { formattedName, new Icon { Source = icon ?? "fa-window-maximize" }, true });
             }
