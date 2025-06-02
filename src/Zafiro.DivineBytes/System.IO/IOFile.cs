@@ -1,13 +1,22 @@
 using System.IO.Abstractions;
 using CSharpFunctionalExtensions;
+using Zafiro.DivineBytes;
 
-namespace Zafiro.DivineBytes.System.IO;
+namespace MsixPackaging.Tests.Helpers;
 
-public class IOFile(IFileInfo info) : INamedByteSource
+internal class IOFile : INamedByteSource
 {
-    public IByteSource Source { get; } = ByteSource.FromStreamFactory(info.OpenRead, async () => info.Length);
+    private readonly IFileInfo fileInfo;
 
-    public string Name => info.Name;
+    public IOFile(IFileInfo info)
+    {
+        fileInfo = info;
+        Source = ByteSource.FromStreamFactory(info.OpenRead, async () => info.Length);
+    }
+
+    public IByteSource Source { get; }
+
+    public string Name => fileInfo.Name;
     public IDisposable Subscribe(IObserver<byte[]> observer)
     {
         return Source.Subscribe(observer);
