@@ -1,3 +1,3 @@
 namespace Zafiro.DivineBytes;
 
-public interface INamedByteSourceWithPath : INamedWithPath, IByteSource;
+public interface INamedByteSourceWithPath : INamedWithPath, INamedByteSource;
