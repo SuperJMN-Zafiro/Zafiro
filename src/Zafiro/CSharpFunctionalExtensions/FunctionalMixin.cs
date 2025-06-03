@@ -308,9 +308,54 @@ public static class FunctionalMixin
         return taskResult.Bind(inputs => AsyncResultExtensionsLeftOperand.Combine(inputs.Select(selector)));
     }
     
-    public static Task<Result<IEnumerable<TResult>>> Traverse<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> result, Func<TInput, Task<Result<TResult>>> transform)
+    /// <summary>
+    /// Transforms each input value using the provided transform function and combines all results with controlled concurrency.
+    /// This is equivalent to MapEach followed by Combine. All transformations must succeed for the operation to succeed.
+    /// </summary>
+    /// <typeparam name="TInput">The type of values in the input collection.</typeparam>
+    /// <typeparam name="TResult">The type of values produced by the transform function.</typeparam>
+    /// <param name="result">A task containing a Result with a collection of input values.</param>
+    /// <param name="transform">An async function that transforms each input value to a Result.</param>
+    /// <param name="scheduler">The scheduler to use for task execution. Uses Scheduler.Default if not specified.</param>
+    /// <param name="maxConcurrency">Maximum number of concurrent transformations. Defaults to 1 for sequential-like behavior.</param>
+    /// <returns>A task containing a Result with all successful transformed values, or failure if any transformation failed.</returns>
+    /// <example>
+    /// <code>
+    /// // Transform files concurrently with max 3 parallel operations
+    /// var result = await filePathsResult.Traverse(
+    ///     filePath => ProcessFileAsync(filePath), 
+    ///     maxConcurrency: 3
+    /// );
+    /// </code>
+    /// </example>
+    public static Task<Result<IEnumerable<TResult>>> Traverse<TInput, TResult>(this Task<Result<IEnumerable<TInput>>> result, Func<TInput, Task<Result<TResult>>> transform, IScheduler? scheduler = null, int maxConcurrency = 1)
     {
-        return result.MapEach(transform).Combine();
+        return result.MapEach(transform).Combine(scheduler, maxConcurrency);
+    }
+    
+    /// <summary>
+    /// Transforms each input value using the provided transform function and combines all results sequentially.
+    /// This guarantees that transformations are executed one after another in order, which is useful when order matters
+    /// or when transformations have side effects that must not overlap.
+    /// </summary>
+    /// <typeparam name="TInput">The type of values in the input collection.</typeparam>
+    /// <typeparam name="TResult">The type of values produced by the transform function.</typeparam>
+    /// <param name="result">A task containing a Result with a collection of input values.</param>
+    /// <param name="transform">An async function that transforms each input value to a Result.</param>
+    /// <returns>A task containing a Result with all successful transformed values in execution order, or failure if any transformation failed.</returns>
+    /// <example>
+    /// <code>
+    /// // Process deployment steps in strict order
+    /// var result = await deploymentStepsResult.TraverseSequentially(
+    ///     step => ExecuteDeploymentStepAsync(step)
+    /// );
+    /// </code>
+    /// </example>
+    public static Task<Result<IEnumerable<TResult>>> TraverseSequentially<TInput, TResult>(
+        this Task<Result<IEnumerable<TInput>>> result,
+        Func<TInput, Task<Result<TResult>>> transform)
+    {
+        return result.MapEach(transform).CombineSequentially();
     }
 
     public static void Log(this Result result, ILogger? logger = default, string successString = "Success")
