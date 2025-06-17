@@ -14,7 +14,7 @@ public class ShellProperties(object header, Func<object, IObservable<object?>>? 
     {
         if (content is SectionScope sectionScope)
         {
-            return sectionScope.Navigator.Content.Select(o => o.GetType().GetCustomAttribute<SectionAttribute>().Name);
+            return sectionScope.Navigator.Content.Select(o => o?.GetType().GetCustomAttribute<SectionAttribute>()?.Name);
         }
 
         return Observable.Return<object?>(null);

@@ -6,9 +6,9 @@ namespace Zafiro.UI.Navigation;
 
 public static class AddNavigation
 {
-    public static IServiceCollection RegisterSections(this IServiceCollection serviceCollection, Action<SectionsBuilder> configure)
+    public static IServiceCollection RegisterSections(this IServiceCollection serviceCollection, Action<SectionsBuilder> configure, ILogger? logger = null)
     {
-        serviceCollection.AddScoped<INavigator>(provider => new Navigator(provider, Maybe<ILogger>.None));
+        serviceCollection.AddScoped<INavigator>(provider => new Navigator(provider, logger.AsMaybe()));
 
         serviceCollection.AddSingleton<IEnumerable<ISection>>(provider =>
         {
