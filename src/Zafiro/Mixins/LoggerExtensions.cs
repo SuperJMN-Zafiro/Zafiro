@@ -8,7 +8,7 @@ public static class LoggerExtensions
     public static void Debug(this Maybe<ILogger> maybeLogger, string message, params object[] args)
         => maybeLogger.Execute(logger => logger.Debug(message, args));
 
-    public static void Info(this Maybe<ILogger> maybeLogger, string message, params object[] args)
+    public static void Information(this Maybe<ILogger> maybeLogger, string message, params object[] args)
         => maybeLogger.Execute(logger => logger.Information(message, args));
 
     public static void Warn(this Maybe<ILogger> maybeLogger, string message, params object[] args)
