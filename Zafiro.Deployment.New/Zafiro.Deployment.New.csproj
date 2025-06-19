@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="CSharpFunctionalExtensions" />
+        <PackageReference Include="CSharpFunctionalExtensions"/>
+        <PackageReference Include="DotnetPackaging.AppImage"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\Zafiro.DivineBytes\Zafiro.DivineBytes.csproj" />
+        <ProjectReference Include="..\src\Zafiro.DivineBytes\Zafiro.DivineBytes.csproj"/>
     </ItemGroup>
-
+    
 </Project>
