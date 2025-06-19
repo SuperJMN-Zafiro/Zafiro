@@ -34,7 +34,7 @@ public class Dotnet : IDotnet
                 var finalArguments = string.Join(" ", "publish", projectPath, arguments, implicitArguments);
 
                 await Command.Execute("dotnet", finalArguments);
-                return (IDirectory) new  IODir(outputDir);
+                return (IDirectory) new IODir(outputDir);
             });
     }
 

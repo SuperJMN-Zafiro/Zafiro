@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using MsixPackaging.Tests.Helpers;
 
 namespace Zafiro.DivineBytes.System.IO;
 

@@ -1,9 +1,12 @@
 using System.Diagnostics;
 using System.Text;
+using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using Serilog;
+using Zafiro.Deployment.Core;
+using Zafiro.Mixins;
 
-namespace Zafiro.Deployment.Core;
+namespace Zafiro.Deployment.New;
 
 public class Command(Maybe<ILogger> logger) : ICommand
 {
@@ -14,6 +17,9 @@ public class Command(Maybe<ILogger> logger) : ICommand
         string workingDirectory = "",
         Dictionary<string, string>? environmentVariables = null)
     {
+        // Sanitizar antes de loguear
+        LogCommandExecution(command, arguments, workingDirectory, environmentVariables);
+
         var processStartInfo = new ProcessStartInfo
         {
             FileName = command,
@@ -24,51 +30,100 @@ public class Command(Maybe<ILogger> logger) : ICommand
             UseShellExecute = false
         };
 
-        if (environmentVariables != null)
+        if (environmentVariables is not null)
         {
             foreach (var (key, value) in environmentVariables)
-            {
                 processStartInfo.Environment[key] = value;
-            }
         }
 
         using var process = new Process { StartInfo = processStartInfo };
         process.Start();
 
-        // Leer salida estándar y error de manera concurrente
         var outputTask = ReadStreamAsync(process.StandardOutput);
-        var errorTask = ReadStreamAsync(process.StandardError);
+        var errorTask  = ReadStreamAsync(process.StandardError);
 
         await Task.WhenAll(outputTask, errorTask);
         await process.WaitForExitAsync();
 
-        var output = outputTask.Result;
-        var error = errorTask.Result;
-
-        // Combina salida y error en un solo mensaje
+        var output         = outputTask.Result;
+        var error          = errorTask.Result;
         var combinedOutput = BuildCombinedLogMessage(output, error);
+        combinedOutput     = SanitizeSensitiveInfo(combinedOutput);
 
-        // Loguear de acuerdo al código de salida
         if (process.ExitCode == 0)
         {
-            Logger.Execute(l => l.Information($"Command succeeded:\n{combinedOutput}"));
+            Logger.Information("Command succeeded:\n{CombinedOutput}", combinedOutput);
             return Result.Success();
         }
-        else
+
+        Logger.Error("Command failed with exit code {ExitCode}:\n{CombinedOutput}",
+            process.ExitCode,
+            combinedOutput);
+        return Result.Failure($"Process failed with exit code {process.ExitCode}");
+    }
+
+    private void LogCommandExecution(string command,
+        string arguments,
+        string workingDirectory,
+        Dictionary<string, string>? environmentVariables)
+    {
+        var safeArgs = SanitizeSensitiveInfo(arguments);
+
+        Logger.Information(
+            "Executing command: {Command} with arguments: {Arguments} in directory: {WorkingDirectory}",
+            command,
+            safeArgs,
+            string.IsNullOrWhiteSpace(workingDirectory) ? "current" : workingDirectory
+        );
+
+        if (environmentVariables?.Count > 0)
         {
-            Logger.Execute(l => l.Error($"Command failed with exit code {process.ExitCode}:\n{combinedOutput}"));
-            return Result.Failure($"Process failed with exit code {process.ExitCode}");
+            var sanitizedEnv = environmentVariables.ToDictionary(
+                kvp => kvp.Key,
+                kvp => ContainsSensitiveKeywords(kvp.Key) || ContainsSensitiveKeywords(kvp.Value)
+                    ? "***HIDDEN***"
+                    : kvp.Value
+            );
+
+            Logger.Information("Environment variables: {@EnvironmentVariables}", sanitizedEnv);
         }
+    }
+
+    private static bool ContainsSensitiveKeywords(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return false;
+        var keywords = new[] { "password", "pass", "pwd", "key", "secret", "token", "auth" };
+        return keywords.Any(k => text.Contains(k, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string SanitizeSensitiveInfo(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input;
+
+        var patterns = new[]
+        {
+            // --password secreto
+            new Regex(@"(?<=--password\s+)\S+", RegexOptions.IgnoreCase),
+            // -p secreto
+            new Regex(@"(?<=\b-p\s+)\S+", RegexOptions.IgnoreCase),
+            // password=secreto o token:secreto
+            new Regex(@"(?<=\b(password|pass|pwd|token|secret|key)\s*[:=]\s*)\S+", RegexOptions.IgnoreCase),
+            // -p:ClaveSecreta=valor o /p:ClaveSecreta=valor
+            new Regex(@"(?<=(-p:|/p:)[^=]*\b(password|pass|pwd|token|secret|key)\b[^=]*=)\S+", RegexOptions.IgnoreCase)
+        };
+
+        foreach (var rx in patterns)
+            input = rx.Replace(input, "***HIDDEN***");
+
+        return input;
     }
 
     private static async Task<string> ReadStreamAsync(StreamReader reader)
     {
         var builder = new StringBuilder();
         while (await reader.ReadLineAsync() is { } line)
-        {
             builder.AppendLine(line);
-        }
-
         return builder.ToString();
     }
 

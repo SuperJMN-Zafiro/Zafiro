@@ -28,4 +28,10 @@
       <ProjectReference Include="..\..\Zafiro.Deployment.New\Zafiro.Deployment.New.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Integration\test.keystore">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
