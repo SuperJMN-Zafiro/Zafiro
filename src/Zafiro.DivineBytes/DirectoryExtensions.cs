@@ -2,11 +2,9 @@ namespace Zafiro.DivineBytes;
 
 public static class DirectoryExtensions
 {
-    public static IEnumerable<INamedByteSource> Files(this IDirectory directory)
-        => directory.Children.OfType<INamedByteSource>();
+    public static IEnumerable<INamedByteSource> Files(this IDirectory directory) => directory.Files;
 
-    public static IEnumerable<IDirectory> Directories(this IDirectory directory)
-        => directory.Children.OfType<IDirectory>();
+    public static IEnumerable<IDirectory> Directories(this IDirectory directory) => directory.Subdirectories;
 
     public static IEnumerable<INamedByteSource> FilesRecursive(this IDirectory directory)
         => directory.Files().Concat(directory.Directories().SelectMany(d => d.FilesRecursive()));

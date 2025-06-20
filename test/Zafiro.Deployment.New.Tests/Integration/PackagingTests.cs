@@ -14,7 +14,7 @@ using Zafiro.Deployment.New.Platforms.Windows;
 using Zafiro.DivineBytes;
 using File = System.IO.File;
 
-namespace Zafiro.Deployement.New.Tests.Integration;
+namespace Zafiro.Deployment.New.Tests.Integration;
 
 public class PackagingTests(ITestOutputHelper outputHelper)
 {

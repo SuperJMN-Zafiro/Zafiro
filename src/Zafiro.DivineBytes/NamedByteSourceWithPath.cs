@@ -1,5 +1,3 @@
-using CSharpFunctionalExtensions;
-
 namespace Zafiro.DivineBytes;
 
 public record NamedByteSourceWithPath(Path Path, INamedByteSource NamedByteSource) : INamedByteSourceWithPath
@@ -11,9 +9,4 @@ public record NamedByteSourceWithPath(Path Path, INamedByteSource NamedByteSourc
     }
 
     public IObservable<byte[]> Bytes => NamedByteSource.Bytes;
-
-    public Task<Maybe<long>> GetLength()
-    {
-        return NamedByteSource.GetLength();
-    }
 }

@@ -1,5 +1,4 @@
 using System.IO.Abstractions;
-using CSharpFunctionalExtensions;
 
 namespace Zafiro.DivineBytes.System.IO;
 
@@ -14,9 +13,4 @@ internal class IOFile(IFileInfo info) : INamedByteSource
     }
 
     public IObservable<byte[]> Bytes => Source.Bytes;
-
-    public Task<Maybe<long>> GetLength()
-    {
-        return Source.GetLength();
-    }
 }
