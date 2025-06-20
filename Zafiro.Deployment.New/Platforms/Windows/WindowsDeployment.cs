@@ -2,9 +2,10 @@ using System.Runtime.InteropServices;
 using CSharpFunctionalExtensions;
 using Serilog;
 using Zafiro.CSharpFunctionalExtensions;
+using Zafiro.Deployment.New.Core;
 using Zafiro.DivineBytes;
 
-namespace Zafiro.Deployment.New;
+namespace Zafiro.Deployment.New.Platforms.Windows;
 
 public class WindowsDeployment(IDotnet dotnet, DivineBytes.Path projectPath, WindowsDeployment.DeploymentOptions options, Maybe<ILogger> logger)
 {
