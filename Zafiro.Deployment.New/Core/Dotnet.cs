@@ -1,11 +1,10 @@
 using CSharpFunctionalExtensions;
 using Serilog;
-using Zafiro.Deployment.Core;
 using Zafiro.DivineBytes;
 using Zafiro.DivineBytes.System.IO;
 using IDirectory = Zafiro.DivineBytes.IDirectory;
 
-namespace Zafiro.Deployment.New;
+namespace Zafiro.Deployment.New.Core;
 
 public class Dotnet : IDotnet
 {
@@ -22,7 +21,7 @@ public class Dotnet : IDotnet
     public Task<Result<IDirectory>> Publish(string projectPath, string arguments = "")
     {
         return Result.Try(() => filesystem.Directory.CreateTempSubdirectory())
-            .Map(async outputDir =>
+            .Bind(outputDir =>
             {
                 IEnumerable<string[]> options =
                 [
@@ -33,8 +32,7 @@ public class Dotnet : IDotnet
 
                 var finalArguments = string.Join(" ", "publish", projectPath, arguments, implicitArguments);
 
-                await Command.Execute("dotnet", finalArguments);
-                return (IDirectory) new IODir(outputDir);
+                return Command.Execute("dotnet", finalArguments).Map(IDirectory () =>new IODir(outputDir) );
             });
     }
 

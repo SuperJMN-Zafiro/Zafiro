@@ -1,11 +1,12 @@
 using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
 using Serilog;
+using Zafiro.Deployment.New.Core;
 using Zafiro.DivineBytes;
 using File = System.IO.File;
 using Path = Zafiro.DivineBytes.Path;
 
-namespace Zafiro.Deployment.New.Platforms;
+namespace Zafiro.Deployment.New.Platforms.Android;
 
 public class AndroidDeployment(IDotnet dotnet, Path projectPath, AndroidDeployment.DeploymentOptions options, Maybe<ILogger> logger)
 {

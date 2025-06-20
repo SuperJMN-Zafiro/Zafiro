@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace Zafiro.Deployment.Core;
+namespace Zafiro.Deployment.New;
 
 public interface ICommand
 {

@@ -1,11 +1,16 @@
+using System.Reactive.Linq;
 using System.Text;
 using CSharpFunctionalExtensions;
+using DotnetPackaging;
 using FluentAssertions;
 using Serilog;
 using Xunit.Abstractions;
-using Zafiro.Deployment.Core;
+using Zafiro.CSharpFunctionalExtensions;
 using Zafiro.Deployment.New;
+using Zafiro.Deployment.New.Core;
 using Zafiro.Deployment.New.Platforms;
+using Zafiro.Deployment.New.Platforms.Android;
+using Zafiro.Deployment.New.Platforms.Windows;
 using Zafiro.DivineBytes;
 using File = System.IO.File;
 
@@ -24,7 +29,7 @@ public class PackagingTests(ITestOutputHelper outputHelper)
             PackageName = "TestApp"
         };
         
-        var result = await new SuperPackager(dotnet, Maybe<ILogger>.None)
+        var result = await new Packager(dotnet, Maybe<ILogger>.None)
             .CreateForWindows("/mnt/fast/Repos/SuperJMN-Zafiro/Zafiro.Avalonia/samples/TestApp/TestApp.Desktop/TestApp.Desktop.csproj", options);
     }
     
@@ -48,8 +53,26 @@ public class PackagingTests(ITestOutputHelper outputHelper)
         };
 
         
-        var result = await new SuperPackager(dotnet, logger)
+        var result = await new Packager(dotnet, logger)
             .CreateForAndroid("/mnt/fast/Repos/SuperJMN/angor/src/Angor/Avalonia/AngorApp.Android/AngorApp.Android.csproj", options);
+
+        result.Should().Succeed();
+    }
+    
+    [Fact]
+    public async Task Test_linux()
+    {
+        var logger = new LoggerConfiguration().WriteTo.TestOutput(outputHelper).CreateLogger();
+        var dotnet = new Dotnet(new Command(logger), logger);
+        
+        var result = await new Packager(dotnet, logger)
+            .CreateForLinux("/mnt/fast/Repos/SuperJMN/angor/src/Angor/Avalonia/AngorApp.Desktop/AngorApp.Desktop.csproj", new Options()
+            {
+                Name = "Angor",
+                Version = "1.0.0",
+            })
+            .Map(paths => paths.Select(async path => await path.DumpTo(File.Create($"/home/jmn/Escritorio/{path.Name}"))))
+            .CombineSequentially();
 
         result.Should().Succeed();
     }

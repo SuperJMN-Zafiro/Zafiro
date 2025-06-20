@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using Zafiro.DivineBytes;
 
-namespace Zafiro.Deployment.New;
+namespace Zafiro.Deployment.New.Core;
 
 public interface IDotnet
 {
