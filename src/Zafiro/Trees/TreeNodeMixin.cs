@@ -20,7 +20,7 @@ public static class TreeNodeMixin
     public static TreeNode<T, TPath> Find<T, TPath>(this IEnumerable<TreeNode<T, TPath>> nodes, Func<T, bool> selector)
     {
         return nodes
-            .Flatten(x => x.Children)
+            .FlattenTree(x => x.Children)
             .FirstOrDefault(x => selector(x.Item));
     }
 

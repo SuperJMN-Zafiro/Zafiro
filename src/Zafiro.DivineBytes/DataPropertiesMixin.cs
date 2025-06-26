@@ -1,11 +1,23 @@
 using System.Reactive.Linq;
 using System.Security.Cryptography;
+using Zafiro.Mixins;
+using Zafiro.Reactive;
 using Crc32 = System.IO.Hashing.Crc32;
 
 namespace Zafiro.DivineBytes;
 
 public static class DataPropertiesMixin
 {
+    /// <summary>
+    /// Flattens to array
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public static byte[] Array(this IObservable<byte[]> data)
+    {
+        return data.ToEnumerable().Flatten().ToArray();
+    }
+    
     public static IObservable<long> GetSize(this IObservable<byte[]> data)
     {
         return data.Sum(bytes => (long)bytes.Length);
@@ -40,6 +52,11 @@ public static class DataPropertiesMixin
     public static IObservable<long> GetSize(this IByteSource byteSource)
     {
         return byteSource.Bytes.GetSize();
+    }
+    
+    public static byte[] Array(this IByteSource byteSource)
+    {
+        return byteSource.Bytes.Array();
     }
     
     public static IObservable<byte[]> Sha256(this IByteSource byteSource)
