@@ -38,42 +38,49 @@ public struct UnixPermissions
 }
 
 // 1. Nuevas clases inmóviles: sólo datos
-public class PermissionedDirectory : IDirectory, IPermissioned
+public class UnixDirectory : IDirectory, IPermissioned, IOwned
 {
     public string Name { get; }
     public UnixPermissions Permissions { get; }
 
-    // Exponemos ya las dos colecciones tipadas (fase 1 revisitada)
-    public IEnumerable<PermissionedDirectory> Subdirectories { get; }
-    public IEnumerable<PermissionedFile> Files { get; }
+    public IEnumerable<UnixDirectory> Subdirectories { get; }
+    public IEnumerable<UnixFile> Files { get; }
 
-    // Para compatibilidad con Consumers legacy de Children
     public IEnumerable<INamed> Children 
         => Subdirectories.Cast<INamed>().Concat(Files);
 
-    internal PermissionedDirectory(
+    internal UnixDirectory(
         string name,
+        int ownerId,
         UnixPermissions permissions,
-        IEnumerable<PermissionedDirectory> subdirs,
-        IEnumerable<PermissionedFile> files)
+        IEnumerable<UnixDirectory> subdirs,
+        IEnumerable<UnixFile> files)
     {
         Name           = name;
         Permissions    = permissions;
         Subdirectories = subdirs;
         Files          = files;
     }
+
+    public int OwnerId { get; }
 }
 
-public class PermissionedFile : INamedByteSource, IPermissioned
+public interface IOwned
+{
+    public int OwnerId { get; }
+}
+
+public class UnixFile : INamedByteSource, IPermissioned, IOwned
 {
     private readonly INamedByteSource inner;
     public string Name => inner.Name;
     public UnixPermissions Permissions { get; }
 
-    public PermissionedFile(INamedByteSource inner, UnixPermissions perms)
+    public UnixFile(INamedByteSource inner, UnixPermissions perms, int ownerId)
     {
         this.inner      = inner;
         Permissions = perms;
+        OwnerId = ownerId;
     }
 
     public IObservable<byte[]> Bytes
@@ -85,39 +92,42 @@ public class PermissionedFile : INamedByteSource, IPermissioned
     {
         return inner.Subscribe(observer);
     }
+
+    public int OwnerId { get; }
 }
 
-// 2. Fábrica recursiva: aquí viven los resolvers
-public static class PermissionedTreeBuilder
+public record Metadata(UnixPermissions Permissions, int OwnerId);
+
+public interface IMetadataResolver
 {
-    public static PermissionedDirectory Build(
-        IDirectory root,
-        Func<IDirectory, UnixPermissions> dirResolver,
-        Func<INamedByteSource, UnixPermissions> fileResolver)
+    Metadata ResolveDirectory(IDirectory dir);
+    Metadata ResolveFile(INamedByteSource file);
+}
+
+public class UnixTreeBuilder
+{
+    private readonly IMetadataResolver resolver;
+
+    public UnixTreeBuilder(IMetadataResolver resolver)
+        => this.resolver = resolver;
+
+    public UnixDirectory Build(IDirectory root)
+        => BuildDirectory(root);
+
+    private UnixDirectory BuildDirectory(IDirectory dir)
     {
-        return BuildDirectory(root, dirResolver, fileResolver);
-    }
+        var md = resolver.ResolveDirectory(dir);
 
-    private static PermissionedDirectory BuildDirectory(
-        IDirectory dir,
-        Func<IDirectory, UnixPermissions> dirResolver,
-        Func<INamedByteSource, UnixPermissions> fileResolver)
-    {
-        var perms = dirResolver(dir);
+        var subdirs = dir.Subdirectories
+            .Select(BuildDirectory);
 
-        // Generamos el subárbol de directorios antes de los ficheros
-        var subdirs = dir
-            .Subdirectories
-            .Select(d => BuildDirectory(d, dirResolver, fileResolver));
+        var files = dir.Files
+            .Select(f =>
+            {
+                var fm = resolver.ResolveFile(f);
+                return new UnixFile(f, fm.Permissions, fm.OwnerId);
+            });
 
-        var files = dir
-            .Files
-            .Select(f => new PermissionedFile(f, fileResolver(f)));
-
-        return new PermissionedDirectory(
-            dir.Name,
-            perms,
-            subdirs,
-            files);
+        return new UnixDirectory(dir.Name, md.OwnerId, md.Permissions, subdirs, files);
     }
 }

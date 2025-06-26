@@ -151,9 +151,9 @@ public static class EnumerableMixin
     /// <param name="nodes">Root nodes</param>
     /// <param name="getChildren">The children selector</param>
     /// <returns></returns>
-    public static IEnumerable<T> Flatten<T>(this IEnumerable<T> nodes, Func<T, IEnumerable<T>> getChildren)
+    public static IEnumerable<T> FlattenTree<T>(this IEnumerable<T> nodes, Func<T, IEnumerable<T>> getChildren)
     {
-        return nodes.SelectMany(node => Flatten(node, getChildren));
+        return nodes.SelectMany(node => FlattenTree(node, getChildren));
     }
 
     /// <summary>
@@ -163,9 +163,9 @@ public static class EnumerableMixin
     /// <param name="node">Root node</param>
     /// <param name="getChildren">The children selector</param>
     /// <returns></returns>
-    public static IEnumerable<T> Flatten<T>(this T node, Func<T, IEnumerable<T>> getChildren)
+    public static IEnumerable<T> FlattenTree<T>(this T node, Func<T, IEnumerable<T>> getChildren)
     {
-        return new[] { node }.Concat(getChildren(node).SelectMany(x => Flatten(x, getChildren)));
+        return new[] { node }.Concat(getChildren(node).SelectMany(x => FlattenTree(x, getChildren)));
     }
 
     public static IEnumerable<bool> Not(this IEnumerable<bool> self)
