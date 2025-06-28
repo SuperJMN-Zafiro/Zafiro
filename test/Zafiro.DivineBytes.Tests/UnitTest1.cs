@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Zafiro.DivineBytes.Permissioned;
+using Zafiro.DivineBytes.Unix;
 
 namespace Zafiro.DivineBytes.Tests;
 
