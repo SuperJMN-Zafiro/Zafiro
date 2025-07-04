@@ -32,12 +32,12 @@ public static class ByteSourceUriExtensions
     /// <param name="httpClient">The HttpClient to use for the download</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
-    public static async Task<Result<IByteSource>> ToByteSourceAsync(
+    public static async Task<Result<IByteSource>> ToByteSource(
         this Uri uri, 
         HttpClient httpClient, 
         CancellationToken cancellationToken = default)
     {
-        return await ByteSourceUriFactoryMethods.FromUriAsync(uri, httpClient, cancellationToken);
+        return await ByteSourceUriFactoryMethods.FromUri(uri, httpClient, cancellationToken);
     }
 }
 
@@ -53,7 +53,7 @@ public static class StringUriExtensions
     /// <param name="contentProvider">The content provider to handle the download</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
-    public static async Task<Result<IByteSource>> ToByteSourceAsync(
+    public static async Task<Result<IByteSource>> ToByteSource(
         this string uriString, 
         IUriContentProvider contentProvider, 
         CancellationToken cancellationToken = default)
@@ -74,11 +74,11 @@ public static class StringUriExtensions
     /// <param name="httpClient">The HttpClient to use for the download</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
-    public static async Task<Result<IByteSource>> ToByteSourceAsync(
+    public static async Task<Result<IByteSource>> ToByteSource(
         this string uriString, 
         HttpClient httpClient, 
         CancellationToken cancellationToken = default)
     {
-        return await ByteSourceUriFactoryMethods.FromUriAsync(uriString, httpClient, cancellationToken);
+        return await ByteSourceUriFactoryMethods.FromUri(uriString, httpClient, cancellationToken);
     }
 }

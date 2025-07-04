@@ -16,7 +16,7 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="httpClient">The HttpClient to use for the download</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
-    public static async Task<Result<IByteSource>> FromUriAsync(
+    public static async Task<Result<IByteSource>> FromUri(
         Uri uri, 
         HttpClient httpClient, 
         CancellationToken cancellationToken = default)
@@ -33,8 +33,8 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="httpClient">The HttpClient to use for the download</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
-    public static async Task<Result<IByteSource>> FromUriAsync(
-        string uriString, 
+    public static async Task<Result<IByteSource>> FromUri(
+        this string uriString, 
         HttpClient httpClient, 
         CancellationToken cancellationToken = default)
     {
@@ -43,7 +43,7 @@ public static class ByteSourceUriFactoryMethods
             return Result.Failure<IByteSource>($"Invalid URI: {uriString}");
         }
 
-        return await FromUriAsync(uri, httpClient, cancellationToken);
+        return await FromUri(uri, httpClient, cancellationToken);
     }
 
     /// <summary>
@@ -54,8 +54,8 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="uri">The URI from which to obtain the content</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
-    public static async Task<Result<IByteSource>> FromUriAsync(
-        Uri uri, 
+    public static Task<Result<IByteSource>> FromUri(
+        this Uri uri, 
         CancellationToken cancellationToken = default)
     {
         try
@@ -63,7 +63,7 @@ public static class ByteSourceUriFactoryMethods
             // Validate the URI first
             if (uri.Scheme != "http" && uri.Scheme != "https")
             {
-                return Result.Failure<IByteSource>($"Unsupported URI scheme: {uri.Scheme}. Only HTTP and HTTPS are supported.");
+                return Task.FromResult(Result.Failure<IByteSource>($"Unsupported URI scheme: {uri.Scheme}. Only HTTP and HTTPS are supported."));
             }
 
             // Create the ByteSource using Zafiro's HttpResponseMessageStream
@@ -86,11 +86,11 @@ public static class ByteSourceUriFactoryMethods
                 }
             });
 
-            return Result.Success(byteSource);
+            return Task.FromResult(Result.Success(byteSource));
         }
         catch (Exception ex)
         {
-            return Result.Failure<IByteSource>($"Error creating ByteSource from {uri}: {ex.Message}");
+            return Task.FromResult(Result.Failure<IByteSource>($"Error creating ByteSource from {uri}: {ex.Message}"));
         }
     }
 
@@ -102,7 +102,7 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="uriString">The URI string from which to obtain the content</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
-    public static async Task<Result<IByteSource>> FromUriAsync(
+    public static async Task<Result<IByteSource>> FromUri(
         string uriString, 
         CancellationToken cancellationToken = default)
     {
@@ -111,7 +111,7 @@ public static class ByteSourceUriFactoryMethods
             return Result.Failure<IByteSource>($"Invalid URI: {uriString}");
         }
 
-        return await FromUriAsync(uri, cancellationToken);
+        return await FromUri(uri, cancellationToken);
     }
 
     /// <summary>
