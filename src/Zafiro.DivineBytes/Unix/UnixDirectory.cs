@@ -19,6 +19,7 @@ public class UnixDirectory : IDirectory, IPermissioned, IOwned
         IEnumerable<UnixFile> files)
     {
         Name           = name;
+        OwnerId = ownerId;
         Permissions    = permissions;
         Subdirectories = subdirs;
         Files          = files;

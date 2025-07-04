@@ -2,7 +2,7 @@ using System.IO.Abstractions;
 
 namespace Zafiro.DivineBytes.System.IO;
 
-internal class IOFile(IFileInfo info) : INamedByteSource
+internal class IoFile(IFileInfo info) : INamedByteSource
 {
     public IByteSource Source { get; } = ByteSource.FromStreamFactory(info.OpenRead, async () => info.Length);
 

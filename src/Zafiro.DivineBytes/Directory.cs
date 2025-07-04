@@ -11,6 +11,12 @@ public class Directory : IDirectory
         Name = name;
         Children = children.ToList();
     }
+
+    public Directory(string name, IEnumerable<INamedByteSource> files, IEnumerable<IDirectory> directories)
+    {
+        Name = name;
+        Children = files.Cast<INamed>().Concat(directories).ToList();
+    }
     
     // Método de fábrica estático que permite sintaxis fluida
     public static Directory Create(string name, params INamed[] contents)
