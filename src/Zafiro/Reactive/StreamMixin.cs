@@ -13,7 +13,7 @@ namespace Zafiro.Reactive;
 
 public static class StreamMixin
 {
-    public static IObservable<Result> DumpTo(this IObservable<byte> source, Stream output,
+    public static IObservable<Result> WriteTo(this IObservable<byte> source, Stream output,
         CancellationToken cancellationToken = default, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default,
         int bufferSize = 4096)
     {
@@ -23,10 +23,10 @@ public static class StreamMixin
         return source
             .Buffer(bufferSize)
             .Select(chunk => chunk.ToArray())
-            .DumpTo(output, chunkReadTimeout, scheduler, cancellationToken);
+            .WriteTo(output, chunkReadTimeout, scheduler, cancellationToken);
     }
 
-    public static IObservable<Result> DumpTo(this IObservable<byte[]> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, CancellationToken cancellationToken = default)
+    public static IObservable<Result> WriteTo(this IObservable<byte[]> source, Stream output, TimeSpan? chunkReadTimeout = default, IScheduler? scheduler = default, CancellationToken cancellationToken = default)
     {
         scheduler ??= Scheduler.Default;
         chunkReadTimeout ??= TimeSpan.FromDays(1);

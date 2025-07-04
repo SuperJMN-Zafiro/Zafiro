@@ -4,9 +4,9 @@ public static class Extensions
 {
     public static UnixDirectory ToUnixDirectory(
         this IDirectory dir,
-        IMetadataResolver resolver)
+        IMetadataResolver? resolver = null)
     {
-        var builder = new UnixTreeBuilder(resolver);
+        var builder = new UnixTreeBuilder(resolver ?? new DefaultMetadataResolver());
         return builder.Build(dir);
     }
 }
