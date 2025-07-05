@@ -6,20 +6,23 @@ namespace Zafiro.DivineBytes;
 /// </summary>
 public class RootContainer
 {
-    public IEnumerable<INamed> Children { get; }
+    public IEnumerable<IContainer> Subcontainers { get; }
+    public IEnumerable<INamedByteSource> Resources { get; }
 
-    public RootContainer(IEnumerable<INamed> children)
+    public RootContainer(IEnumerable<INamedByteSource> resources, IEnumerable<IContainer> subcontainers)
     {
-        Children = children.ToList();
+        Resources = resources.ToList();
+        Subcontainers = subcontainers.ToList();
     }
     
-    public RootContainer(params INamed[] children)
-        : this(children.AsEnumerable())
+    public RootContainer(params INamed[] contents)
     {
+        Resources = contents.OfType<INamedByteSource>().ToList();
+        Subcontainers = contents.OfType<IContainer>().ToList();
     }
 
     public override string ToString()
     {
-        return $"Root container ({Children.Count()} items)";
+        return $"Root container ({Resources.Count()} files, {Subcontainers.Count()} subdirs)";
     }
 }

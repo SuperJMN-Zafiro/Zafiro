@@ -8,6 +8,11 @@ public class UnixDirectory : IContainer, IPermissioned, IOwned
     public IEnumerable<UnixDirectory> Subdirectories { get; }
     public IEnumerable<UnixFile> Files { get; }
 
+    // Implement new IContainer interface
+    public IEnumerable<IContainer> Subcontainers => Subdirectories;
+    public IEnumerable<INamedByteSource> Resources => Files;
+
+    // Keep Children for backward compatibility if needed
     public IEnumerable<INamed> Children 
         => Subdirectories.Cast<INamed>().Concat(Files);
 
@@ -21,8 +26,8 @@ public class UnixDirectory : IContainer, IPermissioned, IOwned
         Name           = name;
         OwnerId = ownerId;
         Permissions    = permissions;
-        Subdirectories = subdirs;
-        Files          = files;
+        Subdirectories = subdirs.ToList();
+        Files          = files.ToList();
     }
 
     public int OwnerId { get; }

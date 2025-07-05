@@ -5,10 +5,13 @@ namespace Zafiro.DivineBytes.System.IO;
 public class IoDir(IDirectoryInfo directoryInfo) : IContainer
 {
     public string Name => directoryInfo.Name;
-    public IEnumerable<INamed> Children => directoryInfo
+    
+    // Implement new IContainer interface
+    public IEnumerable<IContainer> Subcontainers => directoryInfo
+        .GetDirectories()
+        .Select(info => new IoDir(info));
+        
+    public IEnumerable<INamedByteSource> Resources => directoryInfo
         .GetFiles()
-        .Select(info => new IoFile(info))
-        .Concat<INamed>(directoryInfo
-            .GetDirectories()
-            .Select(info => new IoDir(info)));
+        .Select(info => new IoFile(info));
 }

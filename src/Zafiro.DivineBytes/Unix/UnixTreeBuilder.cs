@@ -14,10 +14,10 @@ public class UnixTreeBuilder
     {
         var md = resolver.ResolveDirectory(dir);
 
-        var subdirs = dir.Subdirectories
+        var subdirs = dir.Subcontainers
             .Select(BuildDirectory);
 
-        var files = dir.Files
+        var files = dir.Resources
             .Select(f =>
             {
                 var fm = resolver.ResolveFile(f);

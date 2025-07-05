@@ -2,7 +2,6 @@ namespace Zafiro.DivineBytes;
 
 public interface IContainer : INamed
 {
-    public IEnumerable<INamed> Children { get; }
-    IEnumerable<IContainer> Subdirectories => Children.OfType<IContainer>();
-    IEnumerable<INamedByteSource> Files => Children.OfType<INamedByteSource>();
+    IEnumerable<IContainer> Subcontainers { get; }
+    IEnumerable<INamedByteSource> Resources { get; }
 }
