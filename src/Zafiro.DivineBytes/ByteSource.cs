@@ -108,6 +108,12 @@ public class ByteSource(IObservable<byte[]> bytes, Func<Task<Maybe<long>>>? getL
             () => Task.FromResult<Maybe<long>>(byteCount)
         );
     }
+    
+    public static IByteSource FromString(
+        string str)
+    {
+        return new ByteSource(str.ToByteStream(Encoding.UTF8));
+    }
 
     /// <summary>
     /// Creates a ByteSource from an asynchronous Stream factory.

@@ -2,7 +2,7 @@ namespace Zafiro.DivineBytes.Unix;
 
 public class DefaultMetadataResolver : IMetadataResolver
 {
-    public Metadata ResolveDirectory(IDirectory dir)
+    public Metadata ResolveDirectory(IContainer dir)
     {
         return new Metadata(Permission.All, 0);
     }

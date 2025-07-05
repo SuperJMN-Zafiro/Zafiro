@@ -2,41 +2,41 @@ namespace Zafiro.DivineBytes;
 
 public static class DirectoryExtensions
 {
-    public static IEnumerable<INamedByteSource> Files(this IDirectory directory) => directory.Files;
+    public static IEnumerable<INamedByteSource> Files(this IContainer container) => container.Files;
 
-    public static IEnumerable<IDirectory> Directories(this IDirectory directory) => directory.Subdirectories;
+    public static IEnumerable<IContainer> Directories(this IContainer container) => container.Subdirectories;
 
-    public static IEnumerable<INamedByteSource> FilesRecursive(this IDirectory directory)
-        => directory.Files().Concat(directory.Directories().SelectMany(d => d.FilesRecursive()));
+    public static IEnumerable<INamedByteSource> FilesRecursive(this IContainer container)
+        => container.Files().Concat(container.Directories().SelectMany(d => d.FilesRecursive()));
 
-    public static IEnumerable<INamedWithPath> ChildrenWithPathsRecursive(this IDirectory directory)
-        => directory.ChildrenRelativeTo(Path.Empty);
+    public static IEnumerable<INamedWithPath> ChildrenWithPathsRecursive(this IContainer container)
+        => container.ChildrenRelativeTo(Path.Empty);
 
-    public static IEnumerable<INamedByteSourceWithPath> FilesWithPathsRecursive(this IDirectory directory)
-        => directory.ChildrenRelativeTo(Path.Empty).OfType<INamedByteSourceWithPath>();
+    public static IEnumerable<INamedByteSourceWithPath> FilesWithPathsRecursive(this IContainer container)
+        => container.ChildrenRelativeTo(Path.Empty).OfType<INamedByteSourceWithPath>();
 
-    public static IEnumerable<INamedWithPath> ChildrenRelativeTo(this IDirectory directory, Path path)
+    public static IEnumerable<INamedWithPath> ChildrenRelativeTo(this IContainer container, Path path)
     {
-        var myFiles = directory.Files().Select(file => new NamedByteSourceWithPath(path, file));
-        var filesInSubDirs = directory.Directories()
+        var myFiles = container.Files().Select(file => new NamedByteSourceWithPath(path, file));
+        var filesInSubDirs = container.Directories()
             .SelectMany(d => d.ChildrenRelativeTo(path.Combine(d.Name)));
 
         return myFiles.Concat(filesInSubDirs);
     }
     
-    public static Directory Combine(string newName, IDirectory a, IDirectory b)
+    public static Container Combine(string newName, IContainer a, IContainer b)
     {
         var combinedChildren = new List<INamed>();
-        var directoriesByName = new Dictionary<string, List<IDirectory>>();
+        var directoriesByName = new Dictionary<string, List<IContainer>>();
         
         // Primero, agrupar los subdirectorios por nombre
         foreach (var child in a.Children.Concat(b.Children))
         {
-            if (child is IDirectory dir)
+            if (child is IContainer dir)
             {
                 if (!directoriesByName.ContainsKey(dir.Name))
                 {
-                    directoriesByName[dir.Name] = new List<IDirectory>();
+                    directoriesByName[dir.Name] = new List<IContainer>();
                 }
                 directoriesByName[dir.Name].Add(dir);
             }
@@ -51,7 +51,7 @@ public static class DirectoryExtensions
         foreach (var entry in directoriesByName)
         {
             string dirName = entry.Key;
-            List<IDirectory> dirs = entry.Value;
+            List<IContainer> dirs = entry.Value;
             
             if (dirs.Count == 1)
             {
@@ -73,7 +73,7 @@ public static class DirectoryExtensions
             }
         }
         
-        return new Directory(newName, combinedChildren.ToArray());
+        return new Container(newName, combinedChildren.ToArray());
     }
 
 }

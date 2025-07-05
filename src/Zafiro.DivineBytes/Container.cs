@@ -1,31 +1,31 @@
 namespace Zafiro.DivineBytes;
 
-public class Directory : IDirectory
+public class Container : IContainer
 {
     public string Name { get; }
     public IEnumerable<INamed> Children { get; }
     
     // Constructor privado para la implementación interna
-    private Directory(string name, IEnumerable<INamed> children)
+    private Container(string name, IEnumerable<INamed> children)
     {
         Name = name;
         Children = children.ToList();
     }
 
-    public Directory(string name, IEnumerable<INamedByteSource> files, IEnumerable<IDirectory> directories)
+    public Container(string name, IEnumerable<INamedByteSource> files, IEnumerable<IContainer> directories)
     {
         Name = name;
         Children = files.Cast<INamed>().Concat(directories).ToList();
     }
     
     // Método de fábrica estático que permite sintaxis fluida
-    public static Directory Create(string name, params INamed[] contents)
+    public static Container Create(string name, params INamed[] contents)
     {
-        return new Directory(name, contents);
+        return new Container(name, contents);
     }
     
     // Constructor público que permite la sintaxis sugerida
-    public Directory(string name, params INamed[] contents)
+    public Container(string name, params INamed[] contents)
     {
         Name = name;
         Children = contents.ToList();

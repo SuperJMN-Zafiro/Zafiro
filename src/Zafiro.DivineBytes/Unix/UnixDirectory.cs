@@ -1,6 +1,6 @@
 namespace Zafiro.DivineBytes.Unix;
 
-public class UnixDirectory : IDirectory, IPermissioned, IOwned
+public class UnixDirectory : IContainer, IPermissioned, IOwned
 {
     public string Name { get; }
     public UnixPermissions Permissions { get; }

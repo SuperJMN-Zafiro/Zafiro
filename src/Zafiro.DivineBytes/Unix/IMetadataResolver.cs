@@ -2,6 +2,6 @@ namespace Zafiro.DivineBytes.Unix;
 
 public interface IMetadataResolver
 {
-    Metadata ResolveDirectory(IDirectory dir);
+    Metadata ResolveDirectory(IContainer dir);
     Metadata ResolveFile(INamedByteSource file);
 }

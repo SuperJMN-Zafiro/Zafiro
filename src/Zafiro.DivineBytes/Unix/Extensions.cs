@@ -3,7 +3,7 @@ namespace Zafiro.DivineBytes.Unix;
 public static class Extensions
 {
     public static UnixDirectory ToUnixDirectory(
-        this IDirectory dir,
+        this IContainer dir,
         IMetadataResolver? resolver = null)
     {
         var builder = new UnixTreeBuilder(resolver ?? new DefaultMetadataResolver());
