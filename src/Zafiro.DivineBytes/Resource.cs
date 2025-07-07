@@ -1,6 +1,6 @@
 namespace Zafiro.DivineBytes;
 
-public class File(string name, IByteSource source) : INamedByteSource
+public class Resource(string name, IByteSource source) : INamedByteSource
 {
     public string Name => name;
 

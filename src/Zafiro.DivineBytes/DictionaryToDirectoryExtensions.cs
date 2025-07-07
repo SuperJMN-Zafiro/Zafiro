@@ -37,7 +37,7 @@ public static class DictionaryToDirectoryExtensions
                 if (pathParts.Length == 1)
                 {
                     // This is a file directly in the root
-                    var file = new File(pathParts[0], content);
+                    var file = new Resource(pathParts[0], content);
                     rootChildren.Add(file);
                 }
                 else

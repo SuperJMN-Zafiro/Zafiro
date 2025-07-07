@@ -2,74 +2,34 @@ namespace Zafiro.DivineBytes;
 
 public static class DirectoryExtensions
 {
-
-    public static IEnumerable<INamedByteSource> FilesRecursive(this INamedContainer container)
+    public static IEnumerable<INamedByteSource> FilesRecursive(this IContainer container)
         => container.Resources.Concat(container.Subcontainers.SelectMany(d => d.FilesRecursive()));
 
-    public static IEnumerable<INamedWithPath> ChildrenWithPathsRecursive(this INamedContainer container)
+    public static IEnumerable<INamedWithPath> ChildrenWithPathsRecursive(this IContainer container)
         => container.ChildrenRelativeTo(Path.Empty);
 
-    public static IEnumerable<INamedByteSourceWithPath> FilesWithPathsRecursive(this INamedContainer container)
+    public static IEnumerable<INamedByteSourceWithPath> FilesWithPathsRecursive(this IContainer container)
         => container.ChildrenRelativeTo(Path.Empty).OfType<INamedByteSourceWithPath>();
 
-    public static IEnumerable<INamedWithPath> ChildrenRelativeTo(this INamedContainer container, Path path)
+    public static IEnumerable<INamedWithPath> ChildrenRelativeTo(this IContainer container, Path path)
     {
+        // Include files as INamedByteSourceWithPath (which implements INamedWithPath)
         var myFiles = container.Resources.Select(file => new NamedByteSourceWithPath(path, file));
-        var filesInSubDirs = container.Subcontainers
-            .SelectMany(d => d.ChildrenRelativeTo(path.Combine(d.Name)));
+        
+        // Include subdirectories as INamedWithPath and recursively their children
+        var subcontainerResults = container.Subcontainers.SelectMany(subcontainer =>
+        {
+            var subcontainerPath = path.Combine(subcontainer.Name);
+            // Create a simple container wrapper for the subdirectory itself
+            var containerAsPath = new ContainerWithPath(subcontainerPath, subcontainer.Name);
+            // Return the subdirectory itself plus its children
+            return new INamedWithPath[] { containerAsPath }
+                .Concat(subcontainer.ChildrenRelativeTo(subcontainerPath));
+        });
 
-        return myFiles.Concat(filesInSubDirs);
+        return myFiles.Concat(subcontainerResults);
     }
-    
-    // public static Container Combine(string newName, IContainer a, IContainer b)
-    // {
-    //     var combinedChildren = new List<INamed>();
-    //     var directoriesByName = new Dictionary<string, List<IContainer>>();
-    //     
-    //     // Primero, agrupar los subdirectorios por nombre
-    //     foreach (var child in a.Children.Concat(b.Children))
-    //     {
-    //         if (child is IContainer dir)
-    //         {
-    //             if (!directoriesByName.ContainsKey(dir.Name))
-    //             {
-    //                 directoriesByName[dir.Name] = new List<IContainer>();
-    //             }
-    //             directoriesByName[dir.Name].Add(dir);
-    //         }
-    //         else
-    //         {
-    //             // Si es un archivo, agregarlo directamente
-    //             combinedChildren.Add(child);
-    //         }
-    //     }
-    //     
-    //     // Ahora combinar los subdirectorios con el mismo nombre
-    //     foreach (var entry in directoriesByName)
-    //     {
-    //         string dirName = entry.Key;
-    //         List<IContainer> dirs = entry.Value;
-    //         
-    //         if (dirs.Count == 1)
-    //         {
-    //             // Si solo hay un directorio con este nombre, agregarlo directamente
-    //             combinedChildren.Add(dirs[0]);
-    //         }
-    //         else
-    //         {
-    //             // If there are multiple directories with the same name, combine them recursively
-    //             var combinedDir = Combine(dirName, dirs[0], dirs[1]);
-    //             
-    //             // Si hay más de dos, combinar los restantes
-    //             for (int i = 2; i < dirs.Count; i++)
-    //             {
-    //                 combinedDir = Combine(dirName, combinedDir, dirs[i]);
-    //             }
-    //             
-    //             combinedChildren.Add(combinedDir);
-    //         }
-    //     }
-    //     
-    //     return new Container(newName, combinedChildren.ToArray());
-    // }
 }
+
+// Helper class to represent a container as INamedWithPath
+internal record ContainerWithPath(Path Path, string Name) : INamedWithPath;
