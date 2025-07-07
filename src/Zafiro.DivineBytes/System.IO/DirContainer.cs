@@ -2,16 +2,16 @@ using System.IO.Abstractions;
 
 namespace Zafiro.DivineBytes.System.IO;
 
-public class IoDir(IDirectoryInfo directoryInfo) : IContainer
+public class DirContainer(IDirectoryInfo directoryInfo) : INamedContainer
 {
     public string Name => directoryInfo.Name;
     
     // Implement new IContainer interface
-    public IEnumerable<IContainer> Subcontainers => directoryInfo
+    public IEnumerable<INamedContainer> Subcontainers => directoryInfo
         .GetDirectories()
-        .Select(info => new IoDir(info));
+        .Select(info => new DirContainer(info));
         
     public IEnumerable<INamedByteSource> Resources => directoryInfo
         .GetFiles()
-        .Select(info => new IoFile(info));
+        .Select(info => new FileContainer(info));
 }

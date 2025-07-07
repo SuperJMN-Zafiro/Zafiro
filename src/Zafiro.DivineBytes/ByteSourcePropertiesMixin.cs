@@ -6,7 +6,7 @@ using Crc32 = System.IO.Hashing.Crc32;
 
 namespace Zafiro.DivineBytes;
 
-public static class DataPropertiesMixin
+public static class ByteSourcePropertiesMixin
 {
     /// <summary>
     /// Flattens to array

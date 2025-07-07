@@ -27,7 +27,7 @@ public static class ContainerExtensions
     /// <summary>
     /// Create a named container from an existing container
     /// </summary>
-    public static NamedContainer WithName(this IContainer container, string name)
+    public static NamedContainer WithName(this INamedContainer container, string name)
     {
         return new NamedContainer(name, container.Resources, container.Subcontainers);
     }
@@ -35,7 +35,7 @@ public static class ContainerExtensions
     /// <summary>
     /// Convert any container to a root container
     /// </summary>
-    public static RootContainer AsRoot(this IContainer container)
+    public static RootContainer AsRoot(this INamedContainer container)
     {
         return new RootContainer(container.Resources, container.Subcontainers);
     }
@@ -43,7 +43,7 @@ public static class ContainerExtensions
     /// <summary>
     /// Convert root container to IContainer for compatibility with existing code
     /// </summary>
-    public static IContainer AsContainer(this RootContainer root)
+    public static INamedContainer AsContainer(this RootContainer root)
     {
         return new Container("", root.Resources, root.Subcontainers);
     }
@@ -51,7 +51,7 @@ public static class ContainerExtensions
     /// <summary>
     /// Get all contents as INamed for compatibility
     /// </summary>
-    public static IEnumerable<INamed> GetAllContents(this IContainer container)
+    public static IEnumerable<INamed> GetAllContents(this INamedContainer container)
     {
         return container.Resources.Cast<INamed>().Concat(container.Subcontainers.Cast<INamed>());
     }

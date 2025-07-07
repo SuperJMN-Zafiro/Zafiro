@@ -7,10 +7,10 @@ public class UnixTreeBuilder
     public UnixTreeBuilder(IMetadataResolver resolver)
         => this.resolver = resolver;
 
-    public UnixDirectory Build(IContainer root)
+    public UnixDirectory Build(INamedContainer root)
         => BuildDirectory(root);
 
-    private UnixDirectory BuildDirectory(IContainer dir)
+    private UnixDirectory BuildDirectory(INamedContainer dir)
     {
         var md = resolver.ResolveDirectory(dir);
 

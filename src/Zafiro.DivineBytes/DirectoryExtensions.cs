@@ -3,16 +3,16 @@ namespace Zafiro.DivineBytes;
 public static class DirectoryExtensions
 {
 
-    public static IEnumerable<INamedByteSource> FilesRecursive(this IContainer container)
+    public static IEnumerable<INamedByteSource> FilesRecursive(this INamedContainer container)
         => container.Resources.Concat(container.Subcontainers.SelectMany(d => d.FilesRecursive()));
 
-    public static IEnumerable<INamedWithPath> ChildrenWithPathsRecursive(this IContainer container)
+    public static IEnumerable<INamedWithPath> ChildrenWithPathsRecursive(this INamedContainer container)
         => container.ChildrenRelativeTo(Path.Empty);
 
-    public static IEnumerable<INamedByteSourceWithPath> FilesWithPathsRecursive(this IContainer container)
+    public static IEnumerable<INamedByteSourceWithPath> FilesWithPathsRecursive(this INamedContainer container)
         => container.ChildrenRelativeTo(Path.Empty).OfType<INamedByteSourceWithPath>();
 
-    public static IEnumerable<INamedWithPath> ChildrenRelativeTo(this IContainer container, Path path)
+    public static IEnumerable<INamedWithPath> ChildrenRelativeTo(this INamedContainer container, Path path)
     {
         var myFiles = container.Resources.Select(file => new NamedByteSourceWithPath(path, file));
         var filesInSubDirs = container.Subcontainers

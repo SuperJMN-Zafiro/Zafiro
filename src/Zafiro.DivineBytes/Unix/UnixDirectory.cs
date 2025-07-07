@@ -1,6 +1,6 @@
 namespace Zafiro.DivineBytes.Unix;
 
-public class UnixDirectory : IContainer, IPermissioned, IOwned
+public class UnixDirectory : INamedContainer, IPermissioned, IOwned
 {
     public string Name { get; }
     public UnixPermissions Permissions { get; }
@@ -9,7 +9,7 @@ public class UnixDirectory : IContainer, IPermissioned, IOwned
     public IEnumerable<UnixFile> Files { get; }
 
     // Implement new IContainer interface
-    public IEnumerable<IContainer> Subcontainers => Subdirectories;
+    public IEnumerable<INamedContainer> Subcontainers => Subdirectories;
     public IEnumerable<INamedByteSource> Resources => Files;
 
     // Keep Children for backward compatibility if needed

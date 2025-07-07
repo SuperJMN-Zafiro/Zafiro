@@ -4,13 +4,13 @@ namespace Zafiro.DivineBytes;
 /// Named container - always has a non-empty name
 /// Used for subdirectories and named containers
 /// </summary>
-public class NamedContainer : IContainer
+public class NamedContainer : INamedContainer
 {
     public string Name { get; }
-    public IEnumerable<IContainer> Subcontainers { get; }
+    public IEnumerable<INamedContainer> Subcontainers { get; }
     public IEnumerable<INamedByteSource> Resources { get; }
 
-    public NamedContainer(string name, IEnumerable<INamedByteSource> resources, IEnumerable<IContainer> subcontainers)
+    public NamedContainer(string name, IEnumerable<INamedByteSource> resources, IEnumerable<INamedContainer> subcontainers)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Named container must have a non-empty name", nameof(name));
@@ -27,7 +27,7 @@ public class NamedContainer : IContainer
         
         Name = name;
         Resources = contents.OfType<INamedByteSource>().ToList();
-        Subcontainers = contents.OfType<IContainer>().ToList();
+        Subcontainers = contents.OfType<INamedContainer>().ToList();
     }
 
     public override string ToString()

@@ -4,7 +4,7 @@ using Zafiro.Mixins;
 
 namespace Zafiro.DivineBytes;
 
-public static class ByteStreamMixin
+public static class ByteStreamExtensions
 {
     public static IObservable<IEnumerable<byte>> ToByteStream(this IEnumerable<byte> bytes, int bufferSize = 4096)
     {

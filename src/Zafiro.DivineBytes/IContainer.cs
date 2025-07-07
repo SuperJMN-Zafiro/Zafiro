@@ -1,7 +1,7 @@
 namespace Zafiro.DivineBytes;
 
-public interface IContainer : INamed
+public interface IContainer
 {
-    IEnumerable<IContainer> Subcontainers { get; }
+    IEnumerable<INamedContainer> Subcontainers { get; }
     IEnumerable<INamedByteSource> Resources { get; }
 }
