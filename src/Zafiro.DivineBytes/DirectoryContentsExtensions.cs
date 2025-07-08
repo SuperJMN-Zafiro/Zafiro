@@ -7,8 +7,9 @@ public static class DirectoryContentsExtensions
 
     public static IEnumerable<INamedByteSourceWithPath> ResourcesWithPathsRecursive(this IContainer container, Path? path = null)
     {
+        path ??= Path.Empty;
         // Include files as INamedByteSourceWithPath (which implements INamedWithPath)
-        var myResoruces = container.Resources.Select(file => new ResourceWithPath(path ?? Path.Empty, file));
+        var myResoruces = container.Resources.Select(file => new ResourceWithPath(path, file));
         
         // Include subdirectories as INamedWithPath and recursively their children
         var subcontainerResults = container.Subcontainers.SelectMany(subcontainer =>

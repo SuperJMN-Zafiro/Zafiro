@@ -48,19 +48,10 @@ public static class ContainerExtensions
         return new Container("", root.Resources, root.Subcontainers);
     }
     
-    /// <summary>
-    /// Get all contents as INamed for compatibility
-    /// </summary>
-    public static IEnumerable<INamed> GetAllContents(this INamedContainer container)
+    public static Task<Result> WriteTo(this IContainer container, string path)
     {
-        return container.Resources.Cast<INamed>().Concat(container.Subcontainers.Cast<INamed>());
-    }
-    
-    /// <summary>
-    /// Get all contents as INamed for root container
-    /// </summary>
-    public static IEnumerable<INamed> GetAllContents(this RootContainer container)
-    {
-        return container.Resources.Cast<INamed>().Concat(container.Subcontainers.Cast<INamed>());
+        return container.ResourcesWithPathsRecursive()
+            .Select(resource => resource.WriteTo(global::System.IO.Path.Combine(path, resource.FullPath())))
+            .CombineInOrder();
     }
 }
