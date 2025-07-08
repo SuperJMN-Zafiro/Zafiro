@@ -1,6 +1,6 @@
 namespace Zafiro.DivineBytes;
 
-public record NamedByteSourceWithPath(Path Path, INamedByteSource NamedByteSource) : INamedByteSourceWithPath
+public record ResourceWithPath(Path Path, INamedByteSource NamedByteSource) : INamedByteSourceWithPath
 {
     public string Name => NamedByteSource.Name;
     public IDisposable Subscribe(IObserver<byte[]> observer)

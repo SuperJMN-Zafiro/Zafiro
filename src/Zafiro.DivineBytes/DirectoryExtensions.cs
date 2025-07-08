@@ -14,7 +14,7 @@ public static class DirectoryExtensions
     public static IEnumerable<INamedWithPath> ChildrenRelativeTo(this IContainer container, Path path)
     {
         // Include files as INamedByteSourceWithPath (which implements INamedWithPath)
-        var myFiles = container.Resources.Select(file => new NamedByteSourceWithPath(path, file));
+        var myFiles = container.Resources.Select(file => new ResourceWithPath(path, file));
         
         // Include subdirectories as INamedWithPath and recursively their children
         var subcontainerResults = container.Subcontainers.SelectMany(subcontainer =>
