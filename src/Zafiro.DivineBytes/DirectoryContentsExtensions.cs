@@ -1,0 +1,26 @@
+namespace Zafiro.DivineBytes;
+
+public static class DirectoryContentsExtensions
+{
+    public static IEnumerable<INamedByteSource> ResourcesRecursive(this IContainer container)
+        => container.Resources.Concat(container.Subcontainers.SelectMany(d => d.ResourcesRecursive()));
+
+    public static IEnumerable<INamedByteSourceWithPath> ResourcesWithPathsRecursive(this IContainer container, Path? path = null)
+    {
+        // Include files as INamedByteSourceWithPath (which implements INamedWithPath)
+        var myResoruces = container.Resources.Select(file => new ResourceWithPath(path ?? Path.Empty, file));
+        
+        // Include subdirectories as INamedWithPath and recursively their children
+        var subcontainerResults = container.Subcontainers.SelectMany(subcontainer =>
+        {
+            var subcontainerPath = path.Combine(subcontainer.Name);
+            // Return the subdirectory itself plus its children
+            return subcontainer.ResourcesWithPathsRecursive(subcontainerPath);
+        });
+
+        return myResoruces.Concat(subcontainerResults);
+    }
+}
+
+// Helper class to represent a container as INamedWithPath
+internal record ContainerWithPath(Path Path, string Name) : INamedWithPath;

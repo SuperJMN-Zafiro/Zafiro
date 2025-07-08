@@ -13,5 +13,5 @@ public class DirectoryContainer(IDirectoryInfo directoryInfo) : INamedContainer
         
     public IEnumerable<INamedByteSource> Resources => directoryInfo
         .GetFiles()
-        .Select(info => new FileContainer(info));
+        .Select(info => new FileResource(info));
 }

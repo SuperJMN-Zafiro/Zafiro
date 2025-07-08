@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace Zafiro.DivineBytes;
 
-public static class DictionaryToDirectoryExtensions
+public static class DictionaryToContainerExtensions
 {
     /// <summary>
     /// Converts a dictionary of file paths and their byte sources into a directory tree structure.

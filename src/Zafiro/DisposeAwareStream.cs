@@ -1,4 +1,6 @@
-namespace Zafiro.DivineBytes;
+using System.IO;
+
+namespace Zafiro;
 
 public class DisposeAwareStream(Stream stream) : Stream
 {
