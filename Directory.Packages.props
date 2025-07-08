@@ -15,7 +15,7 @@
     <PackageVersion Include="CSharpFunctionalExtensions" Version="3.6.0" />
     <PackageVersion Include="CSharpFunctionalExtensions.FluentAssertions" Version="3.0.0" />
     <PackageVersion Include="DotNet.Testcontainers" Version="1.6.0" />
-    <PackageVersion Include="DotnetPackaging.AppImage" Version="2.0.15" />
+    <PackageVersion Include="DotnetPackaging.AppImage" Version="2.0.16" />
     <PackageVersion Include="DotnetPackaging.Deb" Version="2.0.15" />
     <PackageVersion Include="ExtendedXmlSerializer" Version="3.7.10" />
     <PackageVersion Include="FluentAssertions" Version="8.2.0" />
@@ -55,5 +55,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageVersion>
     <PackageVersion Include="Zafiro.Avalonia" Version="25.0.3" />
+    <PackageVersion Include="Zafiro.Deployment" Version="25.0.1" />
   </ItemGroup>
 </Project>

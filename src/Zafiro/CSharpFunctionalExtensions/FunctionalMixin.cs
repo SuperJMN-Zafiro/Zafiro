@@ -400,4 +400,18 @@ public static class FunctionalMixin
         // Timeout was reached
         return Result.Failure<T>(message);
     }
+    
+    public static Task<Result<Maybe<T>>> TryFirstResult<T>(this IEnumerable<T> source, Func<T, Task<Result<bool>>> predicate)
+    {
+        // Assuming the application root contains a single ELF executable
+        return source.Select(t => predicate(t).Map(b => (Matches: b, Item: t)))
+            .CombineInOrder()
+            .Map(bools => bools.TryFirst(tuple => tuple.Matches)
+                .Select(tuple => tuple.Item));
+    }
+    
+    public static Task<Result<T>> ToResult<T>(this Task<Result<Maybe<T>>> resultOfmaybe, string errorMessage)
+    {
+        return resultOfmaybe.Bind(x => x.ToResult(errorMessage));
+    }
 }

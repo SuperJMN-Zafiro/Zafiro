@@ -13,7 +13,7 @@ public static class DataMixin
     public static IObservable<Result> ChunkedDump(this IData data, Stream stream, IScheduler? scheduler = null,
         CancellationToken cancellationToken = default)
     {
-        return data.Bytes.DumpTo(stream, cancellationToken: cancellationToken, scheduler: scheduler);
+        return data.Bytes.WriteTo(stream, cancellationToken: cancellationToken, scheduler: scheduler);
     }
 
     public static Task<Result> DumpTo(this IData data, Stream stream, IScheduler? scheduler = null, CancellationToken cancellationToken = default)

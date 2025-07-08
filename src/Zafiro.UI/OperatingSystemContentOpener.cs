@@ -22,7 +22,7 @@ public class OperatingSystemContentOpener : IContentOpener
             var tempFileName = Path.Combine(Path.GetTempPath(), name);
             await using (var fileStream = File.Create(tempFileName))
             {
-                await contents.DumpTo(fileStream);
+                await contents.WriteTo(fileStream);
             }
 
             return tempFileName;

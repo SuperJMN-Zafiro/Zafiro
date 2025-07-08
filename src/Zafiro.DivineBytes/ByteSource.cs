@@ -8,7 +8,7 @@ namespace Zafiro.DivineBytes;
 /// <summary>
 /// A reactive source of byte arrays that also provides an optional asynchronous way to retrieve its length.
 /// </summary>
-public class ByteSource(IObservable<byte[]> bytes, Func<Task<Maybe<long>>>? getLength = null) : IByteSource
+public class ByteSource(IObservable<byte[]> bytes) : IByteSource
 {
     /// <summary>
     /// Exposes the underlying observable of byte[] blocks.
@@ -16,16 +16,10 @@ public class ByteSource(IObservable<byte[]> bytes, Func<Task<Maybe<long>>>? getL
     public IObservable<byte[]> Bytes => bytes;
 
     /// <summary>
-    /// Asynchronously retrieves the length of this source if it is known; otherwise returns None.
-    /// </summary>
-    public Task<Maybe<long>> GetLength() => getLength?.Invoke() ?? Task.FromResult(Maybe<long>.None);
-
-    /// <summary>
     /// Constructor overload that accepts an observable of byte chunks (IEnumerable<byte>) 
     /// and transforms each chunk into a byte array internally.
     /// </summary>
-    public ByteSource(IObservable<IEnumerable<byte>> byteChunks, Func<Task<Maybe<long>>>? getLength = null)
-        : this(byteChunks.Select(x => x.ToArray()), getLength)
+    public ByteSource(IObservable<IEnumerable<byte>> byteChunks) : this(byteChunks.Select(x => x.ToArray()))
     {
     }
 
@@ -38,36 +32,28 @@ public class ByteSource(IObservable<byte[]> bytes, Func<Task<Maybe<long>>>? getL
     /// <returns>An IByteSource.</returns>
     public static IByteSource FromBytes(byte[] bytes, int bufferSize = 4096)
     {
-        return new ByteSource(
-            bytes.ToByteStream(bufferSize),
-            () => Task.FromResult<Maybe<long>>(bytes.Length)
-        );
+        return new ByteSource(bytes.ToByteStream(bufferSize));
     }
 
     /// <summary>
     /// Creates a ByteSource from an observable of byte chunks (IEnumerable<byte>).
     /// </summary>
     /// <param name="byteChunks">Observable sequence where each item is a chunk of bytes (IEnumerable&lt;byte&gt;).</param>
-    /// <param name="getLength">A function that can asynchronously provide the total length if known.</param>
     /// <returns>An IByteSource.</returns>
-    public static IByteSource FromByteChunks(
-        IObservable<IEnumerable<byte>> byteChunks,
-        Func<Task<Maybe<long>>>? getLength = null)
+    public static IByteSource FromByteChunks(IObservable<IEnumerable<byte>> byteChunks)
     {
-        return new ByteSource(byteChunks, getLength);
+        return new ByteSource(byteChunks);
     }
 
     /// <summary>
     /// Creates a ByteSource from an observable of byte arrays.
     /// </summary>
     /// <param name="byteObservable">Observable sequence where each item is an array of bytes.</param>
-    /// <param name="getLength">A function that can asynchronously provide the total length if known.</param>
     /// <returns>An IByteSource.</returns>
     public static IByteSource FromByteObservable(
-        IObservable<byte[]> byteObservable,
-        Func<Task<Maybe<long>>>? getLength = null)
+        IObservable<byte[]> byteObservable)
     {
-        return new ByteSource(byteObservable, getLength);
+        return new ByteSource(byteObservable);
     }
 
     /// <summary>
@@ -75,16 +61,11 @@ public class ByteSource(IObservable<byte[]> bytes, Func<Task<Maybe<long>>>? getL
     /// The getLength function can provide a length if known.
     /// </summary>
     /// <param name="streamFactory">A factory method that returns a Stream to read from.</param>
-    /// <param name="getLength">A function that can asynchronously provide the total length if known.</param>
     /// <returns>An IByteSource.</returns>
     public static IByteSource FromStreamFactory(
-        Func<Stream> streamFactory,
-        Func<Task<Maybe<long>>>? getLength = null)
+        Func<Stream> streamFactory)
     {
-        return new ByteSource(
-            Observable.Using(streamFactory, stream => stream.ToObservable()),
-            getLength
-        );
+        return new ByteSource(Observable.Using(streamFactory, stream => stream.ToObservable()));
     }
 
     /// <summary>
@@ -101,12 +82,14 @@ public class ByteSource(IObservable<byte[]> bytes, Func<Task<Maybe<long>>>? getL
         int bufferSize = 4096)
     {
         encoding ??= Encoding.UTF8;
-        var byteCount = encoding.GetByteCount(str);
 
-        return new ByteSource(
-            str.ToByteStream(encoding, bufferSize),
-            () => Task.FromResult<Maybe<long>>(byteCount)
-        );
+        return new ByteSource(str.ToByteStream(encoding, bufferSize));
+    }
+    
+    public static IByteSource FromString(
+        string str)
+    {
+        return new ByteSource(str.ToByteStream(Encoding.UTF8));
     }
 
     /// <summary>
@@ -114,16 +97,11 @@ public class ByteSource(IObservable<byte[]> bytes, Func<Task<Maybe<long>>>? getL
     /// The getLength function can provide a length if known.
     /// </summary>
     /// <param name="streamFactory">A factory method that returns a Task of a Stream to read from.</param>
-    /// <param name="getLength">A function that can asynchronously provide the total length if known.</param>
     /// <returns>An IByteSource.</returns>
     public static IByteSource FromAsyncStreamFactory(
-        Func<Task<Stream>> streamFactory,
-        Func<Task<Maybe<long>>>? getLength = null)
+        Func<Task<Stream>> streamFactory)
     {
-        return new ByteSource(
-            ObservableFactory.UsingAsync(streamFactory, stream => stream.ToObservable()),
-            getLength
-        );
+        return new ByteSource(ObservableFactory.UsingAsync(streamFactory, stream => stream.ToObservable()));
     }
 
     /// <summary>
