@@ -19,8 +19,4 @@
 		<PackageDownload Include="GitVersion.Tool" Version="[6.3.0]" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\src\Zafiro.Deployment\Zafiro.Deployment.csproj" />
-	</ItemGroup>
-
 </Project>

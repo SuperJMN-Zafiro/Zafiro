@@ -15,7 +15,7 @@ public class DataTests
         var array = "hola"u8.ToArray();
         var p = array.ToObservable().Buffer(2).Select(list => list.ToArray());
         var memoryStream = new MemoryStream();
-        await p.DumpTo(memoryStream);
+        await p.WriteTo(memoryStream);
 
         memoryStream.Position = 0;
 
@@ -27,6 +27,6 @@ public class DataTests
     public async Task Empty_DumpTo()
     {
         var p = Observable.Empty<byte[]>();
-        await p.DumpTo(new MemoryStream());
+        await p.WriteTo(new MemoryStream());
     }
 }
