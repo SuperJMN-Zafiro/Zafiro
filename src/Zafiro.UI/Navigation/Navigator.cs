@@ -27,36 +27,54 @@ namespace Zafiro.UI.Navigation
 
         public IEnhancedCommand<Unit, Result<Unit>> Back => back;
 
-        public async Task<Result<Unit>> Go(Func<object> factory)
+        public Task<Result<Unit>> Go(Func<object> factory)
         {
-            try
-            {
-                var instance = factory();
-                navigationStack.Push(instance);
-                contentSubject.OnNext(instance);
-                canGoBackSubject.OnNext(navigationStack.Count > 1);
-
-                return Result.Success(Unit.Default);
-            }
-            catch (Exception e)
-            {
-                logger.Error(e.Message);
-                return Result.Failure<Unit>(e.ToString());
-            }
+            return Task.FromResult(
+                Result.Try(factory)
+                    .Bind(instance => NavigateToInstance(instance))
+                    .TapError(error => logger.Error(error, "Navigation error - factory execution failed"))
+            );
         }
 
         public Task<Result<Unit>> Go(Type type)
         {
-            return Result.Try(() => serviceProvider.GetRequiredService(type))
-                .Map(instance => Go(() => instance))
-                .TapError(e => logger.Error(e));
+            return Task.FromResult(
+                Result.Try(() => serviceProvider.GetRequiredService(type))
+                    .Bind(instance => NavigateToInstance(instance))
+                    .TapError(error => logger.Error(error, "Navigation error - service resolution failed for type {Type}", type.Name))
+            );
+        }
+
+        private Result<Unit> NavigateToInstance(object instance)
+        {
+            try
+            {
+                navigationStack.Push(instance);
+                contentSubject.OnNext(instance);
+                canGoBackSubject.OnNext(navigationStack.Count > 1);
+                return Result.Success(Unit.Default);
+            }
+            catch (Exception e)
+            {
+                // This should be very rare since we're just updating internal state
+                logger.Error(e, "Navigation error - failed to update navigation state");
+                return Result.Failure<Unit>($"Failed to update navigation state: {e.Message}");
+            }
         }
 
         public Task<Result<Unit>> GoBack()
         {
+            return Task.FromResult(
+                Result.Try(() => ExecuteGoBack())
+                    .TapError(error => logger.Error(error, "Navigation error - failed to go back"))
+            );
+        }
+
+        private Unit ExecuteGoBack()
+        {
             if (navigationStack.Count <= 1)
             {
-                return Task.FromResult(Result.Failure<Unit>("No previous entries in the navigation stack"));
+                throw new InvalidOperationException("No previous entries in the navigation stack");
             }
 
             navigationStack.Pop();
@@ -72,8 +90,8 @@ namespace Zafiro.UI.Navigation
             }
 
             canGoBackSubject.OnNext(navigationStack.Count > 1);
-
-            return Task.FromResult(Result.Success(Unit.Default));
+            
+            return Unit.Default;
         }
     }
 }

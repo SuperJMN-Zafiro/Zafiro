@@ -1,3 +1,4 @@
+using System;
 using CSharpFunctionalExtensions;
 using Serilog;
 
@@ -16,4 +17,7 @@ public static class LoggerExtensions
 
     public static void Error(this Maybe<ILogger> maybeLogger, string message, params object[] args)
         => maybeLogger.Execute(logger => logger.Error(message, args));
+    
+    public static void Error(this Maybe<ILogger> maybeLogger, Exception exception, string message, params object[] args)
+        => maybeLogger.Execute(logger => logger.Error(exception, message, args));
 }
