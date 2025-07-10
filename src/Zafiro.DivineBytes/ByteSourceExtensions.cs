@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions.ValueTasks;
 using Zafiro.Reactive;
 
 namespace Zafiro.DivineBytes;
@@ -14,7 +15,14 @@ public static class ByteSourceExtensions
             throw new ArgumentNullException(nameof(path));
         }
 
-        return Result.Try(() => Directory.CreateDirectory(global::System.IO.Path.GetDirectoryName(path)))
-            .MapTry(_ => File.WriteAllBytesAsync(path, byteSource.Array()));
+        return Result.Try(() =>
+            {
+                var directoryName = global::System.IO.Path.GetDirectoryName(path);
+                if (!string.IsNullOrWhiteSpace(directoryName))
+                {
+                    Directory.CreateDirectory(directoryName);
+                }
+            })
+            .MapTry(() => File.WriteAllBytesAsync(path, byteSource.Array()));
     }
 }
