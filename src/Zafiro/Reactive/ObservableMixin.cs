@@ -167,9 +167,9 @@ public static class ObservableMixin
             .Dematerialize();
     }
 
-    public static Stream ToStream(this IObservable<byte> observable, int bufferSize = 4096)
+    public static Stream AsSeekableStream(this IObservable<byte> observable, int bufferSize = 4096)
     {
-        return ToStream(observable.Buffer(bufferSize).Select(list => list.ToArray()));
+        return ToStreamSeekable(observable.Buffer(bufferSize).Select(list => list.ToArray()));
     }
 
     public static Stream ToStream(this IObservable<byte[]> observable)
@@ -186,6 +186,13 @@ public static class ObservableMixin
 
         return pipe.Reader.AsStream();
     }
+
+    public static Stream ToStreamSeekable(this IObservable<byte[]> observable)
+    {
+        return new ResetableObservableStream(observable);
+    }
+
+    // Custom stream implementation that supports multiple reads by allowing reset
 
     /// <summary>
     ///     Thanks to Darrin Cullop.
