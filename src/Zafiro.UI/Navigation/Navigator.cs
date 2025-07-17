@@ -1,4 +1,6 @@
 using System.Reactive.Subjects;
+using System.Collections.Generic;
+using System.Linq;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using Zafiro.Mixins;
@@ -13,6 +15,7 @@ namespace Zafiro.UI.Navigation
         private readonly BehaviorSubject<object?> contentSubject = new(null);
         private readonly Maybe<ILogger> logger;
         private readonly Stack<object> navigationStack = new();
+        private readonly Dictionary<string, NavigationBookmark> namedBookmarks = new();
         private readonly IServiceProvider serviceProvider;
 
         public Navigator(IServiceProvider serviceProvider, Maybe<ILogger> logger)
@@ -21,6 +24,16 @@ namespace Zafiro.UI.Navigation
             this.logger = logger;
             var reactiveCommand = ReactiveCommand.CreateFromTask<Unit, Result<Unit>>(_ => GoBack(), canGoBackSubject);
             back = reactiveCommand.Enhance();
+        }
+
+        public NavigationBookmark CreateBookmark()
+        {
+            return new NavigationBookmark(navigationStack.Count);
+        }
+
+        public void CreateBookmark(string name)
+        {
+            namedBookmarks[name] = new NavigationBookmark(navigationStack.Count);
         }
 
         public IObservable<object?> Content => contentSubject;
@@ -70,6 +83,32 @@ namespace Zafiro.UI.Navigation
             );
         }
 
+        public Task<Result<Unit>> GoBackTo(NavigationBookmark bookmark)
+        {
+            return Task.FromResult(
+                Result.Try(() => ExecuteGoBackTo(bookmark))
+                    .TapError(error => logger.Error(error, "Navigation error - failed to go back to bookmark"))
+            );
+        }
+
+        public Task<Result<Unit>> GoBackTo(string name)
+        {
+            return Task.FromResult(
+                Result.Try(() =>
+                    {
+                        if (!namedBookmarks.TryGetValue(name, out var bookmark))
+                        {
+                            throw new InvalidOperationException($"Bookmark '{name}' not found");
+                        }
+
+                        var result = ExecuteGoBackTo(bookmark);
+                        namedBookmarks.Remove(name);
+                        return result;
+                    })
+                    .TapError(error => logger.Error(error, "Navigation error - failed to go back to named bookmark {Name}", name))
+            );
+        }
+
         private Unit ExecuteGoBack()
         {
             if (navigationStack.Count <= 1)
@@ -78,6 +117,7 @@ namespace Zafiro.UI.Navigation
             }
 
             navigationStack.Pop();
+            RemoveBookmarksAfter(navigationStack.Count);
 
             if (navigationStack.Count > 0)
             {
@@ -90,8 +130,37 @@ namespace Zafiro.UI.Navigation
             }
 
             canGoBackSubject.OnNext(navigationStack.Count > 1);
-            
+
             return Unit.Default;
+        }
+
+        private Unit ExecuteGoBackTo(NavigationBookmark bookmark)
+        {
+            if (bookmark.Index < 0 || bookmark.Index > navigationStack.Count)
+            {
+                throw new InvalidOperationException("Bookmark out of range");
+            }
+
+            while (navigationStack.Count > bookmark.Index)
+            {
+                navigationStack.Pop();
+            }
+
+            RemoveBookmarksAfter(navigationStack.Count);
+
+            var content = navigationStack.Count > 0 ? navigationStack.Peek() : null;
+            contentSubject.OnNext(content);
+            canGoBackSubject.OnNext(navigationStack.Count > 1);
+            return Unit.Default;
+        }
+
+        private void RemoveBookmarksAfter(int index)
+        {
+            var keysToRemove = namedBookmarks.Where(kv => kv.Value.Index > index).Select(kv => kv.Key).ToList();
+            foreach (var key in keysToRemove)
+            {
+                namedBookmarks.Remove(key);
+            }
         }
     }
 }
