@@ -38,4 +38,24 @@ public class NavigatorBookmarkTests
         var result = await navigator.GoBack();
         Assert.True(result.IsFailure);
     }
+
+    [Fact]
+    public async Task Named_bookmark_can_be_used_and_removed()
+    {
+        var services = new ServiceCollection();
+        services.AddTransient<Page>();
+        services.AddTransient<AnotherPage>();
+        var provider = services.BuildServiceProvider();
+        var navigator = new Navigator(provider, Maybe<ILogger>.None);
+
+        await navigator.Go(typeof(Page));
+        navigator.CreateBookmark("wizard");
+        await navigator.Go(typeof(AnotherPage));
+        await navigator.Go(typeof(Page));
+
+        await navigator.GoBackTo("wizard");
+
+        var result = await navigator.GoBackTo("wizard");
+        Assert.True(result.IsFailure);
+    }
 }
