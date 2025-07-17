@@ -23,6 +23,11 @@ namespace Zafiro.UI.Navigation
             back = reactiveCommand.Enhance();
         }
 
+        public NavigationBookmark CreateBookmark()
+        {
+            return new NavigationBookmark(navigationStack.Count);
+        }
+
         public IObservable<object?> Content => contentSubject;
 
         public IEnhancedCommand<Unit, Result<Unit>> Back => back;
@@ -70,6 +75,14 @@ namespace Zafiro.UI.Navigation
             );
         }
 
+        public Task<Result<Unit>> GoBackTo(NavigationBookmark bookmark)
+        {
+            return Task.FromResult(
+                Result.Try(() => ExecuteGoBackTo(bookmark))
+                    .TapError(error => logger.Error(error, "Navigation error - failed to go back to bookmark"))
+            );
+        }
+
         private Unit ExecuteGoBack()
         {
             if (navigationStack.Count <= 1)
@@ -90,7 +103,25 @@ namespace Zafiro.UI.Navigation
             }
 
             canGoBackSubject.OnNext(navigationStack.Count > 1);
-            
+
+            return Unit.Default;
+        }
+
+        private Unit ExecuteGoBackTo(NavigationBookmark bookmark)
+        {
+            if (bookmark.Index < 0 || bookmark.Index > navigationStack.Count)
+            {
+                throw new InvalidOperationException("Bookmark out of range");
+            }
+
+            while (navigationStack.Count > bookmark.Index)
+            {
+                navigationStack.Pop();
+            }
+
+            var content = navigationStack.Count > 0 ? navigationStack.Peek() : null;
+            contentSubject.OnNext(content);
+            canGoBackSubject.OnNext(navigationStack.Count > 1);
             return Unit.Default;
         }
     }
