@@ -6,8 +6,12 @@ variables:
 steps:
 - checkout: self
 
-- script: dotnet tool install --global DotnetPackaging.DeployerTool
+- pwsh: dotnet tool install --global DotnetPackaging.DeployerTool
   displayName: Install DotnetPackaging.DeployerTool
 
-- script: dotnetdeployer nuget --api-key $(NuGetApiKey)
+- pwsh: |
+    $args = if ($env:BUILD_SOURCEBRANCH -ne 'refs/heads/master') { '--no-push' } else { '' }
+    dotnetdeployer nuget --api-key $env:NUGET_API_KEY $args
   displayName: Publish NuGet packages
+  env:
+    NUGET_API_KEY: $(NuGetApiKey)
