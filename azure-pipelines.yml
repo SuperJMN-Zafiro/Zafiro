@@ -9,9 +9,14 @@ steps:
 - pwsh: dotnet tool install --global DotnetPackaging.DeployerTool
   displayName: Install DotnetPackaging.DeployerTool
 
-- pwsh: |
-    $args = if ($env:BUILD_SOURCEBRANCH -ne 'refs/heads/master') { '--no-push' } else { '' }
-    dotnetdeployer nuget --api-key $env:NUGET_API_KEY $args
+- pwsh: dotnetdeployer nuget --api-key $env:NUGET_API_KEY
   displayName: Publish NuGet packages
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  env:
+    NUGET_API_KEY: $(NuGetApiKey)
+
+- pwsh: dotnetdeployer nuget --api-key $env:NUGET_API_KEY --no-push
+  displayName: Publish NuGet packages (dry run)
+  condition: ne(variables['Build.SourceBranch'], 'refs/heads/master')
   env:
     NUGET_API_KEY: $(NuGetApiKey)
