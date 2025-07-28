@@ -6,6 +6,8 @@ variables:
 steps:
 - checkout: self
 
-- powershell: .\build.ps1
-  env:
-    NuGetApiKey: $(NuGetApiKey)
+- script: dotnet tool install --global DotnetPackaging.DeployerTool
+  displayName: Install DotnetPackaging.DeployerTool
+
+- script: dotnetdeployer nuget --api-key $(NuGetApiKey)
+  displayName: Publish NuGet packages
