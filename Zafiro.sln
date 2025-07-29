@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{F896589E-962B-4D13-8111-CCB4006FE56B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro", "src\Zafiro\Zafiro.csproj", "{48D712E7-7654-4104-89F6-1C1F98DCB407}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zafiro.Tests", "test\Zafiro.Tests\Zafiro.Tests.csproj", "{18291ABE-0FA4-4AF9-9040-159C3797333B}"
