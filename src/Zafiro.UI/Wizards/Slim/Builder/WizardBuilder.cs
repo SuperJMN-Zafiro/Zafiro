@@ -10,9 +10,11 @@ public static class WizardBuilder
         Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommand,
         string title)
     {
+        Func<TPage, object?, IEnhancedCommand<Result<TResult>>>? command = nextCommand == null ? null : (page, _) => nextCommand(page);
+
         var step = new StepDefinition<TPage, TResult>(
             _ => pageFactory(),
-            nextCommand,
+            command,
             title);
 
         return new WizardBuilder<TResult>(new[] { step });
@@ -28,9 +30,27 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
         Func<TNextPage, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
         string title)
     {
+        Func<TNextPage, object?, IEnhancedCommand<Result<TNextResult>>>? command = nextCommand == null ? null : (page, _) => nextCommand(page);
+
         var step = new StepDefinition<TNextPage, TNextResult>(
             prev => pageFactory((TResult)prev!),
-            nextCommand,
+            command,
+            title);
+
+        var newSteps = steps.Append(step);
+        return new WizardBuilder<TNextResult>(newSteps);
+    }
+
+    public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
+        Func<TResult, TNextPage> pageFactory,
+        Func<TNextPage, TResult, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
+        string title)
+    {
+        Func<TNextPage, object?, IEnhancedCommand<Result<TNextResult>>>? command = nextCommand == null ? null : (page, prev) => nextCommand(page, (TResult)prev!);
+
+        var step = new StepDefinition<TNextPage, TNextResult>(
+            prev => pageFactory((TResult)prev!),
+            command,
             title);
 
         var newSteps = steps.Append(step);
