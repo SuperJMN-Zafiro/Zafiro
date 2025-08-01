@@ -10,5 +10,10 @@ public static class StepBuilderExtensions
     {
         return builder.ProceedWith(page => EnhancedCommand.Create(() => nextAction(page), page.IsValid, text));
     }
+
+    public static WizardBuilder<TResult> ProceedWithResultWhenValid<TPage, TPreviousResult, TResult>(this StepBuilder<TPage> builder, Func<TPage, TPreviousResult, Result<TResult>> nextAction, string? text = null) where TPage : IValidatable
+    {
+        return builder.ProceedWith<TPreviousResult, TResult>((page, prev) => EnhancedCommand.Create(() => nextAction(page, prev), page.IsValid, text));
+    }
 }
 
