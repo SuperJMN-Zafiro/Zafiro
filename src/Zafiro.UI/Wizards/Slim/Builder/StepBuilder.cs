@@ -9,7 +9,7 @@ public class StepBuilder<TPage>(IEnumerable<IStepDefinition> previousSteps, Func
     private readonly Func<object?, TPage> pageFactory = pageFactory;
     private readonly string title = title;
 
-    public WizardBuilder<TResult> NextWith<TResult>(Func<TPage, IEnhancedCommand<Result<TResult>>> nextCommand)
+    public WizardBuilder<TResult> WithNextCommand<TResult>(Func<TPage, IEnhancedCommand<Result<TResult>>> nextCommand)
     {
         var step = new StepDefinition<TPage, TResult>(pageFactory, (page, _) => nextCommand(page), title);
         var steps = previousSteps.Append(step);
