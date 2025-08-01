@@ -23,6 +23,16 @@ public static class EnhancedCommand
     {
         return new EnhancedUnitCommand(reactiveCommand, text, name);
     }
+
+    public static EnhancedCommand<global::CSharpFunctionalExtensions.Result<T>> Create<T>(Func<global::CSharpFunctionalExtensions.Result<T>> execute, IObservable<bool>? canExecute = null, string? text = null, string? name = null)
+    {
+        return ReactiveCommand.Create(execute, canExecute).Enhance(text, name);
+    }
+
+    public static EnhancedCommand<global::CSharpFunctionalExtensions.Result<T>> Create<T>(Func<Task<global::CSharpFunctionalExtensions.Result<T>>> task, IObservable<bool>? canExecute = null, string? text = null, string? name = null)
+    {
+        return ReactiveCommand.CreateFromTask(task, canExecute).Enhance(text, name);
+    }
 }
 
 public class EnhancedUnitCommand : EnhancedCommand<Unit, Unit>, IEnhancedCommand<Unit>, IEnhancedUnitCommand
