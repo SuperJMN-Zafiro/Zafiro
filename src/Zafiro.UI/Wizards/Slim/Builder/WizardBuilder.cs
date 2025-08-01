@@ -1,3 +1,4 @@
+using System;
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
@@ -19,11 +20,31 @@ public static class WizardBuilder
 
         return new WizardBuilder<TResult>(new[] { step });
     }
+
+    public static WizardBuilder<TResult> StartWith<TPage, TResult>(
+        Func<TPage> pageFactory,
+        Func<TPage, Result<TResult>> nextAction,
+        Func<TPage, IObservable<bool>>? canExecute,
+        string title,
+        string? text = null)
+    {
+        return StartWith(pageFactory, page => EnhancedCommand.Create(() => nextAction(page), canExecute?.Invoke(page), text), title);
+    }
+
+    public static StepBuilder<TPage> StartWith<TPage>(Func<TPage> pageFactory, string title)
+    {
+        return new StepBuilder<TPage>(Array.Empty<IStepDefinition>(), _ => pageFactory(), title);
+    }
 }
 
 public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
 {
     private readonly List<IStepDefinition> steps = steps.ToList();
+
+    public StepBuilder<TNextPage> Then<TNextPage>(Func<TResult, TNextPage> pageFactory, string title)
+    {
+        return new StepBuilder<TNextPage>(this.steps, prev => pageFactory((TResult)prev!), title);
+    }
 
     public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
@@ -43,6 +64,16 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
 
     public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
+        Func<TNextPage, Result<TNextResult>> nextAction,
+        Func<TNextPage, IObservable<bool>>? canExecute,
+        string title,
+        string? text = null)
+    {
+        return Then(pageFactory, page => EnhancedCommand.Create(() => nextAction(page), canExecute?.Invoke(page), text), title);
+    }
+
+    public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
+        Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, TResult, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
         string title)
     {
@@ -55,6 +86,16 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
 
         var newSteps = steps.Append(step);
         return new WizardBuilder<TNextResult>(newSteps);
+    }
+
+    public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
+        Func<TResult, TNextPage> pageFactory,
+        Func<TNextPage, TResult, Result<TNextResult>> nextAction,
+        Func<TNextPage, TResult, IObservable<bool>>? canExecute,
+        string title,
+        string? text = null)
+    {
+        return Then(pageFactory, (page, prev) => EnhancedCommand.Create(() => nextAction(page, prev), canExecute?.Invoke(page, prev), text), title);
     }
 
     public SlimWizard<TResult> WithCommitFinalStep()
