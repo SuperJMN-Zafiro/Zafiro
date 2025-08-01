@@ -15,4 +15,11 @@ public class StepBuilder<TPage>(IEnumerable<IStepDefinition> previousSteps, Func
         var steps = previousSteps.Append(step);
         return new WizardBuilder<TResult>(steps);
     }
+
+    public WizardBuilder<TResult> ProceedWith<TPreviousResult, TResult>(Func<TPage, TPreviousResult, IEnhancedCommand<Result<TResult>>> nextCommand)
+    {
+        var step = new StepDefinition<TPage, TResult>(pageFactory, (page, prev) => nextCommand(page, (TPreviousResult)prev!), title);
+        var steps = previousSteps.Append(step);
+        return new WizardBuilder<TResult>(steps);
+    }
 }
