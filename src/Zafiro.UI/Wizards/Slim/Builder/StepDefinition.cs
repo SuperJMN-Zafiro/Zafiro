@@ -3,20 +3,20 @@ using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards.Slim.Builder;
 
-public class StepDefinition<TPage, TResult>(
-    Func<object?, TPage> pageFactory,
-    Func<TPage, object?, IEnhancedCommand<Result<TResult>>>? nextCommandFactory,
+public class StepDefinition<TPrevious, TPage, TResult>(
+    Func<TPrevious, TPage> pageFactory,
+    Func<TPage, TPrevious, IEnhancedCommand<Result<TResult>>>? nextCommandFactory,
     string title)
     : IStepDefinition
 {
-    private object? previousResult;
+    private TPrevious previousResult = default!;
 
     public string Title { get; } = title;
 
     public object CreatePage(object? previousResult)
     {
-        this.previousResult = previousResult;
-        return pageFactory(previousResult);
+        this.previousResult = previousResult is null ? default! : (TPrevious)previousResult;
+        return pageFactory(this.previousResult);
     }
 
     public IEnhancedCommand<Result<object>>? GetNextCommand(object page)
