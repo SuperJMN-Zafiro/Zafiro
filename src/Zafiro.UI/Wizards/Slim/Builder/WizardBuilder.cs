@@ -1,5 +1,3 @@
-using System;
-using System.Reactive;
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
@@ -7,6 +5,7 @@ namespace Zafiro.UI.Wizards.Slim.Builder;
 
 public static class WizardBuilder
 {
+    [Obsolete("Use methods that return StepBuilder instead.")]
     public static WizardBuilder<TResult> StartWith<TPage, TResult>(
         Func<TPage> pageFactory,
         Func<TPage, IEnhancedCommand<Result<TResult>>>? nextCommand,
@@ -15,13 +14,14 @@ public static class WizardBuilder
         Func<TPage, Unit, IEnhancedCommand<Result<TResult>>>? command = nextCommand == null ? null : (page, _) => nextCommand(page);
 
         var step = new StepDefinition<Unit, TPage, TResult>(
-            (_)=> pageFactory(),
+            (_) => pageFactory(),
             command,
             title);
 
         return new WizardBuilder<TResult>(new[] { step });
     }
 
+    [Obsolete("Use methods that return StepBuilder instead.")]
     public static WizardBuilder<TResult> StartWith<TPage, TResult>(
         Func<TPage> pageFactory,
         Func<TPage, Result<TResult>> nextAction,
@@ -47,6 +47,7 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
         return new StepBuilder<TResult, TNextPage>(this.steps, prev => pageFactory(prev), title);
     }
 
+    [Obsolete("Use methods that return StepBuilder instead.")]
     public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
@@ -63,6 +64,7 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
         return new WizardBuilder<TNextResult>(newSteps);
     }
 
+    [Obsolete("Use methods that return StepBuilder instead.")]
     public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, Result<TNextResult>> nextAction,
@@ -73,6 +75,7 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
         return Then(pageFactory, page => EnhancedCommand.Create(() => nextAction(page), canExecute?.Invoke(page), text), title);
     }
 
+    [Obsolete("Use methods that return StepBuilder instead.")]
     public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, TResult, IEnhancedCommand<Result<TNextResult>>>? nextCommand,
@@ -89,6 +92,7 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
         return new WizardBuilder<TNextResult>(newSteps);
     }
 
+    [Obsolete("Use methods that return StepBuilder instead.")]
     public WizardBuilder<TNextResult> Then<TNextPage, TNextResult>(
         Func<TResult, TNextPage> pageFactory,
         Func<TNextPage, TResult, Result<TNextResult>> nextAction,
@@ -113,10 +117,10 @@ public class WizardBuilder<TResult>(IEnumerable<IStepDefinition> steps)
     {
         List<IStepDefinition> normal = steps[..^1];
         IStepDefinition lastStep = steps[^1];
-    
+
         var normalSteps = normal.Select(def => new WizardStep(StepKind.Normal, def.Title, def.CreatePage, def.GetNextCommand));
         var allSteps = normalSteps.Append(new WizardStep(lastStepKind, lastStep.Title, lastStep.CreatePage, lastStep.GetNextCommand));
-    
+
         return new SlimWizard<TResult>(allSteps.Cast<IWizardStep>().ToList());
     }
 }
