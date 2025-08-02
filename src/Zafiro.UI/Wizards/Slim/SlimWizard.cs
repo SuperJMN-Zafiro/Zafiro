@@ -11,12 +11,12 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
 {
     private readonly ReplaySubject<TResult> finishedSubject = new();
     private readonly Stack<object> previousValues = new();
-    [ObservableAsProperty] private IPage? currentPage;
+    [ObservableAsProperty] private IPage currentPage = default!;
     [ObservableAsProperty] private (int Index, IWizardStep Step) currentStep;
     [Reactive] private int currentStepIndex;
-    [ObservableAsProperty] private Page? currentTypedPage;
-    [ObservableAsProperty] private IEnhancedCommand? next;
-    [ObservableAsProperty] private IEnhancedCommand<Result<object>>? typedNext;
+    [ObservableAsProperty] private Page currentTypedPage = default!;
+    [ObservableAsProperty] private IEnhancedCommand next = default!;
+    [ObservableAsProperty] private IEnhancedCommand<Result<object>> typedNext = default!;
 
     public SlimWizard(IList<IWizardStep> steps)
     {
@@ -40,18 +40,17 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             .Select(step =>
             {
                 var param = previousValues.TryPeek(out var p) ? p : null;
-                var page = step.Step.CreatePage(param);
+                var page = step.Step.CreatePage(param) ??
+                           throw new InvalidOperationException($"Wizard step at index {step.Index} returned a null page.");
                 var finalNext = CreateNextCommand(step, page, hasFinished);
-                var value = new Page(step.Index, page, finalNext, step.Step.Title);
-                return value;
+                return new Page(step.Index, page, finalNext, step.Step.Title);
             })
             .ToProperty(this, w => w.CurrentTypedPage);
 
-        typedNextHelper = this.WhenAnyValue(x => x.CurrentTypedPage!.NextCommand)
-            .Select(command => command)
+        typedNextHelper = this.WhenAnyValue(x => x.CurrentTypedPage.NextCommand)
             .ToProperty(this, x => x.TypedNext);
 
-        this.WhenAnyValue(x => x.TypedNext!)
+        this.WhenAnyValue(x => x.TypedNext)
             .Switch()
             .Successes()
             .Subscribe(value =>
@@ -86,7 +85,7 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             .Enhance();
 
         nextHelper = this.WhenAnyValue(x => x.TypedNext, command => new CommandAdapter<Result<object>, Unit>(command, _ => Unit.Default))
-            .ToProperty<SlimWizard<TResult>, IEnhancedCommand>(this, x => x.Next!);
+            .ToProperty<SlimWizard<TResult>, IEnhancedCommand>(this, x => x.Next);
 
         currentPageHelper = this.WhenAnyValue(x => x.CurrentTypedPage)
             .ToProperty(this, wizard => wizard.CurrentPage);
@@ -108,10 +107,9 @@ public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
 
     private static EnhancedCommand<Result<object>> CreateNextCommand((int Index, IWizardStep Step) step, object page, IObservable<bool> hasFinished)
     {
-        var command = step.Step.GetNextCommand(page);
+        var command = step.Step.GetNextCommand(page) ??
+                      throw new InvalidOperationException($"Wizard step at index {step.Index} returned a null Next command.");
         var canExecute = hasFinished.CombineLatest(((IReactiveCommand)command).CanExecute, (finished, canExecute) => !finished && canExecute);
-        var finalCommand = command.Enhance(canExecute: canExecute);
-        var finalNext = finalCommand;
-        return finalNext;
+        return command.Enhance(canExecute: canExecute);
     }
 }

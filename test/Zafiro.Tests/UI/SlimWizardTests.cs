@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
@@ -21,6 +22,30 @@ public class SlimWizardTests
         Assert.NotNull(wizard.CurrentPage);
         Assert.NotNull(wizard.CurrentPage.Title);
         Assert.IsType<MyPage>(wizard.CurrentPage.Content);
+    }
+
+    [Fact]
+    public void Step_without_next_command_throws()
+    {
+        var step = new WizardStep(StepKind.Normal, string.Empty, _ => new object(), _ => null);
+        var steps = new List<IWizardStep> { step };
+
+        var ex = Assert.Throws<ReactiveUI.UnhandledErrorException>(() => { new SlimWizard<object>(steps); });
+        Assert.IsType<InvalidOperationException>(ex.InnerException);
+    }
+
+    [Fact]
+    public void Step_creating_null_page_throws()
+    {
+        var step = new WizardStep(
+            StepKind.Normal,
+            string.Empty,
+            _ => null!,
+            _ => ReactiveCommand.Create(() => Result.Success(new object())).Enhance());
+        var steps = new List<IWizardStep> { step };
+
+        var ex = Assert.Throws<ReactiveUI.UnhandledErrorException>(() => { new SlimWizard<object>(steps); });
+        Assert.IsType<InvalidOperationException>(ex.InnerException);
     }
 
     [Fact]
