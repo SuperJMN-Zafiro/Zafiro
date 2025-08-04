@@ -11,4 +11,10 @@ public static class TaskMixin
         await task().ConfigureAwait(false);
         return Unit.Default;
     }
+
+    public static async Task<Unit> ToSignal(this Task task)
+    {
+        await task.ConfigureAwait(false);
+        return Unit.Default;
+    }
 }
