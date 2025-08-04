@@ -1,115 +1,169 @@
+using System.Collections.Immutable;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using CSharpFunctionalExtensions;
-using ReactiveUI.SourceGenerators;
+using ReactiveUI;
 using Zafiro.CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards.Slim;
 
-public partial class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
+public sealed class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
 {
-    private readonly ReplaySubject<TResult> finishedSubject = new();
-    private readonly Stack<object> previousValues = new();
-    [ObservableAsProperty] private IPage currentPage = default!;
-    [ObservableAsProperty] private (int Index, IWizardStep Step) currentStep;
-    [Reactive] private int currentStepIndex;
-    [ObservableAsProperty] private Page currentTypedPage = default!;
-    [ObservableAsProperty] private IEnhancedCommand next = default!;
-    [ObservableAsProperty] private IEnhancedCommand<Result<object>> typedNext = default!;
+    private sealed record WizardState(int CurrentIndex, ImmutableStack<object> History, bool Finished, TResult FinalResult);
+    private abstract record Intent;
+    private sealed record NextIntent(object Value) : Intent;
+    private sealed record BackIntent : Intent;
+
+    private readonly IObservable<WizardState> state;
+    private readonly IObservable<(int Index, IWizardStep Step)> currentStepObservable;
+    private readonly IObservable<Page> currentTypedPageObservable;
+    private readonly IObservable<bool> hasFinished;
+
+    private readonly ObservableAsPropertyHelper<(int Index, IWizardStep Step)> currentStepHelper;
+    private readonly ObservableAsPropertyHelper<int> currentStepIndexHelper;
+    private readonly ObservableAsPropertyHelper<Page> currentTypedPageHelper;
+    private readonly ObservableAsPropertyHelper<IPage> currentPageHelper;
+    private readonly ObservableAsPropertyHelper<IEnhancedCommand<Result<object>>> typedNextHelper;
+    private readonly ObservableAsPropertyHelper<IEnhancedCommand> nextHelper;
 
     public SlimWizard(IList<IWizardStep> steps)
     {
         EnsureValidSteps(steps);
-
         TotalPages = steps.Count;
 
-        currentStepHelper = this.WhenAnyValue(x => x.CurrentStepIndex)
-            .Select(index =>
+        var intents = Subject.Synchronize(new Subject<Intent>());
+
+        var initial = new WizardState(0, ImmutableStack<object>.Empty, false, default!);
+        state = intents
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Scan(initial, (s, intent) => intent switch
             {
-                var step = steps[index];
-                if (step is null)
-                    throw new InvalidOperationException($"Wizard step at index {index} is null.");
-                return (index, step);
+                NextIntent ni when !s.Finished => s.CurrentIndex == TotalPages - 1
+                    ? s with { Finished = true, FinalResult = (TResult)ni.Value }
+                    : s with
+                    {
+                        CurrentIndex = s.CurrentIndex + 1,
+                        History = s.History.Push(ni.Value)
+                    },
+                BackIntent when s.History.TryPeek(out _) => s with
+                {
+                    CurrentIndex = s.CurrentIndex - 1,
+                    History = s.History.Pop()
+                },
+                _ => s
             })
-            .ToProperty(this, w => w.CurrentStep);
+            .StartWith(initial)
+            .Replay(1)
+            .RefCount();
 
-        var hasFinished = finishedSubject.Any().StartWith(false);
+    hasFinished = state.Select(s => s.Finished).StartWith(false);
 
-        currentTypedPageHelper = this.WhenAnyValue(x => x.CurrentStep)
-            .Select(step =>
+        currentStepObservable = state.Select(s =>
+        {
+            var step = steps[s.CurrentIndex];
+            if (step is null)
             {
-                var param = previousValues.TryPeek(out var p) ? p : null;
-                var page = step.Step.CreatePage(param) ??
-                           throw new InvalidOperationException($"Wizard step at index {step.Index} returned a null page.");
-                var finalNext = CreateNextCommand(step, page, hasFinished);
-                return new Page(step.Index, page, finalNext, step.Step.Title);
-            })
-            .ToProperty(this, w => w.CurrentTypedPage);
+                throw new InvalidOperationException($"Wizard step at index {s.CurrentIndex} is null.");
+            }
+            return (s.CurrentIndex, step);
+        });
 
-        typedNextHelper = this.WhenAnyValue(x => x.CurrentTypedPage.NextCommand)
-            .ToProperty(this, x => x.TypedNext);
+        currentTypedPageObservable = state.Select(s =>
+        {
+            var step = steps[s.CurrentIndex];
+            if (step is null)
+            {
+                throw new InvalidOperationException($"Wizard step at index {s.CurrentIndex} is null.");
+            }
+            var param = s.History.TryPeek(out var p) ? p : null;
+            var pageInstance = step.CreatePage(param) ??
+                               throw new InvalidOperationException($"Wizard step at index {s.CurrentIndex} returned a null page.");
+            var nextCommand = CreateNextCommand((s.CurrentIndex, step), pageInstance, hasFinished);
+            return new Page(s.CurrentIndex, pageInstance, nextCommand, step.Title);
+        })
+        .Replay(1)
+        .RefCount();
 
-        this.WhenAnyValue(x => x.TypedNext)
+        currentStepObservable.ToProperty(this, x => x.CurrentStep, out currentStepHelper);
+        currentStepObservable.Select(x => x.Index).ToProperty(this, x => x.CurrentStepIndex, out currentStepIndexHelper);
+
+        currentTypedPageObservable.ToProperty(this, x => x.CurrentTypedPage, out currentTypedPageHelper);
+        currentTypedPageObservable.Select(p => (IPage)p).ToProperty(this, x => x.CurrentPage, out currentPageHelper);
+        currentTypedPageObservable.Select(p => p.NextCommand).ToProperty(this, x => x.TypedNext, out typedNextHelper);
+
+        currentTypedPageObservable
+            .Select(p => new CommandAdapter<Result<object>, Unit>(p.NextCommand, _ => Unit.Default))
+            .ToProperty(this, x => x.Next, out nextHelper);
+
+        currentTypedPageObservable
+            .Select(p => p.NextCommand)
             .Switch()
             .Successes()
-            .Subscribe(value =>
+            .Subscribe(value => intents.OnNext(new NextIntent(value)));
+
+        var canGoBack = currentStepObservable
+            .CombineLatest(hasFinished, (step, finished) =>
             {
-                if (CurrentStepIndex == TotalPages - 1)
-                {
-                    finishedSubject.OnNext((TResult)value);
-                }
-                else
-                {
-                    previousValues.Push(value);
-                    CurrentStepIndex++;
-                }
+                bool validIndex = step.Index > 0 && !(step.Index == TotalPages - 1 && step.Step.Kind == StepKind.Completion);
+                return validIndex && !finished;
             });
 
-        var canGoBack = this.WhenAnyValue(wizard => wizard.CurrentStep, s =>
-            {
-                if (s.Index == TotalPages - 1)
-                {
-                    return s.Step.Kind != StepKind.Completion;
-                }
+        Back = ReactiveCommand.Create(() => intents.OnNext(new BackIntent()), canGoBack).Enhance();
 
-                return s.Index > 0;
-            })
-            .CombineLatest(hasFinished, (validIndex, finished) => validIndex && !finished);
-
-        Back = ReactiveCommand.Create(() =>
-            {
-                previousValues.Pop();
-                CurrentStepIndex--;
-            }, canGoBack)
-            .Enhance();
-
-        nextHelper = this.WhenAnyValue(x => x.TypedNext, command => new CommandAdapter<Result<object>, Unit>(command, _ => Unit.Default))
-            .ToProperty<SlimWizard<TResult>, IEnhancedCommand>(this, x => x.Next);
-
-        currentPageHelper = this.WhenAnyValue(x => x.CurrentTypedPage)
-            .ToProperty(this, wizard => wizard.CurrentPage);
+        Finished = state
+            .Where(s => s.Finished)
+            .Select(s => s.FinalResult)
+            .Take(1);
     }
 
-    public IObservable<TResult> Finished => finishedSubject.AsObservable();
+    public IObservable<TResult> Finished { get; }
     public IEnhancedCommand Back { get; }
     public int TotalPages { get; }
+
+    public (int Index, IWizardStep Step) CurrentStep => currentStepHelper.Value;
+    public int CurrentStepIndex => currentStepIndexHelper.Value;
+    public Page CurrentTypedPage => currentTypedPageHelper.Value;
+    public IPage CurrentPage => currentPageHelper.Value;
+    public IEnhancedCommand<Result<object>> TypedNext => typedNextHelper.Value;
+    public IEnhancedCommand Next => nextHelper.Value;
 
     private static void EnsureValidSteps(IList<IWizardStep> steps)
     {
         ArgumentNullException.ThrowIfNull(steps);
         if (steps.Count == 0)
+        {
             throw new ArgumentException("steps must contain at least one element.", nameof(steps));
+        }
         for (int i = 0; i < steps.Count; i++)
+        {
             if (steps[i] is null)
+            {
                 throw new ArgumentException($"steps[{i}] is null.", nameof(steps));
+            }
+        }
     }
 
-    private static EnhancedCommand<Result<object>> CreateNextCommand((int Index, IWizardStep Step) step, object page, IObservable<bool> hasFinished)
+    private static IEnhancedCommand<Result<object>> CreateNextCommand((int Index, IWizardStep Step) step, object page, IObservable<bool> hasFinished)
     {
         var command = step.Step.GetNextCommand(page) ??
                       throw new InvalidOperationException($"Wizard step at index {step.Index} returned a null Next command.");
-        var canExecute = hasFinished.CombineLatest(((IReactiveCommand)command).CanExecute, (finished, canExecute) => !finished && canExecute);
+        var canExecute = hasFinished.CombineLatest(((IReactiveCommand)command).CanExecute, (finished, canExec) => !finished && canExec);
         return command.Enhance(canExecute: canExecute);
+    }
+}
+
+public static class ImmutableStackExtensions
+{
+    public static bool TryPeek<T>(this ImmutableStack<T> stack, out T value)
+    {
+        if (stack.IsEmpty)
+        {
+            value = default!;
+            return false;
+        }
+
+        value = stack.Peek();
+        return true;
     }
 }
