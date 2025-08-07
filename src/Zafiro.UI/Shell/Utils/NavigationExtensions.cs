@@ -27,7 +27,7 @@ public static class NavigationExtensions
                 var method = typeof(SectionsBuilder).GetMethod("Add")?.MakeGenericMethod(type);
                 method?.Invoke(builder, new object[] { formattedName, new Icon { Source = icon ?? "fa-window-maximize" }, true });
             }
-        });
+        }, scheduler: RxApp.MainThreadScheduler);
 
         return services;
     }
