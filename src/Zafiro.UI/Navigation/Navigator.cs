@@ -1,6 +1,6 @@
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Collections.Generic;
-using System.Linq;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using Zafiro.Mixins;
@@ -14,14 +14,22 @@ namespace Zafiro.UI.Navigation
         private readonly BehaviorSubject<bool> canGoBackSubject = new(false);
         private readonly BehaviorSubject<object?> contentSubject = new(null);
         private readonly Maybe<ILogger> logger;
-        private readonly Stack<object> navigationStack = new();
         private readonly Dictionary<string, NavigationBookmark> namedBookmarks = new();
+        private readonly Stack<object> navigationStack = new();
+        private readonly IScheduler scheduler;
         private readonly IServiceProvider serviceProvider;
 
-        public Navigator(IServiceProvider serviceProvider, Maybe<ILogger> logger)
+        public Navigator(IServiceProvider serviceProvider, Maybe<ILogger> logger, IScheduler? scheduler)
         {
             this.serviceProvider = serviceProvider;
             this.logger = logger;
+
+
+            this.scheduler = scheduler ??
+                             (SynchronizationContext.Current != null
+                                 ? new SynchronizationContextScheduler(SynchronizationContext.Current)
+                                 : Scheduler.Default);
+
             var reactiveCommand = ReactiveCommand.CreateFromTask<Unit, Result<Unit>>(_ => GoBack(), canGoBackSubject);
             back = reactiveCommand.Enhance();
         }
@@ -36,7 +44,7 @@ namespace Zafiro.UI.Navigation
             namedBookmarks[name] = new NavigationBookmark(navigationStack.Count);
         }
 
-        public IObservable<object?> Content => contentSubject;
+        public IObservable<object?> Content => contentSubject.ObserveOn(scheduler);
 
         public IEnhancedCommand<Unit, Result<Unit>> Back => back;
 
@@ -56,23 +64,6 @@ namespace Zafiro.UI.Navigation
                     .Bind(instance => NavigateToInstance(instance))
                     .TapError(error => logger.Error(error, "Navigation error - service resolution failed for type {Type}", type.Name))
             );
-        }
-
-        private Result<Unit> NavigateToInstance(object instance)
-        {
-            try
-            {
-                navigationStack.Push(instance);
-                contentSubject.OnNext(instance);
-                canGoBackSubject.OnNext(navigationStack.Count > 1);
-                return Result.Success(Unit.Default);
-            }
-            catch (Exception e)
-            {
-                // This should be very rare since we're just updating internal state
-                logger.Error(e, "Navigation error - failed to update navigation state");
-                return Result.Failure<Unit>($"Failed to update navigation state: {e.Message}");
-            }
         }
 
         public Task<Result<Unit>> GoBack()
@@ -107,6 +98,23 @@ namespace Zafiro.UI.Navigation
                     })
                     .TapError(error => logger.Error(error, "Navigation error - failed to go back to named bookmark {Name}", name))
             );
+        }
+
+        private Result<Unit> NavigateToInstance(object instance)
+        {
+            try
+            {
+                navigationStack.Push(instance);
+                contentSubject.OnNext(instance);
+                canGoBackSubject.OnNext(navigationStack.Count > 1);
+                return Result.Success(Unit.Default);
+            }
+            catch (Exception e)
+            {
+                // This should be very rare since we're just updating internal state
+                logger.Error(e, "Navigation error - failed to update navigation state");
+                return Result.Failure<Unit>($"Failed to update navigation state: {e.Message}");
+            }
         }
 
         private Unit ExecuteGoBack()
