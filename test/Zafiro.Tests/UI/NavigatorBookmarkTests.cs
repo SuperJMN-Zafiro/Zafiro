@@ -24,7 +24,7 @@ public class NavigatorBookmarkTests
         services.AddTransient<Page>();
         services.AddTransient<AnotherPage>();
         var provider = services.BuildServiceProvider();
-        var navigator = new Navigator(provider, Maybe<ILogger>.None);
+        var navigator = new Navigator(provider, Maybe<ILogger>.None, null);
 
         await navigator.Go(typeof(Page));
         var bookmark = navigator.CreateBookmark();
@@ -46,7 +46,7 @@ public class NavigatorBookmarkTests
         services.AddTransient<Page>();
         services.AddTransient<AnotherPage>();
         var provider = services.BuildServiceProvider();
-        var navigator = new Navigator(provider, Maybe<ILogger>.None);
+        var navigator = new Navigator(provider, Maybe<ILogger>.None, null);
 
         await navigator.Go(typeof(Page));
         navigator.CreateBookmark("wizard");

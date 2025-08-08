@@ -15,7 +15,7 @@ namespace Zafiro.UI.Navigation
         private readonly BehaviorSubject<object?> contentSubject = new(null);
         private readonly Maybe<ILogger> logger;
         private readonly Dictionary<string, NavigationBookmark> namedBookmarks = new();
-        private readonly Stack<object> navigationStack = new();
+        private readonly Stack<Func<object>> navigationStack = new();
         private readonly IScheduler scheduler;
         private readonly IServiceProvider serviceProvider;
 
@@ -51,8 +51,7 @@ namespace Zafiro.UI.Navigation
         public Task<Result<Unit>> Go(Func<object> factory)
         {
             return Task.FromResult(
-                Result.Try(factory)
-                    .Bind(instance => NavigateToInstance(instance))
+                NavigateUsingFactory(factory)
                     .TapError(error => logger.Error(error, "Navigation error - factory execution failed"))
             );
         }
@@ -60,8 +59,7 @@ namespace Zafiro.UI.Navigation
         public Task<Result<Unit>> Go(Type type)
         {
             return Task.FromResult(
-                Result.Try(() => serviceProvider.GetRequiredService(type))
-                    .Bind(instance => NavigateToInstance(instance))
+                NavigateUsingFactory(() => serviceProvider.GetRequiredService(type))
                     .TapError(error => logger.Error(error, "Navigation error - service resolution failed for type {Type}", type.Name))
             );
         }
@@ -100,21 +98,16 @@ namespace Zafiro.UI.Navigation
             );
         }
 
-        private Result<Unit> NavigateToInstance(object instance)
+        private Result<Unit> NavigateUsingFactory(Func<object> factory)
         {
-            try
-            {
-                navigationStack.Push(instance);
-                contentSubject.OnNext(instance);
-                canGoBackSubject.OnNext(navigationStack.Count > 1);
-                return Result.Success(Unit.Default);
-            }
-            catch (Exception e)
-            {
-                // This should be very rare since we're just updating internal state
-                logger.Error(e, "Navigation error - failed to update navigation state");
-                return Result.Failure<Unit>($"Failed to update navigation state: {e.Message}");
-            }
+            return Result.Try(factory)
+                .Tap(instance =>
+                {
+                    navigationStack.Push(factory);
+                    contentSubject.OnNext(instance);
+                    canGoBackSubject.OnNext(navigationStack.Count > 1);
+                })
+                .Map(_ => Unit.Default);
         }
 
         private Unit ExecuteGoBack()
@@ -129,8 +122,8 @@ namespace Zafiro.UI.Navigation
 
             if (navigationStack.Count > 0)
             {
-                var previous = navigationStack.Peek();
-                contentSubject.OnNext(previous);
+                var previousFactory = navigationStack.Peek();
+                contentSubject.OnNext(previousFactory());
             }
             else
             {
@@ -156,7 +149,7 @@ namespace Zafiro.UI.Navigation
 
             RemoveBookmarksAfter(navigationStack.Count);
 
-            var content = navigationStack.Count > 0 ? navigationStack.Peek() : null;
+            var content = navigationStack.Count > 0 ? navigationStack.Peek()() : null;
             contentSubject.OnNext(content);
             canGoBackSubject.OnNext(navigationStack.Count > 1);
             return Unit.Default;
