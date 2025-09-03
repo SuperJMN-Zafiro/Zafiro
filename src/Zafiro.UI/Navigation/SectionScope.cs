@@ -12,10 +12,9 @@ public sealed class SectionScope : ISectionScope
         scope = provider.CreateScope();
         Navigator = scope.ServiceProvider.GetRequiredService<INavigator>();
         LoadInitial = ReactiveCommand.CreateFromTask(() => Navigator.Go(type));
-        LoadInitial.Execute().Subscribe();
     }
 
-    public ReactiveCommand<Unit,Result<Unit>> LoadInitial { get; }
+    public ReactiveCommand<Unit, Result<Unit>> LoadInitial { get; }
 
     public void Dispose()
     {

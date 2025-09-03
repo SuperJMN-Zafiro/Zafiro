@@ -1,6 +1,7 @@
 ﻿using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using JetBrains.Annotations;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI.SourceGenerators;
 using Zafiro.Reactive;
 using Zafiro.UI.Navigation;
@@ -43,8 +44,24 @@ public partial class Shell : ReactiveObject, IShell
                 }
 
                 Navigator = session.Navigator;
+
+                // Always trigger initial navigation on section change, deferred one tick to avoid construction-time cycles
+                RxApp.MainThreadScheduler.Schedule(session, static (_, s) =>
+                {
+                    s.LoadInitial.Execute().Subscribe();
+                    return Disposable.Empty;
+                });
             })
             .DisposeWith(disposables);
+
+        // Listen to section change requests, if the action bus is registered
+        var sectionActions = provider.GetService<ISectionActions>();
+        if (sectionActions is not null)
+        {
+            sectionActions.GoToSectionRequests
+                .Subscribe(GoToSection)
+                .DisposeWith(disposables);
+        }
 
         SelectedSection = Sections.OfType<IContentSection>().FirstOrDefault();
         Header = shellProperties.Header;
