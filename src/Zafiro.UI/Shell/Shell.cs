@@ -45,12 +45,15 @@ public partial class Shell : ReactiveObject, IShell
 
                 Navigator = session.Navigator;
 
-                // Always trigger initial navigation on section change, deferred one tick to avoid construction-time cycles
-                RxApp.MainThreadScheduler.Schedule(session, static (_, s) =>
+                // Trigger navigation only once per section; defer one tick to avoid construction-time cycles
+                if (!session.IsInitialized)
                 {
-                    s.LoadInitial.Execute().Subscribe();
-                    return Disposable.Empty;
-                });
+                    RxApp.MainThreadScheduler.Schedule(session, static (_, s) =>
+                    {
+                        s.LoadInitial.Execute().Subscribe();
+                        return Disposable.Empty;
+                    });
+                }
             })
             .DisposeWith(disposables);
 
