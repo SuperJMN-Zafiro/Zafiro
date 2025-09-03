@@ -1,8 +1,11 @@
 ﻿using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI.SourceGenerators;
+using Zafiro.CSharpFunctionalExtensions;
 using Zafiro.Reactive;
 using Zafiro.UI.Navigation;
 using Zafiro.UI.Navigation.Sections;
@@ -14,14 +17,16 @@ public partial class Shell : ReactiveObject, IShell
 {
     private readonly CompositeDisposable disposables = new();
     private readonly IServiceProvider provider;
-    private readonly Dictionary<IContentSection, SectionScope> sessions = new();
+    private readonly ISectionSessionFactory sectionSessionFactory;
+    private readonly Dictionary<IContentSection, Lazy<Task<Result<SectionScope>>>> sessions = new();
 
-    private INavigator navigator;
+    [Reactive] private INavigator navigator;
     [Reactive] private IContentSection? selectedSection;
 
     public Shell(ShellProperties shellProperties, IEnumerable<ISection> sections, IServiceProvider provider)
     {
         this.provider = provider;
+        sectionSessionFactory = provider.GetService<ISectionSessionFactory>() ?? new SectionSessionFactory(provider);
         Sections = sections;
 
         // Header follows the current navigator
@@ -31,30 +36,15 @@ public partial class Shell : ReactiveObject, IShell
             .Switch()
             .ReplayLastActive();
 
-        // When section changes, switch to (or create) its own navigator session
+        // When section changes, create or get its session via async factory and bind Navigator reactively
         this.WhenAnyValue(x => x.SelectedSection)
             .WhereNotNull()
             .DistinctUntilChanged()
-            .Subscribe(contentSection =>
-            {
-                if (!sessions.TryGetValue(contentSection, out var session))
-                {
-                    session = new SectionScope(this.provider, contentSection.RootType);
-                    sessions[contentSection] = session;
-                }
-
-                Navigator = session.Navigator;
-
-                // Trigger navigation only once per section; defer one tick to avoid construction-time cycles
-                if (!session.IsInitialized)
-                {
-                    RxApp.MainThreadScheduler.Schedule(session, static (_, s) =>
-                    {
-                        s.LoadInitial.Execute().Subscribe();
-                        return Disposable.Empty;
-                    });
-                }
-            })
+            .Select(section => GetOrCreate(section).ToObservable())
+            .Switch()
+            .Successes()
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(session => Navigator = session.Navigator)
             .DisposeWith(disposables);
 
         // Listen to section change requests, if the action bus is registered
@@ -70,12 +60,6 @@ public partial class Shell : ReactiveObject, IShell
         Header = shellProperties.Header;
     }
 
-    public INavigator Navigator
-    {
-        get => navigator;
-        private set => this.RaiseAndSetIfChanged(ref navigator, value);
-    }
-
     public object Header { get; set; }
     public IObservable<object?> ContentHeader { get; }
     public IEnumerable<ISection> Sections { get; }
@@ -83,5 +67,16 @@ public partial class Shell : ReactiveObject, IShell
     public void GoToSection(string sectionName)
     {
         SelectedSection = Sections.OfType<IContentSection>().First(x => x.Name == sectionName);
+    }
+
+    private Task<Result<SectionScope>> GetOrCreate(IContentSection section)
+    {
+        if (!sessions.TryGetValue(section, out var lazyTask))
+        {
+            lazyTask = new Lazy<Task<Result<SectionScope>>>(() => sectionSessionFactory.Create(section));
+            sessions[section] = lazyTask;
+        }
+
+        return lazyTask.Value;
     }
 }
