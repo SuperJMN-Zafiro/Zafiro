@@ -12,9 +12,9 @@ public class ShellProperties(object header, Func<object, IObservable<object?>>? 
 
     private static IObservable<object?> DefaultGetContentHeader(object content)
     {
-        if (content is SectionScope sectionScope)
+        if (content is INavigator navigator)
         {
-            return sectionScope.Navigator.Content.Select(o => o?.GetType().GetCustomAttribute<SectionAttribute>()?.Name);
+            return navigator.Content.Select(o => o?.GetType().GetCustomAttribute<SectionAttribute>()?.Name);
         }
 
         return Observable.Return<object?>(null);
