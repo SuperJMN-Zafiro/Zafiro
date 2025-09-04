@@ -1,3 +1,4 @@
+using Zafiro.UI.Navigation;
 using Zafiro.UI.Navigation.Sections;
 
 namespace Zafiro.UI.Shell;
@@ -8,6 +9,6 @@ public interface IShell
     public IObservable<object?> ContentHeader { get; }
     IEnumerable<ISection> Sections { get; }
     IContentSection SelectedSection { get; set; }
-    IObservable<object?> Content { get; }
+    INavigator Navigator { get; }
     void GoToSection(string sectionName);
 }

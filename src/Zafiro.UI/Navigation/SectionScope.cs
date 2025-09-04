@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Reactive.Linq;
+using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Zafiro.UI.Navigation;
@@ -11,11 +12,26 @@ public sealed class SectionScope : ISectionScope
     {
         scope = provider.CreateScope();
         Navigator = scope.ServiceProvider.GetRequiredService<INavigator>();
-        LoadInitial = ReactiveCommand.CreateFromTask(() => Navigator.Go(type));
-        LoadInitial.Execute().Subscribe();
+
+        // Initialize command is idempotent: it runs only once successfully per section scope
+        LoadInitial = ReactiveCommand.CreateFromTask(
+            async () =>
+            {
+                var result = await Navigator.Go(type);
+                if (result.IsSuccess)
+                {
+                    IsInitialized = true;
+                }
+
+                return result;
+            },
+            Observable.Defer(() => Observable.Return(!IsInitialized))
+        );
     }
 
-    public ReactiveCommand<Unit,Result<Unit>> LoadInitial { get; }
+    public ReactiveCommand<Unit, Result<Unit>> LoadInitial { get; }
+
+    public bool IsInitialized { get; private set; }
 
     public void Dispose()
     {
