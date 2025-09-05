@@ -85,3 +85,21 @@ Project rules for Warp
 - Do not suffix method names with Async even if they return Task.
 - Publishing is handled with DotnetDeployer (nuget and release). Avoid introducing or relying on NUKE build; any legacy references should be ignored in favor of DotnetDeployer.
 
+Android AOT + XAML Behaviors
+
+- Always use the Avalonia XML namespace URI for behaviors instead of assembly-qualified namespaces in XAML.
+  - Use xmlns:b="https://github.com/avaloniaui" and tags like b:DropTargetBehavior, b:DragDrop, etc.
+  - Do not use xmlns with assembly=... for Avalonia.Xaml.Interactions.* or Xaml.Behaviors.Interactions.* because it forces runtime assembly loads that may be trimmed in Release/AOT.
+- Consolidate behavior packages to Xaml.Behaviors family and avoid mixing Avalonia.Xaml.Interactions.* with Xaml.Behaviors.* on Android.
+  - Rationale: duplicate assemblies and differing assembly identities complicate trimming and packaging.
+- When building Android Release with AOT and trimming, ensure behaviors assemblies are rooted for the linker:
+  - Add TrimmerRootAssembly entries for Xaml.Behaviors and the specific Xaml.Behaviors.Interactions.* packages used.
+  - This prevents the linker from removing assemblies that are referenced indirectly via XAML.
+- MinSdk and globalization:
+  - AndroidMinSdkVersion is set to 21 and InvariantGlobalization=true to reduce APK size and warnings.
+
+Rationale
+
+- In AOT/trimmed builds, any assembly only referenced via XAML may be removed by the linker. Using the Avalonia URI (XmlnsDefinition) avoids hard assembly loads and works across platforms.
+- Rooting the assemblies guarantees they are packaged and available at runtime, preventing FileNotFoundException on startup when parsing XAML templates that reference behaviors.
+
