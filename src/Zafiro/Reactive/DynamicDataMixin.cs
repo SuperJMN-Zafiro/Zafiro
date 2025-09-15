@@ -37,10 +37,20 @@ public static class DynamicDataMixin
             {
                 throw new InvalidOperationException("ToObservableChangeSetIfPossible returned null");
             }
-            
+
             return observable;
         }
 
         return source.AsObservableChangeSet();
+    }
+
+    public static IObservable<IChangeSet<T, TKey>> ToObservableChangeSetIfPossible<T, TKey>(
+        this IEnumerable<T> source,
+        Func<T, TKey> keySelector
+    )
+        where T : notnull
+        where TKey : notnull
+    {
+        return source.ToObservableChangeSetIfPossible().AddKey(keySelector);
     }
 }
