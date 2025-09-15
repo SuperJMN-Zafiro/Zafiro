@@ -1,3 +1,4 @@
+using System.Reactive.Linq;
 using System.Windows.Input;
 
 namespace Zafiro.UI.Navigation.Sections;
@@ -5,6 +6,10 @@ namespace Zafiro.UI.Navigation.Sections;
 public class Section
 {
     public bool IsPrimary { get; init; } = true;
+
+    // Defaults for reactive visibility and sorting
+    public IObservable<bool> IsVisible { get; init; } = Observable.Return(true);
+    public IObservable<int> SortOrder { get; init; } = Observable.Return(0);
 
     public static IContentSection Content<T>(string name, IObservable<T> getViewModel, object? icon, bool isPrimary = true) where T : class
     {

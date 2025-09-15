@@ -5,6 +5,7 @@ namespace Zafiro.UI.Navigation.Sections;
 public class ContentSection<T>(string name, IObservable<T> content, object? icon) : Section, IContentSection where T : class
 {
     public string Name { get; } = name;
+    public string FriendlyName => Name;
 
     public object? Icon { get; } = icon;
 
