@@ -205,7 +205,8 @@ public static class ObservableMixin
     /// <returns></returns>
     public static IDisposable UpdateCollectionWhenSomeOtherCollectionObservableChanges<T, TItem>(
         this T parent,
-        Expression<Func<T, ReadOnlyObservableCollection<TItem>>> selector, out ReadOnlyObservableCollection<TItem> collection) where TItem : notnull where T : ReactiveObject
+        Expression<Func<T, ReadOnlyObservableCollection<TItem>>> selector,
+        out ReadOnlyObservableCollection<TItem> collection) where TItem : notnull where T : ReactiveObject
     {
         CompositeDisposable disposable = new();
         var source = new SourceList<TItem>()
@@ -234,7 +235,7 @@ public static class ObservableMixin
     /// <param name="observableOfCollections">The observable of read-only observable collections.</param>
     /// <param name="collection">The resulting read-only observable collection.</param>
     /// <returns>An IDisposable object that can be used to unsubscribe from the binding.</returns>
-    public static IDisposable Bind<T>(
+    public static IDisposable BindObservableOfCollections<T>(
         this IObservable<ReadOnlyObservableCollection<T>> observableOfCollections,
         out ReadOnlyObservableCollection<T> collection)
     {

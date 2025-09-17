@@ -6,10 +6,7 @@ public class ContentSection<T>(string name, IObservable<T> content, object? icon
 {
     public string Name { get; } = name;
     public string FriendlyName => Name;
-
     public object? Icon { get; } = icon;
-
     public Type RootType { get; } = typeof(T);
-
     public IObservable<object> Content => content.Select(object (arg) => arg);
 }
