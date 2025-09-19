@@ -1,15 +1,9 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
+      <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="CSharpFunctionalExtensions" Version="3.6.0" />
     <PackageVersion Include="CSharpFunctionalExtensions.FluentAssertions" Version="3.0.0" />
@@ -31,10 +25,10 @@
     <PackageVersion Include="NodaTime" Version="3.2.2" />
     <PackageVersion Include="Nuke.Common" Version="9.0.4" />
     <PackageVersion Include="Octokit" Version="14.0.0" />
-    <PackageVersion Include="ReactiveUI" Version="21.0.1" />
+      <PackageVersion Include="ReactiveUI" Version="20.1.63"/>
     <PackageVersion Include="ReactiveUI.SourceGenerators" Version="2.4.1" />
     <PackageVersion Include="ReactiveUI.SourceGenerators.Analyzers.CodeFixes" Version="2.4.1" />
-    <PackageVersion Include="ReactiveUI.Validation" Version="5.0.1" />
+      <PackageVersion Include="ReactiveUI.Validation" Version="4.1.1"/>
     <PackageVersion Include="Refit" Version="8.0.0" />
     <PackageVersion Include="Serilog" Version="4.3.0" />
     <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.19" />
