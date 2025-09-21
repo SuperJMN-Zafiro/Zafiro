@@ -18,8 +18,8 @@ public class GroupGetter
     public object GetValue(IEnumerable<object> targets)
     {
         var query = from target in targets
-            from prop in target.GetType().GetRuntimeProperties().Where(x => string.Equals(x.Name, property.Name))
-            select new { target, prop };
+                    from prop in target.GetType().GetRuntimeProperties().Where(x => string.Equals(x.Name, property.Name))
+                    select new { target, prop };
 
         var values = query.Select(x =>
         {

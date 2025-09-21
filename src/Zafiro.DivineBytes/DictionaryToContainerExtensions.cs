@@ -33,7 +33,7 @@ public static class DictionaryToContainerExtensions
                 }
 
                 var pathParts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                
+
                 if (pathParts.Length == 1)
                 {
                     // This is a file directly in the root
@@ -45,12 +45,12 @@ public static class DictionaryToContainerExtensions
                     // This is a nested path, group by first directory
                     var firstDir = pathParts[0];
                     var remainingPath = string.Join("/", pathParts.Skip(1));
-                    
+
                     if (!directoryGroups.ContainsKey(firstDir))
                     {
                         directoryGroups[firstDir] = new List<(string, IByteSource)>();
                     }
-                    
+
                     directoryGroups[firstDir].Add((remainingPath, content));
                 }
             }

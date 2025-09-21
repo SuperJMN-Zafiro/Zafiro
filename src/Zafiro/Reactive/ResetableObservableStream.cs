@@ -17,7 +17,7 @@ public class ResetableObservableStream(IObservable<byte[]> observable) : Stream
     public override bool CanRead => !isDisposed;
     public override bool CanSeek => !isDisposed;
     public override bool CanWrite => false;
-        
+
     public override long Length
     {
         get
@@ -30,10 +30,10 @@ public class ResetableObservableStream(IObservable<byte[]> observable) : Stream
             }
         }
     }
-        
-    public override long Position 
-    { 
-        get 
+
+    public override long Position
+    {
+        get
         {
             ThrowIfDisposed();
             lock (lockObject)
@@ -53,7 +53,7 @@ public class ResetableObservableStream(IObservable<byte[]> observable) : Stream
 
         ThrowIfDisposed();
         EnsureDataLoaded();
-            
+
         lock (lockObject)
         {
             if (loadException != null)
@@ -87,7 +87,7 @@ public class ResetableObservableStream(IObservable<byte[]> observable) : Stream
             Exception? exception = null;
 
             using var subscription = observable.Subscribe(
-                onNext: data => 
+                onNext: data =>
                 {
                     lock (lockObject)
                     {
@@ -136,7 +136,7 @@ public class ResetableObservableStream(IObservable<byte[]> observable) : Stream
     {
         ThrowIfDisposed();
         EnsureDataLoaded();
-            
+
         lock (lockObject)
         {
             var newPosition = origin switch
@@ -149,7 +149,7 @@ public class ResetableObservableStream(IObservable<byte[]> observable) : Stream
 
             if (newPosition < 0)
                 throw new ArgumentOutOfRangeException(nameof(offset), "Seek position cannot be negative");
-                
+
             if (newPosition > (cachedData?.Length ?? 0))
                 newPosition = cachedData?.Length ?? 0;
 

@@ -85,7 +85,7 @@ public class ByteSource(IObservable<byte[]> bytes) : IByteSource
 
         return new ByteSource(str.ToByteStream(encoding, bufferSize));
     }
-    
+
     public static IByteSource FromString(
         string str)
     {

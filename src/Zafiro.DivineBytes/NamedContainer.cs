@@ -14,17 +14,17 @@ public class NamedContainer : INamedContainer
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Named container must have a non-empty name", nameof(name));
-        
+
         Name = name;
         Resources = resources.ToList();
         Subcontainers = subcontainers.ToList();
     }
-    
+
     public NamedContainer(string name, params INamed[] contents)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("Named container must have a non-empty name", nameof(name));
-        
+
         Name = name;
         Resources = contents.OfType<INamedByteSource>().ToList();
         Subcontainers = contents.OfType<INamedContainer>().ToList();

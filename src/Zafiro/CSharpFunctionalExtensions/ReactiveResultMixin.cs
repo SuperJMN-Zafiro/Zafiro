@@ -387,7 +387,7 @@ namespace Zafiro.CSharpFunctionalExtensions
         public static IObservable<Result<T>> ToResult<T>(this IObservable<T> source, string? errorMessage = null)
         {
             return source.Select(Result.Success)
-                .Catch<Result<T>, Exception>(ex => 
+                .Catch<Result<T>, Exception>(ex =>
                     Observable.Return(Result.Failure<T>(errorMessage ?? ex.Message)));
         }
 
@@ -403,12 +403,12 @@ namespace Zafiro.CSharpFunctionalExtensions
         /// <remarks>
         /// Essential for ensuring responsiveness in reactive sequences that may stall.
         /// </remarks>
-        public static IObservable<Result<T>> WithTimeout<T>(this IObservable<Result<T>> source, 
+        public static IObservable<Result<T>> WithTimeout<T>(this IObservable<Result<T>> source,
             TimeSpan timeout,
             string? timeoutMessage = null)
         {
             return source.Timeout(timeout)
-                .Catch<Result<T>, TimeoutException>(_ => 
+                .Catch<Result<T>, TimeoutException>(_ =>
                     Observable.Return(Result.Failure<T>(timeoutMessage ?? "Operation timed out")));
         }
     }

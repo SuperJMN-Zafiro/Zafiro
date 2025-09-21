@@ -104,8 +104,8 @@ public class ForceDirectedEngine(IMutableGraph mutableGraph) : IEngine
     {
         Nodes.ForEach(x =>
         {
-            x.X = Random.Shared.Next((int) width);
-            x.Y = Random.Shared.Next((int) height);
+            x.X = Random.Shared.Next((int)width);
+            x.Y = Random.Shared.Next((int)height);
         });
     }
 }

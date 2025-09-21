@@ -10,14 +10,14 @@ public class UnixFile : INamedByteSource, IPermissioned, IOwned
 
     public UnixFile(INamedByteSource inner, UnixPermissions perms, int ownerId)
     {
-        this.inner      = inner;
+        this.inner = inner;
         Permissions = perms;
         OwnerId = ownerId;
     }
 
     public IObservable<byte[]> Bytes
-        => Permissions.OwnerRead 
-            ? inner.Bytes 
+        => Permissions.OwnerRead
+            ? inner.Bytes
             : Observable.Empty<byte[]>();
 
     public IDisposable Subscribe(IObserver<byte[]> observer)

@@ -17,8 +17,8 @@ public static class ByteSourceUriExtensions
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static async Task<Result<IByteSource>> ToByteSourceAsync(
-        this Uri uri, 
-        IUriContentProvider contentProvider, 
+        this Uri uri,
+        IUriContentProvider contentProvider,
         CancellationToken cancellationToken = default)
     {
         return await contentProvider.GetByteSourceAsync(uri, cancellationToken);
@@ -33,8 +33,8 @@ public static class ByteSourceUriExtensions
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static async Task<Result<IByteSource>> ToByteSource(
-        this Uri uri, 
-        HttpClient httpClient, 
+        this Uri uri,
+        HttpClient httpClient,
         CancellationToken cancellationToken = default)
     {
         return await ByteSourceUriFactoryMethods.FromUri(uri, httpClient, cancellationToken);
@@ -54,8 +54,8 @@ public static class StringUriExtensions
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static async Task<Result<IByteSource>> ToByteSource(
-        this string uriString, 
-        IUriContentProvider contentProvider, 
+        this string uriString,
+        IUriContentProvider contentProvider,
         CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
@@ -75,8 +75,8 @@ public static class StringUriExtensions
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static async Task<Result<IByteSource>> ToByteSource(
-        this string uriString, 
-        HttpClient httpClient, 
+        this string uriString,
+        HttpClient httpClient,
         CancellationToken cancellationToken = default)
     {
         return await ByteSourceUriFactoryMethods.FromUri(uriString, httpClient, cancellationToken);

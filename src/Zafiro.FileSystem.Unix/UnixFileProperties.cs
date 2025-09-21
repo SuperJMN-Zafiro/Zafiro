@@ -8,7 +8,7 @@ public record UnixFileProperties
     public required Maybe<string> GroupName { get; init; }
     public required Maybe<int> OwnerId { get; init; }
     public required Maybe<int> GroupId { get; init; }
-    
+
     public static UnixFileProperties RegularFileProperties() => new()
     {
         FileMode = "644".ToFileMode(),
@@ -18,7 +18,7 @@ public record UnixFileProperties
         OwnerUsername = "root",
         LastModification = DateTimeOffset.Now
     };
-    
+
     public static UnixFileProperties RegularDirectoryProperties() => new()
     {
         FileMode = "755".ToFileMode(),

@@ -37,7 +37,7 @@ public static class DynamicDataMixin
             {
                 throw new InvalidOperationException("ToObservableChangeSetIfPossible returned null");
             }
-            
+
             return observable;
         }
 

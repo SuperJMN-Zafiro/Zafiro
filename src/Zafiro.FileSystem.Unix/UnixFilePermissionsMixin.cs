@@ -32,7 +32,7 @@ public static class UnixFilePermissionsMixin
 
         return mode;
     }
-    
+
     public static string ToFileModeString(this UnixFileMode mode)
     {
         // Convertimos los permisos individuales

@@ -74,9 +74,9 @@ public static class Extensions
         where TAttribute : Attribute
     {
         return from type in types
-            let att = type.GetTypeInfo().GetCustomAttribute<TAttribute>()
-            where att != null
-            select converter(type, att);
+               let att = type.GetTypeInfo().GetCustomAttribute<TAttribute>()
+               where att != null
+               select converter(type, att);
     }
 
     public static IEnumerable<TResult> GatherAttributesFromMembers<TAttribute, TResult>(
@@ -85,10 +85,10 @@ public static class Extensions
         where TAttribute : Attribute
     {
         return from type in types
-            from member in type.GetRuntimeProperties()
-            let att = member.GetCustomAttribute<TAttribute>()
-            where att != null
-            select converter(member, att);
+               from member in type.GetRuntimeProperties()
+               let att = member.GetCustomAttribute<TAttribute>()
+               where att != null
+               select converter(member, att);
     }
 
     public static IEnumerable<IEnumerable<T>> Chunkify<T>(this IEnumerable<T> source,

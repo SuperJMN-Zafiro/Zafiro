@@ -44,15 +44,15 @@ public class Command(Maybe<ILogger> logger) : ICommand
         process.Start();
 
         var outputTask = ReadStreamAsync(process.StandardOutput);
-        var errorTask  = ReadStreamAsync(process.StandardError);
+        var errorTask = ReadStreamAsync(process.StandardError);
 
         await Task.WhenAll(outputTask, errorTask);
         await process.WaitForExitAsync();
 
-        var output         = outputTask.Result;
-        var error          = errorTask.Result;
+        var output = outputTask.Result;
+        var error = errorTask.Result;
         var combinedOutput = BuildCombinedLogMessage(output, error);
-        combinedOutput     = SanitizeSensitiveInfo(combinedOutput);
+        combinedOutput = SanitizeSensitiveInfo(combinedOutput);
 
         if (process.ExitCode == 0)
         {

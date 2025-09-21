@@ -17,7 +17,7 @@ public class HeatmapWithDendrograms(ICluster rowsCluster, ICluster columnsCluste
         var clusterTableColumns = columnDistances.ToClusterTable();
         var columnsCluster = columnClusteringStrategy.Clusterize(clusterTableColumns);
         var columnOrder = MoreEnumerable.TraverseDepthFirst(columnsCluster,
-        node => node is Internal<TColumn> i ? new[] {i.Left, i.Right} : Enumerable.Empty<Cluster<TColumn>>())
+        node => node is Internal<TColumn> i ? new[] { i.Left, i.Right } : Enumerable.Empty<Cluster<TColumn>>())
         .OfType<Leaf<TColumn>>()
         .Select(x => x.Item)
         .ToList();
@@ -26,7 +26,7 @@ public class HeatmapWithDendrograms(ICluster rowsCluster, ICluster columnsCluste
         var clusterTableRows = rowDistances.ToClusterTable();
         var rowsCluster = rowClusteringStrategy.Clusterize(clusterTableRows);
         var rowOrder = MoreEnumerable.TraverseDepthFirst(rowsCluster,
-                node => node is Internal<TRow> i ? new[] {i.Left, i.Right} : Enumerable.Empty<Cluster<TRow>>())
+                node => node is Internal<TRow> i ? new[] { i.Left, i.Right } : Enumerable.Empty<Cluster<TRow>>())
             .OfType<Leaf<TRow>>()
             .Select(x => x.Item)
             .ToList();

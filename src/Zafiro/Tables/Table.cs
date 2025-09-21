@@ -9,7 +9,7 @@ namespace Zafiro.Tables;
 
 public class Table<TLabel, TCell>(TCell[,] matrix, IList<TLabel> labels) : Table<TLabel, TLabel, TCell>(matrix, labels, labels) where TCell : notnull;
 
-public class Table<TRow, TColumn, TCell> : ITable where TCell: notnull
+public class Table<TRow, TColumn, TCell> : ITable where TCell : notnull
 {
     public TCell[,] Matrix { get; }
     object[,] ITable.Matrix => GetObjectMatrix();

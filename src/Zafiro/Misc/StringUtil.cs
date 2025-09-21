@@ -13,12 +13,12 @@ public static class StringUtil
         async Task<Result<string>> TryName(string name, string current, int i)
         {
             var result = await isValid(current);
-        
-            return result is { IsSuccess: true, Value: true } 
-                ? Result.Success(current) 
-                : result.IsFailure 
-                    ? result.ConvertFailure<string>() 
-                    : await TryName(seed, generateNewName(seed, i + 1), i+1);
+
+            return result is { IsSuccess: true, Value: true }
+                ? Result.Success(current)
+                : result.IsFailure
+                    ? result.ConvertFailure<string>()
+                    : await TryName(seed, generateNewName(seed, i + 1), i + 1);
         }
     }
 }
