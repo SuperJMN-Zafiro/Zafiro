@@ -17,8 +17,8 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static async Task<Result<IByteSource>> FromUri(
-        Uri uri, 
-        HttpClient httpClient, 
+        Uri uri,
+        HttpClient httpClient,
         CancellationToken cancellationToken = default)
     {
         var contentProvider = new HttpUriContentProvider(httpClient);
@@ -34,8 +34,8 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static async Task<Result<IByteSource>> FromUri(
-        this string uriString, 
-        HttpClient httpClient, 
+        this string uriString,
+        HttpClient httpClient,
         CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
@@ -55,7 +55,7 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static Task<Result<IByteSource>> FromUri(
-        this Uri uri, 
+        this Uri uri,
         CancellationToken cancellationToken = default)
     {
         try
@@ -74,7 +74,7 @@ public static class ByteSourceUriFactoryMethods
                 {
                     var response = await httpClient.GetAsync(uri, cancellationToken);
                     response.EnsureSuccessStatusCode();
-                    
+
                     // Create a wrapper that disposes both the HttpClient and the HttpResponseMessage
                     var responseStream = await HttpResponseMessageStream.Create(response);
                     return new HttpClientOwningStream(responseStream, httpClient);
@@ -103,7 +103,7 @@ public static class ByteSourceUriFactoryMethods
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>A Result with the ByteSource if the operation is successful</returns>
     public static async Task<Result<IByteSource>> FromUri(
-        string uriString, 
+        string uriString,
         CancellationToken cancellationToken = default)
     {
         if (!Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
@@ -147,10 +147,10 @@ public static class ByteSourceUriFactoryMethods
         public override bool CanSeek => innerStream.CanSeek;
         public override bool CanWrite => innerStream.CanWrite;
         public override long Length => innerStream.Length;
-        public override long Position 
-        { 
-            get => innerStream.Position; 
-            set => innerStream.Position = value; 
+        public override long Position
+        {
+            get => innerStream.Position;
+            set => innerStream.Position = value;
         }
 
         public override void Flush() => innerStream.Flush();

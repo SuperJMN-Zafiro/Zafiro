@@ -31,6 +31,6 @@ public class Username : ValueObject, IComparable
 
     public int CompareTo(object? obj)
     {
-        return Identifier.CompareTo(obj);   
+        return Identifier.CompareTo(obj);
     }
 }

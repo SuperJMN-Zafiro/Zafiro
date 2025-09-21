@@ -13,7 +13,7 @@ public enum Permission
     OtherRead = 1 << 6,   // 64
     OtherWrite = 1 << 7,  // 128
     OtherExec = 1 << 8,   // 256
-    
+
     // Combinaciones comunes
     OwnerAll = OwnerRead | OwnerWrite | OwnerExec,
     GroupAll = GroupRead | GroupWrite | GroupExec,
@@ -26,50 +26,50 @@ public enum Permission
 
 public struct UnixPermissions
 {
-    public bool OwnerRead   { get; }
-    public bool OwnerWrite  { get; }
-    public bool OwnerExec   { get; }
-    public bool GroupRead   { get; }
-    public bool GroupWrite  { get; }
-    public bool GroupExec   { get; }
-    public bool OtherRead   { get; }
-    public bool OtherWrite  { get; }
-    public bool OtherExec   { get; }
+    public bool OwnerRead { get; }
+    public bool OwnerWrite { get; }
+    public bool OwnerExec { get; }
+    public bool GroupRead { get; }
+    public bool GroupWrite { get; }
+    public bool GroupExec { get; }
+    public bool OtherRead { get; }
+    public bool OtherWrite { get; }
+    public bool OtherExec { get; }
 
     public UnixPermissions(bool ownerRead, bool ownerWrite, bool ownerExec,
         bool groupRead, bool groupWrite, bool groupExec,
         bool otherRead, bool otherWrite, bool otherExec)
     {
-        OwnerRead  = ownerRead;
+        OwnerRead = ownerRead;
         OwnerWrite = ownerWrite;
-        OwnerExec  = ownerExec;
-        GroupRead  = groupRead;
+        OwnerExec = ownerExec;
+        GroupRead = groupRead;
         GroupWrite = groupWrite;
-        GroupExec  = groupExec;
-        OtherRead  = otherRead;
+        GroupExec = groupExec;
+        OtherRead = otherRead;
         OtherWrite = otherWrite;
-        OtherExec  = otherExec;
+        OtherExec = otherExec;
     }
 
     // Constructor más cómodo usando flags
     public UnixPermissions(Permission permissions)
     {
-        OwnerRead  = permissions.HasFlag(Permission.OwnerRead);
+        OwnerRead = permissions.HasFlag(Permission.OwnerRead);
         OwnerWrite = permissions.HasFlag(Permission.OwnerWrite);
-        OwnerExec  = permissions.HasFlag(Permission.OwnerExec);
-        GroupRead  = permissions.HasFlag(Permission.GroupRead);
+        OwnerExec = permissions.HasFlag(Permission.OwnerExec);
+        GroupRead = permissions.HasFlag(Permission.GroupRead);
         GroupWrite = permissions.HasFlag(Permission.GroupWrite);
-        GroupExec  = permissions.HasFlag(Permission.GroupExec);
-        OtherRead  = permissions.HasFlag(Permission.OtherRead);
+        GroupExec = permissions.HasFlag(Permission.GroupExec);
+        OtherRead = permissions.HasFlag(Permission.OtherRead);
         OtherWrite = permissions.HasFlag(Permission.OtherWrite);
-        OtherExec  = permissions.HasFlag(Permission.OtherExec);
+        OtherExec = permissions.HasFlag(Permission.OtherExec);
     }
 
     // Método para obtener los permisos como flags
     public Permission ToPermission()
     {
         Permission result = Permission.None;
-        
+
         if (OwnerRead) result |= Permission.OwnerRead;
         if (OwnerWrite) result |= Permission.OwnerWrite;
         if (OwnerExec) result |= Permission.OwnerExec;
@@ -79,7 +79,7 @@ public struct UnixPermissions
         if (OtherRead) result |= Permission.OtherRead;
         if (OtherWrite) result |= Permission.OtherWrite;
         if (OtherExec) result |= Permission.OtherExec;
-        
+
         return result;
     }
 

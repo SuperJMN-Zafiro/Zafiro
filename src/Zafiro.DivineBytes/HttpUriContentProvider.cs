@@ -40,7 +40,7 @@ public class HttpUriContentProvider : IUriContentProvider, IDisposable
 
             // Validate that the URI is accessible without creating a ByteSource yet
             using var testResponse = await httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-            
+
             if (!testResponse.IsSuccessStatusCode)
             {
                 return Result.Failure<IByteSource>($"Error downloading from {uri}: {testResponse.StatusCode} - {testResponse.ReasonPhrase}");
@@ -51,7 +51,7 @@ public class HttpUriContentProvider : IUriContentProvider, IDisposable
             {
                 var response = await httpClient.GetAsync(uri, cancellationToken);
                 response.EnsureSuccessStatusCode();
-                
+
                 return await HttpResponseMessageStream.Create(response);
             });
 

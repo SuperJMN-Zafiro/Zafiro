@@ -15,7 +15,7 @@ public sealed class DefaultHttpClientFactory : IHttpClientFactory, IDisposable
         {
             return;
         }
-        
+
         handlerLazy.Value.Dispose();
     }
 }

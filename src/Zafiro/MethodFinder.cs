@@ -19,10 +19,10 @@ public static class MethodFinder
         var allMethods = fromInterfaces.Concat(fromType);
 
         var matching = from method in allMethods
-            where method.Name == name
-            where HasCorrectArgumentTypes(method, parameterTypes)
-            where !method.IsStatic
-            select method;
+                       where method.Name == name
+                       where HasCorrectArgumentTypes(method, parameterTypes)
+                       where !method.IsStatic
+                       select method;
 
         return matching.FirstOrDefault();
     }

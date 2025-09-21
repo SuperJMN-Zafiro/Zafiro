@@ -65,7 +65,7 @@ public static class Extensions
 
         return new Table<TItem, TValue>(matrix, labels);
     }
-    
+
     public static TaggedEnumerable<TCell, TRow> GetRow<TRow, TColumn, TCell>(this Table<TRow, TColumn, TCell> table,
         TRow row) where TCell : notnull where TRow : notnull
     {
@@ -207,7 +207,7 @@ public static class Extensions
             for (var c = 0; c < table.Columns; c++)
             {
                 yield return table.Matrix[i, c];
-            }    
+            }
         }
     }
 }

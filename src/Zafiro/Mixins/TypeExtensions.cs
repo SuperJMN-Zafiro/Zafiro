@@ -28,9 +28,9 @@ public static class TypeExtensions
     public static TSelector GetAttributeFromProperty<TAttribute, TSelector>(this Type type, Func<PropertyInfo, TAttribute, TSelector> selector) where TAttribute : Attribute
     {
         var attributes = from prop in type.GetRuntimeProperties()
-            let attr = prop.GetCustomAttribute<TAttribute>()
-            where attr != null
-            select new { prop, attr };
+                         let attr = prop.GetCustomAttribute<TAttribute>()
+                         where attr != null
+                         select new { prop, attr };
 
         var single = attributes.FirstOrDefault();
 
@@ -40,9 +40,9 @@ public static class TypeExtensions
     public static IEnumerable<TSelector> GetAttributesFromProperties<TAttribute, TSelector>(this Type type, Func<PropertyInfo, TAttribute, TSelector> selector) where TAttribute : Attribute
     {
         var attributes = from prop in type.GetRuntimeProperties()
-            let attr = prop.GetCustomAttribute<TAttribute>()
-            where attr != null
-            select new { prop, attr };
+                         let attr = prop.GetCustomAttribute<TAttribute>()
+                         where attr != null
+                         select new { prop, attr };
 
         return attributes.Select(arg => selector(arg.prop, arg.attr));
     }

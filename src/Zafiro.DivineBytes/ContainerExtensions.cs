@@ -15,7 +15,7 @@ public static class ContainerExtensions
         return files.ToDirectoryTree()
             .Map(container => new RootContainer(container.Resources, container.Subcontainers));
     }
-    
+
     /// <summary>
     /// Create a named container from a root container
     /// </summary>
@@ -23,7 +23,7 @@ public static class ContainerExtensions
     {
         return new NamedContainer(name, root.Resources, root.Subcontainers);
     }
-    
+
     /// <summary>
     /// Create a named container from an existing container
     /// </summary>
@@ -31,7 +31,7 @@ public static class ContainerExtensions
     {
         return new NamedContainer(name, container.Resources, container.Subcontainers);
     }
-    
+
     /// <summary>
     /// Convert any container to a root container
     /// </summary>
@@ -39,7 +39,7 @@ public static class ContainerExtensions
     {
         return new RootContainer(container.Resources, container.Subcontainers);
     }
-    
+
     /// <summary>
     /// Convert root container to IContainer for compatibility with existing code
     /// </summary>
@@ -47,7 +47,7 @@ public static class ContainerExtensions
     {
         return new Container("", root.Resources, root.Subcontainers);
     }
-    
+
     public static Task<Result> WriteTo(this IContainer container, string path)
     {
         return container.ResourcesWithPathsRecursive()

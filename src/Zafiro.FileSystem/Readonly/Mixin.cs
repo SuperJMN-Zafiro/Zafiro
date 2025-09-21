@@ -13,7 +13,7 @@ public static class Mixin
     {
         return directory.RootedFilesRelativeTo(ZafiroPath.Empty);
     }
-    
+
     public static IEnumerable<IFile> AllFiles(this IDirectory directory)
     {
         return directory.Files().Concat(directory.Directories().SelectMany(d => d.AllFiles()));

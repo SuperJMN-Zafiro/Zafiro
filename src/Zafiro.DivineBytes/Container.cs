@@ -12,13 +12,13 @@ public class Container : INamedContainer
         Resources = files.ToList();
         Subcontainers = directories.ToList();
     }
-    
+
     // Static factory method for fluent syntax
     public static Container Create(string name, IEnumerable<INamedByteSource> resources, IEnumerable<INamedContainer> subcontainers)
     {
         return new Container(name, resources, subcontainers);
     }
-    
+
     // Constructor that accepts mixed content and separates by type
     public Container(string name, params INamed[] contents)
     {
@@ -26,7 +26,7 @@ public class Container : INamedContainer
         Resources = contents.OfType<INamedByteSource>().ToList();
         Subcontainers = contents.OfType<INamedContainer>().ToList();
     }
-    
+
     // Method to show structure
     public override string ToString()
     {

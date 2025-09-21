@@ -13,7 +13,7 @@ public class UnixDirectory : INamedContainer, IPermissioned, IOwned
     public IEnumerable<INamedByteSource> Resources => Files;
 
     // Keep Children for backward compatibility if needed
-    public IEnumerable<INamed> Children 
+    public IEnumerable<INamed> Children
         => Subdirectories.Cast<INamed>().Concat(Files);
 
     public UnixDirectory(
@@ -23,11 +23,11 @@ public class UnixDirectory : INamedContainer, IPermissioned, IOwned
         IEnumerable<UnixDirectory> subdirs,
         IEnumerable<UnixFile> files)
     {
-        Name           = name;
+        Name = name;
         OwnerId = ownerId;
-        Permissions    = permissions;
+        Permissions = permissions;
         Subdirectories = subdirs.ToList();
-        Files          = files.ToList();
+        Files = files.ToList();
     }
 
     public int OwnerId { get; }

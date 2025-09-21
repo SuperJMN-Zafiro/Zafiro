@@ -23,7 +23,7 @@ public static class FunctionalMixin
         var enumerable = await self.ConfigureAwait(false);
         return enumerable.Successes();
     }
-    
+
     public static IObservable<Unit> Successes(this IObservable<Result> self)
     {
         return self.Where(a => a.IsSuccess).ToSignal();
@@ -254,7 +254,7 @@ public static class FunctionalMixin
     {
         return task.Bind(tasks => CombineSequentially(tasks, scheduler));
     }
-    
+
     public static Task<Result> CombineSequentially(this Task<Result<IEnumerable<Task<Result>>>> task, IScheduler? scheduler = default)
     {
         return task.Bind(tasks => CombineSequentially(tasks, scheduler));
@@ -279,7 +279,7 @@ public static class FunctionalMixin
 
         return results.Combine();
     }
-    
+
     public static async Task<IEnumerable<Result<TResult>>> Concat<TResult>(this IEnumerable<Task<Result<TResult>>> enumerableOfTaskResults, IScheduler? scheduler = default, int maxConcurrency = 1)
     {
         var results = await enumerableOfTaskResults
@@ -307,7 +307,7 @@ public static class FunctionalMixin
     {
         return taskResult.Bind(inputs => AsyncResultExtensionsLeftOperand.Combine(inputs.Select(selector)));
     }
-    
+
     /// <summary>
     /// Transforms each input value using the provided transform function and combines all results with controlled concurrency.
     /// This is equivalent to MapEach followed by Combine. All transformations must succeed for the operation to succeed.
@@ -332,7 +332,7 @@ public static class FunctionalMixin
     {
         return result.MapEach(transform).Combine(scheduler, maxConcurrency);
     }
-    
+
     /// <summary>
     /// Transforms each input value using the provided transform function and combines all results sequentially.
     /// This guarantees that transformations are executed one after another in order, which is useful when order matters
@@ -361,7 +361,7 @@ public static class FunctionalMixin
     public static void Log(this Result result, ILogger? logger = default, string successString = "Success")
     {
         logger ??= Serilog.Log.Logger;
-        
+
         result
             .Tap(() => logger.Information(successString))
             .TapError(logger.Error);
@@ -371,7 +371,7 @@ public static class FunctionalMixin
     {
         (await result.ConfigureAwait(false)).Log(logger ?? Serilog.Log.Logger, successString);
     }
-    
+
     /// <summary>
     /// Returns the result of the task or, if the specified time elapses without completion,
     /// a failed Result indicating timeout.
@@ -400,7 +400,7 @@ public static class FunctionalMixin
         // Timeout was reached
         return Result.Failure<T>(message);
     }
-    
+
     public static Task<Result<Maybe<T>>> TryFirstResult<T>(this IEnumerable<T> source, Func<T, Task<Result<bool>>> predicate)
     {
         // Assuming the application root contains a single ELF executable
@@ -409,7 +409,7 @@ public static class FunctionalMixin
             .Map(bools => bools.TryFirst(tuple => tuple.Matches)
                 .Select(tuple => tuple.Item));
     }
-    
+
     public static Task<Result<T>> ToResult<T>(this Task<Result<Maybe<T>>> resultOfmaybe, string errorMessage)
     {
         return resultOfmaybe.Bind(x => x.ToResult(errorMessage));

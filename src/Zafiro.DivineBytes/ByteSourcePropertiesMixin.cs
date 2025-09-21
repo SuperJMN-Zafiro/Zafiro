@@ -17,7 +17,7 @@ public static class ByteSourcePropertiesMixin
     {
         return data.ToEnumerable().Flatten().ToArray();
     }
-    
+
     public static IObservable<long> GetSize(this IObservable<byte[]> data)
     {
         return data.Sum(bytes => (long)bytes.Length);
@@ -34,7 +34,7 @@ public static class ByteSourcePropertiesMixin
                 })
             .Select(crc => crc.GetCurrentHashAsUInt32());
     }
-    
+
     public static IObservable<byte[]> Sha256(this IObservable<byte[]> data)
     {
         return data.Aggregate(
@@ -53,12 +53,12 @@ public static class ByteSourcePropertiesMixin
     {
         return byteSource.Bytes.GetSize();
     }
-    
+
     public static byte[] Array(this IByteSource byteSource)
     {
         return byteSource.Bytes.Array();
     }
-    
+
     public static IObservable<byte[]> Sha256(this IByteSource byteSource)
     {
         return byteSource.Bytes.Sha256();
