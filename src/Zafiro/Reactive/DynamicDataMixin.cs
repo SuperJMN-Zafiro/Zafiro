@@ -43,4 +43,14 @@ public static class DynamicDataMixin
 
         return source.AsObservableChangeSet();
     }
+
+    public static IObservable<IChangeSet<T, TKey>> ToObservableChangeSetIfPossible<T, TKey>(
+        this IEnumerable<T> source,
+        Func<T, TKey> keySelector
+    )
+        where T : notnull
+        where TKey : notnull
+    {
+        return source.ToObservableChangeSetIfPossible().AddKey(keySelector);
+    }
 }

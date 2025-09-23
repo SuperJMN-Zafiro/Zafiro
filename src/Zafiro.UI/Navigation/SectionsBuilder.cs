@@ -12,7 +12,10 @@ public class SectionsBuilder(IServiceProvider provider)
     {
         // Section content is no longer responsible for hosting a SectionScope.
         // We only use the section metadata and its RootType; content is unused here.
-        var contentSection = Section.Content(name, Observable.Empty<T>(), icon, isPrimary);
+        var contentSection = new ContentSection<T>(name, Observable.Empty<T>(), icon)
+        {
+            IsPrimary = isPrimary,
+        };
         return contentSection;
     }
 
@@ -29,19 +32,28 @@ public class SectionsBuilder(IServiceProvider provider)
 
     public SectionsBuilder Separator(bool isPrimary = true)
     {
-        sections.Add(Section.Separator(isPrimary));
+        sections.Add(new SectionSeparator
+        {
+            IsPrimary = isPrimary,
+        });
         return this;
     }
 
     public SectionsBuilder Command(string name, ICommand command, object? icon, bool isPrimary = true)
     {
-        sections.Add(Section.Command(name, command, icon, isPrimary));
+        sections.Add(new CommandSection(name, command, icon)
+        {
+            IsPrimary = isPrimary,
+        });
         return this;
     }
 
     public SectionsBuilder Command(string name, Func<IServiceProvider, ICommand> createCommand, object? icon, bool isPrimary = true)
     {
-        sections.Add(Section.Command(name, createCommand(provider), icon, isPrimary));
+        sections.Add(new CommandSection(name, createCommand(provider), icon)
+        {
+            IsPrimary = isPrimary,
+        });
         return this;
     }
 }
