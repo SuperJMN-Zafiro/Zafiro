@@ -42,7 +42,7 @@
         <PackageVersion Include="System.Text.Json" Version="9.0.5"/>
         <PackageVersion Include="TestableIO.System.IO.Abstractions" Version="22.0.14"/>
         <PackageVersion Include="xunit" Version="2.9.3"/>
-        <PackageVersion Include="xunit.extensibility.execution" Version="2.4.2"/>
+        <PackageVersion Include="xunit.extensibility.execution" Version="2.9.3"/>
         <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
