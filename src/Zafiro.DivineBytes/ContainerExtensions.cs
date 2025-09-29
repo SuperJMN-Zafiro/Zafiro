@@ -40,14 +40,6 @@ public static class ContainerExtensions
         return new RootContainer(container.Resources, container.Subcontainers);
     }
 
-    /// <summary>
-    /// Convert root container to IContainer for compatibility with existing code
-    /// </summary>
-    public static INamedContainer AsContainer(this RootContainer root)
-    {
-        return new Container("", root.Resources, root.Subcontainers);
-    }
-
     public static Task<Result> WriteTo(this IContainer container, string path)
     {
         return container.ResourcesWithPathsRecursive()

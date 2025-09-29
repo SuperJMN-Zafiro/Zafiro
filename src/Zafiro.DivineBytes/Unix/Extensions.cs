@@ -9,4 +9,12 @@ public static class Extensions
         var builder = new UnixTreeBuilder(resolver ?? new DefaultMetadataResolver());
         return builder.Build(dir);
     }
+
+    public static UnixDirectory ToUnixDirectory(
+        this IContainer container,
+        IMetadataResolver? resolver = null)
+    {
+        var named = new Container("", container.Resources, container.Subcontainers);
+        return named.ToUnixDirectory(resolver);
+    }
 }
