@@ -11,7 +11,8 @@ public class SizeCompareStrategyTests
         IZafiroFile a = new MyTestFile(123);
         IZafiroFile b = new MyTestFile(123);
         var result = await sut.Compare(a, b);
-        result.Should().SucceedWith(true);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeTrue();
     }
 
     [Fact]
@@ -21,7 +22,8 @@ public class SizeCompareStrategyTests
         IZafiroFile a = new MyTestFile(33);
         IZafiroFile b = new MyTestFile(123);
         var result = await sut.Compare(a, b);
-        result.Should().SucceedWith(false);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeFalse();
     }
 
     [Fact]
@@ -31,7 +33,7 @@ public class SizeCompareStrategyTests
         IZafiroFile a = new MyTestFile(Result.Failure<long>("Failed badly"));
         IZafiroFile b = new MyTestFile(123);
         var result = await sut.Compare(a, b);
-        result.Should().Fail();
+        result.IsSuccess.Should().BeFalse();
     }
 
     public class MyTestFile : IZafiroFile

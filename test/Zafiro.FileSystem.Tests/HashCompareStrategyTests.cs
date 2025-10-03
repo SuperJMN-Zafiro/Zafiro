@@ -13,7 +13,8 @@ public class HashCompareStrategyTests
         IZafiroFile a = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Hash")}));
         IZafiroFile b = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Hash")}));
         var result = await sut.Compare(a, b);
-        result.Should().SucceedWith(true);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeTrue();
     }
 
     [Fact]
@@ -23,7 +24,8 @@ public class HashCompareStrategyTests
         IZafiroFile a = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Hash") }));
         IZafiroFile b = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Yo!") }));
         var result = await sut.Compare(a, b);
-        result.Should().SucceedWith(false);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeFalse();
     }
 
     [Fact]
@@ -33,7 +35,8 @@ public class HashCompareStrategyTests
         IZafiroFile a = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Hash"), (HashMethod.Sha256, "MATCH") }));
         IZafiroFile b = new TestFile(Result.Success(new[] { (HashMethod.Md5, "3234"), (HashMethod.Sha256, "MATCH") }));
         var result = await sut.Compare(a, b);
-        result.Should().SucceedWith(true);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeTrue();
     }
 
     [Fact]
@@ -43,7 +46,8 @@ public class HashCompareStrategyTests
         IZafiroFile a = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Hash"), (HashMethod.Sha256, "Other hash") }));
         IZafiroFile b = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Don't match"), (HashMethod.Sha256, "No no no") }));
         var result = await sut.Compare(a, b);
-        result.Should().SucceedWith(false);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeFalse();
     }
 
     [Fact]
@@ -53,7 +57,7 @@ public class HashCompareStrategyTests
         IZafiroFile a = new TestFile(Result.Failure<(HashMethod, string)[]>("Error"));
         IZafiroFile b = new TestFile(Result.Success(new[] { (HashMethod.Md5, "Don't match"), (HashMethod.Sha256, "No no no") }));
         var result = await sut.Compare(a, b);
-        result.Should().Fail();
+        result.IsSuccess.Should().BeFalse();
     }
 
     public class TestFile : IZafiroFile

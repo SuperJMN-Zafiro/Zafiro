@@ -12,8 +12,8 @@
     <None Remove="Old\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions.FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Moq" />
     <PackageReference Include="System.IO.Abstractions.TestingHelpers" />
     <PackageReference Include="xunit" />
