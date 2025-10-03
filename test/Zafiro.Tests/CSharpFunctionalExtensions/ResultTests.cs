@@ -1,7 +1,7 @@
 ﻿using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
-using FluentAssertions.CSharpFunctionalExtensions;
+using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using Zafiro.CSharpFunctionalExtensions;
 
@@ -34,6 +34,8 @@ public class ResultTests
         var a = Task.FromResult(Result.Success(Maybe.From(1)));
         var c = await a.Bind(x => Task.FromResult(Result.Success(Maybe.From(x + 1))));
 
-        c.Should().BeSuccess().And.Subject.Value.Value.Should().Be(2);
+        c.IsSuccess.Should().BeTrue();
+        c.Value.HasValue.Should().BeTrue();
+        c.Value.Value.Should().Be(2);
     }
 }

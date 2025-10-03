@@ -9,16 +9,28 @@ using CSharpFunctionalExtensions;
 namespace Zafiro.Settings;
 
 
-public sealed class JsonSettingsStore(JsonSerializerOptions? options = null) : ISettingsStore
+public sealed class JsonSettingsStore : ISettingsStore
 {
-    readonly JsonSerializerOptions options = options ?? new JsonSerializerOptions
+    private readonly JsonSerializerOptions serializerOptions;
+
+    public JsonSettingsStore(JsonSerializerOptions? options = null)
     {
-        WriteIndented = true,
-        PropertyNameCaseInsensitive = true,
-        AllowTrailingCommas = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        Converters = { new JsonStringEnumConverter() }
-    };
+        serializerOptions = options ?? CreateDefaultOptions();
+    }
+
+    private static JsonSerializerOptions CreateDefaultOptions()
+    {
+        var defaultOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true,
+            AllowTrailingCommas = true,
+            ReadCommentHandling = JsonCommentHandling.Skip
+        };
+
+        defaultOptions.Converters.Add(new JsonStringEnumConverter());
+        return defaultOptions;
+    }
 
     // Tolerant but predictable JSON.
     public Result<T> Load<T>(string path, Func<T> createDefault)
@@ -33,7 +45,7 @@ public sealed class JsonSettingsStore(JsonSerializerOptions? options = null) : I
             }
 
             using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var loaded = JsonSerializer.Deserialize<T>(stream, options);
+            var loaded = JsonSerializer.Deserialize<T>(stream, serializerOptions);
             return loaded is null
                 ? Result.Failure<T>($"Invalid JSON in settings file: {path}.")
                 : Result.Success(loaded);
@@ -55,7 +67,7 @@ public sealed class JsonSettingsStore(JsonSerializerOptions? options = null) : I
             var tmp = Path.Combine(dir, Path.GetRandomFileName());
             using (var stream = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                JsonSerializer.Serialize(stream, instance, options);
+                JsonSerializer.Serialize(stream, instance, serializerOptions);
                 stream.Flush(true);
             }
 

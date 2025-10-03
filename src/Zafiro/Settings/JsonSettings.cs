@@ -6,147 +6,218 @@ using CSharpFunctionalExtensions;
 
 namespace Zafiro.Settings;
 
-public sealed class JsonSettings<T>(string path, ISettingsStore store, Func<T> createDefault, IEqualityComparer<T>? equalityComparer = null)
-    : ISettings<T>, IDisposable
+public sealed class JsonSettings<T> : ISettings<T>, IDisposable
 {
-    private readonly ReplaySubject<T> subject = new(1);
+    private readonly string path;
+    private readonly ISettingsStore store;
+    private readonly Func<T> createDefault;
+    private readonly IEqualityComparer<T> comparer;
+    private readonly ReplaySubject<T> changes = new(1);
     private readonly object gate = new();
 
-    Maybe<T> current = Maybe<T>.None;
-    bool disposed;
-    private readonly IEqualityComparer<T> equalityComparer = equalityComparer ?? EqualityComparer<T>.Default;
+    private Maybe<T> current = Maybe<T>.None;
+    private bool disposed;
+
+    public JsonSettings(string path, ISettingsStore store, Func<T> createDefault, IEqualityComparer<T>? equalityComparer = null)
+    {
+        this.path = path;
+        this.store = store;
+        this.createDefault = createDefault;
+        comparer = equalityComparer ?? EqualityComparer<T>.Default;
+    }
 
     public Result Update(Func<T, T> mutate)
     {
+        if (mutate == null)
+        {
+            return Result.Failure("Mutate delegate cannot be null.");
+        }
+
         while (true)
         {
-            // 1) Snapshot
             var snapshotResult = EnsureSnapshot();
-            if (snapshotResult.IsFailure) return snapshotResult.ConvertFailure();
+            if (snapshotResult.IsFailure)
+            {
+                return Result.Failure(snapshotResult.Error);
+            }
+
             var snapshot = snapshotResult.Value;
+            T toPublish;
 
-            // 2) Mutate outside lock
-            T next;
-            try
-            {
-                next = mutate(snapshot);
-            }
-            catch (Exception ex)
-            {
-                return Result.Failure($"Update mutate error: {ex.Message}");
-            }
-
-            // 3) Persist
-            var save = store.Save(path, next);
-            if (save.IsFailure) return save;
-
-            // 4) Commit-if-unchanged
-            bool committed;
             lock (gate)
             {
-                if (disposed) return Result.Failure("Settings disposed.");
-                committed = current.HasValue && equalityComparer.Equals(current.Value, snapshot);
-                if (committed) current = next;
-            }
+                if (disposed)
+                {
+                    return Result.Failure("Settings disposed.");
+                }
 
-            if (committed)
-            {
+                if (!current.HasValue || !comparer.Equals(current.Value, snapshot))
+                {
+                    continue;
+                }
+
+                T next;
+
                 try
                 {
-                    subject.OnNext(next);
+                    next = mutate(snapshot);
                 }
-                catch (ObjectDisposedException)
+                catch (Exception ex)
                 {
+                    return Result.Failure($"Update mutate error: {ex.Message}");
                 }
 
-                return Result.Success();
+                var save = store.Save(path, next);
+                if (save.IsFailure)
+                {
+                    return save;
+                }
+
+                current = next;
+                toPublish = next;
             }
-            // else: alguien tocó current; reintenta con el nuevo snapshot.
-        }
-    }
 
-    // Lazily ensures current is loaded and returns a snapshot to base the update on.
-    private Result<T> EnsureSnapshot()
-    {
-        // Fast path: already loaded
-        lock (gate)
-        {
-            if (disposed) return Result.Failure<T>("Settings disposed.");
-            if (current.HasValue) return current.Value;
-        }
-
-        // Load outside the lock
-        var load = store.Load<T>(path, createDefault);
-        if (load.IsFailure) return load;
-
-        // Install if still empty and return snapshot
-        lock (gate)
-        {
-            if (disposed) return Result.Failure<T>("Settings disposed.");
-            if (!current.HasValue) current = load.Value;
-            return current.Value;
+            Publish(toPublish);
+            return Result.Success();
         }
     }
 
     public Result<T> Get()
     {
-        T? toPublish;
-        Result<T> result;
+        lock (gate)
+        {
+            if (disposed)
+            {
+                return Result.Failure<T>("Settings disposed.");
+            }
+
+            if (current.HasValue)
+            {
+                return Result.Success(current.Value);
+            }
+        }
+
+        var load = store.Load(path, createDefault);
+        if (load.IsFailure)
+        {
+            return load;
+        }
+
+        var publish = false;
+        T value = default!;
 
         lock (gate)
         {
-            if (disposed) return Result.Failure<T>("Settings disposed.");
-            if (current.HasValue) return current.Value;
+            if (disposed)
+            {
+                return Result.Failure<T>("Settings disposed.");
+            }
 
-            var load = store.Load(path, createDefault);
-            if (load.IsFailure) return load;
-
-            current = load.Value;
-            toPublish = load.Value;
-            result = load;
+            if (!current.HasValue)
+            {
+                current = load.Value;
+                publish = true;
+                value = load.Value;
+            }
+            else
+            {
+                value = current.Value;
+            }
         }
 
-        try
+        if (publish)
         {
-            subject.OnNext(toPublish!);
-        }
-        catch (ObjectDisposedException)
-        {
+            Publish(value);
+            return load;
         }
 
-        return result;
+        return Result.Success(value);
     }
 
     public Result Reload()
     {
         var load = store.Load(path, createDefault);
-        if (load.IsFailure) return load;
-
-        T value = load.Value;
-        lock (gate)
+        if (load.IsFailure)
         {
-            if (disposed) return Result.Failure("Settings disposed.");
-            current = value;
+            return load;
         }
 
+        T toPublish;
+
+        lock (gate)
+        {
+            if (disposed)
+            {
+                return Result.Failure("Settings disposed.");
+            }
+
+            current = load.Value;
+            toPublish = load.Value;
+        }
+
+        Publish(toPublish);
+        return Result.Success();
+    }
+
+    public IObservable<T> Changes => changes.AsObservable().DistinctUntilChanged(comparer);
+
+    public void Dispose()
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        disposed = true;
+        changes.OnCompleted();
+        changes.Dispose();
+    }
+
+    private Result<T> EnsureSnapshot()
+    {
+        lock (gate)
+        {
+            if (disposed)
+            {
+                return Result.Failure<T>("Settings disposed.");
+            }
+
+            if (current.HasValue)
+            {
+                return Result.Success(current.Value);
+            }
+        }
+
+        var load = store.Load(path, createDefault);
+        if (load.IsFailure)
+        {
+            return load;
+        }
+
+        lock (gate)
+        {
+            if (disposed)
+            {
+                return Result.Failure<T>("Settings disposed.");
+            }
+
+            if (!current.HasValue)
+            {
+                current = load.Value;
+            }
+
+            return Result.Success(current.Value);
+        }
+    }
+
+    private void Publish(T value)
+    {
         try
         {
-            subject.OnNext(value);
+            changes.OnNext(value);
         }
         catch (ObjectDisposedException)
         {
         }
-
-        return Result.Success();
-    }
-
-    public IObservable<T> Changes => subject.AsObservable().DistinctUntilChanged(equalityComparer);
-
-    public void Dispose()
-    {
-        if (disposed) return;
-        disposed = true;
-        subject.OnCompleted();
-        subject.Dispose();
     }
 }

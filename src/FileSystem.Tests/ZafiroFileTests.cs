@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using FluentAssertions.CSharpFunctionalExtensions;
 using Serilog;
 using Xunit;
 using Zafiro.FileSystem;
@@ -29,7 +28,7 @@ public class ZafiroFileTests
 
         var result = await unit.Bind(u => u.origin.CopyTo(u.dest)).ConfigureAwait(false);
 
-        result.Should().BeSuccess();
+        result.IsSuccess.Should().BeTrue();
         destinationFilesystem.GetFile("file2.txt").TextContents.Should().Be("saludos");
     }
 
@@ -43,11 +42,11 @@ public class ZafiroFileTests
         });
         var fs = new ZafiroFileSystem(originFs, Maybe<ILogger>.None);
         var dir = fs.GetDirectory("C:>Subdir");
-        dir.Should().BeSuccess();
-        dir.Map(r => r.Files.Select(x => x.Path).Should().BeEquivalentTo(new[]
+        dir.IsSuccess.Should().BeTrue();
+        dir.Value.Files.Select(x => x.Path).Should().BeEquivalentTo(new[]
         {
             new ZafiroPath("c:", "Subdir", "file1.txt")
-        }));
+        });
     }
 
     [Fact]
@@ -60,7 +59,7 @@ public class ZafiroFileTests
         var sut = new ZafiroFileSystem(fileSystem, Maybe<ILogger>.None);
 
         var result = sut.GetFile("C:>Test");
-        result.Should().BeSuccess();
+        result.IsSuccess.Should().BeTrue();
     }
 
     [Fact]
@@ -75,7 +74,7 @@ public class ZafiroFileTests
             .GetFile("C:>test.txt")
             .Bind(r => r.Delete());
 
-        result.Should().BeSuccess();
+        result.IsSuccess.Should().BeTrue();
         fileSystem.GetFile("C:>Test.txt").Should().BeNull();
     }
 
@@ -89,6 +88,6 @@ public class ZafiroFileTests
         var sut = new ZafiroFileSystem(fileSystem, Maybe<ILogger>.None);
 
         var result = sut.GetDirectory("C:");
-        result.Should().BeSuccess();
+        result.IsSuccess.Should().BeTrue();
     }
 }

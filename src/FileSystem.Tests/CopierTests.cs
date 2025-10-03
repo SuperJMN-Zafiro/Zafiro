@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using FluentAssertions;
-using FluentAssertions.CSharpFunctionalExtensions;
 using Serilog;
 using Xunit;
 using Zafiro.FileSystem;
@@ -28,7 +27,7 @@ public class CopierTests
         var fs = new ZafiroFileSystem(innerFs, Maybe<ILogger>.None);
 
         var result = await Copy(fs, "C:>Subdir", "C:>Destination").ConfigureAwait(false);
-        result.Should().BeSuccess();
+        result.IsSuccess.Should().BeTrue();
 
         RelativeFlatFileList(innerFs.DirectoryInfo.FromDirectoryName(@"C:\Subdir"))
             .Should()
@@ -48,7 +47,7 @@ public class CopierTests
 
         var result = await Copy(fs, @"C:>Subdir", "C:>Destination").ConfigureAwait(false);
 
-        result.Should().BeSuccess();
+        result.IsSuccess.Should().BeTrue();
         innerFs.GetFile(@"C:\Destination\Root.txt").TextContents.Should().Be("A");
     }
 
@@ -63,7 +62,7 @@ public class CopierTests
         var fs = new ZafiroFileSystem(innerFs, Maybe<ILogger>.None);
 
         var result = await Copy(fs, @"C:>Subdir", "C:>Destination").ConfigureAwait(false);
-        result.Should().BeSuccess();
+        result.IsSuccess.Should().BeTrue();
         innerFs.GetFile(@"C:\Destination\Root.txt").Should().BeNull();
     }
 
