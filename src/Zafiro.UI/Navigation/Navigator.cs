@@ -10,7 +10,6 @@ namespace Zafiro.UI.Navigation;
 
 public class Navigator : INavigator
 {
-    private readonly IEnhancedCommand<Unit, Result<Unit>> back;
     private readonly BehaviorSubject<bool> canGoBackSubject = new(false);
     private readonly BehaviorSubject<object?> contentSubject = new(null);
     private readonly Maybe<ILogger> logger;
@@ -29,8 +28,8 @@ public class Navigator : INavigator
                              ? new SynchronizationContextScheduler(SynchronizationContext.Current)
                              : Scheduler.Default);
 
-        var reactiveCommand = ReactiveCommand.CreateFromTask<Unit, Result<Unit>>(_ => GoBack(), canGoBackSubject.ObserveOn(this.scheduler));
-        back = reactiveCommand.Enhance();
+        var reactiveCommand = ReactiveCommand.CreateFromTask(_ => GoBack(), canGoBackSubject.ObserveOn(this.scheduler));
+        Back = reactiveCommand.Enhance();
     }
 
     public NavigationBookmark CreateBookmark()
@@ -45,7 +44,7 @@ public class Navigator : INavigator
 
     public IObservable<object?> Content => contentSubject.ObserveOn(scheduler);
 
-    public IEnhancedCommand<Unit, Result<Unit>> Back => back;
+    public IEnhancedCommand<Result> Back { get; }
 
     public Task<Result<Unit>> Go(Func<object> factory)
     {

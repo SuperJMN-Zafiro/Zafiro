@@ -11,5 +11,5 @@ public class MyPage : ReactiveObject
         DoSomething = ReactiveCommand.Create(() => Result.Success(1234)).Enhance();
     }
 
-    public EnhancedCommand<Result<int>> DoSomething { get; }
+    public IEnhancedCommand<Result<int>> DoSomething { get; }
 }

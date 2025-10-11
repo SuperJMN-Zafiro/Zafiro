@@ -1,4 +1,6 @@
-﻿namespace Zafiro.UI;
+﻿using CSharpFunctionalExtensions;
+
+namespace Zafiro.UI;
 
 public interface IContentOpener
 {
