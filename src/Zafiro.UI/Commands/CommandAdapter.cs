@@ -12,7 +12,7 @@ public class CommandAdapter<TSource, TTarget> : ReactiveObject, IEnhancedCommand
     {
         this.originalCommand = originalCommand;
         this.converter = converter;
-        Name = originalCommand.Name == "" ? name : originalCommand.Name;
+        Name = string.IsNullOrEmpty(originalCommand.Name) ? name : originalCommand.Name;
     }
 
     public void Dispose()
@@ -20,7 +20,7 @@ public class CommandAdapter<TSource, TTarget> : ReactiveObject, IEnhancedCommand
         originalCommand.Dispose();
     }
 
-    public IObservable<Exception> ThrownExceptions => originalCommand.ThrownExceptions;
+    public new IObservable<Exception> ThrownExceptions => originalCommand.ThrownExceptions;
 
     public IObservable<bool> IsExecuting => originalCommand.IsExecuting;
 

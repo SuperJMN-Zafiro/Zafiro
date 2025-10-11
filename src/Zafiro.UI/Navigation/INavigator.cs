@@ -16,7 +16,7 @@ namespace Zafiro.UI.Navigation
         /// <summary>
         /// Command to navigate backwards
         /// </summary>
-        IEnhancedCommand<Unit, Result<Unit>> Back { get; }
+        IEnhancedCommand<Result> Back { get; }
 
         /// <summary>
         /// Navigate to content produced by the factory
