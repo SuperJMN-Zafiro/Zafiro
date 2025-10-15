@@ -8,6 +8,10 @@ using Zafiro.UI.Commands;
 
 namespace Zafiro.UI.Wizards.Slim;
 
+/// <summary>
+/// Reactive, composable wizard that drives navigation and exposes a final result when completed.
+/// </summary>
+/// <typeparam name="TResult">The type of the final result.</typeparam>
 public sealed class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
 {
     private sealed record WizardState(int CurrentIndex, ImmutableStack<object> History, bool Finished, TResult FinalResult);
@@ -27,6 +31,10 @@ public sealed class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
     private readonly ObservableAsPropertyHelper<IEnhancedCommand<Result<object>>> typedNextHelper;
     private readonly ObservableAsPropertyHelper<IEnhancedCommand> nextHelper;
 
+    /// <summary>
+    /// Initializes a new SlimWizard with the provided steps.
+    /// </summary>
+    /// <param name="steps">The ordered list of step definitions.</param>
     public SlimWizard(IList<IWizardStep> steps)
     {
         EnsureValidSteps(steps);
@@ -57,7 +65,7 @@ public sealed class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             .Replay(1)
             .RefCount();
 
-    hasFinished = state.Select(s => s.Finished).StartWith(false);
+        hasFinished = state.Select(s => s.Finished).StartWith(false);
 
         currentStepObservable = state.Select(s =>
         {
@@ -117,15 +125,31 @@ public sealed class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
             .Take(1);
     }
 
+    /// <summary>Observable that emits the final result once and completes.</summary>
     public IObservable<TResult> Finished { get; }
+
+    /// <summary>Command to navigate to the previous page, when allowed.</summary>
     public IEnhancedCommand Back { get; }
+
+    /// <summary>Total number of pages in the wizard.</summary>
     public int TotalPages { get; }
 
+    /// <summary>Gets the current step metadata.</summary>
     public (int Index, IWizardStep Step) CurrentStep => currentStepHelper.Value;
+
+    /// <summary>Gets the current step index.</summary>
     public int CurrentStepIndex => currentStepIndexHelper.Value;
+
+    /// <summary>Gets the strongly-typed current page.</summary>
     public Page CurrentTypedPage => currentTypedPageHelper.Value;
+
+    /// <summary>Gets the current page abstraction.</summary>
     public IPage CurrentPage => currentPageHelper.Value;
+
+    /// <summary>Gets the Next command that returns a Result&lt;object&gt;.</summary>
     public IEnhancedCommand<Result<object>> TypedNext => typedNextHelper.Value;
+
+    /// <summary>Gets the Next command adapted to a Unit-returning command.</summary>
     public IEnhancedCommand Next => nextHelper.Value;
 
     private static void EnsureValidSteps(IList<IWizardStep> steps)
@@ -153,8 +177,14 @@ public sealed class SlimWizard<TResult> : ReactiveObject, ISlimWizard<TResult>
     }
 }
 
+/// <summary>
+/// Extensions on ImmutableStack for convenience.
+/// </summary>
 public static class ImmutableStackExtensions
 {
+    /// <summary>
+    /// Tries to peek the top element of the stack without throwing when empty.
+    /// </summary>
     public static bool TryPeek<T>(this ImmutableStack<T> stack, out T value)
     {
         if (stack.IsEmpty)
