@@ -5,6 +5,9 @@ using Zafiro.UI.Wizards.Classic.Builder;
 
 namespace Zafiro.UI.Wizards.Classic;
 
+/// <summary>
+/// Classic wizard implementation that navigates through steps and exposes a synchronous final result.
+/// </summary>
 public class Wizard<TResult> : ReactiveObject, IWizard<TResult>
 {
     private readonly IList<IStep?> createdPages;
@@ -13,6 +16,11 @@ public class Wizard<TResult> : ReactiveObject, IWizard<TResult>
     private IStep content;
     private int currentIndex = -1;
 
+    /// <summary>
+    /// Initializes a new Classic wizard.
+    /// </summary>
+    /// <param name="pages">Factories for each step page.</param>
+    /// <param name="resultFactory">Factory that computes the final result from the last step.</param>
     public Wizard(List<Func<IStep?, IStep>> pages, Func<IStep, TResult> resultFactory)
     {
         this.resultFactory = resultFactory;
@@ -31,32 +39,43 @@ public class Wizard<TResult> : ReactiveObject, IWizard<TResult>
         InitializeWizard(nextCommand);
     }
 
+    /// <summary>Gets the computed result once available.</summary>
     public TResult Result { get; private set; }
 
+    /// <summary>Gets or sets the current page index.</summary>
     public int CurrentIndex
     {
         get => currentIndex;
         set => this.RaiseAndSetIfChanged(ref currentIndex, value);
     }
 
+    /// <summary>Computes the final result from the last step.</summary>
     public TResult GetResult()
     {
         return resultFactory(Content);
     }
 
+    /// <summary>Command to navigate backward.</summary>
     public IEnhancedCommand Back { get; private set; }
+    /// <summary>Command to navigate forward.</summary>
     public IEnhancedCommand Next { get; private set; }
 
+    /// <summary>Gets or sets the current step content.</summary>
     public IStep Content
     {
         get => content;
         set => this.RaiseAndSetIfChanged(ref content, value);
     }
 
+    /// <summary>Signals whether the current step is the last page.</summary>
     public IObservable<bool> IsLastPage { get; }
+    /// <summary>Signals whether the current step is valid.</summary>
     public IObservable<bool> IsValid { get; }
+    /// <summary>Signals whether the current step is busy.</summary>
     public IObservable<bool> IsBusy { get; }
+    /// <summary>Observable index of the current page.</summary>
     public IObservable<int> PageIndex => this.WhenAnyValue(x => x.CurrentIndex);
+    /// <summary>Total number of pages.</summary>
     public int TotalPages => pageFactories.Count;
 
     private IObservable<bool> CreateHasNextObservable() =>
