@@ -1,3 +1,6 @@
+using System;
+using System.Reactive;
+using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
 
@@ -70,6 +73,37 @@ return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(sele
         string? text = "Next") where TPage : IValidatable
     {
 return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), page.IsValid, text));
+    }
+
+    /// <summary>
+    /// Proceeds with a value selector and no guard (always enabled).
+    /// </summary>
+    /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
+    /// <typeparam name="TPage">The current page type.</typeparam>
+    /// <typeparam name="TResult">The type produced by the next step.</typeparam>
+    /// <param name="builder">The step builder.</param>
+    /// <param name="selector">Selector that produces the next result from the page.</param>
+    /// <param name="text">Optional button text. Defaults to "Next".</param>
+    public static WizardBuilder<TResult> NextAlways<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, TResult> selector,
+        string? text = "Next")
+    {
+return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), Observable.Return(true), text));
+    }
+
+    /// <summary>
+    /// Proceeds unconditionally yielding Unit, useful for final steps like "Close".
+    /// </summary>
+    /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
+    /// <typeparam name="TPage">The current page type.</typeparam>
+    /// <param name="builder">The step builder.</param>
+    /// <param name="text">Optional button text. Defaults to "Next".</param>
+    public static WizardBuilder<Unit> NextAlways<TPrevious, TPage>(
+        this StepBuilder<TPrevious, TPage> builder,
+        string? text = "Next")
+    {
+return builder.NextAlways<TPrevious, TPage, Unit>(_ => Unit.Default, text);
     }
 
     // Obsolete shims
