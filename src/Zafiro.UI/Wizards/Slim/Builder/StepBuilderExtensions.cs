@@ -23,10 +23,9 @@ public static class StepBuilderExtensions
     public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
         this StepBuilder<TPrevious, TPage> builder,
         Func<TPage, Result<TResult>> nextAction,
-        IObservable<bool>? isValid = null,
         string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith(page => EnhancedCommand.Create(() => nextAction(page), isValid ?? page.IsValid, text));
+        return builder.NextWith(page => EnhancedCommand.Create(() => nextAction(page), page.IsValid, text));
     }
 
     /// <summary>
@@ -41,10 +40,9 @@ return builder.NextWith(page => EnhancedCommand.Create(() => nextAction(page), i
     public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
         this StepBuilder<TPrevious, TPage> builder,
         Func<TPage, TPrevious, Result<TResult>> nextAction,
-        IObservable<bool>? isValid = null,
         string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith((page, prev) => EnhancedCommand.Create(() => nextAction(page, prev), isValid ?? page.IsValid, text));
+        return builder.NextWith((page, prev) => EnhancedCommand.Create(() => nextAction(page, prev), page.IsValid, text));
     }
 
     /// <summary>
@@ -78,9 +76,16 @@ return builder.NextWith((page, prev) => EnhancedCommand.Create(() => nextAction(
     public static WizardBuilder<TResult> NextWith<TPrevious, TPage, TResult>(
         this StepBuilder<TPrevious, TPage> builder,
         Func<TPage, TResult> selector,
-        string? text = "Next") where TPage : IValidatable
+        string? text = "Next")
     {
-        return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), page.IsValid, text));
+        return builder.NextWith(page =>
+        {
+            var canExecute = page is IValidatable validatable
+                ? validatable.IsValid
+                : Observable.Return(true);
+
+            return EnhancedCommand.Create(() => Result.Success(selector(page)), canExecute, text);
+        });
     }
 
     /// <summary>
@@ -98,7 +103,7 @@ return builder.NextWith((page, prev) => EnhancedCommand.Create(() => nextAction(
         IObservable<bool>? isValid = null,
         string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), isValid ?? page.IsValid, text));
+        return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), isValid ?? page.IsValid, text));
     }
 
 
@@ -130,7 +135,7 @@ return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(sele
         this StepBuilder<TPrevious, TPage> builder,
         string? text = "Next")
     {
-return builder.NextAlways<TPrevious, TPage, Unit>(_ => Unit.Default, text);
+        return builder.NextAlways<TPrevious, TPage, Unit>(_ => Unit.Default, text);
     }
 
     /// <summary>
@@ -150,7 +155,7 @@ return builder.NextAlways<TPrevious, TPage, Unit>(_ => Unit.Default, text);
         IObservable<bool>? isValid = null,
         string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), isValid ?? page.IsValid, text));
+        return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), isValid ?? page.IsValid, text));
     }
 
     /// <summary>
@@ -169,7 +174,7 @@ return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Succ
         Func<TPage, TPrevious, IObservable<bool>> canExecute,
         string? text = "Next")
     {
-return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), canExecute(page, prev), text));
+        return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), canExecute(page, prev), text));
     }
 
     /// <summary>
@@ -186,7 +191,7 @@ return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Succ
         Func<TPage, TPrevious, TResult> selector,
         string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), page.IsValid, text));
+        return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), page.IsValid, text));
     }
 
     /// <summary>
@@ -203,30 +208,6 @@ return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Succ
         Func<TPage, TPrevious, TResult> selector,
         string? text = "Next")
     {
-return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), Observable.Return(true), text));
+        return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), Observable.Return(true), text));
     }
-
-    // Obsolete shims
-    [Obsolete("Use NextWhenValid(builder, page => Result<T>)", false)]
-    public static WizardBuilder<TResult> ProceedWithResultWhenValid<TPrevious, TPage, TResult>(this StepBuilder<TPrevious, TPage> builder, Func<TPage, Result<TResult>> nextAction, string? text = "Next") where TPage : IValidatable
-        => NextWhenValid(builder, nextAction, null, text);
-
-    [Obsolete("Use NextWhenValid(builder, (page, prev) => Result<T>)", false)]
-    public static WizardBuilder<TResult> ProceedWithResultWhenValid<TPrevious, TPage, TResult>(this StepBuilder<TPrevious, TPage> builder, Func<TPage, TPrevious, Result<TResult>> nextAction, string? text = "Next") where TPage : IValidatable
-        => NextWhenValid(builder, nextAction, null, text);
-
-    [Obsolete("Use NextWith(builder, page => value, page => canExecute)", false)]
-    public static WizardBuilder<TResult> ProceedWith<TPrevious, TPage, TResult>(
-        this StepBuilder<TPrevious, TPage> builder,
-        Func<TPage, TResult> selector,
-        Func<TPage, IObservable<bool>> canExecute,
-        string? text = "Next")
-        => NextWith(builder, selector, canExecute, text);
-
-    [Obsolete("Use NextWith(builder, page => value) where TPage : IValidatable", false)]
-    public static WizardBuilder<TResult> ProceedWith<TPrevious, TPage, TResult>(
-        this StepBuilder<TPrevious, TPage> builder,
-        Func<TPage, TResult> selector,
-        string? text = "Next") where TPage : IValidatable
-        => NextWith(builder, selector, text);
 }
