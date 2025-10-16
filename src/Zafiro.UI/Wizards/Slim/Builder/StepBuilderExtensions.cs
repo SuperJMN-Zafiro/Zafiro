@@ -20,9 +20,13 @@ public static class StepBuilderExtensions
     /// <param name="builder">The step builder.</param>
     /// <param name="nextAction">Action that computes the next result from the page.</param>
     /// <param name="text">Optional button text. Defaults to "Next".</param>
-    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(this StepBuilder<TPrevious, TPage> builder, Func<TPage, Result<TResult>> nextAction, string? text = "Next") where TPage : IValidatable
+    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, Result<TResult>> nextAction,
+        IObservable<bool>? isValid = null,
+        string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith(page => EnhancedCommand.Create(() => nextAction(page), page.IsValid, text));
+return builder.NextWith(page => EnhancedCommand.Create(() => nextAction(page), isValid ?? page.IsValid, text));
     }
 
     /// <summary>
@@ -34,9 +38,13 @@ return builder.NextWith(page => EnhancedCommand.Create(() => nextAction(page), p
     /// <param name="builder">The step builder.</param>
     /// <param name="nextAction">Action that computes the next result from the page and previous result.</param>
     /// <param name="text">Optional button text. Defaults to "Next".</param>
-    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(this StepBuilder<TPrevious, TPage> builder, Func<TPage, TPrevious, Result<TResult>> nextAction, string? text = "Next") where TPage : IValidatable
+    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, TPrevious, Result<TResult>> nextAction,
+        IObservable<bool>? isValid = null,
+        string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith((page, prev) => EnhancedCommand.Create(() => nextAction(page, prev), page.IsValid, text));
+return builder.NextWith((page, prev) => EnhancedCommand.Create(() => nextAction(page, prev), isValid ?? page.IsValid, text));
     }
 
     /// <summary>
@@ -55,7 +63,7 @@ return builder.NextWith((page, prev) => EnhancedCommand.Create(() => nextAction(
         Func<TPage, IObservable<bool>> canExecute,
         string? text = "Next")
     {
-return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), canExecute(page), text));
+        return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), canExecute(page), text));
     }
 
     /// <summary>
@@ -72,8 +80,27 @@ return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(sele
         Func<TPage, TResult> selector,
         string? text = "Next") where TPage : IValidatable
     {
-return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), page.IsValid, text));
+        return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), page.IsValid, text));
     }
+
+    /// <summary>
+    /// Proceeds when the page is valid (IValidatable.IsValid), using a selector that returns a value directly.
+    /// </summary>
+    /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
+    /// <typeparam name="TPage">The current page type, which must be validatable.</typeparam>
+    /// <typeparam name="TResult">The type produced by the next step.</typeparam>
+    /// <param name="builder">The step builder.</param>
+    /// <param name="selector">Selector that produces the next result from the page.</param>
+    /// <param name="text">Optional button text. Defaults to "Next".</param>
+    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, TResult> selector,
+        IObservable<bool>? isValid = null,
+        string? text = "Next") where TPage : IValidatable
+    {
+return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), isValid ?? page.IsValid, text));
+    }
+
 
     /// <summary>
     /// Proceeds with a value selector and no guard (always enabled).
@@ -89,7 +116,7 @@ return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(sele
         Func<TPage, TResult> selector,
         string? text = "Next")
     {
-return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), Observable.Return(true), text));
+        return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(selector(page)), Observable.Return(true), text));
     }
 
     /// <summary>
@@ -106,14 +133,87 @@ return builder.NextWith(page => EnhancedCommand.Create(() => Result.Success(sele
 return builder.NextAlways<TPrevious, TPage, Unit>(_ => Unit.Default, text);
     }
 
+    /// <summary>
+    /// Proceeds when the page is valid (IValidatable.IsValid) using a selector that depends on both the page and the previous result.
+    /// You can optionally supply a custom validity observable to override the default.
+    /// </summary>
+    /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
+    /// <typeparam name="TPage">The current page type, which must be validatable.</typeparam>
+    /// <typeparam name="TResult">The type produced by the next step.</typeparam>
+    /// <param name="builder">The step builder.</param>
+    /// <param name="selector">Selector that produces the next result from the page and previous result.</param>
+    /// <param name="isValid">Optional validity observable. Defaults to page.IsValid when null.</param>
+    /// <param name="text">Optional button text. Defaults to "Next".</param>
+    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, TPrevious, TResult> selector,
+        IObservable<bool>? isValid = null,
+        string? text = "Next") where TPage : IValidatable
+    {
+return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), isValid ?? page.IsValid, text));
+    }
+
+    /// <summary>
+    /// Proceeds with a value selector that depends on both page and previous result, using a custom can-execute gate.
+    /// </summary>
+    /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
+    /// <typeparam name="TPage">The current page type.</typeparam>
+    /// <typeparam name="TResult">The type produced by the next step.</typeparam>
+    /// <param name="builder">The step builder.</param>
+    /// <param name="selector">Selector that produces the next result from the page and previous result.</param>
+    /// <param name="canExecute">Function that builds the can-execute observable from the page and previous result.</param>
+    /// <param name="text">Optional button text. Defaults to "Next".</param>
+    public static WizardBuilder<TResult> NextWith<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, TPrevious, TResult> selector,
+        Func<TPage, TPrevious, IObservable<bool>> canExecute,
+        string? text = "Next")
+    {
+return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), canExecute(page, prev), text));
+    }
+
+    /// <summary>
+    /// Proceeds with a value selector that depends on both page and previous result, automatically gating with IValidatable.IsValid.
+    /// </summary>
+    /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
+    /// <typeparam name="TPage">The current page type, which must be validatable.</typeparam>
+    /// <typeparam name="TResult">The type produced by the next step.</typeparam>
+    /// <param name="builder">The step builder.</param>
+    /// <param name="selector">Selector that produces the next result from the page and previous result.</param>
+    /// <param name="text">Optional button text. Defaults to "Next".</param>
+    public static WizardBuilder<TResult> NextWith<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, TPrevious, TResult> selector,
+        string? text = "Next") where TPage : IValidatable
+    {
+return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), page.IsValid, text));
+    }
+
+    /// <summary>
+    /// Proceeds unconditionally with a selector that depends on page and previous result (always enabled).
+    /// </summary>
+    /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
+    /// <typeparam name="TPage">The current page type.</typeparam>
+    /// <typeparam name="TResult">The type produced by the next step.</typeparam>
+    /// <param name="builder">The step builder.</param>
+    /// <param name="selector">Selector that produces the next result from the page and previous result.</param>
+    /// <param name="text">Optional button text. Defaults to "Next".</param>
+    public static WizardBuilder<TResult> NextAlways<TPrevious, TPage, TResult>(
+        this StepBuilder<TPrevious, TPage> builder,
+        Func<TPage, TPrevious, TResult> selector,
+        string? text = "Next")
+    {
+return builder.NextWith((page, prev) => EnhancedCommand.Create(() => Result.Success(selector(page, prev)), Observable.Return(true), text));
+    }
+
     // Obsolete shims
     [Obsolete("Use NextWhenValid(builder, page => Result<T>)", false)]
     public static WizardBuilder<TResult> ProceedWithResultWhenValid<TPrevious, TPage, TResult>(this StepBuilder<TPrevious, TPage> builder, Func<TPage, Result<TResult>> nextAction, string? text = "Next") where TPage : IValidatable
-        => NextWhenValid(builder, nextAction, text);
+        => NextWhenValid(builder, nextAction, null, text);
 
     [Obsolete("Use NextWhenValid(builder, (page, prev) => Result<T>)", false)]
     public static WizardBuilder<TResult> ProceedWithResultWhenValid<TPrevious, TPage, TResult>(this StepBuilder<TPrevious, TPage> builder, Func<TPage, TPrevious, Result<TResult>> nextAction, string? text = "Next") where TPage : IValidatable
-        => NextWhenValid(builder, nextAction, text);
+        => NextWhenValid(builder, nextAction, null, text);
 
     [Obsolete("Use NextWith(builder, page => value, page => canExecute)", false)]
     public static WizardBuilder<TResult> ProceedWith<TPrevious, TPage, TResult>(
