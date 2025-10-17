@@ -135,6 +135,29 @@ public class FluentWizardBuilderTests
 
         Assert.NotNull(wizard.CurrentPage);
     }
+
+    [Fact]
+    public void NextUnit_Always()
+    {
+        var wizard = WizardBuilder
+            .StartWith(() => new SimplePage(), "First")
+            .NextUnit("Close").Always()
+            .WithCommitFinalStep();
+
+        Assert.NotNull(wizard.CurrentPage);
+        Assert.IsType<SimplePage>(wizard.CurrentPage.Content);
+    }
+
+    [Fact]
+    public void NextUnit_When()
+    {
+        var wizard = WizardBuilder
+            .StartWith(() => new SimplePage(), "First")
+            .NextUnit("Finish").When(page => Observable.Return(page.Value > 0))
+            .WithCommitFinalStep();
+
+        Assert.NotNull(wizard.CurrentPage);
+    }
 }
 
 public class SimplePage
