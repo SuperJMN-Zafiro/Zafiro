@@ -89,7 +89,8 @@ public static class StepBuilderExtensions
     }
 
     /// <summary>
-    /// Proceeds when the page is valid (IValidatable.IsValid), using a selector that returns a value directly.
+    /// Proceeds with a value selector when the page is valid (IValidatable.IsValid).
+    /// Use this when your selector returns a plain value, not a Result.
     /// </summary>
     /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
     /// <typeparam name="TPage">The current page type, which must be validatable.</typeparam>
@@ -97,7 +98,7 @@ public static class StepBuilderExtensions
     /// <param name="builder">The step builder.</param>
     /// <param name="selector">Selector that produces the next result from the page.</param>
     /// <param name="text">Optional button text. Defaults to "Next".</param>
-    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
+    public static WizardBuilder<TResult> NextValueWhenValid<TPrevious, TPage, TResult>(
         this StepBuilder<TPrevious, TPage> builder,
         Func<TPage, TResult> selector,
         IObservable<bool>? isValid = null,
@@ -139,7 +140,8 @@ public static class StepBuilderExtensions
     }
 
     /// <summary>
-    /// Proceeds when the page is valid (IValidatable.IsValid) using a selector that depends on both the page and the previous result.
+    /// Proceeds with a value selector when the page is valid, using both the page and previous result.
+    /// Use this when your selector returns a plain value, not a Result.
     /// You can optionally supply a custom validity observable to override the default.
     /// </summary>
     /// <typeparam name="TPrevious">The type of the previous step result.</typeparam>
@@ -149,7 +151,7 @@ public static class StepBuilderExtensions
     /// <param name="selector">Selector that produces the next result from the page and previous result.</param>
     /// <param name="isValid">Optional validity observable. Defaults to page.IsValid when null.</param>
     /// <param name="text">Optional button text. Defaults to "Next".</param>
-    public static WizardBuilder<TResult> NextWhenValid<TPrevious, TPage, TResult>(
+    public static WizardBuilder<TResult> NextValueWhenValid<TPrevious, TPage, TResult>(
         this StepBuilder<TPrevious, TPage> builder,
         Func<TPage, TPrevious, TResult> selector,
         IObservable<bool>? isValid = null,
