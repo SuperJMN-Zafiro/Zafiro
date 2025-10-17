@@ -78,6 +78,7 @@ This repo is a multi-project solution organized into three main layers, plus tes
   - Directory.Build.props defines AvaloniaVersion and enables nullable.
   - src/Common.props sets NuGet metadata (PackageId, Authors, Icon, Tags) shared by packable projects.
   - GitVersion.yml uses GitHubFlow/Mainline strategies; CI integrates with DotnetDeployer for releases.
+  - **Semantic versioning**: When merging PRs with breaking changes, include `+semver:major` in the commit message title or body. Without it, GitVersion will only bump the minor version. For non-breaking features use `+semver:minor`, for patches use `+semver:patch` (or omit, as patch is the default).
 
 Project rules for Warp
 
