@@ -124,4 +124,21 @@ public static class StepBuilderExtensions
     {
         return builder.NextWith(commandFactory);
     }
+
+    /// <summary>
+    /// Convenience method for steps that return Unit (typically final steps like Close, Finish, etc.).
+    /// Chain with .Always(), .When(), or .WhenValid() to specify the guard.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// builder.NextUnit("Close").Always()
+    /// builder.NextUnit("Finish").When(page => page.CanFinish)
+    /// </code>
+    /// </example>
+    public static NextStepBuilder<TPrevious, TPage, Unit> NextUnit<TPrevious, TPage>(
+        this StepBuilder<TPrevious, TPage> builder,
+        string? text = "Next")
+    {
+        return builder.Next(_ => Unit.Default, text);
+    }
 }
