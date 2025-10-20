@@ -30,7 +30,7 @@ public class FluentWizardBuilderTests
     {
         var wizard = WizardBuilder
             .StartWith(() => new ValidatablePage(), "First")
-            .Next<Unit, ValidatablePage, string>(page => page.Value).WhenValid<ValidatablePage>()
+            .Next<Unit, ValidatablePage, string>(page => page.Value).WhenValid()
             .WithCommitFinalStep();
 
         Assert.NotNull(wizard.CurrentPage);
@@ -67,9 +67,9 @@ public class FluentWizardBuilderTests
     {
         var wizard = WizardBuilder
             .StartWith(() => new ValidatablePage(), "First")
-            .Next<Unit, ValidatablePage, string>(page => page.Value).WhenValid<ValidatablePage>()
+            .Next<Unit, ValidatablePage, string>(page => page.Value).WhenValid()
             .Then(prev => new ValidatableSecondPage(prev), "Second")
-            .Next<string, ValidatableSecondPage, string>((page, prev) => $"{prev}-{page.Data}").WhenValid<ValidatableSecondPage>()
+            .Next<string, ValidatableSecondPage, string>((page, prev) => $"{prev}-{page.Data}").WhenValid()
             .WithCommitFinalStep();
 
         Assert.NotNull(wizard.CurrentPage);
@@ -92,7 +92,7 @@ public class FluentWizardBuilderTests
     {
         var wizard = WizardBuilder
             .StartWith(() => new ValidatablePageWithResult(), "First")
-            .NextResult<Unit, ValidatablePageWithResult, int>(page => page.ValidateAndProcess()).WhenValid<ValidatablePageWithResult>()
+            .NextResult(page => page.ValidateAndProcess()).WhenValid()
             .WithCommitFinalStep();
 
         Assert.NotNull(wizard.CurrentPage);

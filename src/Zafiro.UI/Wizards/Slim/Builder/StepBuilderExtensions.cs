@@ -2,6 +2,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using CSharpFunctionalExtensions;
 using Zafiro.UI.Commands;
+using Zafiro.UI;
 
 namespace Zafiro.UI.Wizards.Slim.Builder;
 
@@ -140,5 +141,34 @@ public static class StepBuilderExtensions
         string? text = "Next")
     {
         return builder.Next(_ => Unit.Default, text);
+    }
+
+    // Type-safe WhenValid overloads based on TPage : IValidatable
+    public static WizardBuilder<TResult> WhenValid<TPrevious, TPage, TResult>(
+        this NextStepBuilder<TPrevious, TPage, TResult> builder)
+        where TPage : IValidatable
+    {
+        return builder.When(page => page.IsValid);
+    }
+
+    public static WizardBuilder<TResult> WhenValid<TPrevious, TPage, TResult>(
+        this NextResultStepBuilder<TPrevious, TPage, TResult> builder)
+        where TPage : IValidatable
+    {
+        return builder.When(page => page.IsValid);
+    }
+
+    public static WizardBuilder<TResult> WhenValid<TPrevious, TPage, TResult>(
+        this NextStepWithPreviousBuilder<TPrevious, TPage, TResult> builder)
+        where TPage : IValidatable
+    {
+        return builder.When((page, _) => page.IsValid);
+    }
+
+    public static WizardBuilder<TResult> WhenValid<TPrevious, TPage, TResult>(
+        this NextResultStepWithPreviousBuilder<TPrevious, TPage, TResult> builder)
+        where TPage : IValidatable
+    {
+        return builder.When((page, _) => page.IsValid);
     }
 }
